@@ -119,23 +119,23 @@ plotClimatology <- function(grid, backdrop.theme = "none", ...) {
       }
       arg.list <- list(...)
       bt <- match.arg(backdrop.theme, choices = c("none", "coastline", "countries"))
-      dimNames <- downscaleR:::getDim(grid)
+      dimNames <- getDim(grid)
       ## Multigrids are treated as realizations, previously aggregated by members if present
       is.multigrid <- "var" %in% dimNames
       if (is.multigrid) {
             if ("member" %in% dimNames) {
                   mem.ind <- grep("member", dimNames)
-                  n.mem <- downscaleR:::getShape(grid, "member")
+                  n.mem <- getShape(grid, "member")
                   if (n.mem > 1) message("NOTE: The multimember mean will be displayed for each variable in the multigrid")
                   grid <- suppressMessages(aggregateGrid(grid, aggr.mem = list(FUN = "mean", na.rm = TRUE)))
-                  dimNames <- downscaleR:::getDim(grid)
+                  dimNames <- getDim(grid)
             }
             attr(grid[["Data"]], "dimensions") <- gsub("var", "member", dimNames)      
       }
       grid <- redim(grid, drop = FALSE)
-      dimNames <- downscaleR:::getDim(grid)
+      dimNames <- getDim(grid)
       mem.ind <- grep("member", dimNames)
-      n.mem <- downscaleR:::getShape(grid, "member")
+      n.mem <- getShape(grid, "member")
       co <- expand.grid(grid$xyCoords$y, grid$xyCoords$x)[2:1]
       le <- nrow(co)
       aux <- vapply(1:n.mem, FUN.VALUE = numeric(le), FUN = function(x) {
@@ -171,8 +171,8 @@ plotClimatology <- function(grid, backdrop.theme = "none", ...) {
       ## Backdrop theme ---------------------
       if (bt != "none") {
             uri <- switch(bt,
-                          "coastline" = system.file("coastline.rda", package = "downscaleR"),
-                          "countries" = system.file("countries.rda", package = "downscaleR"))
+                          "coastline" = system.file("coastline.rda", package = "transformeR"),
+                          "countries" = system.file("countries.rda", package = "transformeR"))
             load(uri)      
             if (is.null(arg.list[["sp.layout"]])) {
                   arg.list[["sp.layout"]] <- list(l1)
