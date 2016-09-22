@@ -15,6 +15,7 @@
 #' @importFrom parallel detectCores
 #' @importFrom parallel makeCluster
 #' @keywords internal
+#' @export
 
 parallelCheck <- function(parallel, max.ncores = 16, ncores = NULL) {
       hasparallel <- FALSE
