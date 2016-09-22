@@ -6,15 +6,12 @@ Imports:
     utils,
     RCurl,
     fields,
-    MASS,
-    evd,
     parallel,
     akima,
     grDevices,
     graphics,
     stats,
-    sp,
-    verification
+    sp
 Suggests:
     downscaleR,      
     loadeR,
