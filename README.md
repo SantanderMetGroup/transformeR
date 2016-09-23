@@ -13,7 +13,7 @@
 It also contains several buit-in climate datasets and provides parallel computing support and different internal utilities for the R package [`downscaleR`](https://github.com/SantanderMetGroup/downscaleR) for bias correction and statistical downscaling.
 
 ***
-**NOTE**: The utilities in transformeR were formerly part of `downscaleR` (up to v1.3-4). Since `downscaleR` v2.0-0 these are in `transformeR`, and downscaleR is strictly aimed to statistical downscaling and bias correction.
+**NOTE**: The utilities in `transformeR` were formerly part of `downscaleR` (up to v1.3-4). Since `downscaleR` v2.0-0, these are in `transformeR` and `downscaleR` is strictly aimed to statistical downscaling and bias correction.
 ***
 
 ## Installation
