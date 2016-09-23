@@ -114,11 +114,59 @@
 #' 
 
 plotClimatology <- function(grid, backdrop.theme = "none", ...) {
+      arg.list <- list(...)
+      bt <- match.arg(backdrop.theme, choices = c("none", "coastline", "countries"))
+      df <- clim2sgdf(clim = grid)
+      ## Backdrop theme 
+      if (bt != "none") {
+            uri <- switch(bt,
+                          "coastline" = system.file("coastline.rda", package = "transformeR"),
+                          "countries" = system.file("countries.rda", package = "transformeR"))
+            load(uri)      
+            if (is.null(arg.list[["sp.layout"]])) {
+                  arg.list[["sp.layout"]] <- list(l1)
+            } else {
+                  arg.list[["sp.layout"]][[length(arg.list[["sp.layout"]]) + 1]] <- l1
+            } 
+      }
+      ## Default colorbar 
+      if (is.null(arg.list[["col.regions"]])) {
+            jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
+                                             "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
+            arg.list[["col.regions"]] <- jet.colors(101)
+      }
+      ## Other args 
+      arg.list[["obj"]] <- df
+      arg.list[["asp"]] <- 1
+      do.call("spplot", arg.list)
+}      
+
+#'@title Climatology to SpatialGridDataFrame
+#'@description Convert a climatological grid to a SpatialGridDataFrame object from package sp
+#'@param clim A climatological grid, as returned by function \code{\link{climatology}}
+#'@seealso \code{\link{climatology}}, \code{\link{plotClimatology}}
+#'@return A \pkg{sp} object of the class \code{\link[sp]{SpatialGridDataFrame}}
+#'@details This function is intended for internal usage by \code{\link{plotClimatology}},
+#'that accepts all possible arguments that can be passed to \code{\link[sp]{spplot}} for plotting. 
+#' However, it may be useful for advanced \pkg{sp} users in different contexts
+#' (e.g. for reprojecting via \code{\link[sp]{spTransform}} etc.)
+#'@keywords internal
+#'@export
+#'@author J. Bedia
+#'@examples \donttest{
+#' data(tasmax_forecast)
+#' # Climatology is computed:
+#' clim <- climatology(tasmax_forecast, by.member = TRUE)
+#' sgdf <- clim2sgdf(clim)
+#' class(sgdf)
+#' spplot(sgdf)
+#' }
+
+clim2sgdf <- function(clim) {
+      grid <- clim
       if (is.null(attr(grid[["Data"]], "climatology:fun"))) {
             stop("The input grid is not a climatology: Use function 'climatology' first")
       }
-      arg.list <- list(...)
-      bt <- match.arg(backdrop.theme, choices = c("none", "coastline", "countries"))
       dimNames <- getDim(grid)
       ## Multigrids are treated as realizations, previously aggregated by members if present
       is.multigrid <- "var" %in% dimNames
@@ -168,28 +216,5 @@ plotClimatology <- function(grid, backdrop.theme = "none", ...) {
       cells.dim <- vapply(aux.grid, FUN.VALUE = integer(1L), FUN = "length")
       grd <- sp::GridTopology(cellcentre.offset, cellsize, cells.dim)
       df <- sp::SpatialGridDataFrame(grd, aux)
-      ## Backdrop theme ---------------------
-      if (bt != "none") {
-            uri <- switch(bt,
-                          "coastline" = system.file("coastline.rda", package = "transformeR"),
-                          "countries" = system.file("countries.rda", package = "transformeR"))
-            load(uri)      
-            if (is.null(arg.list[["sp.layout"]])) {
-                  arg.list[["sp.layout"]] <- list(l1)
-            } else {
-                  arg.list[["sp.layout"]][[length(arg.list[["sp.layout"]]) + 1]] <- l1
-            } 
-      }
-      ## Default colorbar --------------
-      if (is.null(arg.list[["col.regions"]])) {
-            jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
-                                             "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
-            arg.list[["col.regions"]] <- jet.colors(101)
-      }
-      ## Other args --------
-      arg.list[["obj"]] <- df
-      arg.list[["asp"]] <- 1
-      do.call("spplot", arg.list)
-}      
-
-
+      return(df)
+}
