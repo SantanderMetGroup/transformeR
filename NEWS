@@ -1,8 +1,8 @@
-transformeR 0.0-0
+transformeR 0.0-1
 =================
 
-* First package version
-* Merged from downscaleR 1.3-4
+* Minor dependency adjustments for seamless integration with downscaleR
+* Other minor changes and documentation updates
 
 
 
