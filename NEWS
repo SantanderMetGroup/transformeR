@@ -1,7 +1,7 @@
-transformeR 0.0-1
+transformeR 0.0-2
 =================
 
-* Minor dependency adjustments for seamless integration with downscaleR
+* New internal utility clim2sgdf for flexible conversion between climatological grids and SpatialGridDataFrame-class objects
 * Other minor changes and documentation updates
 
 
