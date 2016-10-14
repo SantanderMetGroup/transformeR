@@ -98,15 +98,14 @@ gridFromPCs <- function(prinCompObj, var) {
       level <- attributes(pco)$level  
       Members <- names(pco)
       aux.list  <- lapply(1:length(pco), function(n) {
-            Xhat <- (pco[[n]]$PCs %*% t(pco[[n]]$EOFs)) * scale[[n]] + center[[n]]
-            out <- mat2Dto3Darray(Xhat, x, y)
-            return(out)
+            Xhat <- tcrossprod(pco[[n]]$PCs, pco[[n]]$EOFs) * scale[[n]] + center[[n]]
+            mat2Dto3Darray(Xhat, x, y)
       })
       pco <- NULL
       dimNames <- attr(aux.list[[1]], "dimensions")
-      Data <- unname(do.call("abind", c(aux.list, along = -1)))
+      Data <- unname(do.call("abind", c(aux.list, along = -1L)))
       if (identical(Data, drop(Data))) {
-            dimNames <- append(dimNames, "member", after = 0)
+            dimNames <- append(dimNames, "member", after = 0L)
             mm <- TRUE
       } else {
             Data <- drop(Data)
