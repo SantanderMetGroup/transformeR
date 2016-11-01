@@ -124,13 +124,8 @@
 #'  
 #' # This is an example using a multimember object:
 #' data(tasmax_forecast)
-#' # In order make the computation faster, we interpolate to a coarser grid of 2.5 deg
-#' range(tasmax_forecast$xyCoords$x)
-#' range(tasmax_forecast$xyCoords$y)
-#' multimember <- interpGrid(tasmax_forecast, 
-#'                               new.coordinates = list(c(-10,29.5, 2.5), c(35.5, 64.5, 2.5)))
 #' # In this case we retain the first 15 EOFs:
-#' pca.mm <- prinComp(multimember, n.eofs = 15) 
+#' pca.mm <- prinComp(tasmax_forecast, n.eofs = 15) 
 #' # Note that now the results of the PCA for the variable are a list, with the results 
 #' # for each member sepparately considered
 #' str(pca.mm)
@@ -138,9 +133,8 @@
 #' # The most complex situation comes from multimember multigrids:
 #' data(tasmin_forecast)
 #' # We interpolate using an identical grid than the previous example:
-#' multimember2 <- interpGrid(tasmin_forecast, new.coordinates = getGrid(multimember))
 #' # Now the multimember multigrid is constructed
-#' mm.multigrid <- makeMultiGrid(multimember, multimember2)
+#' mm.multigrid <- makeMultiGrid(tasmax_forecast, tasmin_forecast)
 #' pca.mm.mf <- prinComp(mm.multigrid, n.eofs = 10)
 #' # Now there is a "COMBINED" element at the end of the output list
 #' str(pca.mm.mf)
@@ -177,11 +171,19 @@ prinComp <- function(gridData,
       if (length(gridData$xyCoords$x) < 2 & length(gridData$xyCoords$y) < 2) {
             stop("The dataset is not a field encompassing multiple grid-cells", call. = FALSE)
       }
-      parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-      dimNames <- attr(gridData$Data, "dimensions")
+      parallel.pars <- transformeR::parallelCheck(parallel, max.ncores, ncores)
+      if (parallel.pars$hasparallel) {
+            lapply_fun <- function(...) {
+                  parallel::parLapply(cl = parallel.pars$cl, ...)
+            }  
+            on.exit(parallel::stopCluster(parallel.pars$cl))
+      } else {
+            lapply_fun <- lapply
+      }
+      dimNames <- getDim(gridData)
       if ("var" %in% dimNames) { 
             var.index <- grep("var", dimNames)
-            n.vars <- dim(gridData$Data)[var.index]
+            n.vars <- getShape(gridData, dimension = "var")
             var.list <- rep(list(bquote()), n.vars)
             for (x in 1:n.vars) {                  
                   l <- asub(gridData$Data, idx = x, dims = var.index)
@@ -257,89 +259,45 @@ prinComp <- function(gridData,
       }
       #PCs
       pca.list <- rep(list(bquote()), length(Xsc.list))
-      if (parallel.pars$hasparallel) {
-            for (i in 1:length(pca.list)) {
-                  on.exit(parallel::stopCluster(parallel.pars$cl))
-                  pca.list[[i]] <- parallel::parLapply(cl = parallel.pars$cl, 1:length(Xsc.list[[i]]), function(x) {
-                        # Covariance matrix
-                        Cx <- cov(Xsc.list[[i]][[x]])
-                        # Singular vectors (EOFs) and values
-                        sv <- svd(Cx)
-                        F <- sv$u
-                        # F <- eigen(Cx)$vectors
-                        lambda <- sv$d
-                        # lambda <- eigen(Cx)$values            
-                        sv <- NULL
-                        # Explained variance
-                        explvar <- cumsum(lambda / sum(lambda))
-                        # Number of EOFs to be retained
-                        if (!is.null(v.exp)) {
-                              n <- findInterval(v.exp, explvar) + 1
-                        } else { 
-                              if (!is.null(n.eofs)) {
-                                    n <- n.eofs
-                              } else {
-                                    n <- length(explvar)
-                              }
-                        }
-                        F <- as.matrix(F[ ,1:n])
-                        explvar <- explvar[1:n]
-                        # PCs
-                        PCs <- t(t(F) %*% t(Xsc.list[[i]][[x]]))
-                        # ouput
-                        out <- if (i < length(Xsc.list)) {
-                              list("PCs" = PCs, "EOFs" = F, "orig" = Xsc.list[[i]][[x]])
+      for (i in 1:length(pca.list)) {
+            pca.list[[i]] <- lapply_fun(1:length(Xsc.list[[i]]), function(x) {
+                  # Covariance matrix
+                  Cx <- cov(Xsc.list[[i]][[x]])
+                  # Singular vectors (EOFs) and values
+                  sv <- svd(Cx)
+                  F <- sv$u
+                  # F <- eigen(Cx)$vectors
+                  lambda <- sv$d
+                  # lambda <- eigen(Cx)$values            
+                  sv <- NULL
+                  # Explained variance
+                  explvar <- cumsum(lambda / sum(lambda))
+                  # Number of EOFs to be retained
+                  if (!is.null(v.exp)) {
+                        n <- findInterval(v.exp, explvar) + 1
+                  } else { 
+                        if (!is.null(n.eofs)) {
+                              n <- n.eofs
                         } else {
-                              list("PCs" = PCs, "EOFs" = F)
+                              n <- length(explvar)
                         }
-                        attr(out, "scaled:center") <- attr(Xsc.list[[i]][[x]], "scaled:center")
-                        attr(out, "scaled:scale") <- attr(Xsc.list[[i]][[x]], "scaled:scale")
-                        attr(out, "explained_variance") <- explvar
-                        return(out)
-                  })
-                  attr(pca.list[[i]], "level") <- gridData$Variable$level[i]
-            }
-      } else {
-            for (i in 1:length(pca.list)) {
-                  pca.list[[i]] <- lapply(1:length(Xsc.list[[i]]), function(x) {
-                        # Covariance matrix
-                        Cx <- cov(Xsc.list[[i]][[x]])
-                        # Singular vectors (EOFs) and values
-                        sv <- svd(Cx)
-                        F <- sv$u
-                        # F <- eigen(Cx)$vectors
-                        lambda <- sv$d
-                        # lambda <- eigen(Cx)$values            
-                        sv <- NULL
-                        # Explained variance
-                        explvar <- cumsum(lambda / sum(lambda))
-                        # Number of EOFs to be retained
-                        if (!is.null(v.exp)) {
-                              n <- findInterval(v.exp, explvar) + 1
-                        } else { 
-                              if (!is.null(n.eofs)) {
-                                    n <- n.eofs
-                              } else {
-                                    n <- length(explvar)
-                              }
-                        }
-                        F <- as.matrix(F[ ,1:n])
-                        explvar <- explvar[1:n]
-                        # PCs
-                        PCs <- t(t(F) %*% t(Xsc.list[[i]][[x]]))
-                        # ouput
-                        out <- if (i < length(Xsc.list)) {
-                              list("PCs" = PCs, "EOFs" = F, "orig" = Xsc.list[[i]][[x]])
-                        } else {
-                              list("PCs" = PCs, "EOFs" = F)
-                        }
-                        attr(out, "scaled:center") <- attr(Xsc.list[[i]][[x]], "scaled:center")
-                        attr(out, "scaled:scale") <- attr(Xsc.list[[i]][[x]], "scaled:scale")
-                        attr(out, "explained_variance") <- explvar
-                        return(out)
-                  })
-                  attr(pca.list[[i]], "level") <- gridData$Variable$level[i]
-            }
+                  }
+                  F <- as.matrix(F[ ,1:n])
+                  explvar <- explvar[1:n]
+                  # PCs
+                  PCs <- Xsc.list[[i]][[x]] %*% F
+                  # ouput
+                  out <- if (i < length(Xsc.list)) {
+                        list("PCs" = PCs, "EOFs" = F, "orig" = Xsc.list[[i]][[x]])
+                  } else {
+                        list("PCs" = PCs, "EOFs" = F)
+                  }
+                  attr(out, "scaled:center") <- attr(Xsc.list[[i]][[x]], "scaled:center")
+                  attr(out, "scaled:scale") <- attr(Xsc.list[[i]][[x]], "scaled:scale")
+                  attr(out, "explained_variance") <- explvar
+                  return(out)
+            })
+            attr(pca.list[[i]], "level") <- gridData$Variable$level[i]
       }
       Xsc.list <- NULL
 #       # Recover field
