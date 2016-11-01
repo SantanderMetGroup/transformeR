@@ -32,6 +32,6 @@ Authors@R: as.person(c(
 BugReports: https://github.com/SantanderMetGroup/transformeR/issues
 URL: https://github.com/SantanderMetGroup/transformeR/wiki
 Description: Tools for climate data analysis, visualization and manipulation.
-License: GPL (>= 3)
+License: file LICENSE
 LazyData: true
 RoxygenNote: 5.0.1

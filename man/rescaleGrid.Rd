@@ -32,7 +32,7 @@ cores is used when \code{ncpus = NULL} (the default), or when \code{maxcores} ex
 A rescaled grid
 }
 \description{
-Rescale a grid
+Rescale a grid (or compute anomalies)
 }
 \details{
 The reference grid (\code{ref}) is used to correct the input grid, as follows:
@@ -42,6 +42,9 @@ The reference grid (\code{ref}) is used to correct the input grid, as follows:
 , where \emph{mu} corresponds to the monthly climatological mean considering the training period,
 and \emph{grid'} is the corrected test data. The way \emph{mu_ref} and \emph{mu_grid} are computed in case
 of multimember grids is controlled by the argument \code{by.member}.
+
+Note that if both \code{grid.clim} and \code{ref} are set to \code{NULL}, the output grid corresponds
+to the anomaly field of the input \code{grid} w.r.t. its own mean.
 
 The \code{ref} usually corresponds to the control run of the GCM in the training period in climate change applications,
 or the hindcast data for the training period in s2d applications. Note that by default \code{ref = NULL}. In this 
