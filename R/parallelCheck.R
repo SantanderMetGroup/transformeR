@@ -24,13 +24,21 @@ parallelCheck <- function(parallel, max.ncores = 16, ncores = NULL) {
             message("Parallelization is not supported on Windows machines")    
       } 
       if (parallel && requireNamespace("parallel", quietly = TRUE)) {
+            max.avail <- min(max(parallel::detectCores() - 1, 1), max.ncores)
             if (is.null(ncores)) {
-                  ncores <- min(max(parallel::detectCores() - 1, 1), max.ncores)
+                  ncores <- max.avail 
             }
             if (ncores > 1) {
                   .cl <- try(parallel::makeCluster(ncores, type = 'FORK'), silent = TRUE)
                   if (!"try-error" %in% class(.cl)) {
                         hasparallel <- TRUE
+                        
+                        if (ncores > max.avail) {
+                              warning("Maximum number of detected cores available is ",
+                                      max.avail, " (", ncores, " were selected)",
+                                      call. = FALSE)
+                              ncores <- max.avail
+                        }
                         message("Parallel computing enabled\nNumber of workers: ", ncores)
                   } else {
                         .cl <- NULL
