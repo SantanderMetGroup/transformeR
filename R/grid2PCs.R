@@ -45,7 +45,7 @@ grid2PCs <- function(prinCompObj, grid, n.pcs = NULL) {
       mu <- attr(prinCompObj[[gridName]][[1]], "scaled:center")
       sigma <- attr(prinCompObj[[gridName]][[1]], "scaled:scale")
       prinCompObj <- NULL
-      grid <- redim(grid)
+      grid <- transformeR:::redim(grid, runtime = TRUE)
       dimNames <- attr(grid$Data, "dimensions")
       lat.ind <- grep("lat", dimNames)
       lon.ind <- grep("lon", dimNames)
