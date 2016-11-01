@@ -17,7 +17,7 @@
 
 
 #' @title Grid rescaling
-#' @description Rescale a grid
+#' @description Rescale a grid (or compute anomalies)
 #' @param grid Input grid to be rescaled
 #' @param grid.clim Reference climatology to be subtracted to the input grid. If \code{NULL} (the default),
 #' the climatology is directly computed from the grid via \code{\link{climatology}}, either member-by-member
@@ -36,6 +36,9 @@
 #' and \emph{grid'} is the corrected test data. The way \emph{mu_ref} and \emph{mu_grid} are computed in case
 #' of multimember grids is controlled by the argument \code{by.member}.
 #' 
+#' Note that if both \code{grid.clim} and \code{ref} are set to \code{NULL}, the output grid corresponds
+#' to the anomaly field of the input \code{grid} w.r.t. its own mean.
+#' 
 #' The \code{ref} usually corresponds to the control run of the GCM in the training period in climate change applications,
 #' or the hindcast data for the training period in s2d applications. Note that by default \code{ref = NULL}. In this 
 #' case it will be assumed to be the \code{pred} grid. This can be used for instance when train and test correspond
@@ -51,7 +54,7 @@
 # load("~/workspace/EUPORIAS/data/S4_15_psl_monthly_JA_1981_2010_nnNCEPgrid.rda", verbose = TRUE)
 # plotMeanGrid(psl)
 # plotMeanGrid(psl.s4)
-# psl.s4.resc <- rescaleGrid(psl.s4, grid.clim = NULL, ref = psl, parallel =F, by.member = FALSE)
+# psl.s4.resc <- rescaleGrid(psl.s4, grid.clim = NULL, ref = psl, parallel =T, by.member = FALSE)
 # 
 # plotMeanGrid(psl.s4.resc)
 # 
@@ -59,8 +62,8 @@
 # ref <- subsetGrid(psl, years = 1981:2010)
 # grid <- psl.s4
 # grid.clim = NULL
-# by.member = FALSE
-# parallel = FALSE
+# by.member = TRUE
+# parallel = TRUE
 # max.ncores = 16
 # ncores = NULL
 
@@ -82,10 +85,18 @@ rescaleGrid <- function(grid,
                                      ncores = ncores)
       }
       if (!identical(getSeason(grid.clim), getSeason(grid))) {
-            stop("Seasons of input grid and grid.clim do not match")
+            stop("Seasons of input grid and grid.clim do not match", call. = FALSE)
       }
       if (!is.null(ref) && !identical(getSeason(grid), getSeason(ref))) {
-            stop("Seasons of input grid and reference grid do not match")
+            stop("Seasons of input grid and reference grid do not match", call. = FALSE)
+      }
+      if (parallel.pars$hasparallel) {
+            lapply_fun <- function(...) {
+                  parallel::parLapply(cl = parallel.pars$cl, ...)
+            }  
+            on.exit(parallel::stopCluster(parallel.pars$cl))
+      } else {
+            lapply_fun <- lapply
       }
       if (!is.null(ref)) {
             ref.clim <- climatology(ref,
@@ -93,7 +104,6 @@ rescaleGrid <- function(grid,
                                     parallel = parallel,
                                     max.ncores = max.ncores,
                                     ncores = ncores)
-            
             if ("member" %in% getDim(grid.clim) && !("member" %in% getDim(ref))) {
                   n.mem <- dim(grid.clim[["Data"]])[grep("member", getDim(grid.clim))]
                   aux <- rep(list(ref.clim[["Data"]]), n.mem)
@@ -110,10 +120,10 @@ rescaleGrid <- function(grid,
       clim <- grid[["Data"]]
       dimNames <- getDim(grid)
       ind.time <- grep("^time", dimNames)
-      n.times <- dim(clim)[ind.time]
+      n.times <- getShape(grid, "time")
       Xc <- drop(grid.clim[["Data"]])
       Xref <- drop(ref.clim[["Data"]])
-      aux.list <- lapply(1:n.times, function(x) {
+      aux.list <- lapply_fun(1:n.times, function(x) {
             X <- asub(clim, idx = x, dims = ind.time)
             X - Xc + Xref
       })
