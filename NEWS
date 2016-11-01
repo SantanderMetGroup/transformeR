@@ -1,8 +1,9 @@
 transformeR 0.0-2
 =================
 
+* New function anomalyGrid to compute anomalies
 * New internal utility clim2sgdf for flexible conversion between climatological grids and SpatialGridDataFrame-class objects
-* Other minor changes and documentation updates
+* Other minor changes, code efficiency improvements and documentation updates
 
 
 

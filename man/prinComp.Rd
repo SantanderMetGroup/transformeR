@@ -138,13 +138,8 @@ barplot(1-vexp, names.arg = paste("PC",1:length(vexp)), las = 2,
  
 # This is an example using a multimember object:
 data(tasmax_forecast)
-# In order make the computation faster, we interpolate to a coarser grid of 2.5 deg
-range(tasmax_forecast$xyCoords$x)
-range(tasmax_forecast$xyCoords$y)
-multimember <- interpGrid(tasmax_forecast, 
-                              new.coordinates = list(c(-10,29.5, 2.5), c(35.5, 64.5, 2.5)))
 # In this case we retain the first 15 EOFs:
-pca.mm <- prinComp(multimember, n.eofs = 15) 
+pca.mm <- prinComp(tasmax_forecast, n.eofs = 15) 
 # Note that now the results of the PCA for the variable are a list, with the results 
 # for each member sepparately considered
 str(pca.mm)
@@ -152,9 +147,8 @@ str(pca.mm)
 # The most complex situation comes from multimember multigrids:
 data(tasmin_forecast)
 # We interpolate using an identical grid than the previous example:
-multimember2 <- interpGrid(tasmin_forecast, new.coordinates = getGrid(multimember))
 # Now the multimember multigrid is constructed
-mm.multigrid <- makeMultiGrid(multimember, multimember2)
+mm.multigrid <- makeMultiGrid(tasmax_forecast, tasmin_forecast)
 pca.mm.mf <- prinComp(mm.multigrid, n.eofs = 10)
 # Now there is a "COMBINED" element at the end of the output list
 str(pca.mm.mf)
