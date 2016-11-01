@@ -105,7 +105,7 @@ rescaleGrid <- function(grid,
                                     max.ncores = max.ncores,
                                     ncores = ncores)
             if ("member" %in% getDim(grid.clim) && !("member" %in% getDim(ref))) {
-                  n.mem <- dim(grid.clim[["Data"]])[grep("member", getDim(grid.clim))]
+                  n.mem <- getShape(grid.clim, "member") 
                   aux <- rep(list(ref.clim[["Data"]]), n.mem)
                   dimNames <- getDim(ref.clim)
                   ref.clim[["Data"]] <- unname(do.call("abind", c(aux, along = -1L)))
@@ -114,7 +114,7 @@ rescaleGrid <- function(grid,
             }
       } else {
             ref.clim <- list()
-            ref.clim[["Data"]] <- array(data = 0, dim = dim(grid.clim[["Data"]]))
+            ref.clim[["Data"]] <- array(data = 0, dim = getShape(grid.clim))
             attr(ref.clim[["Data"]], "dimensions") <- attr(grid.clim[["Data"]], "dimensions")
       }
       clim <- grid[["Data"]]
