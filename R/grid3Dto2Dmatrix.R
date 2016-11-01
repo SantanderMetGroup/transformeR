@@ -6,6 +6,7 @@
 #' @details Global attributes of the output matrix are provided for metadata description and spatiotemporal collocation.
 #' @author J. Bedia 
 #' @export
+#' @keywords internal
 
 grid3Dto2Dmatrix <- function(grid3D) {
       dimNames <- attr(grid3D$Data, "dimensions")
