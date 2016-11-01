@@ -4,7 +4,8 @@
 \alias{redim}
 \title{Complete missing dimensions of Grid or Station objects}
 \usage{
-redim(obj, member = TRUE, runtime = FALSE, drop = FALSE)
+redim(obj, member = TRUE, runtime = FALSE, station = FALSE,
+  drop = FALSE)
 }
 \arguments{
 \item{obj}{A grid or station data}
@@ -12,6 +13,9 @@ redim(obj, member = TRUE, runtime = FALSE, drop = FALSE)
 \item{member}{logical. Add member dimension (default = TRUE)}
 
 \item{runtime}{logical. Add runtime dimension (default = FALSE)}
+
+\item{station}{logical. Only if obj is station data. If TRUE, the "station" 
+dimension is not replaced by fake "lat" and "lon" dimensions (default is FALSE).}
 
 \item{drop}{logical. Drop dimensions of length = 1 (default = FALSE)}
 }
@@ -22,9 +26,7 @@ The same object with all the dimensions (i.e. member, time, station)
 Complete all dimensions of the Data array
 }
 \details{
-This is an internal utility in order to conveniently reshape data arrays.
-
-The function does not handle multigrids (i.e. \code{"var"} dimension).
+The function down not handle multigrids (i.e. \code{"var"} dimension).
  Thus, multigrids need to be subsetted along \code{"var"} prior to redimensioning.
 }
 \author{
