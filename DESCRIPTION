@@ -12,7 +12,8 @@ Imports:
     graphics,
     stats,
     sp,
-    verification
+    verification,
+    raster
 Suggests:
     downscaleR,      
     loadeR,
