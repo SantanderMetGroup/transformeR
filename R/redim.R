@@ -10,6 +10,7 @@
 #' @details The function down not handle multigrids (i.e. \code{"var"} dimension).
 #'  Thus, multigrids need to be subsetted along \code{"var"} prior to redimensioning.
 #' @keywords internal
+#' @export
 #' @importFrom abind abind
 #' @importFrom stats na.omit
 #' @author M. Iturbide, J. Bedia
