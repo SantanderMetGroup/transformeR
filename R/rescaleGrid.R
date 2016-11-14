@@ -76,13 +76,13 @@ rescaleGrid <- function(grid,
                         parallel = FALSE,
                         max.ncores = 16,
                         ncores = NULL) {
-      parallel.pars <- parallelCheck(parallel, max.ncores, ncores) 
+      parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
       if (is.null(grid.clim)) {
-            grid.clim <- climatology(grid,
+            grid.clim <- suppressMessages(climatology(grid,
                                      by.member = by.member,
                                      parallel = parallel,
                                      max.ncores = max.ncores,
-                                     ncores = ncores)
+                                     ncores = ncores))
       }
       if (!identical(getSeason(grid.clim), getSeason(grid))) {
             stop("Seasons of input grid and grid.clim do not match", call. = FALSE)
@@ -99,11 +99,11 @@ rescaleGrid <- function(grid,
             lapply_fun <- lapply
       }
       if (!is.null(ref)) {
-            ref.clim <- climatology(ref,
+            ref.clim <- suppressMessages(climatology(ref,
                                     by.member = by.member,
                                     parallel = parallel,
                                     max.ncores = max.ncores,
-                                    ncores = ncores)
+                                    ncores = ncores))
             if ("member" %in% getDim(grid.clim) && !("member" %in% getDim(ref))) {
                   n.mem <- getShape(grid.clim, "member") 
                   aux <- rep(list(ref.clim[["Data"]]), n.mem)
@@ -123,6 +123,7 @@ rescaleGrid <- function(grid,
       n.times <- getShape(grid, "time")
       Xc <- drop(grid.clim[["Data"]])
       Xref <- drop(ref.clim[["Data"]])
+      message("[", Sys.time(), "] Rescaling ...")
       aux.list <- lapply_fun(1:n.times, function(x) {
             X <- asub(clim, idx = x, dims = ind.time)
             X - Xc + Xref
@@ -135,6 +136,7 @@ rescaleGrid <- function(grid,
       clim <- aperm(clim, perm)
       grid[["Data"]] <- unname(clim)
       attr(grid[["Data"]], "dimensions") <- dimNames
+      message("[", Sys.time(), "] Done.")
       return(grid)
 }
 
