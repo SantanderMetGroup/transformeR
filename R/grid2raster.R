@@ -25,8 +25,7 @@
 #' If this argument is missing, and the x coordinates are withing -360 .. 360 and the y coordinates are 
 #' within -90 .. 90, "+proj=longlat +datum=WGS84" is used. Also see under Details if x is a character (filename).
 #' @return A raster for grid objects and a RasterStack for multigrids.
-#' @importFrom raster raster
-#' @importFrom raster flip
+#' @importFrom raster raster flip stack
 #' @author M. Iturbide
 #' @seealso \code{\link{climatology}}; \code{\link{raster}}
 #' @export
@@ -49,12 +48,12 @@ grid2raster <- function(grid, crs = NA){
       xmx <- bbox$x[2]
       ymn <- bbox$y[1]
       ymx <- bbox$y[2]
-      if("var" %in% getDim(grid)){
+      if ("var" %in% getDim(grid)) {
             vars <- grid$Variable$varName
             rr <- list()
-            for(i in 1:length(vars)){
+            for (i in 1:length(vars)) {
                   s.grid <- subsetGrid(grid, var = vars[i]) 
-                  if(length(dim(s.grid$Data)) != 2) stop("The multigrid does not have three dimensions. Apply function climatology to the input grid previously.")
+                  if (length(dim(s.grid$Data)) != 2) stop("The multigrid does not have three dimensions. Apply function climatology to the input grid previously.")
                   r <- raster(s.grid$Data, xmn = xmn, xmx = xmx, ymn = ymn, ymx = ymx, crs = crs)
                   r@data@unit <- attr(s.grid$Variable, "units")
                   r@data@names <- vars[i]
@@ -62,14 +61,14 @@ grid2raster <- function(grid, crs = NA){
             }
             names(rr) <- vars
             rr <- stack(rr)
-      }else{
-            if(length(dim(grid$Data)) != 2) stop("Grid does not have two dimensions. Apply function climatology to the input grid previously.")
+      } else {
+            if (length(dim(grid$Data)) != 2) stop("Grid does not have two dimensions. Apply function climatology to the input grid previously.")
             r <- raster(grid$Data, xmn = xmn, xmx = xmx, ymn = ymn, ymx = ymx, crs = crs)
             r@data@unit <- attr(grid$Variable, "units")
             r@data@names <- grid$Variable$varName
             rr <- flip(r, direction = "y")
       }
-return(rr)
+      return(rr)
 }
 
 
