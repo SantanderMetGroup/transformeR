@@ -19,7 +19,10 @@
 #' @description Convert a Principal Component to a 'time-series' grid.
 #' @param prinCompObj A PCA object as returned by \code{\link{prinComp}}
 #' @param var Character string. Name of the variable for which to extract the PC. Defaults to the first variable in \code{prinCompObj}
-#' @param pc.idx Index position of the PC to be converted to a grid
+#' @param pc.idx Index position of the PC to be converted to a grid. Default to the first PC.
+#' @param scale Logical. Should the time series values be scaled?. Default to \code{FALSE}. If \code{TRUE}, the default \code{\link[base]{scale}}
+#' method is applied to each time series.
+#' @param opp Logical. Default to \code{FALSE} and rarely used. The data are multiplied by -1 so the opposite is returned.
 #' @return a 'time series' grid (i.e., a grid with dimensions lon and lat of length 1). It can be a multimember.
 #' @details The XY coordinates correspond to the centroid of the window used for the PCA analysis. Details on the extent of this
 #'  window are provided by the attributes \code{domX} and \code{domY} within the \code{xyCoords} component.
@@ -31,11 +34,16 @@
 #' @examples \dontrun{
 #' data("tasmax_forecast")
 #' pc <- prinComp(tasmax_forecast, n.eofs = 2)
-#' a <- PC2grid(prinCompObj = pc, pc.idx = 2)
+#' # Convert to grid the PC of the leading EOF:
+#' a <- PC2grid(prinCompObj = pc, pc.idx = 1)
 #' str(a)
 #' }
 
-PC2grid <- function(prinCompObj, var = names(prinCompObj)[1], pc.idx = 1) {
+PC2grid <- function(prinCompObj,
+                    var = names(prinCompObj)[1],
+                    pc.idx = 1,
+                    scale = FALSE,
+                    opp = FALSE) {
       attrs <- attributes(prinCompObj)
       var.ind <- match(var, attrs$names)
       if (is.na(var.ind)) stop("Variable name '", var,"' not found", call. = FALSE)
@@ -48,6 +56,8 @@ PC2grid <- function(prinCompObj, var = names(prinCompObj)[1], pc.idx = 1) {
       mem.list <- lapply(1:length(pcobj), function(x) {
             pcobj[[x]]$PCs[,pc.idx]
       })
+      if (scale) mem.list <- lapply(mem.list, "scale")
+      if (opp) mem.list <- lapply(mem.list, "*", -1)
       Data <- unname(do.call("abind", c(mem.list, along = -1L)))
       attr(Data, "dimensions") <- c("member", "time")
       mem.list <- NULL

@@ -4,14 +4,20 @@
 \alias{PC2grid}
 \title{Principal Component grid}
 \usage{
-PC2grid(prinCompObj, var = names(prinCompObj)[1], pc.idx = 1)
+PC2grid(prinCompObj, var = names(prinCompObj)[1], pc.idx = 1,
+  scale = FALSE, opp = FALSE)
 }
 \arguments{
 \item{prinCompObj}{A PCA object as returned by \code{\link{prinComp}}}
 
 \item{var}{Character string. Name of the variable for which to extract the PC. Defaults to the first variable in \code{prinCompObj}}
 
-\item{pc.idx}{Index position of the PC to be converted to a grid}
+\item{pc.idx}{Index position of the PC to be converted to a grid. Default to the first PC.}
+
+\item{scale}{Logical. Should the time series values be scaled?. Default to \code{FALSE}. If \code{TRUE}, the default \code{\link[base]{scale}}
+method is applied to each time series.}
+
+\item{opp}{Logical. Default to \code{FALSE} and rarely used. The data are multiplied by -1 so the opposite is returned.}
 }
 \value{
 a 'time series' grid (i.e., a grid with dimensions lon and lat of length 1). It can be a multimember.
@@ -29,7 +35,8 @@ The XY coordinates correspond to the centroid of the window used for the PCA ana
 \dontrun{
 data("tasmax_forecast")
 pc <- prinComp(tasmax_forecast, n.eofs = 2)
-a <- PC2grid(prinCompObj = pc, pc.idx = 2)
+# Convert to grid the PC of the leading EOF:
+a <- PC2grid(prinCompObj = pc, pc.idx = 1)
 str(a)
 }
 }
