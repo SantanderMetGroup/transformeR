@@ -1,6 +1,7 @@
 transformeR 0.0-2
 =================
 
+* New function PC2grid, for conversion of a principal component into a time-series grid
 * New function grid2raster, for grid to 'raster' class conversion
 * New util function bindGrid.member, for grid binding across member dimension
 * New internal utility clim2sgdf for flexible conversion between climatological grids and SpatialGridDataFrame-class objects
