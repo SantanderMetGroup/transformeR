@@ -86,6 +86,12 @@ bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
                   stop("Inconsistent 'dimensions' attribute")
             }
       }
+      #Backwards compatibility fix
+      if (!is.list(grid.list[[1]][["InitializationDates"]])) {
+            for (i in 1:length(grid.list)) {
+                  grid.list[[i]][["InitializationDates"]] <- list(grid.list[[i]][["InitializationDates"]])
+            }
+      }
       ref <- grid.list[[1]]
       dimNames <- getDim(ref) 
       dim.bind <- grep("member", dimNames)
