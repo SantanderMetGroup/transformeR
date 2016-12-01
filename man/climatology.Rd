@@ -89,6 +89,7 @@ main = "Maximum daily precip DJF 2000")
 J. Bedia
 }
 \seealso{
-\code{\link{plotClimatology}}, for plotting climatologies
+\code{\link{plotClimatology}}, for plotting climatologies.
+\code{\link{persistence}}, for a special case in which the temporal autocorrelation function is applied.
 }
 

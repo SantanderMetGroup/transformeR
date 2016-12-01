@@ -41,7 +41,8 @@
 #' @importFrom stats na.omit
 #' @importFrom utils tail
 #' @author J. Bedia
-#' @seealso \code{\link{plotClimatology}}, for plotting climatologies
+#' @seealso \code{\link{plotClimatology}}, for plotting climatologies.
+#' \code{\link{persistence}}, for a special case in which the temporal autocorrelation function is applied.
 #' @export
 #' @examples \dontrun{
 #' #' # Maximum July surface temp forecast climatology

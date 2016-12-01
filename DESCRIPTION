@@ -22,7 +22,7 @@ Suggests:
 Type: Package
 Title: Climate data manipulation
 Version: 0.0-2
-Date: 2016-11-20
+Date: 2016-12-01
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [aut]",
     "Joaquin Bedia <bediaj@unican.es> [ctb, cre]",
