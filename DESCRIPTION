@@ -12,7 +12,6 @@ Imports:
     graphics,
     stats,
     sp,
-    verification,
     raster
 Suggests:
     downscaleR,      
@@ -22,7 +21,7 @@ Suggests:
 Type: Package
 Title: Climate data manipulation
 Version: 0.0-2
-Date: 2016-12-01
+Date: 2016-12-03
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [aut]",
     "Joaquin Bedia <bediaj@unican.es> [ctb, cre]",

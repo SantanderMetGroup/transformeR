@@ -50,7 +50,4 @@ plotMeanGrid(mm.mf) # Note: multi-member not supported in this case
 \author{
 J Bedia
 }
-\seealso{
-Other visualization: \code{\link{tercileValidation}}
-}
 
