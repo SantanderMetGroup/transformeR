@@ -89,7 +89,12 @@
 
 
 makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = FALSE) {
-      field.list <- list(...)
+      if(!is.list(...)){
+            field.list <- list(...)
+            
+      }else{
+            field.list <- (...)
+      }
       stopifnot(is.logical(skip.temporal.check))
       if (length(field.list) < 2) {
             stop("The input must be a list of at least two grids")
