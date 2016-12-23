@@ -56,7 +56,11 @@ PC2grid <- function(prinCompObj,
       mem.list <- lapply(1:length(pcobj), function(x) {
             pcobj[[x]]$PCs[,pc.idx]
       })
-      if (scale) mem.list <- lapply(mem.list, "scale")
+      attr(Variable, "is.scaled") <- FALSE
+      if (scale) {
+            mem.list <- lapply(mem.list, function(x) as.vector(scale(x)))
+            attr(Variable, "is.scaled") <- TRUE
+      }
       if (opp) mem.list <- lapply(mem.list, "*", -1)
       Data <- unname(do.call("abind", c(mem.list, along = -1L)))
       attr(Data, "dimensions") <- c("member", "time")
