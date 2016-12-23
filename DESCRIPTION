@@ -19,9 +19,9 @@ Suggests:
     loadeR.ECOMS,
     visualizeR
 Type: Package
-Title: Climate data manipulation
-Version: 0.0-2
-Date: 2016-12-03
+Title: Climate data post-processing
+Version: 0.0-3
+Date: 2016-12-23
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [aut]",
     "Joaquin Bedia <bediaj@unican.es> [ctb, cre]",
