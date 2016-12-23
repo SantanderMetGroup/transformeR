@@ -301,15 +301,16 @@ subsetYears <- function(grid, years, drop) {
             stop("Some subset time boundaries outside the current grid extent")
       }
       time.ind <- which(all.years %in% years)
-      if (isTRUE(drop) & getShape(grid, "time") == 1L) dimNames <- dimNames[-grep("^time", dimNames)]
-      grid$Data <- asub(grid$Data, time.ind, grep("time", dimNames), drop = drop)
+      dims <- grep("time", dimNames)
+      if (isTRUE(drop) & (getShape(grid, "time") == 1L | length(time.ind == 1L))) dimNames <- dimNames[-grep("^time", dimNames)]
+      grid$Data <- asub(grid$Data, time.ind, dims, drop = drop)
       attr(grid$Data, "dimensions") <- dimNames
       # Verification Date adjustment
       grid$Dates <- if (any(grepl("var", dimNames))) {
             lapply(1:length(grid$Dates), function(i) {
                   lapply(grid$Dates[[i]], function(x) x[time.ind])})
       } else {
-            lapply(grid$Dates, FUN="[", time.ind)
+            lapply(grid$Dates, FUN = "[", time.ind)
       }
       # Initialization time adjustment
       if ("member" %in% dimNames) {
