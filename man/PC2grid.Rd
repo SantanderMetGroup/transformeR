@@ -40,4 +40,7 @@ a <- PC2grid(prinCompObj = pc, pc.idx = 1)
 str(a)
 }
 }
+\author{
+J. Bedia
+}
 

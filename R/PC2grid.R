@@ -29,6 +29,7 @@
 #'  
 #'  Currently, only the start days are returned. The end dates are not returned by the \code{prinComp} output.
 #' @export
+#' @author J. Bedia
 #' @importFrom abind abind
 #' @importFrom stats median
 #' @examples \dontrun{
