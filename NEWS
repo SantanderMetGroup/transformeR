@@ -1,6 +1,7 @@
 transformeR 0.0-3
 =================
 
+* `makeMultiGrid` now accepts a list as input
 * Bug fix in PC2grid when `scale` is set to TRUE
 * Minor bug fix in `subsetGrid` for single-year selections in annually aggregated datasets
 * Other minor changes and documentation updates

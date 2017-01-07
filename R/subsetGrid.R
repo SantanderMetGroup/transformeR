@@ -1,6 +1,6 @@
 ##     subsetGrid.R Select an arbitrary subset from a grid
 ##
-##     Copyright (C) 2016 Santander Meteorology Group (http://www.meteo.unican.es)
+##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
 ##     This program is free software: you can redistribute it and/or modify
 ##     it under the terms of the GNU General Public License as published by
@@ -301,8 +301,8 @@ subsetYears <- function(grid, years, drop) {
             stop("Some subset time boundaries outside the current grid extent")
       }
       time.ind <- which(all.years %in% years)
-      dims <- grep("time", dimNames)
-      if (isTRUE(drop) & (getShape(grid, "time") == 1L | length(time.ind == 1L))) dimNames <- dimNames[-grep("^time", dimNames)]
+      dims <- grep("^time", dimNames)
+      if ((isTRUE(drop) & (getShape(grid, "time") == 1L)) | (length(time.ind) == 1L)) dimNames <- dimNames[-grep("^time", dimNames)]
       grid$Data <- asub(grid$Data, time.ind, dims, drop = drop)
       attr(grid$Data, "dimensions") <- dimNames
       # Verification Date adjustment

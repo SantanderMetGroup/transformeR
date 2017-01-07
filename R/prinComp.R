@@ -1,6 +1,6 @@
 # prinComp.R Principal Component Analysis of grid data
 #
-#     Copyright (C) 2016 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
