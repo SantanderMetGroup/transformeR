@@ -1,6 +1,7 @@
 transformeR 0.0-3
 =================
 
+* New feature `bindGrid.time` for multiple grid binding along 'time' dimension.
 * `makeMultiGrid` now accepts a list as input
 * Bug fix in PC2grid when `scale` is set to TRUE
 * Minor bug fix in `subsetGrid` for single-year selections in annually aggregated datasets
