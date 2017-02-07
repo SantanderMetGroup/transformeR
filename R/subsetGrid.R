@@ -302,7 +302,9 @@ subsetYears <- function(grid, years, drop) {
       }
       time.ind <- which(all.years %in% years)
       dims <- grep("^time", dimNames)
-      if ((isTRUE(drop) & (getShape(grid, "time") == 1L)) | (length(time.ind) == 1L)) dimNames <- dimNames[-grep("^time", dimNames)]
+      if ((isTRUE(drop)) & ((getShape(grid, "time") == 1L) | length(time.ind) == 1L)) {
+            dimNames <- dimNames[-grep("^time", dimNames)]    
+      } 
       grid$Data <- asub(grid$Data, time.ind, dims, drop = drop)
       attr(grid$Data, "dimensions") <- dimNames
       # Verification Date adjustment
