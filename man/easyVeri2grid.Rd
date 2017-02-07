@@ -7,20 +7,20 @@
 easyVeri2grid(easyVeri.mat, obs.grid, verifun = NULL)
 }
 \arguments{
-\item{easyVeri.mat}{A matrix containing the verification score,
+\item{easyVeri.mat}{A matrix containing the verification measure,
 as returned by \code{\link[easyVerification]{veriApply}}}
 
-\item{obs.grid}{The grid containing the verifying observations used in the call to \code{veryApply}
+\item{obs.grid}{The grid containing the verifying reference used in the call to \code{veryApply}
 producing the score matrix.}
 
-\item{verifun}{Optional. Character string indicating the value of the \code{verifun} value. Just for 
+\item{verifun}{Optional. Character string indicating the value of the \code{verifun} argument. Just for 
 a better traceability and metadata completeness.}
 }
 \value{
 A climatological grid.
 }
 \description{
-Convert a xyz-type score matrix as returned by \code{veriApply} to a climatological grid
+Convert a xyz-type verification matrix as returned by \code{veriApply} to a climatological grid
 }
 \author{
 J. Bedia

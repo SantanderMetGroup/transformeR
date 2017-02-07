@@ -18,12 +18,12 @@
 
 
 #' @title easyVerification matrix to climatological grid conversion
-#' @description Convert a xyz-type score matrix as returned by \code{veriApply} to a climatological grid
-#' @param easyVeri.mat A matrix containing the verification score,
+#' @description Convert a xyz-type verification matrix as returned by \code{veriApply} to a climatological grid
+#' @param easyVeri.mat A matrix containing the verification measure,
 #'  as returned by \code{\link[easyVerification]{veriApply}}
-#' @param obs.grid The grid containing the verifying observations used in the call to \code{veryApply}
+#' @param obs.grid The grid containing the verifying reference used in the call to \code{veryApply}
 #'  producing the score matrix.
-#' @param verifun Optional. Character string indicating the value of the \code{verifun} value. Just for 
+#' @param verifun Optional. Character string indicating the value of the \code{verifun} argument. Just for 
 #' a better traceability and metadata completeness. 
 #' @return A climatological grid.
 #' @seealso \code{\link{climatology}}, \code{\link{plotClimatology}}.
