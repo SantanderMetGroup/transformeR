@@ -27,4 +27,3 @@ The function makes a number of checks in order to test the spatiotemporal compat
 \author{
 M De Felice, J Bedia
 }
-

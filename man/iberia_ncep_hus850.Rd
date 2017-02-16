@@ -14,4 +14,3 @@ The data are daily means, wintertime (DJF) period 1991-2010.
 data(iberia_ncep_hus850)
 plotMeanGrid(iberia_ncep_hus850)
 }
-

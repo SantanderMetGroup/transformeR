@@ -19,4 +19,3 @@ Retrieve dimensions attribute
 J. Bedia
 }
 \keyword{internal}
-

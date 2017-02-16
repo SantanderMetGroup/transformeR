@@ -80,10 +80,9 @@ mm.mf <- makeMultiGrid(tasmax_forecast, tasmin_forecast, tp_forecast)
 # 'plotMeanGrid' can just handle the multi-member mean for each variable in this case:
 plotMeanGrid(mm.mf)
 }
-\author{
-J. bedia
-}
 \seealso{
 \code{\link{interpGrid}} for spatial consistency of input grids.
 }
-
+\author{
+J. bedia
+}

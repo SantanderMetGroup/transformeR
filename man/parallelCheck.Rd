@@ -32,4 +32,3 @@ can be initialized
 J. Bedia, relying on previous code by Jonas Bhend and Matteo de Felice
 }
 \keyword{internal}
-

@@ -43,4 +43,3 @@ plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline")
 \author{
 J Bedia
 }
-

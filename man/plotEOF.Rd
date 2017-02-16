@@ -59,10 +59,9 @@ plotEOF(pca2, "ta", n.eofs = 4)
 plotEOF(pca2, "psl", n.eofs = 2)
 }
 }
-\author{
-J. Bedia
-}
 \seealso{
 \code{\link{prinComp}}
 }
-
+\author{
+J. Bedia
+}

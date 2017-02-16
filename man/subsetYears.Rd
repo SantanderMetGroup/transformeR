@@ -4,14 +4,12 @@
 \alias{subsetYears}
 \title{Year subsets from a multimember grid}
 \usage{
-subsetYears(grid, years, drop)
+subsetYears(grid, years)
 }
 \arguments{
 \item{grid}{Input grid to be subset (possibly a multimember/multigrid).}
 
 \item{years}{An integer vector indicating the years to be subset.}
-
-\item{drop}{Logical (default is TRUE). Drop or keep dimensions of length 1.}
 }
 \value{
 A grid (or multigrid) that is a logical subset of the input grid along its 'time' dimension.
@@ -23,14 +21,13 @@ Retrieves a grid that is a logical subset of a multimember grid along its 'time'
 \details{
 An attribute 'subset' with value 'subsetYears' is added to the Dates slot of the output subset.
 }
-\author{
-J. Bedia
-}
 \seealso{
 Other subsetting: \code{\link{subsetDimension}},
   \code{\link{subsetGrid}}, \code{\link{subsetMembers}},
   \code{\link{subsetRuntime}}, \code{\link{subsetSeason}},
   \code{\link{subsetSpatial}}, \code{\link{subsetVar}}
 }
+\author{
+J. Bedia
+}
 \keyword{internal}
-

@@ -33,4 +33,3 @@ The function down not handle multigrids (i.e. \code{"var"} dimension).
 M. Iturbide, J. Bedia
 }
 \keyword{internal}
-

@@ -13,4 +13,3 @@ Computes weights as a function of latitude to compute areal averages
 J. Bedia, S. Siegert
 }
 \keyword{internal}
-

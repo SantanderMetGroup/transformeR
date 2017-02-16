@@ -98,6 +98,7 @@ particular case of large multimember datasets or large grids.
  
 Parallel computing is currently not available for Windows machines.
 }
+
 \examples{
 \dontrun{
 # Download dataset
@@ -154,9 +155,6 @@ pca.mm.mf <- prinComp(mm.multigrid, n.eofs = 10)
 str(pca.mm.mf)
 }
 }
-\author{
-J. Bedia
-}
 \references{
 Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Probabil\'{i}sticas
  y Neuronales en las Ciencias Atmosf\'{e}ricas. MIMAM, Spain. 279 pp.
@@ -165,4 +163,6 @@ Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Prob
 \seealso{
 \code{\link{gridFromPCs}}, \code{\link{plotEOF}}
 }
-
+\author{
+J. Bedia
+}

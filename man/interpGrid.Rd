@@ -67,6 +67,7 @@ particular case of large multimember datasets or large grids.
  
 Parallel computing is currently not available for Windows machines.
 }
+
 \examples{
 \dontrun{
 # Load air temperature at 850 mb isobaric pressure level for boreal winter (DJF) 1991-2010
@@ -88,4 +89,3 @@ attributes(t$xyCoords)
 \author{
 J. Bedia, S. Herrera, M. de Felice, M. Iturbide
 }
-

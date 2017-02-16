@@ -15,4 +15,3 @@ mean of the four 6-hourly model outputs.
 data(iberia_ncep_psl)
 plotMeanGrid(iberia_ncep_psl)
 }
-

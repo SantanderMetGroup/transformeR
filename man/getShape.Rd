@@ -19,4 +19,3 @@ Retrieve array attributes 'dimensions' and 'dim'
 J. Bedia
 }
 \keyword{internal}
-

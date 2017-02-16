@@ -4,7 +4,7 @@
 \alias{subsetDimension}
 \title{Select an arbitrary subset from a grid or multigrid along one of its dimensions}
 \usage{
-subsetDimension(grid, dimension = NULL, indices = NULL, drop = TRUE)
+subsetDimension(grid, dimension = NULL, indices = NULL)
 }
 \arguments{
 \item{grid}{The input grid to be subset. This is either a grid, as returned e.g. by \code{loadGridData} from package \pkg{loadeR} or a
@@ -14,8 +14,6 @@ multigrid, as returned by \code{makeMultiGrid}, or other types of multimember gr
 \item{dimension}{Character vector indicating the dimension along which the positions indicated by the \code{indices} paraneter.}
 
 \item{indices}{An integer vector indicating \strong{the positions} of the dimension to be extracted.}
-
-\item{drop}{Logical (default is TRUE). Drop or keep dimensions of length 1.}
 }
 \value{
 A new grid object that is a logical subset of the input grid along the specified dimension.
@@ -36,13 +34,12 @@ sub <- subsetDimension(tasmax_forecast,
                    indices = c(1,3))
 plotMeanGrid(sub, multi.member = TRUE)
 }
-\author{
-J. Bedia and S. Herrera
-}
 \seealso{
 Other subsetting: \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
   \code{\link{subsetVar}}, \code{\link{subsetYears}}
 }
-
+\author{
+J. Bedia and S. Herrera
+}

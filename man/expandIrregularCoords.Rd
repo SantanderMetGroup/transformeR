@@ -19,4 +19,3 @@ Expand the coordinates of irregular grids into a 2D matrix of x-y coordinates
 J Bedia
 }
 \keyword{internal}
-

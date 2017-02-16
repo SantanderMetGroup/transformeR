@@ -56,10 +56,10 @@ particular case of large multimember datasets or large grids.
  
 Parallel computing is currently not available for Windows machines.
 }
-\author{
-J Bedia
-}
+
 \seealso{
 \code{\link{plotClimatology}}, for conveniently plotting persistence climatology maps.
 }
-
+\author{
+J Bedia
+}

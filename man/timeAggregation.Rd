@@ -24,4 +24,3 @@ Aggregate a grid along its time dimension
 J. Bedia, M. Iturbide, M. de Felice
 }
 \keyword{internal}
-

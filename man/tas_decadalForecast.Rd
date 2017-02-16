@@ -19,4 +19,3 @@ Grid of decadal forecast data from the SPECS_GFDL_decadal dataset containing mon
 \keyword{decadal}
 \keyword{forecast}
 \keyword{temperature}
-

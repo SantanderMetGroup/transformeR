@@ -18,4 +18,3 @@ S4_Iberia_tp_fut is a grid object returned by \code{loadECOMS} from package \pkg
 }
 \keyword{forecasting}
 \keyword{seasonal}
-

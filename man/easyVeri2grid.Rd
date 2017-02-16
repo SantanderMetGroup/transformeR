@@ -22,10 +22,9 @@ A climatological grid.
 \description{
 Convert a xyz-type verification matrix as returned by \code{veriApply} to a climatological grid
 }
-\author{
-J. Bedia
-}
 \seealso{
 \code{\link{climatology}}, \code{\link{plotClimatology}}.
 }
-
+\author{
+J. Bedia
+}

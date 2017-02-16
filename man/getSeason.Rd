@@ -22,4 +22,3 @@ getSeason(iberia_ncep_ta850) # Boreal winter (DJF)
 \author{
 J. Bedia
 }
-

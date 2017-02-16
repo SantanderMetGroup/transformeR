@@ -4,14 +4,12 @@
 \alias{subsetRuntime}
 \title{Runtime subsets from a grid}
 \usage{
-subsetRuntime(grid, runtime, drop)
+subsetRuntime(grid, runtime)
 }
 \arguments{
 \item{grid}{Input multiruntime grid to be subset.}
 
 \item{runtime}{An integer vector indicating \strong{the position} of the runtimes to be subset.}
-
-\item{drop}{Logical (default is TRUE). Drop or keep dimensions of length 1.}
 }
 \value{
 A grid (or multigrid) that is a logical subset of the input grid along its 'runtime' dimension.
@@ -23,14 +21,13 @@ Retrieves a grid that is a logical subset of a multiruntime grid along its 'runt
 \details{
 An attribute 'subset' with value 'subsetRuntime' is added to the Runtime slot of the output subset.
 }
-\author{
-M. Iturbide
-}
 \seealso{
 Other subsetting: \code{\link{subsetDimension}},
   \code{\link{subsetGrid}}, \code{\link{subsetMembers}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
   \code{\link{subsetVar}}, \code{\link{subsetYears}}
 }
+\author{
+M. Iturbide
+}
 \keyword{internal}
-

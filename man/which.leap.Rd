@@ -21,11 +21,10 @@ Identification of leap years
 leap.years <- which.leap(1885:1937)
 (1885:1937)[leap.years]
 }
-\author{
-J. Bedia
-}
 \references{
 \url{https://en.wikipedia.org/wiki/Leap_year}
 }
+\author{
+J. Bedia
+}
 \keyword{internal}
-

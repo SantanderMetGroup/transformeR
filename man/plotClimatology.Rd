@@ -101,11 +101,10 @@ plotClimatology(mg,
 }
 
 }
-\author{
-J. Bedia
-}
 \seealso{
 \code{\link{climatology}}. See \code{\link[sp]{spplot}} in package \pkg{sp} for further information on
 plotting capabilities and options
 }
-
+\author{
+J. Bedia
+}

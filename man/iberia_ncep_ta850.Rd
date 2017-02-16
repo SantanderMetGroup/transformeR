@@ -14,4 +14,3 @@ The data correspond to the wintertime (DJF) period 1991-2010, and it consists of
 data(iberia_ncep_ta850)
 plotMeanGrid(iberia_ncep_ta850)
 }
-

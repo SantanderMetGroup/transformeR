@@ -12,4 +12,3 @@ for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2
 \description{
 Station data from the VALUE_ECA_86_v2 dataset containing daily precipitation for stations in the Iberian Peninsula.
 }
-

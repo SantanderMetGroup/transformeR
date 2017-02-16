@@ -18,4 +18,3 @@ Returns the coordinates of a climate data object, either stations or grid
 \author{
 J. Bedia
 }
-

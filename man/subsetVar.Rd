@@ -4,14 +4,14 @@
 \alias{subsetVar}
 \title{Extract a grid from a multigrid object}
 \usage{
-subsetVar(grid, var, drop)
+subsetVar(grid, var)
 }
 \arguments{
 \item{var}{Character vector indicating the variables(s) to be extracted}
 
-\item{drop}{Logical (default is TRUE). Drop or keep dimensions of length 1.}
-
 \item{multiGrid}{Input multigrid to be subset}
+
+\item{drop}{Logical (default is TRUE). Drop or keep dimensions of length 1.}
 }
 \value{
 Either a (multimember)grid or (multimember)multigrid if one ore more variables
@@ -26,14 +26,13 @@ will be always returned in the same order they are in the original multigrid.
 
 An attribute 'subset' with value 'subsetVar' is added to the Variable slot of the output subset.
 }
-\author{
-J. Bedia
-}
 \seealso{
 Other subsetting: \code{\link{subsetDimension}},
   \code{\link{subsetGrid}}, \code{\link{subsetMembers}},
   \code{\link{subsetRuntime}}, \code{\link{subsetSeason}},
   \code{\link{subsetSpatial}}, \code{\link{subsetYears}}
 }
+\author{
+J. Bedia
+}
 \keyword{internal}
-

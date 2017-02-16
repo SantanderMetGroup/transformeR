@@ -4,7 +4,7 @@
 \alias{subsetMembers}
 \title{Member subsets from a multimember grid}
 \usage{
-subsetMembers(grid, members, drop)
+subsetMembers(grid, members)
 }
 \arguments{
 \item{grid}{Input multimember grid to be subset (possibly a multimember multigrid).}
@@ -23,14 +23,13 @@ Retrieves a grid that is a logical subset of a multimember grid along its 'membe
 \details{
 An attribute 'subset' with value 'subsetMembers' is added to the Members slot of the output subset.
 }
-\author{
-J. Bedia
-}
 \seealso{
 Other subsetting: \code{\link{subsetDimension}},
   \code{\link{subsetGrid}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
   \code{\link{subsetVar}}, \code{\link{subsetYears}}
 }
+\author{
+J. Bedia
+}
 \keyword{internal}
-

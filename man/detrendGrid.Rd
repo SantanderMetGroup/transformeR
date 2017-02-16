@@ -45,6 +45,7 @@ particular case of large multimember datasets or large grids.
  
 Parallel computing is currently not available for Windows machines.
 }
+
 \examples{
 data("iberia_ncep_ta850")
 monthly <- aggregateGrid(iberia_ncep_ta850, aggr.m = list(FUN = "mean"))
@@ -58,4 +59,3 @@ abline(reg = lm(det$Data[,4,2] ~ I(1:length(det$Data[,4,2]))), col = "red")
 \author{
 J Bedia
 }
-
