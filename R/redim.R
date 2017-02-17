@@ -3,6 +3,7 @@
 #' @param obj A grid or station data
 #' @param member logical. Add member dimension (default = TRUE)
 #' @param runtime logical. Add runtime dimension (default = FALSE)
+#' @param var logical. Add var dimension (default = FALSE)
 #' @param station logical. Only if obj is station data. If TRUE, the "station" 
 #' dimension is not replaced by fake "lat" and "lon" dimensions (default is FALSE).
 #' @param drop logical. Drop dimensions of length = 1 (default = FALSE)
@@ -18,6 +19,7 @@
 redim <- function(obj,
                   member = TRUE,
                   runtime = FALSE,
+                  var = FALSE,
                   station = FALSE,
                   drop = FALSE) {
       stopifnot(is.logical(member) | is.logical(runtime) | is.logical(drop))
@@ -61,6 +63,13 @@ redim <- function(obj,
                   obj$Data <- unname(abind(obj$Data, NULL, along = -1))    
                   attr(obj$Data, "dimensions") <- dimNames
             }
+            # Add fake var dimension to deterministic/obs -----------
+            if (!("var" %in% dimNames) & isTRUE(var)) {
+                  dimNames <- c("var", dimNames)
+                  obj$Data <- unname(abind(obj$Data, NULL, along = -1))    
+                  attr(obj$Data, "dimensions") <- dimNames
+            }
+            
             dimNames <- c( "var", "runtime", "member", "time", "lat", "lon")
             if(station) dimNames <- c( "var", "runtime", "member", "time", "station")
             dimNames.aux <- attr(obj$Data, "dimensions")

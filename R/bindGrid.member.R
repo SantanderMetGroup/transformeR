@@ -62,7 +62,7 @@ bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
             subgrid <- grid.list[[h]]
             n.mem <- mem.index[h]
             for (i in 1:n.mem) {
-                  aux.list[[length(aux.list) + 1]] <- redim(subsetGrid(subgrid, members = i))
+                  aux.list[[length(aux.list) + 1]] <- redim(subsetGrid(subgrid, members = i, drop = F))
             }
       }
       grid.list <- aux.list
