@@ -12,7 +12,8 @@ Imports:
     graphics,
     stats,
     sp,
-    raster
+    raster,
+    magrittr
 Suggests:
     downscaleR,      
     loadeR,
@@ -20,8 +21,8 @@ Suggests:
     visualizeR
 Type: Package
 Title: Climate data post-processing
-Version: 0.0-4
-Date: 2017-02-16
+Version: 0.0-5
+Date: 2017-02-18
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [aut]",
     "Joaquin Bedia <bediaj@unican.es> [ctb, cre]",

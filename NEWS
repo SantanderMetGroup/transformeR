@@ -1,8 +1,8 @@
-transformeR 0.0-4
+transformeR 0.0-5
 =================
 
-* Minor bug fixes and code improvements
-* Other minor changes and documentation updates
+* Included option 'var' in redim utility
+* Other minor changes and and code improvements
 
 
 
