@@ -17,7 +17,7 @@
 
 #' @title Principal Component Analysis of grid/multigrid/multimember data
 #' @description Performs a Principal Component Analysis of grid, multigrid or multi-member data
-#' @param gridData A grid, multigrid, multimember grid or multimember multigrid object
+#' @param grid A grid, multigrid, multimember grid or multimember multigrid object
 #' @param n.eofs Number of EOFs to be retained. Default to \code{NULL}, indicating
 #'  that either all EOFs are kept, or that the next argument will be used as criterion
 #'  for its determination. See next argument and details.
@@ -79,6 +79,7 @@
 #' @export
 #' @importFrom abind asub
 #' @importFrom stats cov sd
+#' @importFrom magrittr %>%
 #' @seealso \code{\link{gridFromPCs}}, \code{\link{plotEOF}}
 #' @references
 #' Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Probabil\'{i}sticas
@@ -140,7 +141,7 @@
 #' str(pca.mm.mf)
 #' }
 
-prinComp <- function(gridData,
+prinComp <- function(grid,
                      n.eofs = NULL,
                      v.exp = NULL,
                      scaling = c("field", "gridbox"),
@@ -164,11 +165,11 @@ prinComp <- function(gridData,
                   stop("The explained variance threshold must be in the range (0,1]", call. = FALSE)
             }
       }
-      if (anyNA(gridData$Data)) {
+      if (anyNA(grid$Data)) {
             stop("There are missing values in the input data array", call. = FALSE)
       }
       scaling <- match.arg(scaling, choices = c("field", "gridbox"))
-      if (length(gridData$xyCoords$x) < 2 & length(gridData$xyCoords$y) < 2) {
+      if (length(grid$xyCoords$x) < 2 & length(grid$xyCoords$y) < 2) {
             stop("The dataset is not a field encompassing multiple grid-cells", call. = FALSE)
       }
       parallel.pars <- transformeR::parallelCheck(parallel, max.ncores, ncores)
@@ -180,43 +181,20 @@ prinComp <- function(gridData,
       } else {
             lapply_fun <- lapply
       }
-      dimNames <- getDim(gridData)
-      if ("var" %in% dimNames) { 
-            var.index <- grep("var", dimNames)
-            n.vars <- getShape(gridData, dimension = "var")
-            var.list <- rep(list(bquote()), n.vars)
-            for (x in 1:n.vars) {                  
-                  l <- asub(gridData$Data, idx = x, dims = var.index)
-                  attr(l, "dimensions") <- dimNames[-var.index]
-                  var.list[[x]] <- if ("member" %in% attr(l, "dimensions")) {
-                        indices2 <- rep(list(bquote()), length(dim(l)))
-                        mem.index <- grep("member", attr(l, "dimensions"))
-                        n.mem <- dim(l)[mem.index]
-                        lapply(1:n.mem, function(m) {
-                              ll <- asub(l, idx = m, dims = mem.index)
-                              attr(ll, "dimensions") <- attr(l, "dimensions")[-mem.index]
-                              array3Dto2Dmat(ll)
-                        })
-                  } else {
-                        list(array3Dto2Dmat(l))
-                  }
-            }
-      } else {
-            var.list <- rep(list(bquote()), 1)
-            var.list[[1]] <- if ("member" %in% dimNames) { 
-                  mem.index <- grep("member", dimNames)
-                  n.mem <- dim(gridData$Data)[mem.index]
-                  lapply(1:n.mem, function(m) {
-                        ll <- asub(gridData$Data, idx = m, dims = mem.index)
-                        attr(ll, "dimensions") <- attr(gridData$Data, "dimensions")[-mem.index]
-                        array3Dto2Dmat(ll)
-                  })
-            } else {
-                  list(array3Dto2Dmat(gridData$Data))
-            }
+      grid <- redim(grid, member = TRUE, var = TRUE)
+      n.vars <- getShape(grid, dimension = "var")
+      varNames <- grid$Variable$varName
+      var.list <- vector("list", n.vars)
+      # x=1
+      for (x in 1:n.vars) {                  
+            l <- suppressWarnings(subsetGrid(grid, var = varNames[x])) %>% redim(member = TRUE)
+            n.mem <- getShape(l, "member" )
+            var.list[[x]] <- lapply(1:n.mem, function(m) {
+                  subsetGrid(l, members = m, drop = TRUE)[["Data"]] %>% array3Dto2Dmat()
+            })
       }
       # Scaling and centering
-      Xsc.list <- rep(list(bquote()), length(var.list))
+      Xsc.list <- vector("list", length(var.list))
       if (scaling == "field") {
             for (i in 1:length(var.list)) {
                   Xsc.list[[i]] <- lapply(1:length(var.list[[i]]), function(x) {
@@ -238,7 +216,7 @@ prinComp <- function(gridData,
       var.list <- NULL      
       # Combined PCs
       if (length(Xsc.list) > 1) {
-            aux.list <- rep(list(bquote()), length(Xsc.list[[1]]))
+            aux.list <- vector("list", length(Xsc.list[[1]]))
             for (i in 1:length(aux.list)) {
                   aux <- lapply(1:length(Xsc.list), function(x) Xsc.list[[x]][[i]])
                   aux.list[[i]] <- do.call("cbind", aux)
@@ -258,7 +236,7 @@ prinComp <- function(gridData,
             }
       }
       #PCs
-      pca.list <- rep(list(bquote()), length(Xsc.list))
+      pca.list <- vector("list", length(Xsc.list))
       for (i in 1:length(pca.list)) {
             pca.list[[i]] <- lapply_fun(1:length(Xsc.list[[i]]), function(x) {
                   # Covariance matrix
@@ -287,7 +265,7 @@ prinComp <- function(gridData,
                   # PCs
                   PCs <- Xsc.list[[i]][[x]] %*% F
                   # ouput
-                  out <- if (i < length(Xsc.list)) {
+                  out <- if (i < length(Xsc.list) | length(Xsc.list) == 1L) {
                         list("PCs" = PCs, "EOFs" = F, "orig" = Xsc.list[[i]][[x]])
                   } else {
                         list("PCs" = PCs, "EOFs" = F)
@@ -297,7 +275,7 @@ prinComp <- function(gridData,
                   attr(out, "explained_variance") <- explvar
                   return(out)
             })
-            attr(pca.list[[i]], "level") <- gridData$Variable$level[i]
+            attr(pca.list[[i]], "level") <- grid$Variable$level[i]
       }
       Xsc.list <- NULL
 #       # Recover field
@@ -307,26 +285,26 @@ prinComp <- function(gridData,
 #       image.plot(Xsc.list[[x]])
 #       image.plot(Xhat)
       if (length(pca.list) > 1) {
-            names(pca.list) <- c(gridData$Variable$varName, "COMBINED")
+            names(pca.list) <- c(grid$Variable$varName, "COMBINED")
             attr(pca.list[[length(pca.list)]], "level") <- NULL
       } else {
-            names(pca.list) <- gridData$Variable$varName 
+            names(pca.list) <- grid$Variable$varName 
       }
       if (length(pca.list[[1]]) > 1) {
             for (i in 1:length(pca.list)) {
-                  names(pca.list[[i]]) <- gridData$Members
+                  names(pca.list[[i]]) <- grid$Members
             }
       }
-      attr(pca.list, "dates_start") <- if (is.null(names(gridData$Dates))) {
-            gridData$Dates[[1]]$start   
+      attr(pca.list, "dates_start") <- if (is.null(names(grid$Dates))) {
+            grid$Dates[[1]]$start   
       } else {
-            gridData$Dates$start 
+            grid$Dates$start 
       }
       attr(pca.list, "scaled:method") <- scaling
-      attr(pca.list, "xCoords") <- gridData$xyCoords$x
-      attr(pca.list, "yCoords") <- gridData$xyCoords$y
-      attr(pca.list, "yCoords") <- gridData$xyCoords$y
-      attr(pca.list, "projection") <- attr(gridData$xyCoords, "projection")
+      attr(pca.list, "xCoords") <- grid$xyCoords$x
+      attr(pca.list, "yCoords") <- grid$xyCoords$y
+      attr(pca.list, "yCoords") <- grid$xyCoords$y
+      attr(pca.list, "projection") <- attr(grid$xyCoords, "projection")
       message("[", Sys.time(), "] Done")
       return(pca.list)
 }
