@@ -47,35 +47,31 @@ detrendGrid <- function(grid, parallel = FALSE, max.ncores = 16, ncores = NULL) 
       refdim <- dim(arr)
       dimNames <- getDim(grid)
       mar <- grep("^time$", dimNames, invert = TRUE)
-      ntimes <- dim(arr)[grep("^time$", dimNames)]
-      x <- 1:ntimes
-      message("[", Sys.time(), "] - Detrending...")
-      arr <- if (isTRUE(parallel)) {
-            parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-            on.exit(parallel::stopCluster(parallel.pars$cl))
-                  unname(parallel::parApply(cl = parallel.pars$cl, arr, MARGIN = mar, FUN = function(y) {
-                  out <- rep(NA, ntimes)
-                  ind <- intersect(which(!is.na(y)), x)
-                  out[ind] <- tryCatch(expr = summary(lm(y ~ I(x)))$resid + mean(y, na.rm = TRUE),
-                                       error = function(err) {
-                                             out
-                                       })
-                  return(out)
-                  })
-                  
-            )
+      x <- if (is.list(grid$Dates$start)) {
+            as.numeric(as.Date(grid$Dates[[1]]$start))
       } else {
-            unname(apply(arr, MARGIN = mar, FUN = function(y) {
-                  out <- rep(NA, ntimes)
-                  ind <- intersect(which(!is.na(y)), x)
-                  out[ind] <- tryCatch(expr = summary(lm(y ~ I(x), subset = ind))$resid + mean(y, na.rm = TRUE),
-                                       error = function(err) {
-                                             out
-                                       })
-                  return(out)
-                  })
-            )
+            as.numeric(as.Date(grid$Dates$start)) 
       }
+      ntimes <- length(x)
+      parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
+      if (parallel.pars$hasparallel) {
+            apply_fun <- function(...) {
+                  parallel::parApply(cl = parallel.pars$cl, ...)
+            }  
+            on.exit(parallel::stopCluster(parallel.pars$cl))
+      } else {
+            apply_fun <- apply
+      }
+      message("[", Sys.time(), "] - Detrending...")
+      arr <- unname(apply_fun(arr, MARGIN = mar, FUN = function(y) {
+            out <- rep(NA, ntimes)
+            ind <- intersect(which(!is.na(y)), 1:length(x))
+            out[ind] <- tryCatch(expr = summary(lm(y ~ I(x)))$resid + mean(y, na.rm = TRUE),
+                                 error = function(err) {
+                                       out
+                                 })
+            return(out)
+      }))
       message("[", Sys.time(), "] - Done.")
       newdim <- dim(arr)
       if (!identical(newdim, refdim))  arr <- aperm(arr, perm = match(newdim, refdim))
