@@ -44,7 +44,6 @@
 
 detrendGrid <- function(grid, parallel = FALSE, max.ncores = 16, ncores = NULL) {
       arr <- grid$Data
-      refdim <- dim(arr)
       dimNames <- getDim(grid)
       mar <- grep("^time$", dimNames, invert = TRUE)
       x <- if (is.list(grid$Dates$start)) {
@@ -73,10 +72,11 @@ detrendGrid <- function(grid, parallel = FALSE, max.ncores = 16, ncores = NULL) 
             return(out)
       }))
       message("[", Sys.time(), "] - Done.")
-      newdim <- dim(arr)
-      if (!identical(newdim, refdim))  arr <- aperm(arr, perm = match(newdim, refdim))
+      # 'time' is now the most external dim
       grid$Data <- arr
-      attr(grid$Data, "dimensions") <- dimNames
+      newDims <- c("time", grep("^time", dimNames, value = TRUE, invert = TRUE))
+      attr(grid$Data, "dimensions") <- newDims
+      grid <- redim(grid, member = FALSE) 
       attr(grid$Variable, "detrended:method") <- "linear"
       return(grid)
 }
