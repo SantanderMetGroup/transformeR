@@ -1,7 +1,7 @@
 transformeR 0.0-5
 =================
 
-* Included option 'var' in redim utility
+* Detrending on irregular time intervals
 * Other minor changes and and code improvements
 
 
