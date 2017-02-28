@@ -179,7 +179,7 @@ memberAggregation <- function(grid, aggr.mem, parallel, max.ncores, ncores) {
 
 
 timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, parallel, max.ncores, ncores) {
-      aux.dates <- if ("var" %in% attr(grid$Data, "dimensions")) {
+      aux.dates <- if (is.list(grid$Dates$start)) {
             grid$Dates[[1]]$start
       } else {
             grid$Dates$start
@@ -228,17 +228,18 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
             }
             message("[", Sys.time(), "] Done.")
             # Array attributes -----------------
-            if (length(dim(arr)) != length(dimNames)) arr <- abind(arr, along = -1) # Preserve time dimension if lost
-            if (grep("^time", dimNames) > 1) {
-                  arr <- aperm(arr, c(grep("^time", dimNames), grep("^time", dimNames, invert = TRUE)))     
-            }
+            # Preserve time dimension if lost
+            if (length(dim(arr)) != length(dimNames)) arr <- abind(arr, along = -1) 
+            # 'time' is now the most external
             grid$Data <- unname(arr)
+            attr(grid$Data, "dimensions") <- dimNames[c(grep("^time", dimNames), grep("^time", dimNames, invert = TRUE))]
+            grid <- redim(grid, member = FALSE)
             if (any(names(attr.all) != "dim" & names(attr.all) != "dimensions")) {
                   attributes(grid$Data) <- attr.all[grep("^dim$|^dimensions$", names(attr.all), invert = TRUE)]
             }
-            attr(grid$Data, "dimensions") <- dimNames
+            # attr(grid$Data, "dimensions") <- dimNames
             # Date adjustment ------------------
-            if ("var" %in% dimNames) {
+            if (is.list(grid$Dates$start)) {
                   grid$Dates <- lapply(1:length(grid$Dates), function(x) {
                         list("start" = unname(tapply(grid$Dates[[x]]$start, INDEX = fac, FUN = min)),
                              "end" = unname(tapply(grid$Dates[[x]]$end, INDEX = fac, FUN = max)))
@@ -292,7 +293,7 @@ lonAggregation <- function(grid, aggr.fun, parallel, max.ncores, ncores){
       dimNames <- getDim(grid)
       if (!"lon" %in% dimNames) {
             message("There is not lat dimension: 'aggr.lon' option was ignored.")
-      }else{
+      } else {
             parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
             mar <- grep("lon", dimNames, invert = TRUE)
             aggr.fun[["MARGIN"]] <- mar
@@ -302,7 +303,7 @@ lonAggregation <- function(grid, aggr.fun, parallel, max.ncores, ncores){
                   on.exit(parallel::stopCluster(parallel.pars$cl))
                   aggr.fun[["cl"]] <- parallel.pars$cl
                   do.call("parApply", aggr.fun)
-            }else{
+            } else {
                   message("[", Sys.time(), "] - Aggregating lon dimension...")
                   do.call("apply", aggr.fun)
             }

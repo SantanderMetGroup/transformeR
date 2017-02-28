@@ -39,7 +39,7 @@ rescaleMonthlyMeans <- function(pred, sim, ref = NULL, ensemble = FALSE) {
       if (!identical(var.names, sim$Variable$varName) | !identical(var.names, pred$Variable$varName)) stop("Variable(s) of predictor and simulation grids do not match")
       aux.ind <- grep(paste(c("var","member","lat","lon"), collapse = "|"), dimNames)
       if (!identical(dim(ref$Data)[aux.ind], dim(sim$Data)[aux.ind])) stop("Spatial and/or ensemble dimensions of sim and reference grids do not match")
-      mon <- if ("var" %in% dimNames) {
+      mon <- if (is.list(sim$Dates$start)) {
             as.POSIXlt(sim$Dates[[1]]$start)$mon + 1
       } else {
             as.POSIXlt(sim$Dates$start)$mon + 1

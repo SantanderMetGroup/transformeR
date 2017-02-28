@@ -88,7 +88,7 @@ getSeason <- function(obj) {
             attr(obj$Dates, "season")
       } else {
             dimNames <- getDim(obj)
-            aux <- if (any(grepl("var", dimNames))) {
+            aux <- if (is.list(obj$Dates$start)) {
                   as.integer(substr(obj$Dates[[1]]$start, 6,7))      
             } else {
                   as.integer(substr(obj$Dates$start, 6,7))      
@@ -141,7 +141,7 @@ getSeason <- function(obj) {
 getYearsAsINDEX <- function(obj) {
       season <- getSeason(obj)
       dimNames <- getDim(obj)
-      aux.dates <- if (any(grepl("var", dimNames))) {
+      aux.dates <- if (is.list(obj$Dates$start)) {
             obj$Dates[[1]]$start
       } else {
             obj$Dates$start
