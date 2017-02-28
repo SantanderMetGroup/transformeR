@@ -208,24 +208,23 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
             fac <- factor(fac, levels = unique(fac), ordered = TRUE)
             arg.list <- c(aggr.fun, list("INDEX" = fac))
             type <- switch(aggr.type,
-                          "DD" = "daily",
-                          "MM" = "monthly",
-                          "YY" = "annual")
+                           "DD" = "daily",
+                           "MM" = "monthly",
+                           "YY" = "annual")
             parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-            arr <- if (parallel.pars$hasparallel) {
-                  message("[", Sys.time(), "] Performing ", type, " aggregation in parallel...")
+            if (parallel.pars$hasparallel) {
+                  apply_fun <- function(...) {
+                        parallel::parApply(cl = parallel.pars$cl, ...)
+                  }  
                   on.exit(parallel::stopCluster(parallel.pars$cl))
-                  parallel::parApply(cl = parallel.pars$cl, grid$Data, MARGIN = mar, FUN = function(x) {
-                        arg.list[["X"]] <- x
-                        do.call("tapply", arg.list)
-                  })
             } else {
-                  message("[", Sys.time(), "] Performing ", type, " aggregation...")
-                  apply(grid$Data, MARGIN = mar, FUN = function(x) {
-                        arg.list[["X"]] <- x
-                        do.call("tapply", arg.list)
-                  })
+                  apply_fun <- apply
             }
+            message("[", Sys.time(), "] Performing ", type, " aggregation...")
+            arr <- apply_fun(grid$Data, MARGIN = mar, FUN = function(x) {
+                  arg.list[["X"]] <- x
+                  do.call("tapply", arg.list)
+            })
             message("[", Sys.time(), "] Done.")
             # Array attributes -----------------
             # Preserve time dimension if lost
@@ -237,8 +236,7 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
             if (any(names(attr.all) != "dim" & names(attr.all) != "dimensions")) {
                   attributes(grid$Data) <- attr.all[grep("^dim$|^dimensions$", names(attr.all), invert = TRUE)]
             }
-            # attr(grid$Data, "dimensions") <- dimNames
-            # Date adjustment ------------------
+            # Date adjustment
             if (is.list(grid$Dates$start)) {
                   grid$Dates <- lapply(1:length(grid$Dates), function(x) {
                         list("start" = unname(tapply(grid$Dates[[x]]$start, INDEX = fac, FUN = min)),
@@ -248,7 +246,7 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
                   grid$Dates <- list("start" = unname(tapply(grid$Dates$start, INDEX = fac, FUN = min)),
                                      "end" = unname(tapply(grid$Dates$end, INDEX = fac, FUN = max)))
             }
-            # Temporal aggregation attributes --------
+            # Temporal aggregation attributes 
             attr(grid$Variable, paste0(type,"_agg_cellfun")) <- arg.list$FUN
             if (aggr.type == "YY") attr(grid$Dates, "season") <- season
       }
