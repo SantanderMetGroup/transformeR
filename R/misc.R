@@ -241,3 +241,22 @@ which.leap <- function(years) {
       which((years %% 4 == 0) & ((years %% 100 != 0) | years %% 400 == 0))
 }
 
+
+#' @title Retrieve reference dates
+#' @description Retrieves the \code{$start} component of the \code{$Dates} element of a grid or station.
+#'  In case of multigrids, the dates from the first grid are returned (i.e.: \code{grid$Dates[[1]]$start}).
+#' @param obj A grid or station object
+#' @return A character vector of dates
+#' @keywords internal
+#' @export
+#' @author J. Bedia
+
+getRefDates <- function(obj) {
+      if (is.list(obj$Dates$start)) {
+            obj$Dates[[1]]$start
+      } else {
+            obj$Dates$start 
+      }
+}
+
+
