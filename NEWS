@@ -1,7 +1,7 @@
-transformeR 0.0-5
+transformeR 0.0-6
 =================
 
-* Detrending on irregular time intervals
+* Detrending on irregular time intervals and of new forecast years
 * Other minor changes and and code improvements
 
 

@@ -4,10 +4,14 @@
 \alias{detrendGrid}
 \title{Linear detrending}
 \usage{
-detrendGrid(grid, parallel = FALSE, max.ncores = 16, ncores = NULL)
+detrendGrid(grid, grid2 = NULL, parallel = FALSE, max.ncores = 16,
+  ncores = NULL)
 }
 \arguments{
 \item{grid}{Input grid (possibly multimember)}
+
+\item{grid2}{Optional grid. If provided, the output is the detrended \code{grid2}
+using the regression coefficients calculated using \code{grid}. Default to \code{NULL}.}
 
 \item{parallel}{Logical. Should parallel execution be used?}
 
@@ -50,12 +54,13 @@ Parallel computing is currently not available for Windows machines.
 data("iberia_ncep_ta850")
 monthly <- aggregateGrid(iberia_ncep_ta850, aggr.m = list(FUN = "mean"))
 plot(monthly$Data[,4,2], ty = 'l')
-abline(reg = lm(monthly$Data[,4,2] ~ I(1:length(monthly$Data[,4,2]))))
+abline(reg = lm(monthly$Data[,4,2] ~ I(1:length(monthly$Data[,4,2]))), lty = 2)
 det <- detrendGrid(monthly, parallel = FALSE)
 # Detrended series in red
 lines(det$Data[,4,2], col = "red")
-abline(reg = lm(det$Data[,4,2] ~ I(1:length(det$Data[,4,2]))), col = "red")
+abline(reg = lm(det$Data[,4,2] ~ I(1:length(det$Data[,4,2]))), col = "red", lty = 2)
+legend("topright", c("Raw", "Detrended"), lty = 1, col = c(1,2))
 }
 \author{
-J Bedia
+J Bedia, J Fernandez, M.D. Frias
 }
