@@ -172,7 +172,6 @@ memberAggregation <- function(grid, aggr.mem, parallel, max.ncores, ncores) {
 #' daily (\code{"DD"}), monthly (\code{"MM"}) or annual (\code{"YY"}).
 #' @param aggr.fun One of \code{aggr.d}, \code{aggr.m} or \code{aggr.y} arguments, as passed by \code{aggregateGrid}
 #' @param parallel.pars Arguments defining the parallelization options, as passed by \code{\link{parallelCheck}}
-#' @importFrom parallel parApply
 #' @importFrom parallel stopCluster
 #' @keywords internal
 #' @author J. Bedia, M. Iturbide, M. de Felice
@@ -212,14 +211,8 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
                            "MM" = "monthly",
                            "YY" = "annual")
             parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-            if (parallel.pars$hasparallel) {
-                  apply_fun <- function(...) {
-                        parallel::parApply(cl = parallel.pars$cl, ...)
-                  }  
-                  on.exit(parallel::stopCluster(parallel.pars$cl))
-            } else {
-                  apply_fun <- apply
-            }
+            apply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "apply")
+            if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
             message("[", Sys.time(), "] Performing ", type, " aggregation...")
             arr <- apply_fun(grid$Data, MARGIN = mar, FUN = function(x) {
                   arg.list[["X"]] <- x

@@ -42,7 +42,7 @@
 #' 
 #' @importFrom stats acf qnorm
 #' @importFrom utils tail
-#' @importFrom parallel parApply stopCluster
+#' @importFrom parallel stopCluster
 #' @importFrom abind abind
 #' @author J Bedia
 #' @export
@@ -54,14 +54,8 @@ persistence <- function(grid,
                         max.ncores = 16, 
                         ncores = NULL) {
       parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-      if (parallel.pars$hasparallel) {
-            apply_fun <- function(...) {
-                  parallel::parApply(cl = parallel.pars$cl, ...)
-            }
-            on.exit(parallel::stopCluster(parallel.pars$cl))
-      } else {
-            apply_fun <- apply
-      }
+      apply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "apply")
+      if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
       dimNames <- getDim(grid)
       mar <- grep("time", dimNames, invert = TRUE)
       cormat <- apply_fun(grid$Data, MARGIN = mar, FUN = function(x) {

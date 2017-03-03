@@ -90,14 +90,8 @@ rescaleGrid <- function(grid,
       if (!is.null(ref) && !identical(getSeason(grid), getSeason(ref))) {
             stop("Seasons of input grid and reference grid do not match", call. = FALSE)
       }
-      if (parallel.pars$hasparallel) {
-            lapply_fun <- function(...) {
-                  parallel::parLapply(cl = parallel.pars$cl, ...)
-            }  
-            on.exit(parallel::stopCluster(parallel.pars$cl))
-      } else {
-            lapply_fun <- lapply
-      }
+      lapply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "lapply")
+      if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
       if (!is.null(ref)) {
             ref.clim <- suppressMessages(climatology(ref,
                                     by.member = by.member,
