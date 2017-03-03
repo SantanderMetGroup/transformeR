@@ -32,6 +32,9 @@ An attribute indicating the linear detrending is added to the \code{Variable} co
 
 In the presence of missing data in the time series, it operates by filtering them prior to linear model fitting. The
 missing data positions are then restored back to the output detrended series.
+
+The function uses the \code{\link{fastLm}} implementation from package \pkg{RcppEigen}, significantly speeding-up 
+the linear model fitting.
 }
 \section{Parallel Processing}{
 

@@ -3,17 +3,18 @@ Depends:
     R(>= 3.1.0)
 Imports:
     abind,
-    utils,
-    RCurl,
-    fields,
-    parallel,
     akima,
-    grDevices,
+    fields,
     graphics,
-    stats,
-    sp,
+    grDevices,
+    magrittr,
+    parallel,
     raster,
-    magrittr
+    RcppEigen,
+    RCurl,
+    sp,
+    stats,
+    utils
 Suggests:
     downscaleR,      
     loadeR,

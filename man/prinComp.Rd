@@ -5,7 +5,7 @@
 \title{Principal Component Analysis of grid/multigrid/multimember data}
 \usage{
 prinComp(grid, n.eofs = NULL, v.exp = NULL, scaling = c("field",
-  "gridbox"), parallel = FALSE, max.ncores = 16, ncores = NULL)
+  "gridbox"))
 }
 \arguments{
 \item{grid}{A grid, multigrid, multimember grid or multimember multigrid object}
@@ -19,13 +19,6 @@ to be retained, as an alternative to \code{n.eofs}. Default to \code{NULL}. See 
 
 \item{scaling}{Method for performing the scaling (and centering) of the input raw data matrix.
 Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}. See details.}
-
-\item{parallel}{Logical. Should parallel execution be used?}
-
-\item{max.ncores}{Integer. Upper bound for user-defined number of cores.}
-
-\item{ncores}{Integer number of cores used in parallel computation. Self-selected number of
-cores is used when \code{ncpus = NULL} (the default), or when \code{maxcores} exceeds the default \code{ncores} value.}
 }
 \value{
 A list of \emph{N + 1} elements for multigrids, where \emph{N} is the number of input variables used
@@ -82,38 +75,21 @@ Performing PCA analysis on multimember multigrids may become time-consuming and 
 It is therefore advisable to avoid the use of this option for large datasets, and iterate over single
 multimember grids instead.
 }
-\section{Parallel Processing}{
-
-
-Parallel processing is enabled using the \pkg{parallel} package. 
-Parallelization is undertaken by a FORK-type parallel socket cluster formed by \code{ncores}.
-If \code{ncores} is not specified (default), \code{ncores} will be one less than the autodetected number of cores.
-The maximum number of cores used for parallel processing can be set with the \code{max.ncores} argument, 
-although this will be reset to the auto-detected number of cores minus 1 if this number is exceeded. Note that not all 
-code, but just some critical loops within the function are parallelized.
-
-In practice, parallelization does not always result in smaller execution times, due to the parallel overhead.
-However, parallel computing may potentially provide a significant speedup for the 
-particular case of large multimember datasets or large grids.
- 
-Parallel computing is currently not available for Windows machines.
-}
-
 \examples{
 \dontrun{
 # Download dataset
 download.file("http://meteo.unican.es/work/downscaler/data/Iberia_NCEP.tar.gz", 
 destfile = "mydirectory/Iberia_NCEP.tar.gz")
 # Extract files from the tar.gz file
-untar("mydirectory/NCEP_Iberia.tar.gz", exdir = "mydirectory")
+untar("mydirectory/Iberia_NCEP.tar.gz", exdir = "mydirectory")
 # First, the path to the ncml file is defined:
 ncep <- "mydirectory/Iberia_NCEP/Iberia_NCEP.ncml"
 # A multigrid containing a set of variables is loaded (e.g. data for spring spanning the 
 # 30-year period 1981--2010):
 require(loadeR)
-hus <- loadGridData(ncep, var = "hus@850", season = 3:5, years = 1981:2010)
-ta <- loadGridData(ncep, var = "ta@850", season = 3:5, years = 1981:2010)
-psl <- loadGridData(ncep, var = "psl", season = 3:5, years = 1981:2010)
+hus <- loadGridData(ncep, var = "Q@85000", season = 3:5, years = 1981:2010)
+ta <- loadGridData(ncep, var = "T@85000", season = 3:5, years = 1981:2010)
+psl <- loadGridData(ncep, var = "SLP", season = 3:5, years = 1981:2010)
 multigrid <- makeMultiGrid(hus, ta, psl)
 # In this example, we retain the PCs explaining the 99\\\% of the variance
 pca <- prinComp(multigrid, v.exp = .99)
@@ -129,18 +105,18 @@ str(attributes(pca))
 # are also returned. These are either a single value in case of grid scaling (the default), or a
 # vector of values, one for each grid-cell, for the gridbox scaling. For instance, the parameters
 # for the specific humidity grid are:
-attributes(pca$hus[[1]])$`scaled:center`
-attributes(pca$hus[[1]])$`scaled:scale`
+attributes(pca$Q85000[[1]])$`scaled:center`
+attributes(pca$Q85000[[1]])$`scaled:scale`
 # In addition, the (cumulative) explained variance of each PC is also returned:
-vexp <- attributes(pca$hus[[1]])$explained_variance
+vexp <- attributes(pca$Q85000[[1]])$explained_variance
 # The classical "scree plot":
 barplot(1-vexp, names.arg = paste("PC",1:length(vexp)), las = 2, 
         ylab = "Fraction of unexplained variance")
  
 # This is an example using a multimember object:
 data(tasmax_forecast)
-# In this case we retain the first 15 EOFs:
-pca.mm <- prinComp(tasmax_forecast, n.eofs = 15) 
+# In this case we retain the first 5 EOFs:
+pca.mm <- prinComp(tasmax_forecast, n.eofs = 5) 
 # Note that now the results of the PCA for the variable are a list, with the results 
 # for each member sepparately considered
 str(pca.mm)
@@ -150,7 +126,7 @@ data(tasmin_forecast)
 # We interpolate using an identical grid than the previous example:
 # Now the multimember multigrid is constructed
 mm.multigrid <- makeMultiGrid(tasmax_forecast, tasmin_forecast)
-pca.mm.mf <- prinComp(mm.multigrid, n.eofs = 10)
+pca.mm.mf <- prinComp(mm.multigrid, n.eofs = 3)
 # Now there is a "COMBINED" element at the end of the output list
 str(pca.mm.mf)
 }
