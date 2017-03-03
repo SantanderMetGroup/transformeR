@@ -60,6 +60,12 @@ det <- detrendGrid(monthly, parallel = FALSE)
 lines(det$Data[,4,2], col = "red")
 abline(reg = lm(det$Data[,4,2] ~ I(1:length(det$Data[,4,2]))), col = "red", lty = 2)
 legend("topright", c("Raw", "Detrended"), lty = 1, col = c(1,2))
+## example of forecast detrend
+# Suppose 1991-2009 is the reference period. We use it to detrend data from year 2010
+grid <- subsetGrid(monthly, years = 1991:2009)
+grid2 <- subsetGrid(monthly, years = 2010)
+det2 <- detrendGrid(grid, grid2, parallel = FALSE)
+# det2 is the grid2 (year 2010) corrected according to the linear trend computed for 1991-2009
 }
 \author{
 J Bedia, J Fernandez, M.D. Frias

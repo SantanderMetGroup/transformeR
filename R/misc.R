@@ -263,7 +263,7 @@ getRefDates <- function(obj) {
 #' @title Select an appropriate *pply function
 #' @description Selects an appropriate *pply function depending on the parallel choice
 #' @param parallel.pars The output from \code{\link{parallelCheck}}, passing the parallelization options.
-#' @param .pplyFUN *pply function to be used. Current options are \code{"apply"} or \code{"lapply"}.
+#' @param .pplyFUN *pply function to be used. Current options are \code{"apply"}, \code{"lapply"} and \code{"sapply"}.
 #' @details The output function will be either \code{parallel::parLapply} or \code{lapply} for \code{.pplyFUN = "lapply"},
 #' depending of whether parallelization is enabled or not. Same for \code{apply} and \code{parallel::parApply}.
 #' @section Warning:
