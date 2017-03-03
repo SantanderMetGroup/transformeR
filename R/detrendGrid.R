@@ -28,11 +28,15 @@
 #' In the presence of missing data in the time series, it operates by filtering them prior to linear model fitting. The
 #' missing data positions are then restored back to the output detrended series.
 #' 
+#' The function uses the \code{\link{fastLm}} implementation from package \pkg{RcppEigen}, significantly speeding-up 
+#' the linear model fitting.
+#' 
 #' @template templateParallel
 #' @export
 #' @importFrom parallel stopCluster parApply
-#' @importFrom stats lm coef
+#' @importFrom stats coef
 #' @importFrom magrittr %>%
+#' @importFrom RcppEigen fastLm
 #' @export
 #' @author J Bedia, J Fernandez, M.D. Frias
 #' @examples 
@@ -71,7 +75,7 @@ detrendGrid <- function(grid,
             arr <- unname(apply_fun(X = arr, MARGIN = mar, FUN = function(y) {
                   out <- rep(NA, length(x))
                   ind <- intersect(which(!is.na(y)), 1:length(x))
-                  out[ind] <- tryCatch(expr = summary(lm(y ~ I(x)))$resid + mean(y, na.rm = TRUE),
+                  out[ind] <- tryCatch(expr = summary(RcppEigen::fastLm(y ~ I(x)))$resid + mean(y, na.rm = TRUE),
                                        error = function(err) {
                                              out
                                        })
@@ -86,7 +90,7 @@ detrendGrid <- function(grid,
             x2 <- as.numeric(as.Date(getRefDates(grid2)))
             arr <- unname(apply_fun(X = arr, MARGIN = mar, FUN = function(y) {
                   tryCatch(expr = {
-                        coefs <- coef(lm(y ~ I(x)))
+                        coefs <- coef(RcppEigen::fastLm(y ~ I(x)))
                         coefs[1] + x2 * coefs[2]
                   },
                   error = function(err) {
