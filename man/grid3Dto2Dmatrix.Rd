@@ -23,4 +23,3 @@ Global attributes of the output matrix are provided for metadata description and
 J. Bedia
 }
 \keyword{internal}
-

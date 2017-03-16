@@ -84,10 +84,9 @@ plotMeanGrid(tasmax_recovered, multi.member = TRUE)
 attributes(tasmax_recovered)
 }
 }
-\author{
-J. Bedia
-}
 \seealso{
 \code{\link{prinComp}}, \code{\link{plotEOF}}
 }
-
+\author{
+J. Bedia
+}

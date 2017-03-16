@@ -31,23 +31,23 @@
 #' 
 
 getGrid <- function(gridData) {
-      if (!any(attr(gridData$Data, "dimensions") == "station")) {
-            if ("lon" %in% names(gridData$xyCoords)) stop("Not a regular grid")
-            grid.x <- c(gridData$xyCoords$x[1], tail(gridData$xyCoords$x, 1))
-            grid.y <- c(gridData$xyCoords$y[1], tail(gridData$xyCoords$y, 1))
-            out <- list(x = grid.x, y = grid.y)
-            attributes(out) <- attributes(gridData$xyCoords)
-            if (!exists("resX", attributes(gridData$xyCoords))) {
-                  attr(out, "resX") <- (tail(gridData$xyCoords$x, 1) - gridData$xyCoords$x[1]) / (length(gridData$xyCoords$x) - 1)
-            }
-            if (!exists("resY", attributes(gridData$xyCoords))) {
-                  attr(out, "resY") <- (tail(gridData$xyCoords$y, 1) - gridData$xyCoords$y[1]) / (length(gridData$xyCoords$y) - 1)
-            }
-      } else {
-            out <- list(x = as.numeric(gridData$xyCoords[,1]), y = as.numeric(gridData$xyCoords[,2]))
-            attr(out, "type") <- "location"
-      }
-      return(out)
+    if (!any(attr(gridData$Data, "dimensions") == "station")) {
+        if ("lon" %in% names(gridData$xyCoords)) stop("Not a regular grid")
+        grid.x <- c(gridData$xyCoords$x[1], tail(gridData$xyCoords$x, 1))
+        grid.y <- c(gridData$xyCoords$y[1], tail(gridData$xyCoords$y, 1))
+        out <- list(x = grid.x, y = grid.y)
+        attributes(out) <- attributes(gridData$xyCoords)
+        if (!exists("resX", attributes(gridData$xyCoords))) {
+            attr(out, "resX") <- (tail(gridData$xyCoords$x, 1) - gridData$xyCoords$x[1]) / (length(gridData$xyCoords$x) - 1)
+        }
+        if (!exists("resY", attributes(gridData$xyCoords))) {
+            attr(out, "resY") <- (tail(gridData$xyCoords$y, 1) - gridData$xyCoords$y[1]) / (length(gridData$xyCoords$y) - 1)
+        }
+    } else {
+        out <- list(x = as.numeric(gridData$xyCoords[,1]), y = as.numeric(gridData$xyCoords[,2]))
+        attr(out, "type") <- "location"
+    }
+    return(out)
 }
 # End
 
@@ -60,14 +60,14 @@ getGrid <- function(gridData) {
 #' @export
 
 getCoordinates <- function(obj) {
-      if ("station" %in% attr(obj$Data, "dimensions")) {
-            x <- obj$xyCoords[ ,1]
-            y <- obj$xyCoords[ ,2]
-      } else {
-            x <- obj$xyCoords$x
-            y <- obj$xyCoords$y
-      }
-      return(list("x" = x, "y" = y))
+    if ("station" %in% attr(obj$Data, "dimensions")) {
+        x <- obj$xyCoords[ ,1]
+        y <- obj$xyCoords[ ,2]
+    } else {
+        x <- obj$xyCoords$x
+        y <- obj$xyCoords$y
+    }
+    return(list("x" = x, "y" = y))
 }
 # End
 
@@ -84,17 +84,17 @@ getCoordinates <- function(obj) {
 #' getSeason(iberia_ncep_ta850) # Boreal winter (DJF)
 
 getSeason <- function(obj) {
-      if ("season" %in% names(attributes(obj$Dates))) {
-            attr(obj$Dates, "season")
-      } else {
-            dimNames <- getDim(obj)
-            aux <- if (any(grepl("var", dimNames))) {
-                  as.integer(substr(obj$Dates[[1]]$start, 6,7))      
-            } else {
-                  as.integer(substr(obj$Dates$start, 6,7))      
-            }
-            unique(aux)
-      }
+    if ("season" %in% names(attributes(obj$Dates))) {
+        attr(obj$Dates, "season")
+    } else {
+        dimNames <- getDim(obj)
+        aux <- if (is.list(obj$Dates$start)) {
+            as.integer(substr(obj$Dates[[1]]$start, 6,7))      
+        } else {
+            as.integer(substr(obj$Dates$start, 6,7))      
+        }
+        unique(aux)
+    }
 }
 # End
 
@@ -139,33 +139,33 @@ getSeason <- function(obj) {
 #' 
 
 getYearsAsINDEX <- function(obj) {
-      season <- getSeason(obj)
-      dimNames <- getDim(obj)
-      aux.dates <- if (any(grepl("var", dimNames))) {
-            obj$Dates[[1]]$start
-      } else {
-            obj$Dates$start
-      }
-      yrs <- as.numeric(substr(aux.dates,1,4))
-      mon <- as.numeric(substr(aux.dates,6,7))
-      if (identical(yrs, unique(yrs))) {
-            yrs
-            if (!identical(season, sort(season))) {
-                  yrs <- yrs + 1
-            }
-      } else {    
-            if (!identical(season, sort(season))) {
-                  yy <- unique(yrs)[-1]
-                  aux <- match(mon, season)
-                  brks <- c(1, which(diff(aux) < 0) + 1, length(aux) + 1)
-                  l <- lapply(1:(length(brks) - 1), function(x) {
-                        a <- yrs[brks[x]:(brks[x + 1] - 1)]
-                        return(rep(yy[x], length(a)))
-                  })
-                  yrs  <- do.call("c", l)
-            }
-      }
-      return(yrs)
+    season <- getSeason(obj)
+    dimNames <- getDim(obj)
+    aux.dates <- if (is.list(obj$Dates$start)) {
+        obj$Dates[[1]]$start
+    } else {
+        obj$Dates$start
+    }
+    yrs <- as.numeric(substr(aux.dates,1,4))
+    mon <- as.numeric(substr(aux.dates,6,7))
+    if (identical(yrs, unique(yrs))) {
+        yrs
+        if (!identical(season, sort(season))) {
+            yrs <- yrs + 1
+        }
+    } else {    
+        if (!identical(season, sort(season))) {
+            yy <- unique(yrs)[-1]
+            aux <- match(mon, season)
+            brks <- c(1, which(diff(aux) < 0) + 1, length(aux) + 1)
+            l <- lapply(1:(length(brks) - 1), function(x) {
+                a <- yrs[brks[x]:(brks[x + 1] - 1)]
+                return(rep(yy[x], length(a)))
+            })
+            yrs  <- do.call("c", l)
+        }
+    }
+    return(yrs)
 }
 # End
 
@@ -178,7 +178,7 @@ getYearsAsINDEX <- function(obj) {
 #' @author J. Bedia
 
 getDim <- function(obj) {
-      attr(obj[["Data"]], "dimensions")
+    attr(obj[["Data"]], "dimensions")
 }
 
 #' @title  Retrieve array shape 
@@ -190,16 +190,16 @@ getDim <- function(obj) {
 #' @author J. Bedia
 
 getShape <- function(obj, dimension = NULL) {
-      dimNames <- getDim(obj)
-      shape <- dim(obj[["Data"]])
-      if (!is.null(dimension)) {
-            ind <- match(dimension, dimNames)
-            if (anyNA(ind)) stop("Input 'dimension' value not found")
-            shape <- shape[ind]
-            dimNames <- dimNames[ind]
-      }
-      names(shape) <- dimNames
-      return(shape)
+    dimNames <- getDim(obj)
+    shape <- dim(obj[["Data"]])
+    if (!is.null(dimension)) {
+        ind <- match(dimension, dimNames)
+        if (anyNA(ind)) stop("Input 'dimension' value not found")
+        shape <- shape[ind]
+        dimNames <- dimNames[ind]
+    }
+    names(shape) <- dimNames
+    return(shape)
 }
 
 
@@ -216,10 +216,10 @@ getShape <- function(obj, dimension = NULL) {
 #' @export
 
 draw.world.lines <- function(...) {
-      load(system.file(package="transformeR","wrl.Rda"), envir = environment())
-      for (i in 1:length(node.list)) {
-            lines(node.list[[i]][,1], node.list[[i]][,2], ...)            
-      }
+    load(system.file(package="transformeR","wrl.Rda"), envir = environment())
+    for (i in 1:length(node.list)) {
+        lines(node.list[[i]][,1], node.list[[i]][,2], ...)            
+    }
 }
 
 
@@ -238,6 +238,71 @@ draw.world.lines <- function(...) {
 #' (1885:1937)[leap.years]
 
 which.leap <- function(years) {
-      which((years %% 4 == 0) & ((years %% 100 != 0) | years %% 400 == 0))
+    which((years %% 4 == 0) & ((years %% 100 != 0) | years %% 400 == 0))
 }
+
+
+#' @title Retrieve reference dates
+#' @description Retrieves the \code{$start} component of the \code{$Dates} element of a grid or station.
+#'  In case of multigrids, the dates from the first grid are returned (i.e.: \code{grid$Dates[[1]]$start}).
+#' @param obj A grid or station object
+#' @return A character vector of dates
+#' @keywords internal
+#' @export
+#' @author J. Bedia
+
+getRefDates <- function(obj) {
+    if (is.list(obj$Dates$start)) {
+        obj$Dates[[1]]$start
+    } else {
+        obj$Dates$start 
+    }
+}
+
+
+#' @title Select an appropriate *pply function
+#' @description Selects an appropriate *pply function depending on the parallel choice
+#' @param parallel.pars The output from \code{\link{parallelCheck}}, passing the parallelization options.
+#' @param .pplyFUN *pply function to be used. Current options are \code{"apply"}, \code{"lapply"} and \code{"sapply"}.
+#' @details The output function will be either \code{parallel::parLapply} or \code{lapply} for \code{.pplyFUN = "lapply"},
+#' depending of whether parallelization is enabled or not. Same for \code{apply} and \code{parallel::parApply}.
+#' @section Warning:
+#' 
+#' From the \code{\link[parallel]{makeCluster}} help: 
+#' \dQuote{It is good practice to shut down the workers by calling \code{stopCluster}}. It is therefore recommended the
+#' following line of code after using this function: \code{on.exit(parallel::stopCluster(parallel.pars$cl))}
+#' 
+#' @importFrom parallel parApply parLapply
+#' @return A function
+#' @keywords internal
+#' @export
+#' @author J. Bedia
+
+selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sapply")) {
+    .pplyFUN <- match.arg(.pplyFUN, choices = c("apply", "lapply", "sapply"))
+    if (parallel.pars$hasparallel) {
+        if (.pplyFUN == "apply") {
+            fun <- function(...) {
+                parallel::parApply(cl = parallel.pars$cl, ...)
+            }
+        } else if (.pplyFUN == "lapply") {
+            fun <- function(...) {
+                parallel::parLapply(cl = parallel.pars$cl, ...)
+            }
+        } else if (.pplyFUN == "sapply") {
+            fun <- function(...) {
+                parallel::parSapply(cl = parallel.pars$cl, ...)
+            }
+        }
+    } else {
+        fun <- switch(.pplyFUN,
+                      "apply" = apply,
+                      "lapply" = lapply,
+                      "sapply" = sapply)
+    }
+    return(fun)
+}
+
+
+
 

@@ -146,14 +146,8 @@ interpGrid <- function(grid,
             }
       }
       # function for lapply 
-      if (parallel.pars$hasparallel) {
-            apply_fun <- function(...) {
-                  parallel::parLapply(cl = parallel.pars$cl, ...)
-            }  
-            on.exit(parallel::stopCluster(parallel.pars$cl))
-      } else {
-            apply_fun <- lapply
-      }
+      apply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "lapply")
+      if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
       # redim object
       grid <- redim(grid, runtime = FALSE)
       mem.ind <- grep("member", getDim(grid))

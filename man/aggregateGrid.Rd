@@ -82,6 +82,7 @@ particular case of large multimember datasets or large grids.
  
 Parallel computing is currently not available for Windows machines.
 }
+
 \examples{
 \dontrun{
 data("iberia_tasmax")
@@ -108,4 +109,3 @@ mm.mean <- aggregateGrid(tasmax_forecast,
 \author{
 M. Iturbide, M. de Felice, J. Bedia
 }
-

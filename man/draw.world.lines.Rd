@@ -26,4 +26,3 @@ Geographical lonlat coordinates in wgs84.
 J. Bedia
 }
 \keyword{internal}
-

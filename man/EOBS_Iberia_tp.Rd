@@ -16,4 +16,3 @@ EOBS_Iberia_tp is a grid object returned by \code{loadECOMS} from package \pkg{l
 }
 \keyword{gridded}
 \keyword{observations}
-

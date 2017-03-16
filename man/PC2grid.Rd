@@ -43,4 +43,3 @@ str(a)
 \author{
 J. Bedia
 }
-

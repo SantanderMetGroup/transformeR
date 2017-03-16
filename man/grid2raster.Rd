@@ -33,10 +33,9 @@ library(raster)
 spplot(tx_ras)
 }
 }
-\author{
-M. Iturbide
-}
 \seealso{
 \code{\link{climatology}}; \code{\link{raster}}
 }
-
+\author{
+M. Iturbide
+}

@@ -90,14 +90,11 @@ mm.mf <- makeMultiGrid(tasmax_forecast, tasmin_forecast, tp_forecast)
 plotMeanGrid(mm.mf)
 # Extracting just minimum temperature
 sub1 <- subsetGrid(mm.mf, var = "tasmin", members = 1:4)
-plotMeanGrid(sub1, multi.member = TRUE)
+plotClimatology(climatology(sub1, by.member = TRUE), backdrop.theme = "coastline")
 # Extracting precipitation and maximum temperature
 # (Note that the grid variables are NOT re-ordered)
 sub2 <- subsetGrid(mm.mf, var = c("tp", "tasmax"))
 plotMeanGrid(sub2)
-}
-\author{
-J. Bedia, M. Iturbide
 }
 \seealso{
 Other subsetting: \code{\link{subsetDimension}},
@@ -105,4 +102,6 @@ Other subsetting: \code{\link{subsetDimension}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
   \code{\link{subsetVar}}, \code{\link{subsetYears}}
 }
-
+\author{
+J. Bedia, M. Iturbide
+}

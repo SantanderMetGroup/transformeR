@@ -172,14 +172,13 @@ memberAggregation <- function(grid, aggr.mem, parallel, max.ncores, ncores) {
 #' daily (\code{"DD"}), monthly (\code{"MM"}) or annual (\code{"YY"}).
 #' @param aggr.fun One of \code{aggr.d}, \code{aggr.m} or \code{aggr.y} arguments, as passed by \code{aggregateGrid}
 #' @param parallel.pars Arguments defining the parallelization options, as passed by \code{\link{parallelCheck}}
-#' @importFrom parallel parApply
 #' @importFrom parallel stopCluster
 #' @keywords internal
 #' @author J. Bedia, M. Iturbide, M. de Felice
 
 
 timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, parallel, max.ncores, ncores) {
-      aux.dates <- if ("var" %in% attr(grid$Data, "dimensions")) {
+      aux.dates <- if (is.list(grid$Dates$start)) {
             grid$Dates[[1]]$start
       } else {
             grid$Dates$start
@@ -208,37 +207,30 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
             fac <- factor(fac, levels = unique(fac), ordered = TRUE)
             arg.list <- c(aggr.fun, list("INDEX" = fac))
             type <- switch(aggr.type,
-                          "DD" = "daily",
-                          "MM" = "monthly",
-                          "YY" = "annual")
+                           "DD" = "daily",
+                           "MM" = "monthly",
+                           "YY" = "annual")
             parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-            arr <- if (parallel.pars$hasparallel) {
-                  message("[", Sys.time(), "] Performing ", type, " aggregation in parallel...")
-                  on.exit(parallel::stopCluster(parallel.pars$cl))
-                  parallel::parApply(cl = parallel.pars$cl, grid$Data, MARGIN = mar, FUN = function(x) {
-                        arg.list[["X"]] <- x
-                        do.call("tapply", arg.list)
-                  })
-            } else {
-                  message("[", Sys.time(), "] Performing ", type, " aggregation...")
-                  apply(grid$Data, MARGIN = mar, FUN = function(x) {
-                        arg.list[["X"]] <- x
-                        do.call("tapply", arg.list)
-                  })
-            }
+            apply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "apply")
+            if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
+            message("[", Sys.time(), "] Performing ", type, " aggregation...")
+            arr <- apply_fun(grid$Data, MARGIN = mar, FUN = function(x) {
+                  arg.list[["X"]] <- x
+                  do.call("tapply", arg.list)
+            })
             message("[", Sys.time(), "] Done.")
             # Array attributes -----------------
-            if (length(dim(arr)) != length(dimNames)) arr <- abind(arr, along = -1) # Preserve time dimension if lost
-            if (grep("^time", dimNames) > 1) {
-                  arr <- aperm(arr, c(grep("^time", dimNames), grep("^time", dimNames, invert = TRUE)))     
-            }
+            # Preserve time dimension if lost
+            if (length(dim(arr)) != length(dimNames)) arr <- abind(arr, along = -1) 
+            # 'time' is now the most external
             grid$Data <- unname(arr)
+            attr(grid$Data, "dimensions") <- dimNames[c(grep("^time", dimNames), grep("^time", dimNames, invert = TRUE))]
+            grid <- redim(grid, member = FALSE)
             if (any(names(attr.all) != "dim" & names(attr.all) != "dimensions")) {
                   attributes(grid$Data) <- attr.all[grep("^dim$|^dimensions$", names(attr.all), invert = TRUE)]
             }
-            attr(grid$Data, "dimensions") <- dimNames
-            # Date adjustment ------------------
-            if ("var" %in% dimNames) {
+            # Date adjustment
+            if (is.list(grid$Dates$start)) {
                   grid$Dates <- lapply(1:length(grid$Dates), function(x) {
                         list("start" = unname(tapply(grid$Dates[[x]]$start, INDEX = fac, FUN = min)),
                              "end" = unname(tapply(grid$Dates[[x]]$end, INDEX = fac, FUN = max)))
@@ -247,7 +239,7 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
                   grid$Dates <- list("start" = unname(tapply(grid$Dates$start, INDEX = fac, FUN = min)),
                                      "end" = unname(tapply(grid$Dates$end, INDEX = fac, FUN = max)))
             }
-            # Temporal aggregation attributes --------
+            # Temporal aggregation attributes 
             attr(grid$Variable, paste0(type,"_agg_cellfun")) <- arg.list$FUN
             if (aggr.type == "YY") attr(grid$Dates, "season") <- season
       }
@@ -292,7 +284,7 @@ lonAggregation <- function(grid, aggr.fun, parallel, max.ncores, ncores){
       dimNames <- getDim(grid)
       if (!"lon" %in% dimNames) {
             message("There is not lat dimension: 'aggr.lon' option was ignored.")
-      }else{
+      } else {
             parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
             mar <- grep("lon", dimNames, invert = TRUE)
             aggr.fun[["MARGIN"]] <- mar
@@ -302,7 +294,7 @@ lonAggregation <- function(grid, aggr.fun, parallel, max.ncores, ncores){
                   on.exit(parallel::stopCluster(parallel.pars$cl))
                   aggr.fun[["cl"]] <- parallel.pars$cl
                   do.call("parApply", aggr.fun)
-            }else{
+            } else {
                   message("[", Sys.time(), "] - Aggregating lon dimension...")
                   do.call("apply", aggr.fun)
             }

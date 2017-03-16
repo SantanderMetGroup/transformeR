@@ -16,4 +16,3 @@ EOBS_Iberia_tas is a grid object returned by \code{loadECOMS} from package \pkg{
 }
 \keyword{gridded}
 \keyword{observations}
-

@@ -42,4 +42,3 @@ subsetDecadalForecast(tasDECA, ly = c(1,2))
 \author{
 M. Iturbide
 }
-

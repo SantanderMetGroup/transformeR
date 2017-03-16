@@ -18,4 +18,3 @@ S4_Iberia_tp is a grid object returned by \code{loadECOMS} from package \pkg{loa
 }
 \keyword{forecasting}
 \keyword{seasonal}
-

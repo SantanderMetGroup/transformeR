@@ -31,11 +31,10 @@ class(sgdf)
 spplot(sgdf)
 }
 }
-\author{
-J. Bedia
-}
 \seealso{
 \code{\link{climatology}}, \code{\link{plotClimatology}}
 }
+\author{
+J. Bedia
+}
 \keyword{internal}
-

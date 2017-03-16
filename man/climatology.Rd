@@ -57,6 +57,7 @@ particular case of large multimember datasets or large grids.
  
 Parallel computing is currently not available for Windows machines.
 }
+
 \examples{
 \dontrun{
 #' # Maximum July surface temp forecast climatology
@@ -85,11 +86,10 @@ plotClimatology(tpmax, tolerance = 0.0005, backdrop.theme = "countries",
 main = "Maximum daily precip DJF 2000")
 }
 }
-\author{
-J. Bedia
-}
 \seealso{
 \code{\link{plotClimatology}}, for plotting climatologies.
 \code{\link{persistence}}, for a special case in which the temporal autocorrelation function is applied.
 }
-
+\author{
+J. Bedia
+}

@@ -30,10 +30,9 @@ variable name.
 Note that the function is not currently implemented to deal with decadal predictions
  (i.e., 'runtime' dimension is not handled)
 }
-\author{
-J Bedia
-}
 \seealso{
 \code{\link{prinComp}} for EOF analysis.
 }
-
+\author{
+J Bedia
+}

@@ -24,10 +24,9 @@ is the most convenient format in order to naturally fill a matrix with the adequ
 and rows (latitudes) given the vectorized value of the output at a given time (or after time-averaging via rowMeans).
 The function is insensitive to the dimension ordering of the input data array
 }
-\author{
-M. de Felice
-}
 \seealso{
 \code{\link{mat2Dto3Darray}}, which performs the inverse operation
 }
-
+\author{
+M. de Felice
+}

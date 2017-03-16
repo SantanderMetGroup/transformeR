@@ -45,4 +45,3 @@ plotMeanGrid(int2)
 \author{
 S. Herrera and J. Bedia
 }
-

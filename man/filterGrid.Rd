@@ -57,6 +57,7 @@ particular case of large multimember datasets or large grids.
  
 Parallel computing is currently not available for Windows machines.
 }
+
 \examples{
 data(iberia_ncep_ta850)
 plot(iberia_ncep_ta850[["Data"]][,3,3], ty = 'l')
@@ -70,4 +71,3 @@ legend("top", c("raw","30-day MA", "90-day MA"), lty = 1, col = c(1,2,3), ncol =
 \author{
 J Bedia
 }
-

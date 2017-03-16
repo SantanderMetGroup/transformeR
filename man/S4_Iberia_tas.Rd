@@ -18,4 +18,3 @@ S4_Iberia_tas is a grid object returned by \code{loadECOMS} from package \pkg{lo
 }
 \keyword{forecasting}
 \keyword{seasonal}
-

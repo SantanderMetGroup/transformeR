@@ -55,4 +55,3 @@ par(mfrow = c(1,1))
 \author{
 J. Bedia
 }
-

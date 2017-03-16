@@ -13,4 +13,3 @@ NCEP_Iberia_tp is a grid object returned by loadECOMS from package loadeR.ECOMS
 }
 \keyword{NCEP}
 \keyword{reanalysis}
-

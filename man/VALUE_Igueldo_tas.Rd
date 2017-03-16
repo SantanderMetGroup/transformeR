@@ -16,4 +16,3 @@ Station data from the VALUE_ECA_86_v2 dataset containing daily mean temperature 
 \keyword{VALUE}
 \keyword{station}
 \keyword{temperature}
-

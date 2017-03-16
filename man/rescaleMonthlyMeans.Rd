@@ -42,4 +42,3 @@ to the same model.
 J. Bedia
 }
 \keyword{internal}
-

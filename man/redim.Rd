@@ -4,7 +4,7 @@
 \alias{redim}
 \title{Complete missing dimensions of Grid or Station objects}
 \usage{
-redim(obj, member = TRUE, runtime = FALSE, station = FALSE,
+redim(obj, member = TRUE, runtime = FALSE, var = FALSE, station = FALSE,
   drop = FALSE)
 }
 \arguments{
@@ -13,6 +13,8 @@ redim(obj, member = TRUE, runtime = FALSE, station = FALSE,
 \item{member}{logical. Add member dimension (default = TRUE)}
 
 \item{runtime}{logical. Add runtime dimension (default = FALSE)}
+
+\item{var}{logical. Add var dimension (default = FALSE)}
 
 \item{station}{logical. Only if obj is station data. If TRUE, the "station" 
 dimension is not replaced by fake "lat" and "lon" dimensions (default is FALSE).}
@@ -33,4 +35,3 @@ The function down not handle multigrids (i.e. \code{"var"} dimension).
 M. Iturbide, J. Bedia
 }
 \keyword{internal}
-
