@@ -5,7 +5,7 @@
 \title{Principal Component Analysis of grid/multigrid/multimember data}
 \usage{
 prinComp(grid, n.eofs = NULL, v.exp = NULL, scaling = c("field",
-  "gridbox"))
+  "gridbox"), quiet = FALSE)
 }
 \arguments{
 \item{grid}{A grid, multigrid, multimember grid or multimember multigrid object}
@@ -19,6 +19,8 @@ to be retained, as an alternative to \code{n.eofs}. Default to \code{NULL}. See 
 
 \item{scaling}{Method for performing the scaling (and centering) of the input raw data matrix.
 Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}. See details.}
+
+\item{quiet}{True to silence all the messages (but not the warnings)}
 }
 \value{
 A list of \emph{N + 1} elements for multigrids, where \emph{N} is the number of input variables used
@@ -140,5 +142,5 @@ Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Prob
 \code{\link{gridFromPCs}}, \code{\link{plotEOF}}
 }
 \author{
-J. Bedia
+J. Bedia, contributed by M. de Felice
 }

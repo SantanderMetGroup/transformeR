@@ -86,7 +86,7 @@
 #' Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Probabil\'{i}sticas
 #'  y Neuronales en las Ciencias Atmosf\'{e}ricas. MIMAM, Spain. 279 pp.
 #'   \url{http://www.meteo.unican.es/en/books/dataMiningMeteo}
-#' @author J. Bedia 
+#' @author J. Bedia, contributed by M. de Felice 
 #' @examples \dontrun{
 #' # Download dataset
 #' download.file("http://meteo.unican.es/work/downscaler/data/Iberia_NCEP.tar.gz", 
@@ -146,7 +146,7 @@ prinComp <- function(grid,
                      n.eofs = NULL,
                      v.exp = NULL,
                      scaling = c("field", "gridbox"),
-                     quiet = F) {
+                     quiet = FALSE) {
     if (!is.null(n.eofs) & !is.null(v.exp)) {
         warning("The 'v.exp' argument was ignored as 'n.eofs' has been indicated", call. = FALSE)
     }
@@ -227,7 +227,7 @@ prinComp <- function(grid,
     #PCs
     pca.list <- vector("list", length(Xsc.list))
     for (i in 1:length(pca.list)) {
-        pca.list[[i]] <- lapply_fun(1:length(Xsc.list[[i]]), function(x) {
+        pca.list[[i]] <- lapply(1:length(Xsc.list[[i]]), function(x) {
             # Covariance matrix
             Cx <- cov(Xsc.list[[i]][[x]])
             # Singular vectors (EOFs) and values
