@@ -25,6 +25,7 @@
 #' to be retained, as an alternative to \code{n.eofs}. Default to \code{NULL}. See details.
 #' @param scaling Method for performing the scaling (and centering) of the input raw data matrix.
 #' Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}. See details.
+#' @param quiet True to silence all the messages (but not the warnings)
 
 #' @return A list of \emph{N + 1} elements for multigrids, where \emph{N} is the number of input variables used
 #'  and the last element contains the results of the combined PCA (See details). The list is named as the variables,
@@ -144,7 +145,8 @@
 prinComp <- function(grid,
                      n.eofs = NULL,
                      v.exp = NULL,
-                     scaling = c("field", "gridbox")) {
+                     scaling = c("field", "gridbox"),
+                     quiet = F) {
     if (!is.null(n.eofs) & !is.null(v.exp)) {
         warning("The 'v.exp' argument was ignored as 'n.eofs' has been indicated", call. = FALSE)
     }
@@ -211,15 +213,15 @@ prinComp <- function(grid,
         Xsc.list[[length(Xsc.list) + 1]] <- aux.list
         aux.list <- NULL
         if (length(Xsc.list[[1]]) > 1) {
-            message("[", Sys.time(), "] Performing PC analysis on ", length(Xsc.list) - 1, " variables plus their combination and ", n.mem, " members...")
+            if (!quiet) message("[", Sys.time(), "] Performing PC analysis on ", length(Xsc.list) - 1, " variables plus their combination and ", n.mem, " members...")
         } else {
-            message("[", Sys.time(), "] Performing PC analysis on ", length(Xsc.list) - 1, " variables plus their combination...")
+            if (!quiet) message("[", Sys.time(), "] Performing PC analysis on ", length(Xsc.list) - 1, " variables plus their combination...")
         }
     } else {
         if (length(Xsc.list[[1]]) > 1) {
-            message("[", Sys.time(), "] Performing PC analysis on one variable and ", n.mem, " members...")
+            if (!quiet) message("[", Sys.time(), "] Performing PC analysis on one variable and ", n.mem, " members...")
         } else {
-            message("[", Sys.time(), "] Performing PC analysis on one variable...")
+            if (!quiet) message("[", Sys.time(), "] Performing PC analysis on one variable...")
         }
     }
     #PCs
@@ -293,7 +295,7 @@ prinComp <- function(grid,
     attr(pca.list, "yCoords") <- grid$xyCoords$y
     attr(pca.list, "yCoords") <- grid$xyCoords$y
     attr(pca.list, "projection") <- attr(grid$xyCoords, "projection")
-    message("[", Sys.time(), "] Done")
+    if (!quiet) message("[", Sys.time(), "] Done")
     return(pca.list)
 }
 # End      
