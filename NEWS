@@ -2,6 +2,7 @@ transformeR 0.0-6
 =================
 
 * Detrending on irregular time intervals and of new forecast years
+* Minor bug fix in makeMultiGrid to deal with older grid types 
 * Other minor changes and and code improvements
 
 

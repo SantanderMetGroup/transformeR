@@ -23,7 +23,7 @@ Suggests:
 Type: Package
 Title: Climate data post-processing
 Version: 0.0-6
-Date: 2017-03-17
+Date: 2017-03-25
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [aut]",
     "Joaquin Bedia <bediaj@unican.es> [ctb, cre]",
