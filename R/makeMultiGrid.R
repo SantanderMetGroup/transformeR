@@ -125,11 +125,13 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
       attr.mf <- lapply(1:length(aux.list), function(x) attributes(aux.list[[x]]))
       aux.list <- NULL
       field.list[[1]]$Variable <- list("varName" = varName, "level" = level)      
-      attr.list <- lapply(2:length(attr.mf[[1]]), function(x) {
-            unlist(sapply(attr.mf, "c")[x,])
-      })
-      names(attr.list) <- names(attr.mf[[1]])[-1]
-      attributes(field.list[[1]]$Variable) <- attr.list 
+      if (length(attr.mf[[1]]) > 1) {
+            attr.list <- lapply(2:length(attr.mf[[1]]), function(x) {
+                  unlist(sapply(attr.mf, "c")[x,])
+            })
+            names(attr.list) <- names(attr.mf[[1]])[-1]
+            attributes(field.list[[1]]$Variable) <- attr.list
+      }
       names(field.list[[1]]$Variable) <- c("varName", "level")
       ## Climatologies ----------
       climfun <- attr(field.list[[1]]$Data, "climatology:fun")
