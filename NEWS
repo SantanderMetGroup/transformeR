@@ -1,8 +1,7 @@
-transformeR 0.0-6
+transformeR 0.0-7
 =================
 
-* Detrending on irregular time intervals and of new forecast years
-* Minor bug fix in makeMultiGrid to deal with older grid types 
+* Bug fix in `subsetVar` internal
 * Other minor changes and and code improvements
 
 
