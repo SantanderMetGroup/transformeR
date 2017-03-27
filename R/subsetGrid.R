@@ -159,7 +159,7 @@ subsetVar <- function(grid, var) {
             stop("Variables indicated in argument 'var' not found", call. = FALSE)
       }
       if (length(var.idx) < length(var)) {
-            stop("Some variables indicated in argument 'var' not found")
+            stop("Some variables indicated in argument 'var' not found", call. = FALSE)
       }
       dimNames <- getDim(grid)
       var.dim <- grep("var", dimNames)
@@ -167,7 +167,7 @@ subsetVar <- function(grid, var) {
       grid$Variable$varName <- grid$Variable$varName[var.idx]
       grid$Variable$level <- grid$Variable$level[var.idx]
       attributes(grid$Variable)[-1] <- lapply(attributes(grid$Variable)[-1], "[", var.idx)
-      grid$Dates <- if (length(var.idx > 1L)) {
+      grid$Dates <- if (length(var.idx) > 1L) {
             grid$Dates[var.idx]
       } else {
             grid$Dates[[var.idx]]
