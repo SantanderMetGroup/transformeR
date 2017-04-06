@@ -9,7 +9,6 @@ Imports:
     grDevices,
     magrittr,
     parallel,
-    raster,
     RcppEigen,
     RCurl,
     sp,
