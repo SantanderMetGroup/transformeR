@@ -1,6 +1,7 @@
 transformeR 0.0-8
 =================
 
+* Removed RCurl dependency for eased portability
 * Removed raster dependency (conversion to raster moved to (https://github.com/SantanderMetGroup/mopa)[mopa])
 * Other minor changes and and code improvements
 
