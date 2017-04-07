@@ -20,7 +20,7 @@ Suggests:
     visualizeR
 Type: Package
 Title: Climate data post-processing
-Version: 0.0-8
+Version: 0.0.8
 Date: 2017-04-07
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [aut]",
