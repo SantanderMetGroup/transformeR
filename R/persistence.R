@@ -53,35 +53,35 @@ persistence <- function(grid,
                         parallel = FALSE,
                         max.ncores = 16, 
                         ncores = NULL) {
-      parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-      apply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "apply")
-      if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
-      dimNames <- getDim(grid)
-      mar <- grep("time", dimNames, invert = TRUE)
-      cormat <- apply_fun(grid$Data, MARGIN = mar, FUN = function(x) {
+    parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
+    apply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "apply")
+    if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
+    dimNames <- getDim(grid)
+    mar <- grep("time", dimNames, invert = TRUE)
+    cormat <- apply_fun(grid$Data, MARGIN = mar, FUN = function(x) {
+        a <- tryCatch(acf(x, lag.max = lag, plot = FALSE), error = function(err) list(acf = NA))
+        corr <- tail(a$acf, 1)      
+        return(corr)
+    })
+    if (!is.null(ci)) {
+        sigmat <- apply_fun(grid$Data, MARGIN = mar, FUN = function(x) {
             a <- tryCatch(acf(x, lag.max = lag, plot = FALSE), error = function(err) list(acf = NA))
             corr <- tail(a$acf, 1)      
-            return(corr)
-      })
-      if (!is.null(ci)) {
-            sigmat <- apply_fun(grid$Data, MARGIN = mar, FUN = function(x) {
-                  a <- tryCatch(acf(x, lag.max = lag, plot = FALSE), error = function(err) list(acf = NA))
-                  corr <- tail(a$acf, 1)      
-                  is.signif <- FALSE
-                  if (!is.na(corr)) {
-                        conf.int <- qnorm((1 + ci)/2)/sqrt(a$n.used)
-                        is.signif <- ifelse(abs(conf.int) > abs(corr), FALSE, TRUE)
-                  }
-                  return(is.signif)
-            })
-            attr(grid, "signif:ci") <- ci
-            attr(grid, "is.signif") <- sigmat
-      }
-      arr <- unname(abind(cormat, along = -1L))
-      attr(arr, "dimensions") <- c("time", "lat", "lon")
-      attr(arr, "climatology:fun") <- "acf"
-      grid$Data <- arr
-      attr(grid, "lagged_corr:lag") <- lag
-      return(grid)
+            is.signif <- FALSE
+            if (!is.na(corr)) {
+                conf.int <- qnorm((1 + ci)/2)/sqrt(a$n.used)
+                is.signif <- ifelse(abs(conf.int) > abs(corr), FALSE, TRUE)
+            }
+            return(is.signif)
+        })
+        attr(grid, "signif:ci") <- ci
+        attr(grid, "is.signif") <- sigmat
+    }
+    arr <- unname(abind(cormat, along = -1L))
+    attr(arr, "dimensions") <- c("time", "lat", "lon")
+    attr(arr, "climatology:fun") <- "acf"
+    grid$Data <- arr
+    attr(grid, "lagged_corr:lag") <- lag
+    return(grid)
 }
 

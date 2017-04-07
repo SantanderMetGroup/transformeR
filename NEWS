@@ -1,7 +1,7 @@
-transformeR 0.0-7
+transformeR 0.0-8
 =================
 
-* Bug fix in `subsetVar` internal
+* Removed raster dependency (conversion to raster moved to (https://github.com/SantanderMetGroup/mopa)[mopa])
 * Other minor changes and and code improvements
 
 
