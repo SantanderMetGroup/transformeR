@@ -12,7 +12,8 @@ Imports:
     RcppEigen,
     sp,
     stats,
-    utils
+    utils,
+    raster
 Suggests:
     downscaleR,      
     loadeR,
