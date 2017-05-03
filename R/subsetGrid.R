@@ -481,7 +481,7 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
                              several.ok = TRUE)
       dimNames <- getDim(grid)
       if (!is.null(indices)) {
-            grid$Data <- asub(grid$Data, indices, grep(dimension, dimNames), drop = FALSE)
+            grid$Data <- asub(grid$Data, indices, grep(dimension, paste0("^", dimNames, "$")), drop = FALSE)
             attr(grid$Data, "dimensions") <- dimNames
             if ("time" %in% dimension) {
                   grid$Dates$start <- grid$Dates$start[indices]
