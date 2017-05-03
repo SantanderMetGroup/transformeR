@@ -1,6 +1,6 @@
 #     makeMultiGrid.R Multigrid constructor
 #
-#     Copyright (C) 2016 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 #' @description Constructs a (possibly multimember) multigrid from different (multimember) grids.
 #' A multigrid can be considered as a \dQuote{stack} of grids with similar spatiotemporal extents,
 #'  useful to handle sets of predictors as a single block.
-#' @param ... Input grids to form the multigrid. These must be compatible in time and space (see details). The can be 
-#' introduced as a list or directly.
+#' @param ... Input grids to form the multigrid. These must be compatible in time and space (see details). 
+#' For flexibility, they can be introduced as a list or directly as consecutive arguments.
 #' @param spatial.tolerance numeric. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
 #' coordinates. Default to 0.001 --assuming that degrees are being used it seems a reasonable rounding error after interpolation--.
 #' This value is passed to the \code{\link{identical}} function to check for spatial consistency of the input grids.
@@ -91,12 +91,12 @@
 
 makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = FALSE) {
       field.list <- list(...)
-      if(length(field.list) == 1){
-                  field.list <- unlist(field.list, recursive = F)
+      if (length(field.list) == 1) {
+                  field.list <- unlist(field.list, recursive = FALSE)
       }
       stopifnot(is.logical(skip.temporal.check))
       if (length(field.list) < 2) {
-            stop("The input must be a list of at least two grids")
+            stop("The input must be a list of at least two grids", call. = FALSE)
       }
       tol <- spatial.tolerance
       for (i in 2:length(field.list)) {

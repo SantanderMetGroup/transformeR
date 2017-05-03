@@ -11,9 +11,11 @@ subsetDimension(grid, dimension = NULL, indices = NULL)
 multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
 (possibly multimember multigrids) as returned e.g. by \code{loadECOMS}, from package \pkg{loadeR.ECOMS}.}
 
-\item{dimension}{Character vector indicating the dimension along which the positions indicated by the \code{indices} paraneter.}
+\item{dimension}{Character vector indicating the dimension along which the positions indicated by the \code{indices} paraneter.
+Unlike subsetGrid, only one dimension at a time is accepted here}
 
-\item{indices}{An integer vector indicating \strong{the positions} of the dimension to be extracted.}
+\item{indices}{An integer vector indicating \strong{the positions} of the dimension to be extracted.
+In case of subsetting several dimensions at at time, this corresponds to a list of indices.}
 }
 \value{
 A new grid object that is a logical subset of the input grid along the specified dimension.
@@ -28,11 +30,11 @@ The attribute \code{subset} will be added taking the value of the \code{dimensio
 \examples{
 # Example - Member subset
 data(tasmax_forecast)
-# Selection of a smaller domain over the Iberian Peninsula and members 3 and 7
+# Selection of members 3 and 7
 sub <- subsetDimension(tasmax_forecast,
                    dimension = "member",
                    indices = c(1,3))
-plotMeanGrid(sub, multi.member = TRUE)
+plotClimatology(climatology(sub), backdrop.theme = "coastline")
 }
 \seealso{
 Other subsetting: \code{\link{subsetGrid}},

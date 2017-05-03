@@ -1,9 +1,10 @@
-transformeR 0.0-8
+transformeR 0.0.9
 =================
 
-* Removed RCurl dependency for eased portability
-* Removed raster dependency (conversion to raster moved to (https://github.com/SantanderMetGroup/mopa)[mopa])
-* Other minor changes and and code improvements
+* Minor bug fix in `subsetDimension` internal
+* `bindGrid*` functions now accept a list as input (in addition to sepparated arguments as formerly)
+* Implemented `grid2mopa` utility (required by (https://github.com/SantanderMetGroup/mopa)[mopa] Package)
+* Other minor changes and documentation updates
 
 
 

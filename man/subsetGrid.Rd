@@ -80,7 +80,7 @@ sub <- subsetGrid(tasmax_forecast,
                    members = c(3,7),
                    lonLim = c(-10,5),
                    latLim = c(36,44))
-plotClimatology(climatology(sub, by.member = TRUE), tol = 0.005, contour = TRUE)
+plotClimatology(climatology(sub), tol = 0.005, contour = TRUE)
 ## Example 2 - Subsetting a multimember multigrid by variables
 # Multimember multigrid creation
 data(tasmax_forecast)

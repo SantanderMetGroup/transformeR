@@ -21,15 +21,15 @@ Suggests:
     visualizeR
 Type: Package
 Title: Climate data post-processing
-Version: 0.0.8
-Date: 2017-04-07
+Version: 0.0.9
+Date: 2017-05-03
 Authors@R: as.person(c(
-    "Santander Meteorology Group <http://meteo.unican.es> [aut]",
-    "Joaquin Bedia <bediaj@unican.es> [ctb, cre]",
+    "Santander Meteorology Group <http://meteo.unican.es> [ctb]",
+    "Joaquin Bedia <bediaj@unican.es> [aut, cre]",
     "Matteo De Felice <matteo.defelice@enea.it> [ctb]",
     "Jose Manuel Gutierrez <gutierjm@unican.es> [ctb]",
     "Sixto Herrera <sixto@predictia.es> [ctb]",
-    "Maialen Iturbide <miturbide@ifca.unican.es> [ctb]"))
+    "Maialen Iturbide <miturbide@ifca.unican.es> [aut]"))
 BugReports: https://github.com/SantanderMetGroup/transformeR/issues
 URL: https://github.com/SantanderMetGroup/transformeR/wiki
 Description: Tools for climate data analysis, visualization and manipulation.

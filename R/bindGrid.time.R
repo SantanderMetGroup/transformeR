@@ -18,6 +18,7 @@
 #' @title Grid binding by time dimension
 #' @description Flexible binding of (spatially/member consistent) grids by their time dimension
 #' @param ... Input grids to bind by their time dimension. These must be compatible in members and space (see details).
+#' For flexibility, they can be introduced as a list or directly as consecutive arguments.
 #' @param spatial.tolerance numeric. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
 #' coordinates. Default to 0.001 --assuming that degrees are being used it seems a reasonable rounding error after interpolation--.
 #' This value is passed to the \code{\link{identical}} function to check for spatial consistency of the input grids.
@@ -35,6 +36,9 @@
 
 bindGrid.time <- function(..., spatial.tolerance = 1e-3) {
       grid.list <- list(...)
+      if (length(grid.list) == 1) {
+          grid.list <- unlist(grid.list, recursive = FALSE)
+      }
       if (length(grid.list) < 2) {
             stop("The input must be a list of at least two grids")
       }

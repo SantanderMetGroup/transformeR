@@ -78,7 +78,7 @@
 #'                    members = c(3,7),
 #'                    lonLim = c(-10,5),
 #'                    latLim = c(36,44))
-#' plotClimatology(climatology(sub, by.member = TRUE), tol = 0.005, contour = TRUE)
+#' plotClimatology(climatology(sub), tol = 0.005, contour = TRUE)
 #' ## Example 2 - Subsetting a multimember multigrid by variables
 #' # Multimember multigrid creation
 #' data(tasmax_forecast)
@@ -459,7 +459,9 @@ subsetSeason <- function(grid, season = NULL) {
 #' multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
 #' (possibly multimember multigrids) as returned e.g. by \code{loadECOMS}, from package \pkg{loadeR.ECOMS}.
 #' @param dimension Character vector indicating the dimension along which the positions indicated by the \code{indices} paraneter.
+#' Unlike subsetGrid, only one dimension at a time is accepted here
 #' @param indices An integer vector indicating \strong{the positions} of the dimension to be extracted.
+#' In case of subsetting several dimensions at at time, this corresponds to a list of indices.
 #' @return A new grid object that is a logical subset of the input grid along the specified dimension.
 #' @details
 #' The attribute \code{subset} will be added taking the value of the \code{dimension} parameter.
@@ -470,18 +472,22 @@ subsetSeason <- function(grid, season = NULL) {
 #' @examples
 #' # Example - Member subset
 #' data(tasmax_forecast)
-#' # Selection of a smaller domain over the Iberian Peninsula and members 3 and 7
+#' # Selection of members 3 and 7
 #' sub <- subsetDimension(tasmax_forecast,
 #'                    dimension = "member",
 #'                    indices = c(1,3))
-#' plotMeanGrid(sub, multi.member = TRUE)
+#' plotClimatology(climatology(sub), backdrop.theme = "coastline")
 
 subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
       dimension <- match.arg(dimension, choices = c("runtime","var","member","time","lat","lon"),
                              several.ok = TRUE)
       dimNames <- getDim(grid)
+      dims <- match(dimension, dimNames)
+      if (length(dims) == 0) stop("Dimension names passed to 'dimension' not found")
       if (!is.null(indices)) {
-            grid$Data <- asub(grid$Data, indices, grep(dimension, paste0("^", dimNames, "$")), drop = FALSE)
+            grid$Data <- asub(grid$Data, idx = indices,
+                              dims = dims,
+                              drop = FALSE)
             attr(grid$Data, "dimensions") <- dimNames
             if ("time" %in% dimension) {
                   grid$Dates$start <- grid$Dates$start[indices]

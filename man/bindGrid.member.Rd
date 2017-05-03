@@ -7,7 +7,8 @@
 bindGrid.member(..., spatial.tolerance = 0.001)
 }
 \arguments{
-\item{...}{Input grids to bind by their member dimension. These must be compatible in time and space (see details).}
+\item{...}{Input grids to bind by their member dimension. These must be compatible in time and space (see details).
+For flexibility, they can be introduced as a list or directly as consecutive arguments.}
 
 \item{spatial.tolerance}{numeric. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
 coordinates. Default to 0.001 --assuming that degrees are being used it seems a reasonable rounding error after interpolation--.

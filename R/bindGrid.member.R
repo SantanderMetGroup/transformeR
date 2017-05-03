@@ -19,6 +19,7 @@
 #' @description Flexible binding of (spatiotemporally consistent) grids by their member dimension
 #'  useful to handle sets of predictors as a single block.
 #' @param ... Input grids to bind by their member dimension. These must be compatible in time and space (see details).
+#' For flexibility, they can be introduced as a list or directly as consecutive arguments.
 #' @param spatial.tolerance numeric. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
 #' coordinates. Default to 0.001 --assuming that degrees are being used it seems a reasonable rounding error after interpolation--.
 #' This value is passed to the \code{\link{identical}} function to check for spatial consistency of the input grids.
@@ -51,8 +52,11 @@
 
 bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
       grid.list <- list(...)
+      if (length(grid.list) == 1) {
+          grid.list <- unlist(grid.list, recursive = FALSE)
+      }
       if (length(grid.list) < 2) {
-            stop("The input must be a list of at least two grids")
+            stop("The input must be a list of at least two grids", call. = FALSE)
       }
       grid.list <- lapply(grid.list, "redim")
       # Disaggregation in single members
@@ -62,7 +66,7 @@ bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
             subgrid <- grid.list[[h]]
             n.mem <- mem.index[h]
             for (i in 1:n.mem) {
-                  aux.list[[length(aux.list) + 1]] <- redim(subsetGrid(subgrid, members = i, drop = F))
+                  aux.list[[length(aux.list) + 1]] <- redim(subsetGrid(subgrid, members = i, drop = FALSE))
             }
       }
       grid.list <- aux.list
