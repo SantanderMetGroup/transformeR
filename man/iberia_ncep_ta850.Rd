@@ -12,5 +12,6 @@ The data correspond to the wintertime (DJF) period 1991-2010, and it consists of
 }
 \examples{
 data(iberia_ncep_ta850)
-plotMeanGrid(iberia_ncep_ta850)
+plotClimatology(climatology(iberia_ncep_ta850),
+                backdrop.theme = "countries", scales = list(draw = TRUE))
 }

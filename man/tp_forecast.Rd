@@ -12,7 +12,8 @@ CFSv2 forecast of daily accumulated precipitation for July 2001 over Europe. Lea
 }
 \examples{
 data(tp_forecast)
-plotMeanGrid(tp_forecast, multi.member = TRUE)
+plotClimatology(climatology(tasmax_forecast, clim.fun = list(FUN = sum)),
+                backdrop.theme = "coastline")
 }
 \references{
 Saha, S. \emph{et al.}, 2013. The NCEP Climate Forecast System Version 2. J Clim 130925135638001. doi:10.1175/JCLI-D-12-00823.1

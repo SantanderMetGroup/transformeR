@@ -5,7 +5,8 @@
 #' @name iberia_ncep_hus850
 #' @examples
 #' data(iberia_ncep_hus850)
-#' plotMeanGrid(iberia_ncep_hus850)
+#' plotClimatology(climatology(iberia_ncep_hus850),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
 NULL
 
 #' @title Grid containing NCEP reanalysis data of sea-level pressure for the Iberian Peninsula.
@@ -16,7 +17,8 @@ NULL
 #' @name iberia_ncep_psl
 #' @examples
 #' data(iberia_ncep_psl)
-#' plotMeanGrid(iberia_ncep_psl)
+#' plotClimatology(climatology(iberia_ncep_psl),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
 NULL
 
 #' @title Grid containing NCEP reanalysis data of air temperature at 850mb for the Iberian Peninsula.
@@ -26,7 +28,8 @@ NULL
 #' @name iberia_ncep_ta850
 #' @examples
 #' data(iberia_ncep_ta850)
-#' plotMeanGrid(iberia_ncep_ta850)
+#' plotClimatology(climatology(iberia_ncep_ta850),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
 NULL
 
 #' @title Multimember grid containing a seasonal forecast of maximum surface temperature for Europe
@@ -38,7 +41,7 @@ NULL
 #' @name tasmax_forecast
 #' @examples
 #' data(tasmax_forecast)
-#' plotMeanGrid(tasmax_forecast, multi.member = TRUE)
+#' plotClimatology(climatology(tasmax_forecast), backdrop.theme = "coastline")
 NULL
 
 #' @title Multimember grid containing a seasonal forecast of minimum surface temperature for Europe
@@ -50,7 +53,7 @@ NULL
 #' @name tasmin_forecast
 #' @examples
 #' data(tasmin_forecast)
-#' plotMeanGrid(tasmin_forecast, multi.member = TRUE)
+#' plotClimatology(climatology(tasmin_forecast), backdrop.theme = "coastline")
 NULL
 
 #' @title Multimember grid containing a seasonal forecast of precipitation for Europe
@@ -62,25 +65,8 @@ NULL
 #' @name tp_forecast
 #' @examples
 #' data(tp_forecast)
-#' plotMeanGrid(tp_forecast, multi.member = TRUE)
-NULL
-
-#' @title Grid containing NCEP reanalysis data of precipitation for the Iberian Peninsula.
-#' @description NCEP_Iberia_tp is a grid object returned by loadECOMS from package loadeR.ECOMS
-#' @format A grid
-#' @name NCEP_Iberia_tp
-#' @docType data
-#' @keywords NCEP reanalysis
-#' @source  subset of NCEP reanalysis data, which is accessible through the \strong{ECOMS User Data Gateway (ECOMS-UDG)} 
-NULL
-
-#' @title Grid containing NCEP reanalysis data of temperature for the Iberian Peninsula.
-#' @description NCEP_Iberia_tas is a grid object returned by loadECOMS from package loadeR.ECOMS
-#' @format A grid
-#' @name NCEP_Iberia_tas
-#' @docType data
-#' @keywords NCEP reanalysis
-#' @source  subset of NCEP reanalysis data, which is accessible through the \strong{ECOMS User Data Gateway (ECOMS-UDG)} 
+#' plotClimatology(climatology(tasmax_forecast, clim.fun = list(FUN = sum)),
+#'                 backdrop.theme = "coastline")
 NULL
 
 #' @title Station daily precipitation dataset
@@ -134,7 +120,7 @@ NULL
 #' authentication and data access (more info in \url{https://meteo.unican.es/trac/wiki/udg}). 
 NULL
 
-#' @title Grid containing E-OBS observation data of temperature for the Iberian Peninsula.
+#' @title Grid containing E-OBS daily data of mean temperature for the Iberian Peninsula (DJF, 1991-2000).
 #' @description EOBS_Iberia_tas is a grid object returned by \code{loadECOMS} from package \pkg{loadeR.ECOMS}
 #' @format A grid
 #' @name EOBS_Iberia_tas
@@ -142,10 +128,13 @@ NULL
 #' @keywords gridded observations
 #' @source  subset of the E-OBS observational gridded dataset
 #' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-
+#' @examples 
+#' data("EOBS_Iberia_tas")
+#' plotClimatology(climatology(EOBS_Iberia_tas),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
 NULL
 
-#' @title Grid containing E-OBS observation data of precipitation for the Iberian Peninsula.
+#' @title Grid containing E-OBS daily data of precipitation for the Iberian Peninsula (DJF, 1991-2000).
 #' @description EOBS_Iberia_tp is a grid object returned by \code{loadECOMS} from package \pkg{loadeR.ECOMS}
 #' @format A grid
 #' @name EOBS_Iberia_tp
@@ -153,58 +142,15 @@ NULL
 #' @keywords gridded observations
 #' @source  subset of the E-OBS observational gridded dataset
 #' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
+#' @examples 
+#' data("EOBS_Iberia_tp")
+#' total.precip.annual <- aggregateGrid(EOBS_Iberia_tp,
+#'                                      aggr.m = list(FUN = sum),
+#'                                      aggr.y = list(FUN = sum))
+#' plotClimatology(climatology(total.precip.annual), 
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE),
+#'                 main = "Mean Total DJF precip (mm) 1991-2000")
 
-NULL
-
-#' @title grid containing the first 5 members of the System4 seasonal forecasting data of 15 members.
-#' Contains mean temperature data for the Iberian Peninsula.
-#' @description S4_Iberia_tas is a grid object returned by \code{loadECOMS} from package \pkg{loadeR.ECOMS}
-#' @format A grid
-#' @name S4_Iberia_tas
-#' @docType data
-#' @keywords seasonal forecasting
-#' @source  subset of System4 seasonal forecasting data of 15 members accesible
-#' through the \strong{ECOMS User Data Gateway (ECOMS-UDG)} 
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR.ECOMS]{loadECOMS}}
-
-NULL
-
-#' @title grid containing the first 5 members of the System4 seasonal forecasting data of 15 members.
-#' Contains precipitation data for the Iberian Peninsula.
-#' @description S4_Iberia_tp is a grid object returned by \code{loadECOMS} from package \pkg{loadeR.ECOMS}
-#' @format A grid
-#' @name S4_Iberia_tp
-#' @docType data
-#' @keywords seasonal forecasting
-#' @source  subset of System4 seasonal forecasting data of 15 members accesible
-#' through the \strong{ECOMS User Data Gateway (ECOMS-UDG)} 
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR.ECOMS]{loadECOMS}}
-#' 
-#' 
-NULL
-
-#' @title grid containing the first 5 members of the System4 seasonal forecasting data of 15 members.
-#' Contains mean temperature data for the Iberian Peninsula.
-#' @description S4_Iberia_tas_fut is a grid object returned by \code{loadECOMS} from package \pkg{loadeR.ECOMS}
-#' @format A grid
-#' @name S4_Iberia_tas_fut
-#' @docType data
-#' @keywords seasonal forecasting
-#' @source  subset of System4 seasonal forecasting data of 15 members accesible
-#' through the \strong{ECOMS User Data Gateway (ECOMS-UDG)} 
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR.ECOMS]{loadECOMS}}
-NULL
-
-#' @title grid containing the first 5 members of the System4 seasonal forecasting data of 15 members.
-#' Contains precipitation data for the Iberian Peninsula.
-#' @description S4_Iberia_tp_fut is a grid object returned by \code{loadECOMS} from package \pkg{loadeR.ECOMS}
-#' @format A grid
-#' @name S4_Iberia_tp_fut
-#' @docType data
-#' @keywords seasonal forecasting
-#' @source  subset of System4 seasonal forecasting data of 15 members accesible
-#' through the \strong{ECOMS User Data Gateway (ECOMS-UDG)} 
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR.ECOMS]{loadECOMS}}
 NULL
 
 #' @title Station daily precipitation dataset in Iberia

@@ -59,15 +59,14 @@ Parallel computing is currently not available for Windows machines.
 }
 
 \examples{
-\dontrun{
-#' # Maximum July surface temp forecast climatology
+# Maximum July surface temp forecast climatology
 data("tasmax_forecast")
 # (Parallelization option has no effect under WinOS)
 # Aggregate all members before computing the climatology
 tx_mean.clim <- climatology(tasmax_forecast,
                             by.member = FALSE,
                             parallel = TRUE)
-# Note that time dimension is not dropped, and the new attributes
+# Note the new attributes, and that time dimension is preserved as a singleton
 str(tx_mean.clim$Data)
 str(tx_mean.clim$Dates)
 # Compute a climatology for each member sepparately
@@ -78,13 +77,7 @@ str(tx_mean_15mem.clim$Data)
 # 9 different climatologies, one for each member
 
 # Flexible aggregation function definition:
-# Example: climatology of the absolute maximum daily precipitation (Winter 2000):
-data("NCEP_Iberia_tp")
-tpmax <- climatology(NCEP_Iberia_tp,
-                    clim.fun = list(FUN = "max"))
-plotClimatology(tpmax, tolerance = 0.0005, backdrop.theme = "countries",
-main = "Maximum daily precip DJF 2000")
-}
+# See the example in help("EOBS_Iberia_tp")
 }
 \seealso{
 \code{\link{plotClimatology}}, for plotting climatologies.

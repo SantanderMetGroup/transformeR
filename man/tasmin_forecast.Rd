@@ -12,7 +12,7 @@ CFSv2 forecast of minimum daily temperature for July 2001 over Europe. Lead-mont
 }
 \examples{
 data(tasmin_forecast)
-plotMeanGrid(tasmin_forecast, multi.member = TRUE)
+plotClimatology(climatology(tasmin_forecast), backdrop.theme = "coastline")
 }
 \references{
 Saha, S. \emph{et al.}, 2013. The NCEP Climate Forecast System Version 2. J Clim 130925135638001. doi:10.1175/JCLI-D-12-00823.1

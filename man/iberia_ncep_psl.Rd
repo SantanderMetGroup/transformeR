@@ -13,5 +13,6 @@ mean of the four 6-hourly model outputs.
 }
 \examples{
 data(iberia_ncep_psl)
-plotMeanGrid(iberia_ncep_psl)
+plotClimatology(climatology(iberia_ncep_psl),
+                backdrop.theme = "countries", scales = list(draw = TRUE))
 }

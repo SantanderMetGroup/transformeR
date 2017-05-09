@@ -2,7 +2,7 @@
 % Please edit documentation in R/aggregateGrid.R
 \name{aggregateGrid}
 \alias{aggregateGrid}
-\title{Grid aggregation along selected dimensions}
+\title{Flexible grid aggregation along selected dimensions}
 \usage{
 aggregateGrid(grid, aggr.mem = list(FUN = NULL), aggr.d = list(FUN = NULL),
   aggr.m = list(FUN = NULL), aggr.y = list(FUN = NULL),
@@ -12,7 +12,7 @@ aggregateGrid(grid, aggr.mem = list(FUN = NULL), aggr.d = list(FUN = NULL),
 \arguments{
 \item{grid}{a grid or multigrid to be aggregated.}
 
-\item{aggr.mem}{Same as \code{aggr.d}, but indicating the function for computinh the member aggregation.}
+\item{aggr.mem}{Same as \code{aggr.d}, but indicating the function for computing the member aggregation.}
 
 \item{aggr.d}{Daily aggregation function (for sub-daily data only). A list indicating the name of the
 aggregation function in first place, and other optional arguments to be passed to the aggregation function. See the examples.}
@@ -40,7 +40,7 @@ cores is used when \code{ncpus = NULL} (the default), or when \code{maxcores} ex
 A grid or multigrid aggregated along the chosen dimension(s).
 }
 \description{
-Aggregates a grid along the target dimensions through aggregation function specification.
+Aggregates a grid along the target dimensions using user-defined functions.
 }
 \details{
 \strong{Aggregation function definition}
@@ -54,14 +54,13 @@ internally passes to \code{\link{tapply}}. Note that the name of the function is
 The function preserves the metadadata associated with member information (i.e. initialization dates and member names) after
 aggregation. In addition, an attribute indicating the member aggregation function is added to the \code{Variable} component.
 
-
 \strong{Temporal aggregation}
  
 To annually or monthly aggregate data, \code{aggr.d} and/or \code{aggr.m} functions are specified.
-Aggregatikons need to be specified from bottom to top, so for instance, if the data in the grid is sub-daily
-and \code{aggr.d} is not specified, an error will be given for monthly or annual aggregation requests. Similarly,
-annual aggregations require a previous specification of daily and monthly aggregation, when applicable. Special attributes
-in the \code{Variable} component indicate the aggregation undertaken.
+Aggregations need to be specified from bottom to top, so for instance, if the data in the grid is sub-daily
+and \code{aggr.d} is not specified, an error will be given for monthly or annual aggregation attempts. Similarly,
+annual aggregations require a previous specification of daily and monthly aggregation, when applicable. Special 
+attributes in the \code{Variable} component indicate the aggregation undertaken.
 
 In order to preserve the information of the season in annual aggregations, the attribute \code{season} is
 added to the \code{Dates} component.

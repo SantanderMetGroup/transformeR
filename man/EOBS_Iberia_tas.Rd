@@ -3,13 +3,18 @@
 \docType{data}
 \name{EOBS_Iberia_tas}
 \alias{EOBS_Iberia_tas}
-\title{Grid containing E-OBS observation data of temperature for the Iberian Peninsula.}
+\title{Grid containing E-OBS daily data of mean temperature for the Iberian Peninsula (DJF, 1991-2000).}
 \format{A grid}
 \source{
 subset of the E-OBS observational gridded dataset
 }
 \description{
 EOBS_Iberia_tas is a grid object returned by \code{loadECOMS} from package \pkg{loadeR.ECOMS}
+}
+\examples{
+data("EOBS_Iberia_tas")
+plotClimatology(climatology(EOBS_Iberia_tas),
+                backdrop.theme = "countries", scales = list(draw = TRUE))
 }
 \seealso{
 \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}

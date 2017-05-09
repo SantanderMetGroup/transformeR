@@ -12,5 +12,6 @@ The data are daily means, wintertime (DJF) period 1991-2010.
 }
 \examples{
 data(iberia_ncep_hus850)
-plotMeanGrid(iberia_ncep_hus850)
+plotClimatology(climatology(iberia_ncep_hus850),
+                backdrop.theme = "countries", scales = list(draw = TRUE))
 }

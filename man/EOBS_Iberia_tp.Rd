@@ -3,13 +3,22 @@
 \docType{data}
 \name{EOBS_Iberia_tp}
 \alias{EOBS_Iberia_tp}
-\title{Grid containing E-OBS observation data of precipitation for the Iberian Peninsula.}
+\title{Grid containing E-OBS daily data of precipitation for the Iberian Peninsula (DJF, 1991-2000).}
 \format{A grid}
 \source{
 subset of the E-OBS observational gridded dataset
 }
 \description{
 EOBS_Iberia_tp is a grid object returned by \code{loadECOMS} from package \pkg{loadeR.ECOMS}
+}
+\examples{
+data("EOBS_Iberia_tp")
+total.precip.annual <- aggregateGrid(EOBS_Iberia_tp,
+                                     aggr.m = list(FUN = sum),
+                                     aggr.y = list(FUN = sum))
+plotClimatology(climatology(total.precip.annual), 
+                backdrop.theme = "countries", scales = list(draw = TRUE),
+                main = "Mean Total DJF precip (mm) 1991-2000")
 }
 \seealso{
 \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
