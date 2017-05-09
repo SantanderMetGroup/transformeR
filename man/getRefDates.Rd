@@ -16,6 +16,12 @@ A character vector of dates
 Retrieves the \code{$start} component of the \code{$Dates} element of a grid or station.
  In case of multigrids, the dates from the first grid are returned (i.e.: \code{grid$Dates[[1]]$start}).
 }
+\details{
+This utility function should be used always that reference dates are internally required by any function.
+It takes into account the particular case when \code{\link{redim}} is applied to create a singleton \code{"var"}
+ dimension: in this situation, the \code{"Dates"} component is not changed accordingly, and thus the criterion to
+ distinguish multigrids from redim-ed grids is the shape of the array.
+}
 \author{
 J. Bedia
 }

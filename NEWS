@@ -1,9 +1,7 @@
-transformeR 0.0.9
+transformeR 0.0.10
 =================
 
-* Minor bug fix in `subsetDimension` internal
-* `bindGrid*` functions now accept a list as input (in addition to sepparated arguments as formerly)
-* Implemented `grid2mopa` utility (required by (https://github.com/SantanderMetGroup/mopa)[mopa] Package)
+* Bug fix in internal function for reference date retrieval
 * Other minor changes and documentation updates
 
 

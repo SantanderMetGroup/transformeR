@@ -75,9 +75,9 @@
 #' data(tasmax_forecast)
 #' # Selection of a smaller domain over the Iberian Peninsula and members 3 and 7
 #' sub <- subsetGrid(tasmax_forecast,
-#'                    members = c(3,7),
-#'                    lonLim = c(-10,5),
-#'                    latLim = c(36,44))
+#'                   members = c(3,7),
+#'                   lonLim = c(-10,5),
+#'                   latLim = c(36,44))
 #' plotClimatology(climatology(sub), tol = 0.005, contour = TRUE)
 #' ## Example 2 - Subsetting a multimember multigrid by variables
 #' # Multimember multigrid creation

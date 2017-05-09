@@ -1,4 +1,4 @@
-#     aggregateGrid.R Grid aggregation along selected dimensions
+#     aggregateGrid.R Flexible grid aggregation along selected dimensions
 #
 #     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 #
@@ -16,14 +16,14 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#' @title Grid aggregation along selected dimensions
-#' @description Aggregates a grid along the target dimensions through aggregation function specification.
+#' @title Flexible grid aggregation along selected dimensions
+#' @description Aggregates a grid along the target dimensions using user-defined functions.
 #' @param grid a grid or multigrid to be aggregated.
 #' @param aggr.d Daily aggregation function (for sub-daily data only). A list indicating the name of the
 #'  aggregation function in first place, and other optional arguments to be passed to the aggregation function. See the examples.
 #' @param aggr.m Same as \code{aggr.d}, but indicating the monthly aggregation function. 
 #' @param aggr.y Same as \code{aggr.d}, but indicating the annual aggregation function. 
-#' @param aggr.mem Same as \code{aggr.d}, but indicating the function for computinh the member aggregation.
+#' @param aggr.mem Same as \code{aggr.d}, but indicating the function for computing the member aggregation.
 #' @param aggr.lat Same as \code{aggr.d}, indicating the aggregation function to be applied along latitude.
 #' @param weight.by.lat Logical. Should latitudinal averages be weighted by the cosine of latitude?.
 #' Default to \code{FALSE}. Ignored if no \code{aggr.lat} function is indicated, or a function different from \code{"mean"}
@@ -44,14 +44,13 @@
 #' The function preserves the metadadata associated with member information (i.e. initialization dates and member names) after
 #' aggregation. In addition, an attribute indicating the member aggregation function is added to the \code{Variable} component.
 #' 
-#' 
 #' \strong{Temporal aggregation}
 #'  
 #' To annually or monthly aggregate data, \code{aggr.d} and/or \code{aggr.m} functions are specified.
-#' Aggregatikons need to be specified from bottom to top, so for instance, if the data in the grid is sub-daily
-#' and \code{aggr.d} is not specified, an error will be given for monthly or annual aggregation requests. Similarly,
-#' annual aggregations require a previous specification of daily and monthly aggregation, when applicable. Special attributes
-#' in the \code{Variable} component indicate the aggregation undertaken.
+#' Aggregations need to be specified from bottom to top, so for instance, if the data in the grid is sub-daily
+#' and \code{aggr.d} is not specified, an error will be given for monthly or annual aggregation attempts. Similarly,
+#' annual aggregations require a previous specification of daily and monthly aggregation, when applicable. Special 
+#' attributes in the \code{Variable} component indicate the aggregation undertaken.
 #' 
 #' In order to preserve the information of the season in annual aggregations, the attribute \code{season} is
 #' added to the \code{Dates} component.
@@ -59,27 +58,28 @@
 #' @template templateParallel
 #' @author M. Iturbide, M. de Felice, J. Bedia 
 #' @export
-#' @examples \dontrun{
-#' data("iberia_tasmax")
+#' @examples 
+#' data("tasmax_forecast")
 #' ## Aggregating members
 #' # Ensemble mean
 #' mn <- aggregateGrid(grid = tasmax_forecast, aggr.mem = list("mean", na.rm = TRUE))
+#' plotClimatology(climatology(mn, by.member = FALSE),
+#'                 backdrop.theme = "coastline", main = "Ensemble mean tmax climatology")
 #' # Ensemble 90th percentile
-#' ens90 <- aggregateGrid(grid = tasmax_forecast,
-#'                        aggr.mem = list("quantile", probs = 0.9, na.rm = TRUE))
-#' par(mfrow = c(1,2))
-#' plotMeanGrid(mn)
-#' plotMeanGrid(ens90)
-#' par(mfrow = c(1,1))
+#'  ens90 <- aggregateGrid(grid = tasmax_forecast,
+#'                         aggr.mem = list(FUN = quantile, probs = 0.9, na.rm = TRUE))
+#' plotClimatology(climatology(ens90, by.member = FALSE),
+#'                 backdrop.theme = "coastline", main = "Ensemble 90th percentile tmax climatology")
 #' 
 #' ## Monthly aggregation
 #' monthly.mean <- aggregateGrid(tasmax_forecast, aggr.m = list(FUN = mean, na.rm = TRUE))
-#' 
+#' plotClimatology(climatology(monthly.mean), backdrop.theme = "coastline",
+#'                 main = "Mean tmax climatology")
+#'
 #' ## Several dimensions ca be aggregated in one go:
 #' mm.mean <- aggregateGrid(tasmax_forecast,
-#'                aggr.mem = list(FUN = "mean", na.rm = TRUE),
-#'                aggr.m = list(FUN = "mean", na.rm = TRUE))
-#' }
+#'                          aggr.mem = list(FUN = "mean", na.rm = TRUE),
+#'                          aggr.m = list(FUN = "mean", na.rm = TRUE))
 
 
 aggregateGrid <- function(grid,
