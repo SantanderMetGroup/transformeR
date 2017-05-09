@@ -1,6 +1,6 @@
 #     aggregateGrid.R Grid aggregation along selected dimensions
 #
-#     Copyright (C) 2016 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -178,11 +178,7 @@ memberAggregation <- function(grid, aggr.mem, parallel, max.ncores, ncores) {
 
 
 timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, parallel, max.ncores, ncores) {
-    aux.dates <- if (is.list(grid$Dates$start)) {
-        grid$Dates[[1]]$start
-    } else {
-        grid$Dates$start
-    }
+    aux.dates <- getRefDates(grid) 
     dff <- abs(difftime(aux.dates[1], aux.dates[2], units = "hours"))
     if (aggr.type == "DD" & dff >= 24) {
         message("Data is already daily: 'aggr.d' option was ignored.")

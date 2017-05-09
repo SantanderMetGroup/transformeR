@@ -252,7 +252,7 @@ which.leap <- function(years) {
 #' @author J. Bedia
 
 getRefDates <- function(obj) {
-    if (is.list(obj$Dates$start)) {
+    if ("var" %in% getDim(obj)) {
         obj$Dates[[1]]$start
     } else {
         obj$Dates$start 
