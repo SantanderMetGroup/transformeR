@@ -2,6 +2,9 @@ transformeR 0.0.10
 =================
 
 * Bug fix in internal function for reference date retrieval
+* Package size reduced (CRAN compliant):
+  * Deleted several unused built-in datasets
+  * EOBS tp and tas DJF datasets trimmed to the 5-year period 1996-2000
 * Other minor changes and documentation updates
 
 

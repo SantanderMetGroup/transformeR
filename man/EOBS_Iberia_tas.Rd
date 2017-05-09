@@ -3,7 +3,7 @@
 \docType{data}
 \name{EOBS_Iberia_tas}
 \alias{EOBS_Iberia_tas}
-\title{Grid containing E-OBS daily data of mean temperature for the Iberian Peninsula (DJF, 1991-2000).}
+\title{Grid containing E-OBS daily data of mean temperature for the Iberian Peninsula (DJF, 1998-2000).}
 \format{A grid}
 \source{
 subset of the E-OBS observational gridded dataset

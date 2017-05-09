@@ -46,6 +46,7 @@
 #' @importFrom abind abind asub
 #' @importFrom stats na.omit
 #' @return A rescaled grid
+#' @author J. Bedia
 #' @export
 
 rescaleGrid <- function(grid,

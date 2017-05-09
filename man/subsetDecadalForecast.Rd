@@ -18,27 +18,7 @@ A grid object with an additional dimension corresponding to the selected lead ye
 \description{
 Subset decadal forecast by initialization years
 }
-\examples{
-\dontrun{
-latLim <- c(35,45)
-lonLim <-  c(-10,2)
-season <- 3:5
-period <- 1981:1982
-loginUDG(username = "myuser", password = "mypassword") #type help(loginUDG)
-tas_decadalForecast <- loadDecadalForecast(
-   dataset = "http://www.meteo.unican.es/tds5/dodsC/specs/gfdl_specs_decadal.ncml", 
-   latLim = latLim, 
-   lonLim = lonLim,
-   var = "tas", 
-   dictionary = F, 
-   years = period, 
-   season = season)
-
-data(tas_decadalForecast)
-# data corresponding to the initialitation of the two years before
-subsetDecadalForecast(tasDECA, ly = c(1,2))
-}
-}
 \author{
 M. Iturbide
 }
+\keyword{internal}

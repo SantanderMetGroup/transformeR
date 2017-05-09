@@ -24,3 +24,7 @@
 }
 # End
 
+#' @importFrom utils globalVariables
+
+if (getRversion() >= "3.1.0") utils::globalVariables(c("node.list", "l1"))
+

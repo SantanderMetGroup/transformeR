@@ -3,7 +3,7 @@
 \docType{data}
 \name{EOBS_Iberia_tp}
 \alias{EOBS_Iberia_tp}
-\title{Grid containing E-OBS daily data of precipitation for the Iberian Peninsula (DJF, 1991-2000).}
+\title{Grid containing E-OBS daily data of precipitation for the Iberian Peninsula (DJF, 1998-2000).}
 \format{A grid}
 \source{
 subset of the E-OBS observational gridded dataset
@@ -18,7 +18,7 @@ total.precip.annual <- aggregateGrid(EOBS_Iberia_tp,
                                      aggr.y = list(FUN = sum))
 plotClimatology(climatology(total.precip.annual), 
                 backdrop.theme = "countries", scales = list(draw = TRUE),
-                main = "Mean Total DJF precip (mm) 1991-2000")
+                main = "Mean Total DJF precip (mm) 1998-2000")
 }
 \seealso{
 \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}

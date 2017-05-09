@@ -22,14 +22,11 @@ However, it may be useful for advanced \pkg{sp} users in different contexts
 (e.g. for reprojecting via \code{\link[sp]{spTransform}} etc.)
 }
 \examples{
-\donttest{
 data(tasmax_forecast)
 # Climatology is computed:
 clim <- climatology(tasmax_forecast, by.member = TRUE)
 sgdf <- clim2sgdf(clim)
 class(sgdf)
-spplot(sgdf)
-}
 }
 \seealso{
 \code{\link{climatology}}, \code{\link{plotClimatology}}

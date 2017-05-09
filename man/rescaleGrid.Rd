@@ -51,3 +51,6 @@ or the hindcast data for the training period in s2d applications. Note that by d
 case it will be assumed to be the \code{pred} grid. This can be used for instance when train and test correspond
 to the same model.
 }
+\author{
+J. Bedia
+}

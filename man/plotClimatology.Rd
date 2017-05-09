@@ -45,7 +45,6 @@ The function applies the \code{\link[sp]{spplot}} method after conversion of the
  be also controlled using \code{\link{lattice}{trellis.par.set}}.
 }
 \examples{
-\donttest{
 data(tasmax_forecast)
 # Climatology is computed:
 clim <- climatology(tasmax_forecast, by.member = TRUE)
@@ -98,7 +97,6 @@ plotClimatology(mg,
                 names.attr = c("DEC","JAN","FEB"),
                 main = "Mean PSL climatology 1991-2010",
                 scales = list(draw = TRUE))                
-}
 
 }
 \seealso{

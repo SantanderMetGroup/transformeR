@@ -57,7 +57,7 @@
 #' @author J. Bedia
 #' @seealso \code{\link{climatology}}. See \code{\link[sp]{spplot}} in package \pkg{sp} for further information on
 #' plotting capabilities and options
-#' @examples \donttest{
+#' @examples 
 #' data(tasmax_forecast)
 #' # Climatology is computed:
 #' clim <- climatology(tasmax_forecast, by.member = TRUE)
@@ -110,8 +110,8 @@
 #'                 names.attr = c("DEC","JAN","FEB"),
 #'                 main = "Mean PSL climatology 1991-2010",
 #'                 scales = list(draw = TRUE))                
-#' }
 #' 
+
 
 plotClimatology <- function(grid, backdrop.theme = "none", ...) {
       arg.list <- list(...)
@@ -153,14 +153,15 @@ plotClimatology <- function(grid, backdrop.theme = "none", ...) {
 #'@keywords internal
 #'@export
 #'@author J. Bedia
-#'@examples \donttest{
+#'@importFrom sp GridTopology SpatialGridDataFrame
+#'@examples 
 #' data(tasmax_forecast)
 #' # Climatology is computed:
 #' clim <- climatology(tasmax_forecast, by.member = TRUE)
 #' sgdf <- clim2sgdf(clim)
 #' class(sgdf)
-#' spplot(sgdf)
-#' }
+
+
 
 clim2sgdf <- function(clim) {
       grid <- clim

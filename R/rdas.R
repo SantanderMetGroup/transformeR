@@ -69,58 +69,7 @@ NULL
 #'                 backdrop.theme = "coastline")
 NULL
 
-#' @title Station daily precipitation dataset
-#' @description Station data from the VALUE_ECA_86_v2 dataset containing daily precipitation for 82 stations in Europe.
-#' @format Station data
-#' @name VALUE_tp
-#' @docType data
-#' @source  Subset of VALUE station data. Full dataset is accessible 
-#' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
-NULL
-
-#' @title Station mean temperature dataset
-#' @description Station data from the VALUE_ECA_86_v2 dataset containing daily mean temperature for 82 stations in Europe.
-#' @format Station data
-#' @name VALUE_tas
-#' @docType data
-#' @source  Subset of VALUE station data. Full dataset is accessible 
-#' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
-NULL
-
-
-#' @title Station daily precipitation data
-#' @description Station data from the VALUE_ECA_86_v2 dataset containing daily precipitation for the Igueldo-SanSebastian station. 
-#' @format Station data
-#' @name VALUE_Igueldo_tp
-#' @docType data
-#' @source  Subset of VALUE station data. Full dataset is accessible 
-#' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
-NULL
-
-#' @title Station mean temperature data
-#' @description Station data from the VALUE_ECA_86_v2 dataset containing daily mean temperature for the Igueldo-SanSebastian station. 
-#' @format Station data
-#' @name VALUE_Igueldo_tas
-#' @docType data
-#' @keywords VALUE station temperature Igueldo
-#' @source  Subset of VALUE station data. Full dataset is accessible 
-#' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
-NULL
-
-#' @title Decada forecast example grid
-#' @description Grid of decadal forecast data from the SPECS_GFDL_decadal dataset containing monthly temperature for the Iberian Peninsula. 
-#' @format Grid data
-#' @name tas_decadalForecast
-#' @docType data
-#' @keywords SPECS temperature decadal forecast
-#' @source  Subset of the SPECS_GFDL_decadal dataset. This data is accessible 
-#' for loading in the \strong{The User Data Gateway (UDG)}, which is the one stop shop for 
-#' climate data access maintained by the Santander MetGroup. 
-#' The UDG builds on the THREDDS Access Portal (UDG-TAP) which is the entry point for 
-#' authentication and data access (more info in \url{https://meteo.unican.es/trac/wiki/udg}). 
-NULL
-
-#' @title Grid containing E-OBS daily data of mean temperature for the Iberian Peninsula (DJF, 1991-2000).
+#' @title Grid containing E-OBS daily data of mean temperature for the Iberian Peninsula (DJF, 1998-2000).
 #' @description EOBS_Iberia_tas is a grid object returned by \code{loadECOMS} from package \pkg{loadeR.ECOMS}
 #' @format A grid
 #' @name EOBS_Iberia_tas
@@ -134,7 +83,8 @@ NULL
 #'                 backdrop.theme = "countries", scales = list(draw = TRUE))
 NULL
 
-#' @title Grid containing E-OBS daily data of precipitation for the Iberian Peninsula (DJF, 1991-2000).
+
+#' @title Grid containing E-OBS daily data of precipitation for the Iberian Peninsula (DJF, 1998-2000).
 #' @description EOBS_Iberia_tp is a grid object returned by \code{loadECOMS} from package \pkg{loadeR.ECOMS}
 #' @format A grid
 #' @name EOBS_Iberia_tp
@@ -149,7 +99,7 @@ NULL
 #'                                      aggr.y = list(FUN = sum))
 #' plotClimatology(climatology(total.precip.annual), 
 #'                 backdrop.theme = "countries", scales = list(draw = TRUE),
-#'                 main = "Mean Total DJF precip (mm) 1991-2000")
+#'                 main = "Mean Total DJF precip (mm) 1998-2000")
 
 NULL
 
