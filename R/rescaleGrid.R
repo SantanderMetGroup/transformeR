@@ -1,6 +1,6 @@
 ##     rescaleGrid.R Grid rescaling
 ##
-##     Copyright (C) 2016 Santander Meteorology Group (http://www.meteo.unican.es)
+##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
 ##     This program is free software: you can redistribute it and/or modify
 ##     it under the terms of the GNU General Public License as published by
@@ -47,27 +47,6 @@
 #' @importFrom stats na.omit
 #' @return A rescaled grid
 #' @export
-
-
-
-# load("~/workspace/EUPORIAS/data/NCEP_psl_monthly_JA_1950_2010.rda", verbose = TRUE)
-# load("~/workspace/EUPORIAS/data/S4_15_psl_monthly_JA_1981_2010_nnNCEPgrid.rda", verbose = TRUE)
-# plotMeanGrid(psl)
-# plotMeanGrid(psl.s4)
-# psl.s4.resc <- rescaleGrid(psl.s4, grid.clim = NULL, ref = psl, parallel =T, by.member = FALSE)
-# 
-# plotMeanGrid(psl.s4.resc)
-# 
-# 
-# ref <- subsetGrid(psl, years = 1981:2010)
-# grid <- psl.s4
-# grid.clim = NULL
-# by.member = TRUE
-# parallel = TRUE
-# max.ncores = 16
-# ncores = NULL
-
-
 
 rescaleGrid <- function(grid,
                         grid.clim = NULL,
