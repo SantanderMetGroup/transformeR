@@ -140,12 +140,7 @@ getSeason <- function(obj) {
 
 getYearsAsINDEX <- function(obj) {
     season <- getSeason(obj)
-    dimNames <- getDim(obj)
-    aux.dates <- if (is.null(names(obj$Dates))) {
-        obj$Dates[[1]]$start
-    } else {
-        obj$Dates$start
-    }
+    aux.dates <- getRefDates(obj)
     yrs <- as.numeric(substr(aux.dates,1,4))
     mon <- as.numeric(substr(aux.dates,6,7))
     if (identical(yrs, unique(yrs))) {
@@ -247,12 +242,16 @@ which.leap <- function(years) {
 #'  In case of multigrids, the dates from the first grid are returned (i.e.: \code{grid$Dates[[1]]$start}).
 #' @param obj A grid or station object
 #' @return A character vector of dates
+#' @details This utility function should be used always that reference dates are internally required by any function.
+#' It takes into account the particular case when \code{\link{redim}} is applied to create a singleton \code{"var"}
+#'  dimension: in this situation, the \code{"Dates"} component is not changed accordingly, and thus the criterion to
+#'  distinguish multigrids from redim-ed grids is the shape of the array.
 #' @keywords internal
 #' @export
 #' @author J. Bedia
 
 getRefDates <- function(obj) {
-    if ("var" %in% getDim(obj)) {
+    if (("var" %in% getDim(obj)) && (getShape(obj, "var") > 1)) {
         obj$Dates[[1]]$start
     } else {
         obj$Dates$start 
