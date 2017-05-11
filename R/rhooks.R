@@ -17,13 +17,15 @@
             ver.mess1 <- paste0("WARNING: Your current version of ", pkgname, " (v", ver, ") is not up-to-date")
             ver.mess <- paste0("Get the latest stable version (", latest.ver,
                                ") using <devtools::install_github('SantanderMetGroup/", pkgname, "')>")
+            packageStartupMessage(ver.mess1)
+            packageStartupMessage(ver.mess)
         } else if (ver > latest.ver) {
             ver.mess1 <- paste0("WARNING: Your current version of ", pkgname, " (v", ver, 
-                                ") is ahead of the master branch version (latest.ver)")
+                                ") is ahead of the master branch version (", latest.ver, ")")
             ver.mess <- paste0("Development version may have an unexpected behaviour")
+            packageStartupMessage(ver.mess1)
+            packageStartupMessage(ver.mess)
         }
-        packageStartupMessage(ver.mess1)
-        packageStartupMessage(ver.mess)
     }
 }
 # End

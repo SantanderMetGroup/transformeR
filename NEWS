@@ -1,9 +1,8 @@
-transformeR 0.0.11
+transformeR 0.0.12
 =================
 
-* New `map.stippling utility for adding customized point layers to climatological maps
-* New `set.min` and `set.max` options in `plotClimatology` for forcing extremes to predefined map range values
-* Other minor changes and documentation updates
+* Error fix in `.onAttach` preventing package update (undetected by R CMD check)
+
 
 
 
