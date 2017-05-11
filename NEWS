@@ -1,7 +1,7 @@
-transformeR 0.0.12
+transformeR 0.0-13
 =================
 
-* Error fix in `.onAttach` preventing package update (undetected by R CMD check)
+* Documentation updates
 
 
 

@@ -21,14 +21,16 @@
 #' @description A wrapper for the lattice (trellis) plot methods for spatial data in \code{sp::spplot}
 #' @param grid Input grid
 #' @param backdrop.theme Reference geographical lines to be added to the plot. See Details. 
-#' @param set.min Numeric value indicating an absolute minimum value. All grid values below are mapped to \code{set.min}.
-#'  Both \code{set.min} and \code{set.max} are useful in order to preserve adequate ranges for map representation, avoiding the 
-#'  influence of extreme values. Note that this is different than setting a range of values via the \code{at} argument. The latter
-#'  choice leaves blank grid points for outlying values.
-#' @param set.max Same as \code{set.min} argument, but to force a ceiling.
+#' @param set.min Numeric value indicating an absolute minimum value (default to \code{NULL}). All grid values below this are mapped to \code{set.min}. See details.
+#' @param set.max Same as \code{set.min} argument, but to force a ceiling. 
 #' @param ... Further arguments passed to \code{spplot}
 #' @details The function applies the \code{\link[sp]{spplot}} method after conversion of the climatological map(s) to a
 #'  \code{SpatialGridDataFrame}.
+#'  
+#'  The \code{set.min} and \code{set.max} options are useful in order to preserve adequate ranges for map representation,
+#'   avoiding the influence of extreme values. Note that this is different than setting a range of values with an 
+#'   interval using the \code{at} argument. The latter choice, that overrides \code{set.min} and \code{set.max},
+#'    leaves blank grid points for outlying values.
 #'  
 #'  \strong{Multigrids}
 #'  
