@@ -4,12 +4,20 @@
 \alias{plotClimatology}
 \title{Lattice plot methods for climatological grids}
 \usage{
-plotClimatology(grid, backdrop.theme = "none", ...)
+plotClimatology(grid, backdrop.theme = "none", set.min = NULL,
+  set.max = NULL, ...)
 }
 \arguments{
 \item{grid}{Input grid}
 
 \item{backdrop.theme}{Reference geographical lines to be added to the plot. See Details.}
+
+\item{set.min}{Numeric value indicating an absolute minimum value. All grid values below are mapped to \code{set.min}.
+Both \code{set.min} and \code{set.max} are useful in order to preserve adequate ranges for map representation, avoiding the 
+influence of extreme values. Note that this is different than setting a range of values via the \code{at} argument. The latter
+choice leaves blank grid points for outlying values.}
+
+\item{set.max}{Same as \code{set.min} argument, but to force a ceiling.}
 
 \item{...}{Further arguments passed to \code{spplot}}
 }

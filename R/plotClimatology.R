@@ -21,6 +21,11 @@
 #' @description A wrapper for the lattice (trellis) plot methods for spatial data in \code{sp::spplot}
 #' @param grid Input grid
 #' @param backdrop.theme Reference geographical lines to be added to the plot. See Details. 
+#' @param set.min Numeric value indicating an absolute minimum value. All grid values below are mapped to \code{set.min}.
+#'  Both \code{set.min} and \code{set.max} are useful in order to preserve adequate ranges for map representation, avoiding the 
+#'  influence of extreme values. Note that this is different than setting a range of values via the \code{at} argument. The latter
+#'  choice leaves blank grid points for outlying values.
+#' @param set.max Same as \code{set.min} argument, but to force a ceiling.
 #' @param ... Further arguments passed to \code{spplot}
 #' @details The function applies the \code{\link[sp]{spplot}} method after conversion of the climatological map(s) to a
 #'  \code{SpatialGridDataFrame}.
@@ -114,10 +119,12 @@
 #' 
 
 
-plotClimatology <- function(grid, backdrop.theme = "none", ...) {
+plotClimatology <- function(grid, backdrop.theme = "none", set.min = NULL, set.max = NULL, ...) {
       arg.list <- list(...)
       bt <- match.arg(backdrop.theme, choices = c("none", "coastline", "countries"))
-      df <- clim2sgdf(clim = grid)
+      if (!is.null(set.min) && !is.numeric(set.min)) stop("Invalid 'set.min' value")
+      if (!is.null(set.min) && !is.numeric(set.max)) stop("Invalid 'set.max' value")
+      df <- clim2sgdf(clim = grid, set.min, set.max)
       ## Backdrop theme 
       if (bt != "none") {
             uri <- switch(bt,
@@ -145,6 +152,8 @@ plotClimatology <- function(grid, backdrop.theme = "none", ...) {
 #'@title Climatology to SpatialGridDataFrame
 #'@description Convert a climatological grid to a SpatialGridDataFrame object from package sp
 #'@param clim A climatological grid, as returned by function \code{\link{climatology}}
+#'@param set.min Minimum value, as passed by \code{plotClimatology}
+#'@param set.max Maximum value, as passed by \code{plotClimatology}
 #'@seealso \code{\link{climatology}}, \code{\link{plotClimatology}}
 #'@return A \pkg{sp} object of the class \code{\link[sp]{SpatialGridDataFrame}}
 #'@details This function is intended for internal usage by \code{\link{plotClimatology}},
@@ -159,12 +168,12 @@ plotClimatology <- function(grid, backdrop.theme = "none", ...) {
 #' data(tasmax_forecast)
 #' # Climatology is computed:
 #' clim <- climatology(tasmax_forecast, by.member = TRUE)
-#' sgdf <- clim2sgdf(clim)
+#' sgdf <- clim2sgdf(clim, NULL, NULL)
 #' class(sgdf)
 
 
 
-clim2sgdf <- function(clim) {
+clim2sgdf <- function(clim, set.min, set.max) {
       grid <- clim
       if (is.null(attr(grid[["Data"]], "climatology:fun"))) {
             stop("The input grid is not a climatology: Use function 'climatology' first")
@@ -197,6 +206,9 @@ clim2sgdf <- function(clim) {
       # Data reordering to match SpatialGrid coordinates
       aux <- aux[order(-co[,2], co[,1]), ] 
       aux <- data.frame(aux)
+      # Set min/max values, if provided
+      if (!is.null(set.max)) aux[aux > set.max] <- set.max
+      if (!is.null(set.min)) aux[aux < set.min] <- set.min
       # Panel names 
       if (is.multigrid) {
             vname <- attr(grid$Variable, "longname")

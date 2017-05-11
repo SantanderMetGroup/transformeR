@@ -4,10 +4,14 @@
 \alias{clim2sgdf}
 \title{Climatology to SpatialGridDataFrame}
 \usage{
-clim2sgdf(clim)
+clim2sgdf(clim, set.min, set.max)
 }
 \arguments{
 \item{clim}{A climatological grid, as returned by function \code{\link{climatology}}}
+
+\item{set.min}{Minimum value, as passed by \code{plotClimatology}}
+
+\item{set.max}{Maximum value, as passed by \code{plotClimatology}}
 }
 \value{
 A \pkg{sp} object of the class \code{\link[sp]{SpatialGridDataFrame}}
@@ -25,7 +29,7 @@ However, it may be useful for advanced \pkg{sp} users in different contexts
 data(tasmax_forecast)
 # Climatology is computed:
 clim <- climatology(tasmax_forecast, by.member = TRUE)
-sgdf <- clim2sgdf(clim)
+sgdf <- clim2sgdf(clim, NULL, NULL)
 class(sgdf)
 }
 \seealso{
