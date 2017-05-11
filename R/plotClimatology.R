@@ -1,6 +1,6 @@
 #     plotClimatology.R Lattice plot methods for climatological grids
 #
-#     Copyright (C) 2016 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -55,8 +55,9 @@
 #' @export
 #' 
 #' @author J. Bedia
-#' @seealso \code{\link{climatology}}. See \code{\link[sp]{spplot}} in package \pkg{sp} for further information on
-#' plotting capabilities and options
+#' @seealso \code{\link{climatology}} for details on climatology calculation.
+#'  \code{\link{map.stippling}}, for adding a custom point layer on top of the map.
+#' Also see \code{\link[sp]{spplot}} in package \pkg{sp} for further information on plotting capabilities and options
 #' @examples 
 #' data(tasmax_forecast)
 #' # Climatology is computed:
@@ -151,8 +152,8 @@ plotClimatology <- function(grid, backdrop.theme = "none", ...) {
 #' However, it may be useful for advanced \pkg{sp} users in different contexts
 #' (e.g. for reprojecting via \code{\link[sp]{spTransform}} etc.)
 #'@keywords internal
-#'@export
 #'@author J. Bedia
+#'@export
 #'@importFrom sp GridTopology SpatialGridDataFrame
 #'@examples 
 #' data(tasmax_forecast)
@@ -218,4 +219,31 @@ clim2sgdf <- function(clim) {
       grd <- sp::GridTopology(cellcentre.offset, cellsize, cells.dim)
       df <- sp::SpatialGridDataFrame(grd, aux)
       return(df)
+}
+
+
+#' @title Climatological map stippling
+#' @description Create a points panel layout to add to \code{plotClimatology}.
+#' Typically needed to stipple significant points in climatologies, or other types of coordinates 
+#' @param clim A (verification) climatology, e.g.: as produced by \code{\link{easyVeri2grid}}.
+#'  This often contains p-values, but not necessarily.
+#' @param draw.below.threshold Confidence level or threshold below which stippling points are drawn. Default to \code{0.05}.
+#' @param ... Further optional arguments passed to \code{sp.layout} argument in \code{spplot}.
+#' @export
+#' @importFrom sp SpatialPoints
+#' @details The function generates a \code{"sp.points"} layout list. Further formatting arguments can be passed here.
+#'  For further details and examples see the help of \code{\link[sp]{spplot}}.
+#' @seealso \code{\link{plotClimatology}}
+#' @author J. Bedia
+
+map.stippling <- function(clim, draw.below.threshold = 0.05, ...) {
+    if (!("climatology:fun" %in% names(attributes(clim$Data)))) {
+        stop("Input grid was not recognized as a climatology")
+    }
+    arg.list <- list(...)
+    aux <- array3Dto2Dmat(clim$Data)[1, ]
+    ind <- which(aux < draw.below.threshold)
+    coords <- as.matrix(expand.grid(clim$xyCoords$y, clim$xyCoords$x)[2:1][ind, ])
+    if (nrow(coords) == 0) stop("None of the grid points is below the specified threshold")
+    do.call("list", c("sp.points", SpatialPoints(coords), arg.list))
 }

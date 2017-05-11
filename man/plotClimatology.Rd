@@ -100,8 +100,9 @@ plotClimatology(mg,
 
 }
 \seealso{
-\code{\link{climatology}}. See \code{\link[sp]{spplot}} in package \pkg{sp} for further information on
-plotting capabilities and options
+\code{\link{climatology}} for details on climatology calculation.
+ \code{\link{map.stippling}}, for adding a custom point layer on top of the map.
+Also see \code{\link[sp]{spplot}} in package \pkg{sp} for further information on plotting capabilities and options
 }
 \author{
 J. Bedia
