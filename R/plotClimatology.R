@@ -239,25 +239,181 @@ clim2sgdf <- function(clim, set.min, set.max) {
 #' @title Climatological map stippling
 #' @description Create a points panel layout to add to \code{plotClimatology}.
 #' Typically needed to stipple significant points in climatologies, or other types of coordinates 
-#' @param clim A (verification) climatology, e.g.: as produced by \code{\link{easyVeri2grid}}.
+#' @param clim A climatology. This can be for instance a verification climatology as produced by \code{\link{easyVeri2grid}}.
 #'  This often contains p-values, but not necessarily.
-#' @param draw.below.threshold Confidence level or threshold below which stippling points are drawn. Default to \code{0.05}.
-#' @param ... Further optional arguments passed to \code{sp.layout} argument in \code{spplot}.
+#' @param condition Inequality operator to be applied considering the given \code{threshold}.
+#' \code{"GT"} = greater than the value of \code{threshold}, \code{"GE"} = greater or equal,
+#'   \code{"LT"} = lower than, \code{"LE"} = lower or equal than. Default to \code{"LT"} (see the rationale in the next argument).
+#' @param threshold Threshold below which stippling points are drawn. Default to \code{0.05}, 
+#' in combination with \code{condition = "LT"} as tipically used for stippling statistically significant
+#' values (p-values).
+#' @param ... Further optional style arguments (see the examples). 
+#' @return A list with a \code{SpatialPoints} object, 
+#' along with optional style arguments like \code{col}, \code{pch}, \code{cex} etc., 
+#' to be passed to the \code{sp.layout} argument in \code{plotClimatology}.
 #' @export
 #' @importFrom sp SpatialPoints
 #' @details The function generates a \code{"sp.points"} layout list. Further formatting arguments can be passed here.
 #'  For further details and examples see the help of \code{\link[sp]{spplot}}.
-#' @seealso \code{\link{plotClimatology}}
+#' @seealso \code{\link{plotClimatology}}, to which its output is passed.
+#'  \code{\link{map.lines}}, for further map customizations.
 #' @author J. Bedia
+#' @examples
+#' data("tasmax_forecast")
+#' p90clim <- climatology(tasmax_forecast,
+#'                        by.member = FALSE,
+#'                        clim.fun = list("FUN" = quantile, prob = .9))
+#' plotClimatology(p90clim, backdrop.theme = "coastline",
+#'                 main = "CFSv2 Ensemble mean Tmax 90th percentile (July 2001)")
+#'                 
+#' # We want to highlight the grid points with a 90th percentile > 25.5 degrees, 
+#' # on top of the Tmax model climatology:
+#' pts <- map.stippling(p90clim, threshold = 25.5, condition = "GT")
+#' plotClimatology(climatology(tasmax_forecast),
+#'                 backdrop.theme = "coastline",
+#'                 sp.layout = list(pts))
+#'                 
+#' # Some useful parameters that can be passed to the layout list:
+#' pts <- map.stippling(p90clim, threshold = 25.5, condition = "GT",
+#'                      pch = 19, # dots instead of default crosses
+#'                      col = "black", # black dots
+#'                      cex = .1) # point expansion factor (to make them very small)
+#' plotClimatology(climatology(tasmax_forecast),
+#'                 backdrop.theme = "coastline",
+#'                 sp.layout = list(pts))
+#'                 
+#' # Suppose we want the stippling just in the first and fifth panels, for instance:
+#' pts <- map.stippling(p90clim, threshold = 25.5, condition = "GT",
+#'                      pch = 19, col = "black", cex = .1,
+#'                      which = c(1, 5)) # which controls in which panel(s) the points are displayed
+#' plotClimatology(climatology(tasmax_forecast),
+#'                 backdrop.theme = "coastline",
+#'                 sp.layout = list(pts))
 
-map.stippling <- function(clim, draw.below.threshold = 0.05, ...) {
+map.stippling <- function(clim, threshold = 0.05, condition = "LT", ...) {
     if (!("climatology:fun" %in% names(attributes(clim$Data)))) {
         stop("Input grid was not recognized as a climatology")
     }
+    condition <- match.arg(condition, choices = c("GT", "GE", "LT", "LE"))
+    ineq <- switch(condition,
+                   "GT" = ">",
+                   "GE" = ">=",
+                   "LT" = "<",
+                   "LE" = "<=")
     arg.list <- list(...)
     aux <- array3Dto2Dmat(clim$Data)[1, ]
-    ind <- which(aux < draw.below.threshold)
+    ind <- eval(parse(text = paste("which(aux", ineq, "threshold)")))
     coords <- as.matrix(expand.grid(clim$xyCoords$y, clim$xyCoords$x)[2:1][ind, ])
     if (nrow(coords) == 0) stop("None of the grid points is below the specified threshold")
     do.call("list", c("sp.points", SpatialPoints(coords), arg.list))
+}
+
+
+#' @title Add lines and polygons to climatological maps
+#' @description Draws user-defined lines or polygons on top of climatological maps.
+#' @param lonLim A numeric vector of length 2, with minimum and maximum longitude coordinates (in grid units),
+#'  of the rectangle to be drawn. 
+#' @param latLim Same as \code{lonLim}, but for the selection of the latitudinal range.
+#' @param coords Optional. 2-column numeric matrix with vertex coordinates (1 point by row). 
+#' Note that row order matters in order to define the drawing direction.
+#'  Also bear in mind that first point (row) should equal last coordinates (row) in the case of closed polygonal areas.
+#' @param ... Further optional style arguments (see the examples). 
+#' @return A list with a \code{SpatialLines} object, 
+#' along with optional style arguments like \code{col}, \code{lty}, \code{lwd} etc., 
+#' to be passed to the \code{sp.layout} argument in \code{plotClimatology} 
+#' @details The function internally transforms the inputs into \code{\link[sp]{Line}} class objects,
+#'  so the displayed outputs are not actually polygons in a formal sense (they can not be filled, for instance).
+#'  The purpose of the function is just to highlight specific areas within climatological maps (typically rectangular
+#'   windows, but any other shapes like for instance storm tracks can be flexibly specified using \code{coords}). 
+#' @author J Bedia
+#' @importFrom magrittr %>%
+#' @importFrom sp Line Lines SpatialLines
+#' @export
+#' @seealso \code{\link{plotClimatology}}, to which its output is passed.
+#'  \code{\link{map.stippling}}, for further map customizations.
+#' @examples 
+#' data("tasmax_forecast")
+#' # Define a rectangular window centered on the Iberian Peninsula
+#' iberia <- map.lines(lonLim = c(-10,3.5), latLim = c(36,43))
+#' plotClimatology(climatology(tasmax_forecast), backdrop.theme = "coastline",
+#'                 sp.layout = list(iberia))
+#' 
+#' # Some customization options (awful, yes, but just for illustration):
+#' iberia <- map.lines(lonLim = c(-10,3.5), latLim = c(36,44),
+#'                     lwd = 3, # line width
+#'                     col = "purple", # line color
+#'                     lty = 2) # line type
+#' plotClimatology(climatology(tasmax_forecast, by.member = FALSE), backdrop.theme = "coastline",
+#'                 sp.layout = list(iberia))
+#' 
+#' # Another window over the Alps
+#' alps <- map.lines(lonLim = c(4,16), latLim = c(45,49),
+#'                     lwd = 3,
+#'                     col = "red") 
+#' plotClimatology(climatology(tasmax_forecast, by.member = FALSE), backdrop.theme = "coastline",
+#'                 sp.layout = list(iberia, alps))
+#' 
+#' # Adding a line (real data of a storm-track imported from a csv file)
+#' # Source: http://www.europeanwindstorms.org/
+#' custom.coords <- matrix(data = c(5.107992e+00, 50.918724,
+#'                                  5.196424e+00, 50.424644,
+#'                                  6.717298e+00, 50.669502,
+#'                                  7.581101e+00, 51.268070,
+#'                                  8.337102e+00, 52.482281,
+#'                                  8.654995e+00, 53.897640,
+#'                                  9.160504e+00, 55.638844,
+#'                                  9.484845e+00, 56.996574,
+#'                                  9.622513e+00, 58.232494,
+#'                                  9.601024e+00, 59.553925,
+#'                                  9.398860e+00, 60.328747,
+#'                                  9.033046e+00, 61.352264,
+#'                                  8.315894e+00, 62.177078,
+#'                                  8.189283e+00, 63.109001,
+#'                                  7.583086e+00, 63.994907,
+#'                                  7.470014e+00, 64.906883,
+#'                                  6.852325e+00, 65.618355,
+#'                                  7.491460e+00, 66.142708,
+#'                                  7.182003e+00, 66.760963,
+#'                                  7.259294e+00, 67.072113,
+#'                                  6.798459e+00, 67.460014,
+#'                                  7.391743e+00, 67.698784,
+#'                                  6.541360e+00, 67.786652,
+#'                                  6.700550e+00, 68.082726,
+#'                                  5.629124e+00, 67.311905,
+#'                                  6.236451e+00, 67.361435,
+#'                                  5.264146e+00, 65.211510,
+#'                                  5.288309e+00, 64.971802,
+#'                                  4.793668e+00, 64.500343,
+#'                                  5.259259e+00, 64.580620,
+#'                                  4.868121e+00, 64.275414,
+#'                                  4.682920e+00, 64.282272,
+#'                                  4.596509e+00, 63.880211,
+#'                                  4.055306e+00, 63.945942,
+#'                                  3.823502e+00, 62.735146,
+#'                                  3.535903e+00, 61.991531,
+#'                                  3.012845e+00, 62.029030),
+#'                         ncol = 2, byrow = TRUE)
+#' storm <- map.lines(coords = custom.coords,
+#'                    lwd = 3,
+#'                    col = "red") 
+#' plotClimatology(climatology(tasmax_forecast, by.member = FALSE), backdrop.theme = "coastline",
+#'                 sp.layout = list(storm), # Add storm track
+#'                 scales = list(draw = TRUE)) # Add coordinate axes
+
+
+map.lines <- function(lonLim = NULL, latLim = NULL, coords = NULL, ...) {
+    if (is.null(lonLim) && is.null(latLim) && is.null(coords)) stop("Undefined polygon coordinates")
+    if (is.null(lonLim) && !is.null(latLim) || !is.null(lonLim) && is.null(latLim)) stop("Undefined 'lonLim' or 'latLim'")
+    arg.list <- list(...)
+    spLines <- if (is.null(coords)) {
+        coords <- as.matrix(expand.grid(lonLim, latLim))
+        coords[1:2, ] <- coords[2:1, ]
+        coords <- rbind(coords, coords[1,])
+        Line(coords) %>% list() %>% Lines(ID = "id") %>% list() %>% SpatialLines()
+    } else {
+        lapply(1:(nrow(coords) - 1), function(x) {
+            Line(coords[x:(x + 1),])
+        }) %>% Lines(ID = "id") %>% list() %>% SpatialLines()
+    }    
+    do.call("list", c("sp.lines", spLines, arg.list))
 }

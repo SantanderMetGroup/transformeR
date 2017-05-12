@@ -4,15 +4,26 @@
 \alias{map.stippling}
 \title{Climatological map stippling}
 \usage{
-map.stippling(clim, draw.below.threshold = 0.05, ...)
+map.stippling(clim, threshold = 0.05, condition = "LT", ...)
 }
 \arguments{
-\item{clim}{A (verification) climatology, e.g.: as produced by \code{\link{easyVeri2grid}}.
+\item{clim}{A climatology. This can be for instance a verification climatology as produced by \code{\link{easyVeri2grid}}.
 This often contains p-values, but not necessarily.}
 
-\item{draw.below.threshold}{Confidence level or threshold below which stippling points are drawn. Default to \code{0.05}.}
+\item{threshold}{Threshold below which stippling points are drawn. Default to \code{0.05}, 
+in combination with \code{condition = "LT"} as tipically used for stippling statistically significant
+values (p-values).}
 
-\item{...}{Further optional arguments passed to \code{sp.layout} argument in \code{spplot}.}
+\item{condition}{Inequality operator to be applied considering the given \code{threshold}.
+\code{"GT"} = greater than the value of \code{threshold}, \code{"GE"} = greater or equal,
+  \code{"LT"} = lower than, \code{"LE"} = lower or equal than. Default to \code{"LT"} (see the rationale in the next argument).}
+
+\item{...}{Further optional style arguments (see the examples).}
+}
+\value{
+A list with a \code{SpatialPoints} object, 
+along with optional style arguments like \code{col}, \code{pch}, \code{cex} etc., 
+to be passed to the \code{sp.layout} argument in \code{plotClimatology}.
 }
 \description{
 Create a points panel layout to add to \code{plotClimatology}.
@@ -22,8 +33,41 @@ Typically needed to stipple significant points in climatologies, or other types 
 The function generates a \code{"sp.points"} layout list. Further formatting arguments can be passed here.
  For further details and examples see the help of \code{\link[sp]{spplot}}.
 }
+\examples{
+data("tasmax_forecast")
+p90clim <- climatology(tasmax_forecast,
+                       by.member = FALSE,
+                       clim.fun = list("FUN" = quantile, prob = .9))
+plotClimatology(p90clim, backdrop.theme = "coastline",
+                main = "CFSv2 Ensemble mean Tmax 90th percentile (July 2001)")
+                
+# We want to highlight the grid points with a 90th percentile > 25.5 degrees, 
+# on top of the Tmax model climatology:
+pts <- map.stippling(p90clim, threshold = 25.5, condition = "GT")
+plotClimatology(climatology(tasmax_forecast),
+                backdrop.theme = "coastline",
+                sp.layout = list(pts))
+                
+# Some useful parameters that can be passed to the layout list:
+pts <- map.stippling(p90clim, threshold = 25.5, condition = "GT",
+                     pch = 19, # dots instead of default crosses
+                     col = "black", # black dots
+                     cex = .1) # point expansion factor (to make them very small)
+plotClimatology(climatology(tasmax_forecast),
+                backdrop.theme = "coastline",
+                sp.layout = list(pts))
+                
+# Suppose we want the stippling just in the first and fifth panels, for instance:
+pts <- map.stippling(p90clim, threshold = 25.5, condition = "GT",
+                     pch = 19, col = "black", cex = .1,
+                     which = c(1, 5)) # which controls in which panel(s) the points are displayed
+plotClimatology(climatology(tasmax_forecast),
+                backdrop.theme = "coastline",
+                sp.layout = list(pts))
+}
 \seealso{
-\code{\link{plotClimatology}}
+\code{\link{plotClimatology}}, to which its output is passed.
+ \code{\link{map.lines}}, for further map customizations.
 }
 \author{
 J. Bedia

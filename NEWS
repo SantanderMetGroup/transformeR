@@ -1,6 +1,8 @@
 transformeR 0.0-13
 =================
 
+* New `map.lines` function for climatological map customization
+* Enhanced map stippling options
 * Documentation updates
 
 
