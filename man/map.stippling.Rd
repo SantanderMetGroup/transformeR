@@ -10,8 +10,8 @@ map.stippling(clim, threshold = 0.05, condition = "LT", ...)
 \item{clim}{A climatology. This can be for instance a verification climatology as produced by \code{\link{easyVeri2grid}}.
 This often contains p-values, but not necessarily.}
 
-\item{threshold}{Threshold below which stippling points are drawn. Default to \code{0.05}, 
-in combination with \code{condition = "LT"} as tipically used for stippling statistically significant
+\item{threshold}{Reference threshold value to specify stippling points. Default to \code{0.05}, 
+in combination with \code{condition = "LT"}, as tipically used for stippling statistically significant
 values (p-values).}
 
 \item{condition}{Inequality operator to be applied considering the given \code{threshold}.

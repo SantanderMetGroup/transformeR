@@ -21,7 +21,7 @@ Suggests:
     visualizeR
 Type: Package
 Title: Climate data manipulation and transformation
-Version: 0.0-13
+Version: 0.0.13
 Date: 2017-05-12
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [ctb]",

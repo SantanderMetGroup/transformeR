@@ -56,50 +56,17 @@ plotClimatology(climatology(tasmax_forecast, by.member = FALSE), backdrop.theme 
 
 # Adding a line (real data of a storm-track imported from a csv file)
 # Source: http://www.europeanwindstorms.org/
-custom.coords <- matrix(data = c(5.107992e+00, 50.918724,
-                                 5.196424e+00, 50.424644,
-                                 6.717298e+00, 50.669502,
-                                 7.581101e+00, 51.268070,
-                                 8.337102e+00, 52.482281,
-                                 8.654995e+00, 53.897640,
-                                 9.160504e+00, 55.638844,
-                                 9.484845e+00, 56.996574,
-                                 9.622513e+00, 58.232494,
-                                 9.601024e+00, 59.553925,
-                                 9.398860e+00, 60.328747,
-                                 9.033046e+00, 61.352264,
-                                 8.315894e+00, 62.177078,
-                                 8.189283e+00, 63.109001,
-                                 7.583086e+00, 63.994907,
-                                 7.470014e+00, 64.906883,
-                                 6.852325e+00, 65.618355,
-                                 7.491460e+00, 66.142708,
-                                 7.182003e+00, 66.760963,
-                                 7.259294e+00, 67.072113,
-                                 6.798459e+00, 67.460014,
-                                 7.391743e+00, 67.698784,
-                                 6.541360e+00, 67.786652,
-                                 6.700550e+00, 68.082726,
-                                 5.629124e+00, 67.311905,
-                                 6.236451e+00, 67.361435,
-                                 5.264146e+00, 65.211510,
-                                 5.288309e+00, 64.971802,
-                                 4.793668e+00, 64.500343,
-                                 5.259259e+00, 64.580620,
-                                 4.868121e+00, 64.275414,
-                                 4.682920e+00, 64.282272,
-                                 4.596509e+00, 63.880211,
-                                 4.055306e+00, 63.945942,
-                                 3.823502e+00, 62.735146,
-                                 3.535903e+00, 61.991531,
-                                 3.012845e+00, 62.029030),
-                        ncol = 2, byrow = TRUE)
+\dontrun{
+dat <- url("http://www.europeanwindstorms.org/repository/Jeanette/Jeanette_track.csv")
+custom.coords <- read.csv(dat, header = FALSE)[ ,5:4]
 storm <- map.lines(coords = custom.coords,
                    lwd = 3,
                    col = "red") 
-plotClimatology(climatology(tasmax_forecast, by.member = FALSE), backdrop.theme = "coastline",
-                sp.layout = list(storm), # Add storm track
-                scales = list(draw = TRUE)) # Add coordinate axes
+ plotClimatology(climatology(tasmax_forecast, by.member = FALSE), backdrop.theme = "coastline",
+                 sp.layout = list(storm), # Add storm track
+                 scales = list(draw = TRUE)) # Add coordinate axes
+ }
+ 
 }
 \seealso{
 \code{\link{plotClimatology}}, to which its output is passed.
