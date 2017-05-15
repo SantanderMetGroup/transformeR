@@ -1,9 +1,8 @@
-transformeR 0.0-13
+transformeR 0.0-14
 =================
 
-* New `map.lines` function for climatological map customization
-* Enhanced map stippling options
-* Documentation updates
+* New function `trend.1D` for linear trend analysis
+* Other minor changes, new examples and documentation updates
 
 
 
