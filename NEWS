@@ -1,7 +1,7 @@
 transformeR 0.0-14
 =================
 
-* New function `easyVeri.pval`, for p-value estimation of `easyVerification` outputs
+* New function `easyVeri.signif`, for significance analysis of `easyVerification` outputs
 * New function `trend.1D` for linear trend analysis
 * Other minor changes, new examples and documentation updates
 

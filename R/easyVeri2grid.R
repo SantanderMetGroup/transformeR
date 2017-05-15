@@ -53,21 +53,23 @@ easyVeri2grid <- function(easyVeri.mat, obs.grid, verifun = NULL) {
 #' @param ref.mean Numeric of length one. Null hypothesis reference mean (e.g. 0.5 for AUC tests, 0 for skill scores)
 #' @param est.mean easyVerification output matrix with scores/measures. This is the \code{cat[num]} element of the \code{veriApply} output
 #' @param sigma Standard deviation of the estimated mean. This is the \code{cat[num].sigma} element of the \code{veriApply} output.
-#' @param n Sample mean (number of ensemble members)
+#' @param cl Confidence level. Default to 0.95
 #' @return A easyVerification-like matrix of p-values. Ready to be passed to \code{\link{easyVeri2grid}}
 #'  for climatological grid conversion, and possibly to \code{\link{map.stippling}} after that, to depict significant points
 #'  in a verification map.
-#' @importFrom stats pnorm 
+#' @importFrom stats qnorm 
 #' @author J Bedia
 #' @export
 #' @seealso \code{\link{easyVeri2grid}}, for conversion of verification matrices into climatological grids.
 #'  Also, \code{\link{map.stippling}}, to draw significant points on verification maps.
 
-easyVeri.pval <- function(ref.mean, est.mean, sigma, n) {
-    z <- (est.mean - ref.mean) / (sigma / sqrt(n))
-    pval <- z
-    pval[z < 0 & !is.na(z)] <- 2 * pnorm(z[z < 0 & !is.na(z)])
-    pval[z >= 0 & !is.na(z)] <- 2 * (1 - pnorm(z[z >= 0 & !is.na(z)]))
+easyVeri.signif <- function(ref.mean, est.mean, sigma, cl = 0.95) {
+    adj <- est.mean - ref.mean
+    p <- (1 - 0.95) / 2
+    sig <- matrix(nrow = nrow(adj), ncol = ncol(adj))
+    sig[adj > (qnorm(cl + p) * sigma) & !is.na(adj)] <- 1
+    sig[adj < (qnorm(p) * sigma) & !is.na(adj)] <- 1
+    return(sig)
 }
 
 
