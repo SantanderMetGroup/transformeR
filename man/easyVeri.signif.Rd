@@ -2,7 +2,7 @@
 % Please edit documentation in R/easyVeri2grid.R
 \name{easyVeri.signif}
 \alias{easyVeri.signif}
-\title{Identify significant verification points}
+\title{Identify points significantly different from a given ref value}
 \usage{
 easyVeri.signif(ref.mean, est.mean, sigma, cl = 0.95)
 }
@@ -16,12 +16,12 @@ easyVeri.signif(ref.mean, est.mean, sigma, cl = 0.95)
 \item{cl}{Confidence level. Default to 0.95}
 }
 \value{
-A easyVerification-like matrix of p-values. Ready to be passed to \code{\link{easyVeri2grid}}
- for climatological grid conversion, and possibly to \code{\link{map.stippling}} after that, to depict significant points
- in a verification map.
+A easyVerification-like binary matrix (1 significant / 0 non-significant).
+ Ready to be passed to \code{\link{easyVeri2grid}} for climatological grid conversion, 
+ and possibly to \code{\link{map.stippling}} after that, to depict significant points in a verification map.
 }
 \description{
-Two-tailed alternative hypothesis testing for \pkg{easyVerification} "sigma" outputs
+Two-tailed hypothesis testing for \pkg{easyVerification} sigma outputs
 }
 \seealso{
 \code{\link{easyVeri2grid}}, for conversion of verification matrices into climatological grids.
