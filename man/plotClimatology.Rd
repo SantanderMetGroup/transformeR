@@ -109,6 +109,9 @@ plotClimatology(mg,
                 scales = list(draw = TRUE))                
 
 }
+\references{
+For further customization examples, visit the \emph{sp Gallery}: \url{https://edzer.github.io/sp/}
+}
 \seealso{
 \code{\link{climatology}} for details on climatology calculation.
  \code{\link{map.stippling}}, for adding a custom point layer on top of the map.

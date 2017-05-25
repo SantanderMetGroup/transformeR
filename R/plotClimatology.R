@@ -54,7 +54,9 @@
 #
 #' @return As spplot, \code{plotClimatology} returns a lattice plot of class \dQuote{trellis}. 
 #'  If you fail to \dQuote{see} it, explicitly call \code{print(plotClimatology(...))}.
-#'  
+#' 
+#' @references For further customization examples, visit the \emph{sp Gallery}: \url{https://edzer.github.io/sp/} 
+#'    
 #' @importFrom abind abind
 #' @importFrom sp spplot SpatialGridDataFrame GridTopology
 #' @importFrom grDevices colorRampPalette
