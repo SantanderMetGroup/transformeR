@@ -1,4 +1,4 @@
-transformeR 0.0-14
+transformeR 0.0.14
 =================
 
 * New function `easyVeri.signif`, for significance analysis of `easyVerification` outputs
