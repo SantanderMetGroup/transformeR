@@ -120,3 +120,22 @@ NULL
 #' @source  Subset of VALUE station data. Full dataset is accessible 
 #' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
 NULL
+
+
+#' @title Station daily precipitation data
+#' @description Station data from the VALUE_ECA_86_v2 dataset containing daily precipitation for the Igueldo-SanSebastian station. 
+#' @format Station data
+#' @name VALUE_Igueldo_tp
+#' @docType data
+#' @source  Subset of VALUE station data. Full dataset is accessible 
+#' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
+NULL
+
+#' @title Grid containing NCEP reanalysis data of precipitation for the Iberian Peninsula.
+#' @description NCEP_Iberia_tp is a grid object returned by loadECOMS from package loadeR.ECOMS
+#' @format A grid
+#' @name NCEP_Iberia_tp
+#' @docType data
+#' @keywords NCEP reanalysis
+#' @source  subset of NCEP reanalysis data, which is accessible through the \strong{ECOMS User Data Gateway (ECOMS-UDG)} 
+NULL

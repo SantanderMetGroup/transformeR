@@ -3,6 +3,7 @@ transformeR 0.0-14
 
 * New function `easyVeri.signif`, for significance analysis of `easyVerification` outputs
 * New function `trend.1D` for linear trend analysis
+* Some example datasets recovered for compatibility with `downscaleR` examples
 * Other minor changes, new examples and documentation updates
 
 

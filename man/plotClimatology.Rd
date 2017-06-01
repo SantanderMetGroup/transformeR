@@ -51,8 +51,8 @@ The function applies the \code{\link[sp]{spplot}} method after conversion of the
  \strong{Controlling graphical parameters}
  
  Many different aspects of the map can be controlled passing the relevant arguments to 
- spplot. Fine control of graphical parameters for the trellis display can
- be also controlled using \code{\link{lattice}{trellis.par.set}}.
+ \code{spplot}. Fine control of graphical parameters for the trellis display can
+ be also controlled using \code{\link[lattice]{trellis.par.set}}.
 }
 \examples{
 data(tasmax_forecast)
@@ -110,7 +110,10 @@ plotClimatology(mg,
 
 }
 \references{
-For further customization examples, visit the \emph{sp Gallery}: \url{https://edzer.github.io/sp/}
+\itemize{
+\item Bivand, R.S., Pebesma, E.J., Gomez-Rubio, V., 2013. Applied Spatial Data Analysis with R, 2nd ed, useR! Springer, NY.
+\item For some graticulate customization examples, visit the \emph{sp Gallery}: \url{https://edzer.github.io/sp/}
+}
 }
 \seealso{
 \code{\link{climatology}} for details on climatology calculation.
