@@ -58,6 +58,7 @@
 #' @template templateParallel
 #' @author M. Iturbide, M. de Felice, J. Bedia 
 #' @export
+#' @importFrom magrittr %<>% 
 #' @examples 
 #' data("tasmax_forecast")
 #' ## Aggregating members
@@ -111,6 +112,7 @@ aggregateGrid <- function(grid,
     if (!is.null(aggr.lon$FUN)) {
         grid <- lonAggregation(grid, aggr.lon, parallel, max.ncores, ncores)
     }
+    if (!is.array(grid$Data)) grid$Data %<>% as.array()
     return(grid)
 }
 
