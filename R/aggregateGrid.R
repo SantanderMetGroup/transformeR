@@ -26,7 +26,7 @@
 #' @param aggr.mem Same as \code{aggr.d}, but indicating the function for computing the member aggregation.
 #' @param aggr.lat Same as \code{aggr.d}, indicating the aggregation function to be applied along latitude.
 #' @param weight.by.lat Logical. Should latitudinal averages be weighted by the cosine of latitude?.
-#' Default to \code{FALSE}. Ignored if no \code{aggr.lat} function is indicated, or a function different from \code{"mean"}
+#' Default to \code{TRUE}. Ignored if no \code{aggr.lat} function is indicated, or a function different from \code{"mean"}
 #' is applied.
 #' @param aggr.lon Same as \code{aggr.lat}, but for longitude.
 #' @template templateParallelParams
@@ -89,11 +89,12 @@ aggregateGrid <- function(grid,
                           aggr.m = list(FUN = NULL),
                           aggr.y = list(FUN = NULL),
                           aggr.lat = list(FUN = NULL),
-                          weight.by.lat = FALSE,
+                          weight.by.lat = TRUE,
                           aggr.lon = list(FUN = NULL),
                           parallel = FALSE,
                           max.ncores = 16,
                           ncores = NULL) {
+    grid$Data[is.infinite(grid$Data)] <- NA
     if (!is.null(aggr.mem$FUN)) {
         grid <- memberAggregation(grid, aggr.mem, parallel, max.ncores, ncores)
     }
@@ -129,7 +130,7 @@ aggregateGrid <- function(grid,
 #' @author J. Bedia
 
 memberAggregation <- function(grid, aggr.mem, parallel, max.ncores, ncores) {
-    dimNames <- attr(grid$Data, "dimensions", exact = TRUE)
+    dimNames <- getDim(grid)
     if (!"member" %in% dimNames) {
         message("Not a multimember grid: 'aggr.mem' option was ignored.")
     } else {
