@@ -1,7 +1,7 @@
 transformeR 0.0-15
 =================
 
-* New function temporalCycleGrid, for annual/seasonal cycle grid calculation
+* New function `temporalCycleGrid`, for annual/seasonal cycle grid calculation
 * Other minor changes, new examples and documentation updates
 
 

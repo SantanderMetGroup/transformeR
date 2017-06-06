@@ -24,6 +24,8 @@ Convert a xyz-type verification matrix as returned by \code{veriApply} to a clim
 }
 \seealso{
 \code{\link{climatology}}, \code{\link{plotClimatology}}.
+
+Other easyVerification.bridges: \code{\link{easyVeri.signif}}
 }
 \author{
 J. Bedia

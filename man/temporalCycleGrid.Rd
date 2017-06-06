@@ -39,7 +39,8 @@ length of 365 i.e., one value for each day of the year, in case of grids encompa
  
 \strong{Leap Years}
 
-In case of leap years within the sample, the function groups 29th and 28th Feb as the same day.
+In case of leap years within the sample, the function groups 29th and 28th Feb as the same day. Thus, the 29th Februaries
+ 'disappear' in the output grid.
 
 \strong{Moving average filter}
 

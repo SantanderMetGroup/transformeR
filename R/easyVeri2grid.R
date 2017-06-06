@@ -27,7 +27,7 @@
 #' a better traceability and metadata completeness. 
 #' @return A climatological grid.
 #' @seealso \code{\link{climatology}}, \code{\link{plotClimatology}}.
-#' 
+#' @family easyVerification.bridges
 #' @export
 #' 
 #' @author J. Bedia
@@ -57,7 +57,8 @@ easyVeri2grid <- function(easyVeri.mat, obs.grid, verifun = NULL) {
 #' @return A easyVerification-like binary matrix (1 significant / 0 non-significant).
 #'  Ready to be passed to \code{\link{easyVeri2grid}} for climatological grid conversion, 
 #'  and possibly to \code{\link{map.stippling}} after that, to depict significant points in a verification map.
-#' @importFrom stats qnorm 
+#' @importFrom stats qnorm
+#' @family easyVerification.bridges 
 #' @author J Bedia
 #' @export
 #' @seealso \code{\link{easyVeri2grid}}, for conversion of verification matrices into climatological grids.

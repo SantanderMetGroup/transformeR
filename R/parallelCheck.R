@@ -11,41 +11,40 @@
 #' \item \code{hasparallel}, a logical flag indicating if parallelization is enabled and
 #' \item \code{cl}: parallel socket cluster object, or NULL.
 #' }
-#' @author J. Bedia, relying on previous code by Jonas Bhend and Matteo de Felice
-#' @importFrom parallel detectCores
-#' @importFrom parallel makeCluster
+#' @author J. Bedia, with contributions by J. Bhend and M. de Felice
+#' @importFrom parallel detectCores makeCluster
 #' @keywords internal
 #' @export
+#' @family parallel.helpers
 
 parallelCheck <- function(parallel, max.ncores = 16, ncores = NULL) {
-      hasparallel <- FALSE
-      .cl <- NULL
-      if (parallel & grepl("windows", .Platform$OS.type, ignore.case = TRUE)) {
-            message("Parallelization is not supported on Windows machines")    
-      } 
-      if (parallel && requireNamespace("parallel", quietly = TRUE)) {
-            max.avail <- min(max(parallel::detectCores() - 1, 1), max.ncores)
-            if (is.null(ncores)) {
-                  ncores <- max.avail 
+    hasparallel <- FALSE
+    .cl <- NULL
+    if (parallel & grepl("windows", .Platform$OS.type, ignore.case = TRUE)) {
+        message("Parallelization is not supported on Windows machines")    
+    } 
+    if (parallel && requireNamespace("parallel", quietly = TRUE)) {
+        max.avail <- min(max(parallel::detectCores() - 1, 1), max.ncores)
+        if (is.null(ncores)) {
+            ncores <- max.avail 
+        }
+        if (ncores > 1) {
+            .cl <- try(parallel::makeCluster(ncores, type = 'FORK'), silent = TRUE)
+            if (!"try-error" %in% class(.cl)) {
+                hasparallel <- TRUE
+                if (ncores > max.avail) {
+                    warning("Maximum number of detected cores available is ",
+                            max.avail, " (", ncores, " were selected)",
+                            call. = FALSE)
+                    ncores <- max.avail
+                }
+                message("Parallel computing enabled\nNumber of workers: ", ncores)
+            } else {
+                .cl <- NULL
             }
-            if (ncores > 1) {
-                  .cl <- try(parallel::makeCluster(ncores, type = 'FORK'), silent = TRUE)
-                  if (!"try-error" %in% class(.cl)) {
-                        hasparallel <- TRUE
-                        
-                        if (ncores > max.avail) {
-                              warning("Maximum number of detected cores available is ",
-                                      max.avail, " (", ncores, " were selected)",
-                                      call. = FALSE)
-                              ncores <- max.avail
-                        }
-                        message("Parallel computing enabled\nNumber of workers: ", ncores)
-                  } else {
-                        .cl <- NULL
-                  }
-            }
-      } else if (parallel) {
-            message("Parallel computing not enabled (parallel package is not available)")
-      }
-      list("hasparallel" = hasparallel, "cl" = .cl)
+        }
+    } else if (parallel) {
+        message("Parallel computing disabled (parallel package is not available)")
+    }
+    list("hasparallel" = hasparallel, "cl" = .cl)
 }

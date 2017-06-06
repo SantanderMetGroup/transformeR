@@ -28,7 +28,10 @@ Check availability of parallel package and set parameters
 The function checks if package parallel is available. Then, it is checked whether the FORK nodes
 can be initialized
 }
+\seealso{
+Other parallel.helpers: \code{\link{selectPar.pplyFun}}
+}
 \author{
-J. Bedia, relying on previous code by Jonas Bhend and Matteo de Felice
+J. Bedia, with contributions by J. Bhend and M. de Felice
 }
 \keyword{internal}
