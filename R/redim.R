@@ -14,6 +14,7 @@
 #' @export
 #' @importFrom abind abind
 #' @importFrom stats na.omit
+#' @importFrom magrittr %<>%
 #' @author M. Iturbide, J. Bedia
 
 redim <- function(obj,
@@ -86,6 +87,7 @@ redim <- function(obj,
                   }
             }
       }
+      if (is.null(dim(obj$Data))) obj$Data %<>% as.array()
       return(obj) 
 }
 #End
