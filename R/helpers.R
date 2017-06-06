@@ -9,7 +9,7 @@
 #' The returned grid object inherits the attributes from the input \code{xyCoords} definition.
 #' @export
 #' @importFrom utils tail
-#' @family loading.grid
+#' @family get.helpers
 #' @author S. Herrera and J. Bedia 
 #' @examples \dontrun{
 #' # Iberia domain
@@ -56,6 +56,7 @@ getGrid <- function(gridData) {
 #' @description Returns the coordinates of a climate data object, either stations or grid
 #' @param obj Any object extending the station or grid classes
 #' @return A list with x and y components
+#' @family get.helpers
 #' @author J. Bedia 
 #' @export
 
@@ -78,6 +79,7 @@ getCoordinates <- function(obj) {
 #' @param obj Any object extending the station or grid classes
 #' @return An integer vector with the season
 #' @author J. Bedia 
+#' @family get.helpers
 #' @export
 #' @examples 
 #' data(iberia_ncep_ta850)
@@ -112,6 +114,7 @@ getSeason <- function(obj) {
 #'  and so on... The function is useful for computing and/or plotting annual statistics, seasonal climatologies ... 
 #' @note Warning:
 #' The function should no be used to extract the vector of actual date years
+#' @family get.helpers
 #' @author J. Bedia 
 #' @export
 #' @examples 
@@ -169,6 +172,7 @@ getYearsAsINDEX <- function(obj) {
 #' @param obj A grid or station object
 #' @return A character vector with the dimensions attribute of the object's \code{Data} component.
 #' @keywords internal
+#' @family get.helpers
 #' @export
 #' @author J. Bedia
 
@@ -180,6 +184,7 @@ getDim <- function(obj) {
 #' @description Retrieve array attributes 'dimensions' and 'dim'
 #' @param obj A grid or station object
 #' @return An integer vector with dim values, labelled with the \code{"dimension"} attribute names
+#' @family get.helpers
 #' @keywords internal
 #' @export
 #' @author J. Bedia
@@ -220,13 +225,14 @@ draw.world.lines <- function(...) {
 
 
 
-#' Identification of leap years
-#' Identification of leap years
+#' @title Leap years
+#' @description Return the indices of leap years in a vector of years
 #' @param years a integer vector of (gregorian) years
 #' @return a vector of indices of the position of leap years
 #' @references \url{https://en.wikipedia.org/wiki/Leap_year}
 #' @keywords internal
 #' @export
+#' @family get.helpers
 #' @author J. Bedia 
 #' @examples
 #' leap.years <- which.leap(1885:1937)
@@ -247,6 +253,7 @@ which.leap <- function(years) {
 #'  dimension: in this situation, the \code{"Dates"} component is not changed accordingly, and thus the criterion to
 #'  distinguish multigrids from redim-ed grids is the shape of the array.
 #' @keywords internal
+#' @family get.helpers
 #' @export
 #' @author J. Bedia
 
@@ -274,6 +281,7 @@ getRefDates <- function(obj) {
 #' @importFrom parallel parApply parLapply
 #' @return A function
 #' @keywords internal
+#' @family parallel.helpers
 #' @export
 #' @author J. Bedia
 
@@ -303,5 +311,67 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
 }
 
 
+#' @title Spatial check of input grids
+#' @description Checks that the input grids have the same lon/lat shape
+#' @param ... Input grids to be compared
+#' @param dimension Character vector. Dimensions to check for consistency. Several dimensions can be tested at once.
+#' Possible values are: \code{"member"}, \code{"time"}, \code{"lat"} and \code{"lon"}.  
+#' @return In case of spatial inconsistency of any of the inputs grids, 
+#' the function stops the execution of the current expression, with an error message.
+#' @description The function simply compares the size of the dimension across input grids for 
+#' structural consistency of their respective data arrays. It does not make any additional checks on the metadata,
+#' so equal array shapes do not entail full temporal/spatial consistency.
+#' @seealso \code{\link{getShape}}
+#' @keywords internal 
+#' @family check.helpers
+#' @author J Bedia
+#' @examples 
+#' data("EOBS_Iberia_tas")
+#' data("EOBS_Iberia_tp")
+#' checkDim(EOBS_Iberia_tas, EOBS_Iberia_tp) # ok, go on
+#' data("iberia_ncep_psl")
+#' try(checkDim(EOBS_Iberia_tas, EOBS_Iberia_tp, iberia_ncep_psl)) # inconsistent dimensions
+#' data("tasmax_forecast")
+#' try(checkDim(iberia_ncep_psl, tasmax_forecast, dimensions = "member")) 
+
+checkDim <- function(..., dimensions = c("member", "time", "lat", "lon")) {
+    grid.list <- list(...)
+    grid.list <- lapply(grid.list, "redim")
+    dimensions <- match.arg(dimensions, choices = c("member", "time", "lat", "lon"), several.ok = TRUE)
+    dimlist <- lapply(dimensions, function(x) vapply(grid.list, "getShape", integer(1), x))
+    oops <- dimensions[which(!sapply(dimlist, function(x) all(x == x[1])))]
+    if (length(oops) > 0) {
+        stop("Inconsistent sizes found for dimensions: ", paste(oops, collapse = ", "))
+    }
+}
 
 
+#' @title Seasonal check
+#' @description Check the consistency of seasons across the input grids
+#' @param ... Input grids to be compared
+#' @return In case of seasonal inconsistency of any of the inputs grids, the function stops the execution 
+#' of the current expression, with an error message.
+#' @seealso \code{\link{getSeason}}
+#' @author J Bedia
+#' @keywords internal
+#' @family check.helpers
+#' @examples 
+#' data("EOBS_Iberia_tas")
+#' data("EOBS_Iberia_tp")
+#' grid1 <- subsetGrid(EOBS_Iberia_tas, season = 1)
+#' grid2 <- subsetGrid(EOBS_Iberia_tp, season = 1)
+#' checkSeason(grid1, grid2) # ok, go on
+#' try(checkSeason(grid1, grid2, EOBS_Iberia_tas)) # oops
+#' 
+#' # However note that it is insensitive to the level of temporal aggregation:
+#' agg <- aggregateGrid(EOBS_Iberia_tas, aggr.m = list(FUN = "mean", na.rm = TRUE))
+#' identical(getSeason(agg), getSeason(EOBS_Iberia_tas))
+#' checkSeason(agg, EOBS_Iberia_tas)
+
+checkSeason <- function(...) {
+    grid.list <- list(...)
+    sealist <- lapply(grid.list, "getSeason")
+    oops <- sapply(sealist, function(x) all(x == sealist[[1]]))
+    if (!all(oops)) stop("Inconsistent seasons among input grids")
+}    
+    
