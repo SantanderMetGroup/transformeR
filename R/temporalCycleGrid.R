@@ -20,7 +20,7 @@
 #' @param grid Input grid. This must be a daily grid, possibly previously filtered. See details
 #' @param time.frame Character string. Temporal unit on which the cycle is based on. Currently acceped values are \code{"daily"}
 #' (the default, requires a daily input grid) or monthly
-#' @param clim.fun Function used to aggregate the values. Default to \code{\link{mean}}, but can be flexibly defined.
+#' @param clim.fun Function used to aggregate the values. Default to \code{\link{mean}}, but any othercan be flexibly defined.
 #' @param ... Further arguments passed to \code{clim.fun} (e.g. \code{na.rm = TRUE}, ...)
 #' @template templateParallelParams
 #' @details This function is intended for the computation of reference daily/ monthly climatologies 
