@@ -9,12 +9,12 @@ temporalCycleGrid(grid, time.frame = c("daily", "monthly"),
   ncores = NULL)
 }
 \arguments{
-\item{grid}{Input grid. This must be a daily grid, possibly previously filtered. See details}
+\item{grid}{Input grid. This must be a daily or monthly grid, depending on the next argument choice. See details}
 
-\item{time.frame}{Character string. Temporal unit on which the cycle is based on. Currently acceped values are \code{"daily"}
+\item{time.frame}{Character string. Temporal unit on which the cycle is based on. Currently accepted values are \code{"daily"}
 (the default, requires a daily input grid) or monthly}
 
-\item{clim.fun}{Function used to aggregate the values. Default to \code{\link{mean}}, but any othercan be flexibly defined.}
+\item{clim.fun}{Function used to aggregate the values. Default to \code{\link{mean}}, but any other can be flexibly defined.}
 
 \item{...}{Further arguments passed to \code{clim.fun} (e.g. \code{na.rm = TRUE}, ...)}
 
@@ -32,14 +32,14 @@ A temporal cycle grid
 A function to compute temporal cycles. See Details.
 }
 \details{
-This function is intended for the computation of reference daily/ monthly climatologies 
+This function is intended for the computation of reference daily/monthly climatologies 
 (i.e., a climatological reference for each -julian- day of the year/month). It thus has a maximum temporal 
 length of 365 i.e., one value for each day of the year, in case of grids encompassing an annual season
 (see next subsection regarding leap years) or 12, in the case of monthly annual cycles.
  
 \strong{Leap Years}
 
-The function currently treats the 29th February as 28th februaries.
+In case of leap years within the sample, the function groups 29th and 28th Feb as the same day.
 
 \strong{Moving average filter}
 
