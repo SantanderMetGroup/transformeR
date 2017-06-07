@@ -23,12 +23,13 @@ The function makes a number of checks in order to test the spatiotemporal compat
   consistency (i.e., equal XY coordinates) of the input grids must be ensured before attempting the creation of the multigrid,
   otherwise giving an error. This can be achieved either through the specification of the same 'lonLim' and 'latLim' argument
   values when loading the grids, or using the \code{\link{interpGrid}} interpolator in conjuntion with the \code{\link{getGrid}}
-  method.
+  method, for instance
 }
 \seealso{
 Other internal.helpers: \code{\link{array3Dto2Dmat}},
   \code{\link{bindGrid.member}},
-  \code{\link{grid3Dto2Dmatrix}}, \code{\link{redim}}
+  \code{\link{grid3Dto2Dmatrix}}, \code{\link{redim}},
+  \code{\link{sortDim.time}}
 }
 \author{
 M De Felice, J Bedia
