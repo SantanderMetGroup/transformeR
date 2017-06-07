@@ -49,7 +49,8 @@ getShape(z)
 Other internal.helpers: \code{\link{array3Dto2Dmat}},
   \code{\link{bindGrid.member}},
   \code{\link{bindGrid.time}},
-  \code{\link{grid3Dto2Dmatrix}}
+  \code{\link{grid3Dto2Dmatrix}},
+  \code{\link{sortDim.time}}
 }
 \author{
 M. Iturbide, J. Bedia

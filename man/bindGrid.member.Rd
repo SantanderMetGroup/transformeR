@@ -44,7 +44,8 @@ plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline")
 \seealso{
 Other internal.helpers: \code{\link{array3Dto2Dmat}},
   \code{\link{bindGrid.time}},
-  \code{\link{grid3Dto2Dmatrix}}, \code{\link{redim}}
+  \code{\link{grid3Dto2Dmatrix}}, \code{\link{redim}},
+  \code{\link{sortDim.time}}
 }
 \author{
 J Bedia

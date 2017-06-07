@@ -22,7 +22,8 @@ Global attributes of the output matrix are provided for metadata description and
 \seealso{
 Other internal.helpers: \code{\link{array3Dto2Dmat}},
   \code{\link{bindGrid.member}},
-  \code{\link{bindGrid.time}}, \code{\link{redim}}
+  \code{\link{bindGrid.time}}, \code{\link{redim}},
+  \code{\link{sortDim.time}}
 }
 \author{
 J. Bedia

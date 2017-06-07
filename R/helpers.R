@@ -338,8 +338,10 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
 checkDim <- function(..., dimensions = c("member", "time", "lat", "lon")) {
     grid.list <- list(...)
     grid.list <- lapply(grid.list, "redim")
-    dimensions <- match.arg(dimensions, choices = c("member", "time", "lat", "lon"), several.ok = TRUE)
-    dimlist <- lapply(dimensions, function(x) vapply(grid.list, "getShape", integer(1), x))
+    dimensions <- match.arg(dimensions, choices = c("member", "time", "lat", "lon"),
+                            several.ok = TRUE)
+    dimlist <- lapply(dimensions, function(x) vapply(grid.list, FUN =  "getShape",
+                                                     FUN.VALUE = integer(1), x))
     oops <- dimensions[which(!sapply(dimlist, function(x) all(x == x[1])))]
     if (length(oops) > 0) {
         stop("Inconsistent sizes found for dimensions: ", paste(oops, collapse = ", "))

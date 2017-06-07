@@ -118,7 +118,7 @@ sortDim.time <- function(grid) {
     dates <- grid %>% getRefDates() %>% as.Date() %>% as.integer()
     ind <- sort.int(dates, index.return = TRUE)$ix
     attrs <- attributes(grid$Dates)
-    grid$Dates %<>% lapply(., "[", ind)
+    grid$Dates %<>% lapply("[", ind)
     attributes(grid$Dates) <- attrs
     dimNames <- getDim(grid)
     time.ind <- grep("^time", dimNames)
