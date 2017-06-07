@@ -26,7 +26,12 @@ The function is insensitive to the dimension ordering of the input data array
 }
 \seealso{
 \code{\link{mat2Dto3Darray}}, which performs the inverse operation
+
+Other internal.helpers: \code{\link{bindGrid.member}},
+  \code{\link{bindGrid.time}},
+  \code{\link{grid3Dto2Dmatrix}}, \code{\link{redim}}
 }
 \author{
-M. de Felice
+M. de Felice, J Bedia
 }
+\keyword{internal}

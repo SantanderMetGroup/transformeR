@@ -47,6 +47,7 @@
 #' plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline")
 
 #' @importFrom abind abind
+#' @family internal.helpers
 #' @author J Bedia
 #' @export
 

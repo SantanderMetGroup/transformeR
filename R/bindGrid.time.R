@@ -31,47 +31,48 @@
 #'   values when loading the grids, or using the \code{\link{interpGrid}} interpolator in conjuntion with the \code{\link{getGrid}}
 #'   method.
 #' @importFrom abind abind
+#' @family internal.helpers
 #' @author M De Felice, J Bedia
 #' @export
 
 bindGrid.time <- function(..., spatial.tolerance = 1e-3) {
-      grid.list <- list(...)
-      if (length(grid.list) == 1) {
-          grid.list <- unlist(grid.list, recursive = FALSE)
-      }
-      if (length(grid.list) < 2) {
-            stop("The input must be a list of at least two grids")
-      }
-      grid.list <- lapply(grid.list, "redim")
-      tol <- spatial.tolerance
-      for (i in 2:length(grid.list)) {
-            # Spatial test
-            if (!isTRUE(all.equal(grid.list[[1]]$xyCoords, grid.list[[i]]$xyCoords, check.attributes = FALSE, tolerance = tol))) {
-                  stop("Input data is not spatially consistent")
-            }
-            # Member
-            if (getShape(grid.list[[1]])[match('member', getDim(grid.list[[1]]))] != getShape(grid.list[[i]])[match('member', getDim(grid.list[[i]]))]) {
-                  stop("Member dimension is not spatially consistent")
-            }
-      }
-      ref <- grid.list[[1]]
-      dimNames <- getDim(ref) 
-      dim.bind <- grep("time", dimNames)
-      data.list <- lapply(grid.list, FUN = "[[", "Data")
-      ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
-      data.list <- NULL
-      start.list <- lapply(grid.list, FUN = function(x) {
-            x$Dates$start
-      })
-      end.list <- lapply(grid.list, FUN = function(x) {
-            x$Dates$end
-      })
-      grid.list <- NULL
-      ref[["Dates"]] = list(start = do.call(c, start.list),
-                            end = do.call(c, end.list))
-      # inits.list <- member.list <- data.list <- NULL
-      attr(ref[["Data"]], "dimensions") <- dimNames
-      return(ref)
+    grid.list <- list(...)
+    if (length(grid.list) == 1) {
+        grid.list <- unlist(grid.list, recursive = FALSE)
+    }
+    if (length(grid.list) < 2) {
+        stop("The input must be a list of at least two grids")
+    }
+    grid.list <- lapply(grid.list, "redim")
+    tol <- spatial.tolerance
+    for (i in 2:length(grid.list)) {
+        # Spatial test
+        if (!isTRUE(all.equal(grid.list[[1]]$xyCoords, grid.list[[i]]$xyCoords, check.attributes = FALSE, tolerance = tol))) {
+            stop("Input data is not spatially consistent")
+        }
+        # Member
+        if (getShape(grid.list[[1]])[match('member', getDim(grid.list[[1]]))] != getShape(grid.list[[i]])[match('member', getDim(grid.list[[i]]))]) {
+            stop("Member dimension is not spatially consistent")
+        }
+    }
+    ref <- grid.list[[1]]
+    dimNames <- getDim(ref) 
+    dim.bind <- grep("time", dimNames)
+    data.list <- lapply(grid.list, FUN = "[[", "Data")
+    ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
+    data.list <- NULL
+    start.list <- lapply(grid.list, FUN = function(x) {
+        x$Dates$start
+    })
+    end.list <- lapply(grid.list, FUN = function(x) {
+        x$Dates$end
+    })
+    grid.list <- NULL
+    ref[["Dates"]] = list(start = do.call(c, start.list),
+                          end = do.call(c, end.list))
+    # inits.list <- member.list <- data.list <- NULL
+    attr(ref[["Data"]], "dimensions") <- dimNames
+    return(ref)
 }
 
 

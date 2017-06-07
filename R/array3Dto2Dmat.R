@@ -9,8 +9,10 @@
 #' is the most convenient format in order to naturally fill a matrix with the adequate number of columns (longitudes) 
 #' and rows (latitudes) given the vectorized value of the output at a given time (or after time-averaging via rowMeans).
 #' The function is insensitive to the dimension ordering of the input data array 
-#' @author M. de Felice
+#' @author M. de Felice, J Bedia
 #' @export
+#' @keywords internal
+#' @family internal.helpers
 #' @seealso \code{\link{mat2Dto3Darray}}, which performs the inverse operation
 
 

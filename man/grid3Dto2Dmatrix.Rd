@@ -19,6 +19,11 @@ Converts 3D grids of the form [time,lat,lon]
 \details{
 Global attributes of the output matrix are provided for metadata description and spatiotemporal collocation.
 }
+\seealso{
+Other internal.helpers: \code{\link{array3Dto2Dmat}},
+  \code{\link{bindGrid.member}},
+  \code{\link{bindGrid.time}}, \code{\link{redim}}
+}
 \author{
 J. Bedia
 }

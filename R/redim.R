@@ -1,21 +1,35 @@
 #' @title Complete missing dimensions of Grid or Station objects
-#' @description Complete all dimensions of the Data array
+#' @description Add missing dimensions to the 'Data' array as singletons. For internal usage mainly.
 #' @param obj A grid or station data
-#' @param member logical. Add member dimension (default = TRUE)
-#' @param runtime logical. Add runtime dimension (default = FALSE)
-#' @param var logical. Add var dimension (default = FALSE)
-#' @param station logical. Only if obj is station data. If TRUE, the "station" 
-#' dimension is not replaced by fake "lat" and "lon" dimensions (default is FALSE).
+#' @param member logical. Add 'member' dimension (default = TRUE)
+#' @param runtime logical. Add 'runtime' dimension (default = FALSE)
+#' @param var logical. Add 'var' dimension (default = FALSE)
+#' @param station logical. Only if \code{obj} is a stations dataset. If TRUE, the \code{"station"} 
+#' dimension is not replaced by fake \code{"lat"} and \code{"lon"} dimensions (default is FALSE).
 #' @param drop logical. Drop dimensions of length = 1 (default = FALSE)
 #' @return The same object with all the dimensions (i.e. member, time, station)
-#' @details The function down not handle multigrids (i.e. \code{"var"} dimension).
-#'  Thus, multigrids need to be subsetted along \code{"var"} prior to redimensioning.
+#' @details The function does not handle multigrids (i.e. \code{"var"} dimension).
+#'  Thus, multigrids need to be subsetted along \code{"var"} prior to redimensioning via \code{\link{subsetGrid}}.
 #' @keywords internal
 #' @export
 #' @importFrom abind abind
 #' @importFrom stats na.omit
 #' @importFrom magrittr %<>%
 #' @author M. Iturbide, J. Bedia
+#' @family internal.helpers
+#' @examples
+#' data("EOBS_Iberia_tas")
+#' getShape(EOBS_Iberia_tas)
+#' a <- redim(EOBS_Iberia_tas)
+#' getShape(a)
+#' b <- redim(EOBS_Iberia_tas, var = TRUE)
+#' getShape(b)
+#' # This one is probably never needed, but for illustration:
+#' y <- redim(EOBS_Iberia_tas, member = FALSE, var = TRUE)
+#' getShape(y)
+#' # 'drop = TRUE' performs the reverse operation:
+#' z <- redim(b, drop = TRUE)
+#' getShape(z)
 
 redim <- function(obj,
                   member = TRUE,

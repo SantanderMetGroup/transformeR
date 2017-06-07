@@ -25,6 +25,11 @@ The function makes a number of checks in order to test the spatiotemporal compat
   values when loading the grids, or using the \code{\link{interpGrid}} interpolator in conjuntion with the \code{\link{getGrid}}
   method.
 }
+\seealso{
+Other internal.helpers: \code{\link{array3Dto2Dmat}},
+  \code{\link{bindGrid.member}},
+  \code{\link{grid3Dto2Dmatrix}}, \code{\link{redim}}
+}
 \author{
 M De Felice, J Bedia
 }

@@ -10,14 +10,14 @@ redim(obj, member = TRUE, runtime = FALSE, var = FALSE, station = FALSE,
 \arguments{
 \item{obj}{A grid or station data}
 
-\item{member}{logical. Add member dimension (default = TRUE)}
+\item{member}{logical. Add 'member' dimension (default = TRUE)}
 
-\item{runtime}{logical. Add runtime dimension (default = FALSE)}
+\item{runtime}{logical. Add 'runtime' dimension (default = FALSE)}
 
-\item{var}{logical. Add var dimension (default = FALSE)}
+\item{var}{logical. Add 'var' dimension (default = FALSE)}
 
-\item{station}{logical. Only if obj is station data. If TRUE, the "station" 
-dimension is not replaced by fake "lat" and "lon" dimensions (default is FALSE).}
+\item{station}{logical. Only if \code{obj} is a stations dataset. If TRUE, the \code{"station"} 
+dimension is not replaced by fake \code{"lat"} and \code{"lon"} dimensions (default is FALSE).}
 
 \item{drop}{logical. Drop dimensions of length = 1 (default = FALSE)}
 }
@@ -25,11 +25,31 @@ dimension is not replaced by fake "lat" and "lon" dimensions (default is FALSE).
 The same object with all the dimensions (i.e. member, time, station)
 }
 \description{
-Complete all dimensions of the Data array
+Add missing dimensions to the 'Data' array as singletons. For internal usage mainly.
 }
 \details{
-The function down not handle multigrids (i.e. \code{"var"} dimension).
- Thus, multigrids need to be subsetted along \code{"var"} prior to redimensioning.
+The function does not handle multigrids (i.e. \code{"var"} dimension).
+ Thus, multigrids need to be subsetted along \code{"var"} prior to redimensioning via \code{\link{subsetGrid}}.
+}
+\examples{
+data("EOBS_Iberia_tas")
+getShape(EOBS_Iberia_tas)
+a <- redim(EOBS_Iberia_tas)
+getShape(a)
+b <- redim(EOBS_Iberia_tas, var = TRUE)
+getShape(b)
+# This one is probably never needed, but for illustration:
+y <- redim(EOBS_Iberia_tas, member = FALSE, var = TRUE)
+getShape(y)
+# 'drop = TRUE' performs the reverse operation:
+z <- redim(b, drop = TRUE)
+getShape(z)
+}
+\seealso{
+Other internal.helpers: \code{\link{array3Dto2Dmat}},
+  \code{\link{bindGrid.member}},
+  \code{\link{bindGrid.time}},
+  \code{\link{grid3Dto2Dmatrix}}
 }
 \author{
 M. Iturbide, J. Bedia

@@ -323,6 +323,7 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
 #' so equal array shapes do not entail full temporal/spatial consistency.
 #' @seealso \code{\link{getShape}}
 #' @keywords internal 
+#' @export
 #' @family check.helpers
 #' @author J Bedia
 #' @examples 
@@ -355,6 +356,7 @@ checkDim <- function(..., dimensions = c("member", "time", "lat", "lon")) {
 #' @author J Bedia
 #' @keywords internal
 #' @family check.helpers
+#' @export
 #' @examples 
 #' data("EOBS_Iberia_tas")
 #' data("EOBS_Iberia_tp")
