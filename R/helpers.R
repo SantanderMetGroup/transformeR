@@ -31,21 +31,35 @@
 #' 
 
 getGrid <- function(gridData) {
-    if (!any(attr(gridData$Data, "dimensions") == "station")) {
-        if ("lon" %in% names(gridData$xyCoords)) stop("Not a regular grid")
+    if (is.matrix(gridData$xyCoords)) {
+          out <- list(x = as.numeric(gridData$xyCoords[,1]), y = as.numeric(gridData$xyCoords[,2]))
+          attr(out, "type") <- "irregular"
+          if (!exists("resX", attributes(gridData$xyCoords))) {
+                attr(out, "resX") <- NULL
+          }else{
+                attr(out, "resX") <- attr(gridData$xyCoords, "resX")
+          }
+          if (!exists("resY", attributes(gridData$xyCoords))) {
+                attr(out, "resY") <- NULL
+          }else{
+                attr(out, "resY") <- attr(gridData$xyCoords, "resY")   
+          }
+    }else{
+        # if ("lon" %in% names(gridData$xyCoords)) stop("Not a regular grid")
         grid.x <- c(gridData$xyCoords$x[1], tail(gridData$xyCoords$x, 1))
         grid.y <- c(gridData$xyCoords$y[1], tail(gridData$xyCoords$y, 1))
         out <- list(x = grid.x, y = grid.y)
         attributes(out) <- attributes(gridData$xyCoords)
         if (!exists("resX", attributes(gridData$xyCoords))) {
             attr(out, "resX") <- (tail(gridData$xyCoords$x, 1) - gridData$xyCoords$x[1]) / (length(gridData$xyCoords$x) - 1)
+        }else{
+            attr(out, "resX") <- attr(gridData$xyCoords, "resX")
         }
         if (!exists("resY", attributes(gridData$xyCoords))) {
             attr(out, "resY") <- (tail(gridData$xyCoords$y, 1) - gridData$xyCoords$y[1]) / (length(gridData$xyCoords$y) - 1)
+        }else{
+            attr(out, "resY") <- attr(gridData$xyCoords, "resY")   
         }
-    } else {
-        out <- list(x = as.numeric(gridData$xyCoords[,1]), y = as.numeric(gridData$xyCoords[,2]))
-        attr(out, "type") <- "location"
     }
     return(out)
 }
@@ -61,7 +75,7 @@ getGrid <- function(gridData) {
 #' @export
 
 getCoordinates <- function(obj) {
-    if ("station" %in% attr(obj$Data, "dimensions")) {
+    if (is.matrix(obj$xyCoords)){
         x <- obj$xyCoords[ ,1]
         y <- obj$xyCoords[ ,2]
     } else {

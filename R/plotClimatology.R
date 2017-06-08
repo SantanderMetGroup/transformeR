@@ -153,10 +153,11 @@ plotClimatology <- function(grid, backdrop.theme = "none", set.min = NULL, set.m
       ## Other args 
       arg.list[["obj"]] <- df
       arg.list[["asp"]] <- 1
+      arg.list[["sp.layout"]]
       do.call("spplot", arg.list)
 }      
 
-#'@title Climatology to SpatialGridDataFrame
+#'@title Climatology to SpatialGridDataFrame or SpatialPointsDataFrame
 #'@description Convert a climatological grid to a SpatialGridDataFrame object from package sp
 #'@param clim A climatological grid, as returned by function \code{\link{climatology}}
 #'@param set.min Minimum value, as passed by \code{plotClimatology}
@@ -186,6 +187,8 @@ clim2sgdf <- function(clim, set.min, set.max) {
             stop("The input grid is not a climatology: Use function 'climatology' first")
       }
       dimNames <- getDim(grid)
+      irregular <- FALSE
+      if("loc" %in% dimNames) irregular <- TRUE
       ## Multigrids are treated as realizations, previously aggregated by members if present
       is.multigrid <- "var" %in% dimNames
       if (is.multigrid) {
@@ -202,17 +205,28 @@ clim2sgdf <- function(clim, set.min, set.max) {
       dimNames <- getDim(grid)
       mem.ind <- grep("member", dimNames)
       n.mem <- getShape(grid, "member")
-      co <- expand.grid(grid$xyCoords$y, grid$xyCoords$x)[2:1]
+      coords <- getCoordinates(grid)
+      if(irregular){
+            co <- cbind(coords$x, coords$y)
+      }else{
+            co <- expand.grid(coords$y, coords$x)[2:1]
+      }
       le <- nrow(co)
-      aux <- vapply(1:n.mem, FUN.VALUE = numeric(le), FUN = function(x) {
-            z <- asub(grid[["Data"]], idx = x, dims = mem.ind, drop = TRUE)
-            z <- unname(abind(z, along = -1L))
-            attr(z, "dimensions") <- c("time", "lat", "lon")
-            array3Dto2Dmat(z)
-      })
-      # Data reordering to match SpatialGrid coordinates
-      aux <- aux[order(-co[,2], co[,1]), ] 
-      aux <- data.frame(aux)
+      #############hemen nago!
+      if(!irregular){
+            aux <- vapply(1:n.mem, FUN.VALUE = numeric(le), FUN = function(x) {
+                  z <- asub(grid[["Data"]], idx = x, dims = mem.ind, drop = TRUE)
+                  z <- unname(abind(z, along = -1L))
+                  attr(z, "dimensions") <- c("time", "lat", "lon")
+                  array3Dto2Dmat(z)
+            })
+            # Data reordering to match SpatialGrid coordinates
+            aux <- data.frame(aux[order(-co[,2], co[,1]), ])
+      }else{
+            aux <- redim(grid, irregular = irregular, drop = T)$Data
+            naind <- which(!is.na(aux))
+            aux <- data.frame(as.numeric(aux[naind]))
+      }
       # Set min/max values, if provided
       if (!is.null(set.max)) aux[aux > set.max] <- set.max
       if (!is.null(set.min)) aux[aux < set.min] <- set.min
@@ -231,14 +245,20 @@ clim2sgdf <- function(clim, set.min, set.max) {
       names(aux) <- vname
       # Defining grid topology -----------------
       aux.grid <- getGrid(grid)
-      cellcentre.offset <- vapply(aux.grid, FUN = "[", 1L, FUN.VALUE = numeric(1L))
-      cellsize <- vapply(c("resX", "resY"), FUN.VALUE = numeric(1L), FUN = function(x) attr(aux.grid, which = x))
-      aux.grid <- getCoordinates(grid)
-      cells.dim <- vapply(aux.grid, FUN.VALUE = integer(1L), FUN = "length")
-      grd <- sp::GridTopology(cellcentre.offset, cellsize, cells.dim)
-      df <- sp::SpatialGridDataFrame(grd, aux)
+      if(irregular){
+            df <- sp::SpatialPointsDataFrame(co[naind,], aux)
+      }else{
+            cellcentre.offset <- vapply(aux.grid, FUN = "[", 1L, FUN.VALUE = numeric(1L))
+            cellsize <- vapply(c("resX", "resY"), FUN.VALUE = numeric(1L), FUN = function(x) attr(aux.grid, which = x))
+            aux.grid <- getCoordinates(grid)
+            cells.dim <- vapply(aux.grid, FUN.VALUE = integer(1L), FUN = "length")
+            grd <- sp::GridTopology(cellcentre.offset, cellsize, cells.dim)
+            df <- sp::SpatialGridDataFrame(grd, aux)
+      }
       return(df)
 }
+
+
 
 
 #' @title Climatological map stippling

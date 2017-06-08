@@ -72,7 +72,9 @@ climatology <- function(grid,
                         max.ncores = 16,
                         ncores = NULL) {
       parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-      grid <- redim(grid, runtime = FALSE)
+      irregular <- FALSE
+      if("loc" %in% getDim(grid)) irregular <- TRUE
+      grid <- redim(grid, member = FALSE, runtime = FALSE)
       dimNames <- attr(grid[["Data"]], "dimensions")
       ## Member aggregation 
       if (!isTRUE(by.member)) {
@@ -105,6 +107,7 @@ climatology <- function(grid,
       grid$Dates$start <- grid$Dates$start[1]
       grid$Dates$end <- tail(grid$Dates$end, 1)
       grid <- redim(grid, drop = TRUE) %>% redim(member = FALSE, var = FALSE, drop = FALSE)
+      if(irregular) grid <- redim(grid, irregular = irregular, member = FALSE)
       attr(grid$Data, "climatology:fun") <- clim.fun[["FUN"]]
       return(grid)
 }
