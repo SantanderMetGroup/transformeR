@@ -188,7 +188,7 @@ clim2sgdf <- function(clim, set.min, set.max) {
       }
       dimNames <- getDim(grid)
       irregular <- FALSE
-      if("loc" %in% dimNames) irregular <- TRUE
+      if(is.matrix(grid$xyCoords)) irregular <- TRUE
       ## Multigrids are treated as realizations, previously aggregated by members if present
       is.multigrid <- "var" %in% dimNames
       if (is.multigrid) {
@@ -205,12 +205,8 @@ clim2sgdf <- function(clim, set.min, set.max) {
       dimNames <- getDim(grid)
       mem.ind <- grep("member", dimNames)
       n.mem <- getShape(grid, "member")
-      coords <- getCoordinates(grid)
-      if(irregular){
-            co <- cbind(coords$x, coords$y)
-      }else{
-            co <- expand.grid(coords$y, coords$x)[2:1]
-      }
+      co <- getCoordinates(grid)
+      if(!irregular) co <- expand.grid(coords$y, coords$x)[2:1]
       le <- nrow(co)
       #############hemen nago!
       if(!irregular){

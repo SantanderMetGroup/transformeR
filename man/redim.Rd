@@ -2,27 +2,27 @@
 % Please edit documentation in R/redim.R
 \name{redim}
 \alias{redim}
-\title{Complete missing dimensions of Grid or Station objects}
+\title{Complete missing dimensions of Grid objects}
 \usage{
-redim(obj, member = TRUE, runtime = FALSE, var = FALSE, station = FALSE,
-  drop = FALSE)
+redim(grid, member = TRUE, runtime = FALSE, var = FALSE,
+  irregular = FALSE, drop = FALSE)
 }
 \arguments{
-\item{obj}{A grid or station data}
-
 \item{member}{logical. Add 'member' dimension (default = TRUE)}
 
 \item{runtime}{logical. Add 'runtime' dimension (default = FALSE)}
 
 \item{var}{logical. Add 'var' dimension (default = FALSE)}
 
-\item{station}{logical. Only if \code{obj} is a stations dataset. If TRUE, the \code{"station"} 
+\item{irregular}{logical. Only if \code{obj} is a stations dataset. If TRUE, the \code{"loc"} 
 dimension is not replaced by fake \code{"lat"} and \code{"lon"} dimensions (default is FALSE).}
 
 \item{drop}{logical. Drop dimensions of length = 1 (default = FALSE)}
+
+\item{obj}{A regular or irregular (e.g. station data) grid}
 }
 \value{
-The same object with all the dimensions (i.e. member, time, station)
+The same object with all the dimensions (i.e. member, time, loc)
 }
 \description{
 Add missing dimensions to the 'Data' array as singletons. For internal usage mainly.

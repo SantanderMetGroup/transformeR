@@ -76,13 +76,18 @@ getGrid <- function(gridData) {
 
 getCoordinates <- function(obj) {
     if (is.matrix(obj$xyCoords)){
-        x <- obj$xyCoords[ ,1]
-        y <- obj$xyCoords[ ,2]
-    } else {
-        x <- obj$xyCoords$x
-        y <- obj$xyCoords$y
+        xy <- obj$xyCoords
+        return(xy)
+    }else{
+        if(!is.matrix(obj$xyCoords) && exists("lon", grid$xyCoords) && exists("lat", grid$xyCoords)){
+              x <- grid$xyCoords$lon
+              y <- grid$xyCoords$lat 
+        }else{
+              x <- obj$xyCoords$x
+              y <- obj$xyCoords$y
+        }
+        return(list("x" = x, "y" = y))
     }
-    return(list("x" = x, "y" = y))
 }
 # End
 

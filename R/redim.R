@@ -12,7 +12,7 @@
 #'  Thus, multigrids need to be subsetted along \code{"var"} prior to redimensioning via \code{\link{subsetGrid}}.
 #' @keywords internal
 #' @export
-#' @importFrom abind abind
+#' @importFrom abind abind adrop
 #' @importFrom stats na.omit
 #' @importFrom magrittr %<>%
 #' @author M. Iturbide, J. Bedia

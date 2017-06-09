@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotClimatology.R
 \name{clim2sgdf}
 \alias{clim2sgdf}
-\title{Climatology to SpatialGridDataFrame}
+\title{Climatology to SpatialGridDataFrame or SpatialPointsDataFrame}
 \usage{
 clim2sgdf(clim, set.min, set.max)
 }
