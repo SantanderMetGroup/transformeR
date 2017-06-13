@@ -80,8 +80,8 @@ getCoordinates <- function(obj) {
         return(xy)
     }else{
         if(!is.matrix(obj$xyCoords) && exists("lon", grid$xyCoords) && exists("lat", grid$xyCoords)){
-              x <- grid$xyCoords$lon
-              y <- grid$xyCoords$lat 
+              x <- obj$xyCoords$lon
+              y <- obj$xyCoords$lat 
         }else{
               x <- obj$xyCoords$x
               y <- obj$xyCoords$y

@@ -6,7 +6,8 @@
 \usage{
 interpGrid(grid, new.coordinates = list(x = NULL, y = NULL),
   method = c("nearest", "bilinear"), bilin.method = NULL,
-  parallel = FALSE, max.ncores = 16, ncores = NULL)
+  locations = FALSE, parallel = FALSE, max.ncores = 16, ncores = NULL,
+  ...)
 }
 \arguments{
 \item{grid}{An input grid to be interpolated/regridded.}
@@ -24,12 +25,18 @@ for bilinear interpolation, and \code{"nearest"}, for nearest-neighbor interpola
 \code{"fields"} the \code{\link[fields]{interp.surface.grid}} algorithm. In case any missing values exist in the input data matrix, 
 the \code{"fields"} option, able to handle missing values, need to be used. Otherwise, the \code{"akima"} option performs much faster.}
 
+\item{locations}{Logical. Only used when when location data (e.g. station data) is passed to parameter \code{grid}. Default 
+is FALSE, if TRUE, the function returns location data.}
+
 \item{parallel}{Logical. Should parallel execution be used?}
 
 \item{max.ncores}{Integer. Upper bound for user-defined number of cores.}
 
 \item{ncores}{Integer number of cores used in parallel computation. Self-selected number of
 cores is used when \code{ncpus = NULL} (the default), or when \code{maxcores} exceeds the default \code{ncores} value.}
+
+\item{...}{Further arguments for bilinear interpolation that are passed to function \code{\link[akima]{interp}} 
+from package \pkg{\link[akima]{akima}}.}
 }
 \value{
 An interpolated object preserving the structure of the input
