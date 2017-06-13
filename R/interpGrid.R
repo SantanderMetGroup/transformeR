@@ -222,9 +222,10 @@ interpGrid <- function(grid,
                         if (bilin.method == "akima") {
                               if (any_is_NA_or_NAN) message("The input grid contains missing values\nConsider using 'bilin.method=\"fields\"' instead")
                               indNoNA <- which(is.finite(z))
-                              int <- akima::interp(x = x[indNoNA], y = y[indNoNA], z[indNoNA],#t(z)[indNoNA]
-                                                   xo = new.coordinates$x, yo = new.coordinates$y,
-                                                   nx = length(new.coordinates$x), ny = length(new.coordinates$y))$z
+                              arg.list$x <- x[indNoNA] ; arg.list$y <- y[indNoNA] ; arg.list$z <- z[indNoNA]
+                              arg.list$xo <- new.coordinates$x ; arg.list$yo <- new.coordinates$y
+                              arg.list$nx <- length(new.coordinates$x) ; arg.list$ny <- length(new.coordinates$y)
+                              int <- do.call("interp", arg.list)$z
                         } else if (bilin.method == "fields") {
                               if (!any_is_NA_or_NAN & i == 1 & j == 1) message("NOTE: No missing values present in the input grid\nConsider using the option bilin.method=\"akima\" for improved speed")
                               int <- fields::interp.surface.grid(list(x = x,
