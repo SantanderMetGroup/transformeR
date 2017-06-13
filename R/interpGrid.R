@@ -32,6 +32,8 @@
 #' @param bilin.method Algorithm chosen for bilinear interpolation. Two options available: \code{"akima"} uses \code{\link[akima]{interp}} and
 #' \code{"fields"} the \code{\link[fields]{interp.surface.grid}} algorithm. In case any missing values exist in the input data matrix, 
 #' the \code{"fields"} option, able to handle missing values, need to be used. Otherwise, the \code{"akima"} option performs much faster.
+#' @param locations Logical. Only used when when location data (e.g. station data) is passed to parameter \code{grid}. Default 
+#' is FALSE, if TRUE, the function returns location data.
 #' @template templateParallelParams 
 #' @return An interpolated object preserving the structure of the input
 #' @details  In case of default definition of either x, y or both grid coordinates, the default grid
@@ -43,6 +45,8 @@
 #'  It is also possible to pass the interpolator the grid of a previously existing grid dataset using the
 #'  \code{\link{getGrid}} method.
 #' @template templateParallel
+#' @param ... Further arguments for bilinear interpolation that are passed to function \code{\link[akima]{interp}} 
+#' from package \pkg{\link[akima]{akima}}.
 #' @note To avoid unnecessary NA values, the function will not extrapolate using a new grid outside the
 #' current extent of the dataset, returning an error message.
 #' @author J. Bedia, S. Herrera, M. de Felice, M. Iturbide
@@ -68,10 +72,12 @@ interpGrid <- function(grid,
                        new.coordinates = list(x = NULL, y = NULL),
                        method = c("nearest", "bilinear"),
                        bilin.method = NULL,
-                       output = c("grid", "locations"),
+                       locations = FALSE,
                        parallel = FALSE,
                        max.ncores = 16,
-                       ncores = NULL) {
+                       ncores = NULL,
+                       ...) {
+      arg.list <- list(...)
       method <- match.arg(method, choices = c("nearest", "bilinear"))
       output <- match.arg(output, choices = c("grid", "locations"))
       if (method == "nearest" & !is.null(bilin.method)) message("NOTE: argument 'bilin.method' ignored for nearest neighbour interpolation")
@@ -84,10 +90,10 @@ interpGrid <- function(grid,
       time.ind <- grep("^time", getDim(grid))
       n.times <- getShape(grid, "time")
       lon.ind <- grep("^lon", getDim(grid))
+      lat.ind <- grep("^lat", getDim(grid))
       coords <- getCoordinates(grid)
-      if(output == "locations" && !is.matrix(coords)){
-            message("option locations ignored for gridded data")
-            output <- "grid"
+      if(locations && !is.matrix(coords)){
+            message("parameter locations ignored for gridded data")
       }else if(is.matrix(coords)){
             x <- coords[,1]
             y <- coords[,2]
@@ -159,7 +165,7 @@ interpGrid <- function(grid,
       apply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "lapply")
       if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
       # nearest indices
-      if (method == "nearest" && output == "grid") {
+      if (method == "nearest") {
             if (parallel.pars$hasparallel) {
                   message("NOTE: parallel option skipped for nearest method")
             }
@@ -167,114 +173,118 @@ interpGrid <- function(grid,
             ind.NN.x <- matrix(nrow = length(new.coordinates$x), ncol = length(new.coordinates$y))
             ind.NN.y <- ind.NN.x
             for (k in 1:length(new.coordinates$x)) {
-                        for (l in 1:length(new.coordinates$y)) {
-                              distK <- sqrt((x - new.coordinates$x[k]) ^ 2 + (y - new.coordinates$y[l]) ^ 2)
-                              # ind.NN[k,l] <- which.min(distK)
-                              aux.ind <- which(distK == min(distK), arr.ind = TRUE)
-                              if(!is.matrix(coords)){
-                                    ind.NN.x[k,l] <- aux.ind[2]
-                                    ind.NN.y[k,l] <- aux.ind[1] 
-                              }else{
-                                    ind.NN.x[k,l] <- 1
-                                    ind.NN.y[k,l] <- aux.ind
-                              }
-                              
+                  for (l in 1:length(new.coordinates$y)) {
+                        distK <- sqrt((x - new.coordinates$x[k]) ^ 2 + (y - new.coordinates$y[l]) ^ 2)
+                        # ind.NN[k,l] <- which.min(distK)
+                        aux.ind <- which(distK == min(distK), arr.ind = TRUE)
+                        if(!is.matrix(coords)){
+                              ind.NN.x[k,l] <- aux.ind[2]
+                              ind.NN.y[k,l] <- aux.ind[1] 
+                        }else{
+                              ind.NN.x[k,l] <- 1
+                              ind.NN.y[k,l] <- aux.ind
                         }
+                        
                   }
-                  # message("[", Sys.time(), "] Done")
+            }
+            # message("[", Sys.time(), "] Done")
       }
       message("[", Sys.time(), "] Performing ", method, " interpolation... may take a while")
-      if(output == "grid"){
       aux.list <- list()
-            for (i in 1:n.members) {
-                        if (n.members > 1) message("[", Sys.time(), "] Interpolating member ", i, " out of ", n.members)
-                        if (method == "nearest") {
-                                    int <- array(dim = c(n.times, length(new.coordinates$y), length(new.coordinates$x)))
-                                    for (k in 1:length(new.coordinates$x)) {
-                                          for (l in 1:length(new.coordinates$y)) {
-                                                # ind.x <- arrayInd(ind.NN[k,l], dim(x))[1]
-                                                #   ind.y <- arrayInd(ind.NN[k,l], dim(x))[2]
-                                                int[,l,k] <- grid$Data[i,,ind.NN.y[k,l],ind.NN.x[k,l]]
-                                                # int[,l,k] <- grid$Data[i,,ind.y,ind.x]
-                                          }
-                                    }
-                              aux.list[[i]] <- int
-                              int <- NULL
-                              dimNames.ref <- c("member","time","lat","lon")
-                        }
-                        if (method == "bilinear") {
-                              dimNames.ref <- c("member", "time", "lon", "lat")
-                              if(is.matrix(coords) && bilin.method == "fields"){
-                                    irr.data <- adrop(asub(grid$Data, idx = i, dims = mem.ind, drop = FALSE), drop = lon.ind)
-                                    z.mem <- mat2Dto3Darray.stations(asub(irr.data, idx = i, dims = mem.ind), x, y)
-                                    z.mem <- unname(abind(z.mem, along = 0))
-                              }else{
-                                    z.mem <- asub(grid$Data, idx = i, dims = mem.ind, drop = FALSE)
-                              }
-                              interp.list <- apply_fun(1:n.times, function(j) { # iterates in time (inefficient!, to be changed)
-                                    z <- asub(z.mem, idx = j, dims = time.ind)
-                                    any_is_NA_or_NAN <- any(!is.finite(z))
-                                    if (bilin.method == "akima") {
-                                          if (any_is_NA_or_NAN) message("The input grid contains missing values\nConsider using 'bilin.method=\"fields\"' instead")
-                                          indNoNA <- which(is.finite(z))
-                                          int <- akima::interp(x = x[indNoNA], y = y[indNoNA], z[indNoNA],#t(z)[indNoNA]
-                                                               xo = new.coordinates$x, yo = new.coordinates$y,
-                                                               linear = TRUE, extrap = FALSE, duplicate = "error",
-                                                               nx = length(new.coordinates$x), ny = length(new.coordinates$y))$z
-                                    } else if (bilin.method == "fields") {
-                                          if (!any_is_NA_or_NAN & i == 1 & j == 1) message("NOTE: No missing values present in the input grid\nConsider using the option bilin.method=\"akima\" for improved speed")
-                                          int <- fields::interp.surface.grid(list(x = x,
-                                                                                  y = y,
-                                                                                  z = t(z)),
-                                                                             grid.list = list(x = new.coordinates$x,
-                                                                                              y = new.coordinates$y))$z  
-                                                
-                                    }
-                                    z <- NULL
-                                    return(int)
-                              })
-                              aux.list[[i]] <- unname(do.call("abind", c(interp.list, along = -1L)))
-                              interp.list <- NULL
+      for (i in 1:n.members) {
+            if (n.members > 1) message("[", Sys.time(), "] Interpolating member ", i, " out of ", n.members)
+            if (method == "nearest") {
+                  int <- array(dim = c(n.times, length(new.coordinates$y), length(new.coordinates$x)))
+                  for (k in 1:length(new.coordinates$x)) {
+                        for (l in 1:length(new.coordinates$y)) {
+                              # ind.x <- arrayInd(ind.NN[k,l], dim(x))[1]
+                              #   ind.y <- arrayInd(ind.NN[k,l], dim(x))[2]
+                              int[,l,k] <- grid$Data[i,,ind.NN.y[k,l],ind.NN.x[k,l]]
+                              # int[,l,k] <- grid$Data[i,,ind.y,ind.x]
                         }
                   }
-                  grid$Data <- unname(do.call("abind", c(aux.list, along = -1L)))
-                  attr(grid$Data, "dimensions") <- dimNames.ref
-                  aux.list <- NULL
-                  # Dimension ordering & Coordinate system
-                  tab <- c("member", "time", "level", "lat", "lon")
-                  grid$xyCoords <- list("x" = new.coordinates$x, "y" = new.coordinates$y)
-                  attr(grid$xyCoords, "resX") <- abs(new.coordinates$x[2] - new.coordinates$x[1])
-                  attr(grid$xyCoords, "resY") <- abs(new.coordinates$y[2] - new.coordinates$y[1]) 
-                  if (is.null(attr(grid$xyCoords, "projection")) & !is.null(attr(new.coordinates, "projection"))) {
-                        attr(grid$xyCoords, "projection") <- attr(new.coordinates, "projection")
-                  }
-                  attr(grid$xyCoords, "interpolation") <-  method
-            
-            x <- getDim(grid)
-            b <- na.exclude(match(tab, x))
-            x <- x[b]
-            grid$Data <- aperm(grid$Data, perm = b)
-            attr(grid$Data, "dimensions")  <- x
-      }else if(output == "locations"){
-            for(k in 1:length(x)){
-                  distx <- abs(new.coordinates$x - x[k])
-                  disty <- abs(new.coordinates$y - y[k])
-                  coords[k,] <- c(new.coordinates$x[which(distx == min(distx))[1]], 
-                                  new.coordinates$y[which(disty == min(disty))[1]])
+                  aux.list[[i]] <- int
+                  int <- NULL
+                  dimNames.ref <- c("member","time","lat","lon")
             }
+            if (method == "bilinear") {
+                  dimNames.ref <- c("member", "time", "lon", "lat")
+                  if(is.matrix(coords) && bilin.method == "fields"){
+                        irr.data <- adrop(asub(grid$Data, idx = i, dims = mem.ind, drop = FALSE), drop = lon.ind)
+                        z.mem <- mat2Dto3Darray.stations(asub(irr.data, idx = i, dims = mem.ind), x, y)
+                        z.mem <- unname(abind(z.mem, along = 0))
+                  }else{
+                        z.mem <- asub(grid$Data, idx = i, dims = mem.ind, drop = FALSE)
+                  }
+                  interp.list <- apply_fun(1:n.times, function(j) { # iterates in time (inefficient!, to be changed)
+                        z <- asub(z.mem, idx = j, dims = time.ind)
+                        any_is_NA_or_NAN <- any(!is.finite(z))
+                        if (bilin.method == "akima") {
+                              if (any_is_NA_or_NAN) message("The input grid contains missing values\nConsider using 'bilin.method=\"fields\"' instead")
+                              indNoNA <- which(is.finite(z))
+                              int <- akima::interp(x = x[indNoNA], y = y[indNoNA], z[indNoNA],#t(z)[indNoNA]
+                                                   xo = new.coordinates$x, yo = new.coordinates$y,
+                                                   nx = length(new.coordinates$x), ny = length(new.coordinates$y))$z
+                        } else if (bilin.method == "fields") {
+                              if (!any_is_NA_or_NAN & i == 1 & j == 1) message("NOTE: No missing values present in the input grid\nConsider using the option bilin.method=\"akima\" for improved speed")
+                              int <- fields::interp.surface.grid(list(x = x,
+                                                                      y = y,
+                                                                      z = t(z)),
+                                                                 grid.list = list(x = new.coordinates$x,
+                                                                                  y = new.coordinates$y))$z  
+                              
+                        }
+                        z <- NULL
+                        return(int)
+                  })
+                  aux.list[[i]] <- unname(do.call("abind", c(interp.list, along = -1L)))
+                  interp.list <- NULL
+            }
+      }
+      grid$Data <- unname(do.call("abind", c(aux.list, along = -1L)))
+      attr(grid$Data, "dimensions") <- dimNames.ref
+      aux.list <- NULL
+      # Dimension ordering & Coordinate system
+      tab <- c("member", "time", "level", "lat", "lon")
+      grid$xyCoords <- list("x" = new.coordinates$x, "y" = new.coordinates$y)
+      attr(grid$xyCoords, "resX") <- abs(new.coordinates$x[2] - new.coordinates$x[1])
+      attr(grid$xyCoords, "resY") <- abs(new.coordinates$y[2] - new.coordinates$y[1]) 
+      if (is.null(attr(grid$xyCoords, "projection")) & !is.null(attr(new.coordinates, "projection"))) {
+            attr(grid$xyCoords, "projection") <- attr(new.coordinates, "projection")
+      }
+      attr(grid$xyCoords, "interpolation") <-  method
+      
+      gdims <- getDim(grid)
+      b <- na.exclude(match(tab, gdims))
+      gdims <- gdims[b]
+      grid$Data <- aperm(grid$Data, perm = b)
+      attr(grid$Data, "dimensions")  <- gdims
+      if(locations){
+            for(k in 1:length(x)){
+                  distx <- abs(grid$xyCoords$x - x[k])
+                  disty <- abs(grid$xyCoords$y - y[k])
+                  indx <- which(distx == min(distx))[1]
+                  indy <- which(disty == min(disty))[1]
+                  coords[k,] <- c(grid$xyCoords$x[indx],
+                                  grid$xyCoords$y[indy])
+                  aux <- asub(grid$Data, idx = list(indy, indx), dims = c(lat.ind, lon.ind), drop = FALSE)
+                  aux.list[[k]] <- adrop(aux, drop = lon.ind)
+            }
+            grid$Data <- unname(do.call("abind", c(aux.list, along = lat.ind)))
+            attr(grid$Data, "dimensions")  <- c(gdims[-c(lat.ind,lon.ind)], "loc")
             grid$xyCoords <- coords
       }
       if (is.null(attr(grid$xyCoords, "projection"))) {
-                  attr(grid$xyCoords, "projection") <- "undefined"
+            attr(grid$xyCoords, "projection") <- "undefined"
       }
       grid <- redim(grid, drop = TRUE)
       message("[", Sys.time(), "] Done")
       return(grid)
 }
-      # End
-      
-      
-      
+# End
+
+
+
 mat2Dto3Darray.stations <- function(mat2D, x, y) {
       mat <- matrix(NA, ncol = length(x), nrow = length(y))
       aux.list <- lapply(1:nrow(mat2D), function(i) {
