@@ -206,7 +206,7 @@ clim2sgdf <- function(clim, set.min, set.max) {
       mem.ind <- grep("member", dimNames)
       n.mem <- getShape(grid, "member")
       co <- getCoordinates(grid)
-      if(!irregular) co <- expand.grid(coords$y, coords$x)[2:1]
+      if(!irregular) co <- expand.grid(co$y, co$x)[2:1]
       le <- nrow(co)
       #############hemen nago!
       if(!irregular){
