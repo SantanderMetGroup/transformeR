@@ -79,7 +79,6 @@ interpGrid <- function(grid,
                        ...) {
       arg.list <- list(...)
       method <- match.arg(method, choices = c("nearest", "bilinear"))
-      output <- match.arg(output, choices = c("grid", "locations"))
       if (method == "nearest" & !is.null(bilin.method)) message("NOTE: argument 'bilin.method' ignored for nearest neighbour interpolation")
       if (method == "bilinear") bilin.method <- match.arg(bilin.method, choices = c("akima", "fields"))
       parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
@@ -93,8 +92,10 @@ interpGrid <- function(grid,
       lat.ind <- grep("^lat", getDim(grid))
       coords <- getCoordinates(grid)
       if(locations && !is.matrix(coords)){
-            message("parameter locations ignored for gridded data")
-      }else if(is.matrix(coords)){
+            locations <- FALSE
+            message("NOTE: parameter locations ignored for gridded data")
+      }
+      if(is.matrix(coords)){
             x <- coords[,1]
             y <- coords[,2]
       }else if(!is.matrix(coords)){
@@ -191,6 +192,8 @@ interpGrid <- function(grid,
       }
       message("[", Sys.time(), "] Performing ", method, " interpolation... may take a while")
       aux.list <- list()
+      any_is_NA_or_NAN <- any(!is.finite(grid$Data))
+      if (any_is_NA_or_NAN && bilin.method == "akima") message("The input grid contains missing values\nConsider using 'bilin.method=\"fields\"' instead")
       for (i in 1:n.members) {
             if (n.members > 1) message("[", Sys.time(), "] Interpolating member ", i, " out of ", n.members)
             if (method == "nearest") {
@@ -218,9 +221,7 @@ interpGrid <- function(grid,
                   }
                   interp.list <- apply_fun(1:n.times, function(j) { # iterates in time (inefficient!, to be changed)
                         z <- asub(z.mem, idx = j, dims = time.ind)
-                        any_is_NA_or_NAN <- any(!is.finite(z))
                         if (bilin.method == "akima") {
-                              if (any_is_NA_or_NAN) message("The input grid contains missing values\nConsider using 'bilin.method=\"fields\"' instead")
                               indNoNA <- which(is.finite(z))
                               arg.list$x <- x[indNoNA] ; arg.list$y <- y[indNoNA] ; arg.list$z <- z[indNoNA]
                               arg.list$xo <- new.coordinates$x ; arg.list$yo <- new.coordinates$y
