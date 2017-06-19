@@ -6,8 +6,7 @@
 \usage{
 interpGrid(grid, new.coordinates = list(x = NULL, y = NULL),
   method = c("nearest", "bilinear"), bilin.method = NULL,
-  locations = FALSE, parallel = FALSE, max.ncores = 16, ncores = NULL,
-  ...)
+  parallel = FALSE, max.ncores = 16, ncores = NULL, ...)
 }
 \arguments{
 \item{grid}{An input grid to be interpolated/regridded.}
@@ -24,9 +23,6 @@ for bilinear interpolation, and \code{"nearest"}, for nearest-neighbor interpola
 \item{bilin.method}{Algorithm chosen for bilinear interpolation. Two options available: \code{"akima"} uses \code{\link[akima]{interp}} and
 \code{"fields"} the \code{\link[fields]{interp.surface.grid}} algorithm. In case any missing values exist in the input data matrix, 
 the \code{"fields"} option, able to handle missing values, need to be used. Otherwise, the \code{"akima"} option performs much faster.}
-
-\item{locations}{Logical. Only used when when location data (e.g. station data) is passed to parameter \code{grid}. Default 
-is FALSE, if TRUE, the function returns location data.}
 
 \item{parallel}{Logical. Should parallel execution be used?}
 

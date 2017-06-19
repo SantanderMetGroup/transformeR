@@ -79,7 +79,7 @@ getCoordinates <- function(obj) {
         xy <- obj$xyCoords
         return(xy)
     }else{
-        if(!is.matrix(obj$xyCoords) && exists("lon", grid$xyCoords) && exists("lat", grid$xyCoords)){
+        if(!is.matrix(obj$xyCoords) && exists("lon", obj$xyCoords) && exists("lat", obj$xyCoords)){
               x <- obj$xyCoords$lon
               y <- obj$xyCoords$lat 
         }else{
@@ -396,3 +396,66 @@ checkSeason <- function(...) {
     if (!all(oops)) stop("Inconsistent seasons among input grids")
 }    
     
+
+#' @title Check if the imput grid is regular
+#' @description Check if the coordinates in the data are regular or irregular
+#' @param grid a grid or station data, or the objectreturned by function \code{\link{getGrid}}
+#' @return Logical.
+#' @seealso \code{\link{getGrid}}
+#' @author M Iturbide
+#' @keywords internal
+#' @family is.helpers
+#' @export
+#' @examples 
+#' data("EOBS_Iberia_tas")
+#' isRegular(EOBS_Iberia_tas)
+#' isRegular(getGrid(EOBS_Iberia_tas))
+
+isRegular <- function(grid){
+      gr <- tryCatch({getGrid(grid)}, error = function(err){grid})
+      x <- sort(gr$x)
+      y <- sort(gr$y)
+      xdists <- lapply(1:(length(x)-1), function(l){
+            x[l+1] - x[l]
+      })
+      ydists <- lapply(1:(length(y)-1), function(l){
+            y[l+1] - y[l]
+      })
+      xa <- sum(unlist(xdists) - unlist(xdists)[1])
+      ya <- sum(unlist(ydists) - unlist(ydists)[1])
+      if(any(c(xa, ya) !=0)){
+            FALSE
+      }else{
+            TRUE
+      }
+}
+
+#End
+
+
+mat2Dto3Darray.stations <- function(mat2D, x, y) {
+      mat <- matrix(NA, ncol = length(x), nrow = length(y))
+      aux.list <- lapply(1:nrow(mat2D), function(i) {
+            diag(mat) <- mat2D[i, ]
+            mat
+      })
+      arr <- unname(do.call("abind", c(aux.list, along = -1)))
+      aux.list <- NULL
+      arr <- aperm(arr, perm = c(1,3,2))
+      attr(arr, "dimensions") <- c("time", "lat", "lon")
+      return(arr)
+}
+#End
+
+array3Dto2Dmat.stations <- function(array3D) {
+      dims <- dim(array3D)
+      aux.list <- lapply(1:dims[1], function(i) {
+            diag(array3D[i, ,])
+      })
+      mat <- unname(do.call("abind", c(aux.list, along = -1)))
+      aux.list <- NULL
+      attr(mat, "dimensions") <- c("time", "loc")
+      return(mat)
+}
+
+#End

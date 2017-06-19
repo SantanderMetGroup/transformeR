@@ -61,7 +61,7 @@
 #' }
 #'    
 #' @importFrom abind abind
-#' @importFrom sp spplot SpatialGridDataFrame GridTopology
+#' @importFrom sp spplot SpatialGridDataFrame SpatialPointsDataFrame GridTopology
 #' @importFrom grDevices colorRampPalette
 #' 
 #' @export
