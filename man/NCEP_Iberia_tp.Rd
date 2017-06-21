@@ -3,13 +3,42 @@
 \docType{data}
 \name{NCEP_Iberia_tp}
 \alias{NCEP_Iberia_tp}
-\title{Grid containing NCEP reanalysis data of precipitation for the Iberian Peninsula.}
+\alias{NCEP_Iberia_tp}
+\title{Grid containing NCEP reanalysis data of daily precipitation for the 
+Iberian Peninsula (DJF, 1983-2002).}
 \format{A grid}
 \source{
+\url{http://www.meteo.unican.es/ecoms-udg}
+
 subset of NCEP reanalysis data, which is accessible through the \strong{ECOMS User Data Gateway (ECOMS-UDG)}
 }
 \description{
+This R data object was obtained from the UDG-ECOMS server 
+(\url{http://www.meteo.unican.es/ecoms-udg}, 
+log in is requiered, see \code{\link[loadeR]{loginUDG}}) 
+by means of function \code{\link[loadeR.ECOMS]{loadECOMS}} 
+(package \href{https://github.com/SantanderMetGroup/loadeR.ECOMS}{\code{loadeR.ECOMS}}) 
+in the following manner:
+
+\code{years <- 1983:2002}\cr 
+\code{season <- c(12,1,2)}\cr 
+\code{lonLim <- c(-10, 4)}\cr 
+\code{latLim <- c(35, 44)}\cr 
+
+
+\code{loginUDG("username", "pasword")}\cr 
+
+
+\code{NCEP_Iberia_tp <- loadECOMS(dataset = "NCEP_reanalysis1",
+var = "pr", years = years, lonLim = lonLim, latLim = latLim, season = season,
+time = "DD", aggr.d = "mean")}
+
 NCEP_Iberia_tp is a grid object returned by loadECOMS from package loadeR.ECOMS
+}
+\examples{
+data(NCEP_Iberia_tp)
+plotClimatology(climatology(NCEP_Iberia_tp),
+                backdrop.theme = "countries", scales = list(draw = TRUE))
 }
 \keyword{NCEP}
 \keyword{reanalysis}

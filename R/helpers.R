@@ -423,7 +423,7 @@ isRegular <- function(grid){
       })
       xa <- sum(unlist(xdists) - unlist(xdists)[1])
       ya <- sum(unlist(ydists) - unlist(ydists)[1])
-      if(any(c(xa, ya) !=0)){
+      if(any(c(xa, ya) > 0.00001)){
             FALSE
       }else{
             TRUE

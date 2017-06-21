@@ -12,6 +12,8 @@ interpGrid(grid, new.coordinates = list(x = NULL, y = NULL),
 \item{grid}{An input grid to be interpolated/regridded.}
 
 \item{new.coordinates}{Definition of the new grid coordinates, in the form of a list with the x and y components, in thir order.
+If new coordinates correspond to an irregular grid, lengths for x and y must be the same: Each position in x and y correspond to
+a new location (a pair of coordinates).
 Each component consists of a vector of length three with components \emph{from}, \emph{to} and \emph{by},
  in this order, similar as the arguments passed to the \code{\link[base]{seq}} function, giving the 
  westernmost, easternmost and grid cell width in the X axis and, in the same way,
@@ -74,19 +76,21 @@ Parallel computing is currently not available for Windows machines.
 \examples{
 \dontrun{
 # Load air temperature at 850 mb isobaric pressure level for boreal winter (DJF) 1991-2010
-data(iberia_ncep_ta850)
-par(mfrow = c(2,1))
-plotMeanGrid(iberia_ncep_ta850)
+data(EOBS_Iberia_tp)
+plotClimatology(climatology(EOBS_Iberia_tp))
 # Bilinear interpolation to domain centered in Spain using a 0.5 degree resolution 
 # in both X and Y axes
-t <- interpGrid(iberia_ncep_ta850, new.coordinates = list(x = c(-10,5,.5),
-                                                          y = c(36,44,.5)),
+t <- interpGrid(EOBS_Iberia_tp, new.coordinates = list(x = seq(-10,5,.5),
+                                                          y = seq(36,44,.5)),
                                    method = "bilinear",
                                    bilin.method = "akima")
-plotMeanGrid(t)
-par(mfrow=c(1,1))
+plotClimatology(climatology(t))
 # New attributes indicate that the data have been interpolated:
 attributes(t$xyCoords)
+
+# Using the coordinate information of another grid
+data(NCEP_Iberia_tp)
+
 }
 }
 \author{

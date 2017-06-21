@@ -3,13 +3,32 @@
 \docType{data}
 \name{EOBS_Iberia_tp}
 \alias{EOBS_Iberia_tp}
-\title{Grid containing E-OBS daily data of precipitation for the Iberian Peninsula (DJF, 1998-2000).}
+\title{Grid containing E-OBS daily data of precipitation for the Iberian Peninsula (DJF, 1983-2002).}
 \format{A grid}
 \source{
-subset of the E-OBS observational gridded dataset
+\url{http://www.meteo.unican.es/udg-tap}
 }
 \description{
-EOBS_Iberia_tp is a grid object returned by \code{loadECOMS} from package \pkg{loadeR.ECOMS}
+This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/ecoms-udg},
+log in is requiered, 
+see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
+(package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
+
+
+\code{years <- 1983:2002}\cr 
+\code{season <- c(12,1,2)}\cr 
+\code{lonLim <- c(-10, 4)}\cr 
+\code{latLim <- c(35, 44)}\cr 
+
+
+\code{loginUDG("username", "pasword")}\cr 
+ 
+\code{EOBS_Iberia_tas <- loadGridData(dataset = "http://meteo.unican.es/tds5/dodsC/eobs/e-obs_v14_0.50regular.ncml", 
+                                      var = "rr", 
+                                      years = years, 
+                                      lonLim = lonLim, 
+                                      latLim = latLim, 
+                                      season = season)}\cr
 }
 \examples{
 data("EOBS_Iberia_tp")
@@ -23,5 +42,5 @@ plotClimatology(climatology(total.precip.annual),
 \seealso{
 \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
 }
-\keyword{gridded}
+\keyword{Gridded}
 \keyword{observations}
