@@ -9,7 +9,7 @@
 \url{http://www.meteo.unican.es/udg-tap}
 }
 \description{
-This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/ecoms-udg}, 
+This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 log in is requiered, 
 see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
 (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:

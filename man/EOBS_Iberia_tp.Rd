@@ -9,7 +9,7 @@
 \url{http://www.meteo.unican.es/udg-tap}
 }
 \description{
-This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/ecoms-udg},
+This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap},
 log in is requiered, 
 see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
 (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
@@ -23,7 +23,7 @@ see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loa
 
 \code{loginUDG("username", "pasword")}\cr 
  
-\code{EOBS_Iberia_tas <- loadGridData(dataset = "http://meteo.unican.es/tds5/dodsC/eobs/e-obs_v14_0.50regular.ncml", 
+\code{EOBS_Iberia_tp <- loadGridData(dataset = "http://meteo.unican.es/tds5/dodsC/eobs/e-obs_v14_0.50regular.ncml", 
                                       var = "rr", 
                                       years = years, 
                                       lonLim = lonLim, 

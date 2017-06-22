@@ -45,10 +45,11 @@ getGrid <- function(gridData) {
                 attr(out, "resY") <- attr(gridData$xyCoords, "resY")   
           }
     }else{
-        # if ("lon" %in% names(gridData$xyCoords)) stop("Not a regular grid")
+        if ("lon" %in% names(gridData$xyCoords)) rot <- TRUE
         grid.x <- c(gridData$xyCoords$x[1], tail(gridData$xyCoords$x, 1))
         grid.y <- c(gridData$xyCoords$y[1], tail(gridData$xyCoords$y, 1))
         out <- list(x = grid.x, y = grid.y)
+        if(rot) out$lon <- gridData$xyCoords$lon ; out$lat <- gridData$xyCoords$lat
         attributes(out) <- attributes(gridData$xyCoords)
         if (!exists("resX", attributes(gridData$xyCoords))) {
             attr(out, "resX") <- (tail(gridData$xyCoords$x, 1) - gridData$xyCoords$x[1]) / (length(gridData$xyCoords$x) - 1)
@@ -57,9 +58,11 @@ getGrid <- function(gridData) {
         }
         if (!exists("resY", attributes(gridData$xyCoords))) {
             attr(out, "resY") <- (tail(gridData$xyCoords$y, 1) - gridData$xyCoords$y[1]) / (length(gridData$xyCoords$y) - 1)
+            
         }else{
             attr(out, "resY") <- attr(gridData$xyCoords, "resY")   
         }
+        if(rot) attr(out, "resLON") <- NA ; attr(out, "resLAT") <- NA
     }
     return(out)
 }

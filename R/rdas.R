@@ -1,3 +1,68 @@
+#' @title Grid containing CORDEX data (KNMI) of daily precipitation for the Iberian Peninsula (DJF, 1983-2002).
+#' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
+#' log in is requiered, 
+#' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
+#' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
+#' 
+#' 
+#' \code{years <- 1983:2002}\cr 
+#' \code{season <- c(12,1,2)}\cr 
+#' \code{lonLim <- c(-10, 4)}\cr 
+#' \code{latLim <- c(35, 44)}\cr 
+#' 
+#' 
+#' \code{loginUDG("username", "pasword")}\cr 
+#'  
+#' \code{CORDEX_Iberia_tp <- loadGridData(dataset = "http://www.meteo.unican.es/tds5/dodsC/cordex/EUR-11/KNMI/ECMWF-ERAINT_evaluation_r1i1p1_RACMO22E_v1_day.ncml",
+#' var = "pr", years = years, lonLim = lonLim, latLim = latLim, season = season)}\cr
+#' \code{CORDEX_Iberia_tp$Data <- CORDEX_Iberia_tp$Data * 86400}\cr 
+#' \code{attr(CORDEX_Iberia_tp$Variable, "units") <- "mm"}\cr
+#'  
+#' @format A grid
+#' @name CORDEX_Iberia_tp
+#' @docType data
+#' @keywords Gridded observations
+#' @source  \url{http://www.meteo.unican.es/udg-tap}
+#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
+#' @examples 
+#' data("CORDEX_Iberia_tp")
+#' plotClimatology(climatology(CORDEX_Iberia_tp),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
+NULL
+
+#' @title Grid containing CORDEX data (KNMI) of daily mean temperature for the Iberian Peninsula (DJF, 1983-2002).
+#' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
+#' log in is requiered, 
+#' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
+#' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
+#' 
+#' 
+#' \code{years <- 1983:2002}\cr 
+#' \code{season <- c(12,1,2)}\cr 
+#' \code{lonLim <- c(-10, 4)}\cr 
+#' \code{latLim <- c(35, 44)}\cr 
+#' 
+#' 
+#' \code{loginUDG("username", "pasword")}\cr 
+#'  
+#' \code{CORDEX_Iberia_tas <- loadGridData(dataset = "http://www.meteo.unican.es/tds5/dodsC/cordex/EUR-11/KNMI/ECMWF-ERAINT_evaluation_r1i1p1_RACMO22E_v1_day.ncml",
+#' var = "tas", years = years, lonLim = lonLim, latLim = latLim, season = season)}\cr
+#' \code{CORDEX_Iberia_tas$Data <- CORDEX_Iberia_tas$Data - 273.15}\cr 
+#' \code{attr(CORDEX_Iberia_tas$Variable, "units") <- "Celsius"}\cr
+#'  
+#' @format A grid
+#' @name CORDEX_Iberia_tas
+#' @docType data
+#' @keywords Gridded observations
+#' @source  \url{http://www.meteo.unican.es/udg-tap}
+#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
+#' @examples 
+#' data("CORDEX_Iberia_tas")
+#' plotClimatology(climatology(CORDEX_Iberia_tas),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
+NULL
+
+
 #' @title Station data containing VALUE daily data of precipitation for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained by means of function \code{\link[loadeR]{loadStationData}} 
 #' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:

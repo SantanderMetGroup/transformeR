@@ -9,7 +9,7 @@ Iberian Peninsula (DJF, 1983-2002).}
 \url{http://www.meteo.unican.es/ecoms-udg}
 }
 \description{
-This R data object was obtained from the UDG-ECOMS server 
+This R data object was obtained from the ECOMS-UDG server 
 (\url{http://www.meteo.unican.es/ecoms-udg}, 
 log in is requiered, see \code{\link[loadeR]{loginUDG}}) 
 by means of function \code{\link[loadeR.ECOMS]{loadECOMS}} 
