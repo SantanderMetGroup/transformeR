@@ -25,6 +25,17 @@ The function makes a number of checks in order to test the spatiotemporal compat
   values when loading the grids, or using the \code{\link{interpGrid}} interpolator in conjuntion with the \code{\link{getGrid}}
   method.
 }
+\examples{
+data("CFS_Iberia_tas")
+# We first diaggregate in various grids with different time periods
+period1 <- subsetGrid(CFS_Iberia_tas, years = 1983:1985)
+period2 <- subsetGrid(CFS_Iberia_tas, years = 1986:1988)
+# Then we aggregate and compare to the original data (containing the full continuous period)
+bindedGrid <- bindGrid.time(period1, period2)
+plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline")
+plotClimatology(climatology(CFS_Iberia_tas), backdrop.theme = "coastline")
+
+}
 \seealso{
 Other internal.helpers: \code{\link{array3Dto2Dmat}},
   \code{\link{bindGrid.member}},

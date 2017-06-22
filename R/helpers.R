@@ -31,40 +31,47 @@
 #' 
 
 getGrid <- function(gridData) {
-    if (is.matrix(gridData$xyCoords)) {
-          out <- list(x = as.numeric(gridData$xyCoords[,1]), y = as.numeric(gridData$xyCoords[,2]))
-          attr(out, "type") <- "irregular"
-          if (!exists("resX", attributes(gridData$xyCoords))) {
-                attr(out, "resX") <- NULL
-          }else{
-                attr(out, "resX") <- attr(gridData$xyCoords, "resX")
-          }
-          if (!exists("resY", attributes(gridData$xyCoords))) {
-                attr(out, "resY") <- NULL
-          }else{
-                attr(out, "resY") <- attr(gridData$xyCoords, "resY")   
-          }
-    }else{
-        if ("lon" %in% names(gridData$xyCoords)) rot <- TRUE
-        grid.x <- c(gridData$xyCoords$x[1], tail(gridData$xyCoords$x, 1))
-        grid.y <- c(gridData$xyCoords$y[1], tail(gridData$xyCoords$y, 1))
-        out <- list(x = grid.x, y = grid.y)
-        if(rot) out$lon <- gridData$xyCoords$lon ; out$lat <- gridData$xyCoords$lat
-        attributes(out) <- attributes(gridData$xyCoords)
-        if (!exists("resX", attributes(gridData$xyCoords))) {
-            attr(out, "resX") <- (tail(gridData$xyCoords$x, 1) - gridData$xyCoords$x[1]) / (length(gridData$xyCoords$x) - 1)
-        }else{
-            attr(out, "resX") <- attr(gridData$xyCoords, "resX")
-        }
-        if (!exists("resY", attributes(gridData$xyCoords))) {
-            attr(out, "resY") <- (tail(gridData$xyCoords$y, 1) - gridData$xyCoords$y[1]) / (length(gridData$xyCoords$y) - 1)
-            
-        }else{
-            attr(out, "resY") <- attr(gridData$xyCoords, "resY")   
-        }
-        if(rot) attr(out, "resLON") <- NA ; attr(out, "resLAT") <- NA
-    }
-    return(out)
+      rot <- FALSE
+      if (is.matrix(gridData$xyCoords)) {
+            out <- list(x = as.numeric(gridData$xyCoords[,1]), y = as.numeric(gridData$xyCoords[,2]))
+            attr(out, "type") <- "irregular"
+            if (!exists("resX", attributes(gridData$xyCoords))) {
+                  attr(out, "resX") <- NULL
+            }else{
+                  attr(out, "resX") <- attr(gridData$xyCoords, "resX")
+            }
+            if (!exists("resY", attributes(gridData$xyCoords))) {
+                  attr(out, "resY") <- NULL
+            }else{
+                  attr(out, "resY") <- attr(gridData$xyCoords, "resY")   
+            }
+      }else{
+            if ("lon" %in% names(gridData$xyCoords)) rot <- TRUE
+            grid.x <- c(gridData$xyCoords$x[1], tail(gridData$xyCoords$x, 1))
+            grid.y <- c(gridData$xyCoords$y[1], tail(gridData$xyCoords$y, 1))
+            out <- list(x = grid.x, y = grid.y)
+            if(rot){
+                  out$lon <- gridData$xyCoords$lon 
+                  out$lat <- gridData$xyCoords$lat
+            }
+            attributes(out) <- attributes(gridData$xyCoords)
+            if (!exists("resX", attributes(gridData$xyCoords))) {
+                  attr(out, "resX") <- (tail(gridData$xyCoords$x, 1) - gridData$xyCoords$x[1]) / (length(gridData$xyCoords$x) - 1)
+            }else{
+                  attr(out, "resX") <- attr(gridData$xyCoords, "resX")
+            }
+            if (!exists("resY", attributes(gridData$xyCoords))) {
+                  attr(out, "resY") <- (tail(gridData$xyCoords$y, 1) - gridData$xyCoords$y[1]) / (length(gridData$xyCoords$y) - 1)
+                  
+            }else{
+                  attr(out, "resY") <- attr(gridData$xyCoords, "resY")   
+            }
+            if(rot){
+                  attr(out, "resLON") <- NA 
+                  attr(out, "resLAT") <- NA
+            } 
+      }
+      return(out)
 }
 # End
 
@@ -78,19 +85,19 @@ getGrid <- function(gridData) {
 #' @export
 
 getCoordinates <- function(obj) {
-    if (is.matrix(obj$xyCoords)){
-        xy <- obj$xyCoords
-        return(xy)
-    }else{
-        if(!is.matrix(obj$xyCoords) && exists("lon", obj$xyCoords) && exists("lat", obj$xyCoords)){
-              x <- obj$xyCoords$lon
-              y <- obj$xyCoords$lat 
-        }else{
-              x <- obj$xyCoords$x
-              y <- obj$xyCoords$y
-        }
-        return(list("x" = x, "y" = y))
-    }
+      if (is.matrix(obj$xyCoords)){
+            xy <- obj$xyCoords
+            return(xy)
+      }else{
+            if(!is.matrix(obj$xyCoords) && exists("lon", obj$xyCoords) && exists("lat", obj$xyCoords)){
+                  x <- obj$xyCoords$lon
+                  y <- obj$xyCoords$lat 
+            }else{
+                  x <- obj$xyCoords$x
+                  y <- obj$xyCoords$y
+            }
+            return(list("x" = x, "y" = y))
+      }
 }
 # End
 
@@ -108,17 +115,17 @@ getCoordinates <- function(obj) {
 #' getSeason(iberia_ncep_ta850) # Boreal winter (DJF)
 
 getSeason <- function(obj) {
-    if ("season" %in% names(attributes(obj$Dates))) {
-        attr(obj$Dates, "season")
-    } else {
-        dimNames <- getDim(obj)
-        aux <- if (is.null(names(obj$Dates))) {
-            as.integer(substr(obj$Dates[[1]]$start, 6,7))      
-        } else {
-            as.integer(substr(obj$Dates$start, 6,7))      
-        }
-        unique(aux)
-    }
+      if ("season" %in% names(attributes(obj$Dates))) {
+            attr(obj$Dates, "season")
+      } else {
+            dimNames <- getDim(obj)
+            aux <- if (is.null(names(obj$Dates))) {
+                  as.integer(substr(obj$Dates[[1]]$start, 6,7))      
+            } else {
+                  as.integer(substr(obj$Dates$start, 6,7))      
+            }
+            unique(aux)
+      }
 }
 # End
 
@@ -164,28 +171,28 @@ getSeason <- function(obj) {
 #' 
 
 getYearsAsINDEX <- function(obj) {
-    season <- getSeason(obj)
-    aux.dates <- getRefDates(obj)
-    yrs <- as.numeric(substr(aux.dates,1,4))
-    mon <- as.numeric(substr(aux.dates,6,7))
-    if (identical(yrs, unique(yrs))) {
-        yrs
-        if (!identical(season, sort(season))) {
-            yrs <- yrs + 1
-        }
-    } else {    
-        if (!identical(season, sort(season))) {
-            yy <- unique(yrs)[-1]
-            aux <- match(mon, season)
-            brks <- c(1, which(diff(aux) < 0) + 1, length(aux) + 1)
-            l <- lapply(1:(length(brks) - 1), function(x) {
-                a <- yrs[brks[x]:(brks[x + 1] - 1)]
-                return(rep(yy[x], length(a)))
-            })
-            yrs  <- do.call("c", l)
-        }
-    }
-    return(yrs)
+      season <- getSeason(obj)
+      aux.dates <- getRefDates(obj)
+      yrs <- as.numeric(substr(aux.dates,1,4))
+      mon <- as.numeric(substr(aux.dates,6,7))
+      if (identical(yrs, unique(yrs))) {
+            yrs
+            if (!identical(season, sort(season))) {
+                  yrs <- yrs + 1
+            }
+      } else {    
+            if (!identical(season, sort(season))) {
+                  yy <- unique(yrs)[-1]
+                  aux <- match(mon, season)
+                  brks <- c(1, which(diff(aux) < 0) + 1, length(aux) + 1)
+                  l <- lapply(1:(length(brks) - 1), function(x) {
+                        a <- yrs[brks[x]:(brks[x + 1] - 1)]
+                        return(rep(yy[x], length(a)))
+                  })
+                  yrs  <- do.call("c", l)
+            }
+      }
+      return(yrs)
 }
 # End
 
@@ -199,7 +206,7 @@ getYearsAsINDEX <- function(obj) {
 #' @author J. Bedia
 
 getDim <- function(obj) {
-    attr(obj[["Data"]], "dimensions")
+      attr(obj[["Data"]], "dimensions")
 }
 
 #' @title  Retrieve array shape 
@@ -212,16 +219,16 @@ getDim <- function(obj) {
 #' @author J. Bedia
 
 getShape <- function(obj, dimension = NULL) {
-    dimNames <- getDim(obj)
-    shape <- dim(obj[["Data"]])
-    if (!is.null(dimension)) {
-        ind <- match(dimension, dimNames)
-        if (anyNA(ind)) stop("Input 'dimension' value not found")
-        shape <- shape[ind]
-        dimNames <- dimNames[ind]
-    }
-    names(shape) <- dimNames
-    return(shape)
+      dimNames <- getDim(obj)
+      shape <- dim(obj[["Data"]])
+      if (!is.null(dimension)) {
+            ind <- match(dimension, dimNames)
+            if (anyNA(ind)) stop("Input 'dimension' value not found")
+            shape <- shape[ind]
+            dimNames <- dimNames[ind]
+      }
+      names(shape) <- dimNames
+      return(shape)
 }
 
 
@@ -238,10 +245,10 @@ getShape <- function(obj, dimension = NULL) {
 #' @export
 
 draw.world.lines <- function(...) {
-    load(system.file(package="transformeR","wrl.Rda"), envir = environment())
-    for (i in 1:length(node.list)) {
-        lines(node.list[[i]][,1], node.list[[i]][,2], ...)            
-    }
+      load(system.file(package="transformeR","wrl.Rda"), envir = environment())
+      for (i in 1:length(node.list)) {
+            lines(node.list[[i]][,1], node.list[[i]][,2], ...)            
+      }
 }
 
 
@@ -261,7 +268,7 @@ draw.world.lines <- function(...) {
 #' (1885:1937)[leap.years]
 
 which.leap <- function(years) {
-    which((years %% 4 == 0) & ((years %% 100 != 0) | years %% 400 == 0))
+      which((years %% 4 == 0) & ((years %% 100 != 0) | years %% 400 == 0))
 }
 
 
@@ -280,11 +287,11 @@ which.leap <- function(years) {
 #' @author J. Bedia
 
 getRefDates <- function(obj) {
-    if (("var" %in% getDim(obj)) && (getShape(obj, "var") > 1)) {
-        obj$Dates[[1]]$start
-    } else {
-        obj$Dates$start 
-    }
+      if (("var" %in% getDim(obj)) && (getShape(obj, "var") > 1)) {
+            obj$Dates[[1]]$start
+      } else {
+            obj$Dates$start 
+      }
 }
 
 
@@ -308,28 +315,28 @@ getRefDates <- function(obj) {
 #' @author J. Bedia
 
 selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sapply")) {
-    .pplyFUN <- match.arg(.pplyFUN, choices = c("apply", "lapply", "sapply"))
-    if (parallel.pars$hasparallel) {
-        if (.pplyFUN == "apply") {
-            fun <- function(...) {
-                parallel::parApply(cl = parallel.pars$cl, ...)
+      .pplyFUN <- match.arg(.pplyFUN, choices = c("apply", "lapply", "sapply"))
+      if (parallel.pars$hasparallel) {
+            if (.pplyFUN == "apply") {
+                  fun <- function(...) {
+                        parallel::parApply(cl = parallel.pars$cl, ...)
+                  }
+            } else if (.pplyFUN == "lapply") {
+                  fun <- function(...) {
+                        parallel::parLapply(cl = parallel.pars$cl, ...)
+                  }
+            } else if (.pplyFUN == "sapply") {
+                  fun <- function(...) {
+                        parallel::parSapply(cl = parallel.pars$cl, ...)
+                  }
             }
-        } else if (.pplyFUN == "lapply") {
-            fun <- function(...) {
-                parallel::parLapply(cl = parallel.pars$cl, ...)
-            }
-        } else if (.pplyFUN == "sapply") {
-            fun <- function(...) {
-                parallel::parSapply(cl = parallel.pars$cl, ...)
-            }
-        }
-    } else {
-        fun <- switch(.pplyFUN,
-                      "apply" = apply,
-                      "lapply" = lapply,
-                      "sapply" = sapply)
-    }
-    return(fun)
+      } else {
+            fun <- switch(.pplyFUN,
+                          "apply" = apply,
+                          "lapply" = lapply,
+                          "sapply" = sapply)
+      }
+      return(fun)
 }
 
 
@@ -358,14 +365,14 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
 #' try(checkDim(iberia_ncep_psl, tasmax_forecast, dimensions = "member")) 
 
 checkDim <- function(..., dimensions = c("member", "time", "lat", "lon")) {
-    grid.list <- list(...)
-    grid.list <- lapply(grid.list, "redim")
-    dimensions <- match.arg(dimensions, choices = c("member", "time", "lat", "lon"), several.ok = TRUE)
-    dimlist <- lapply(dimensions, function(x) vapply(grid.list, "getShape", integer(1), x))
-    oops <- dimensions[which(!sapply(dimlist, function(x) all(x == x[1])))]
-    if (length(oops) > 0) {
-        stop("Inconsistent sizes found for dimensions: ", paste(oops, collapse = ", "))
-    }
+      grid.list <- list(...)
+      grid.list <- lapply(grid.list, "redim")
+      dimensions <- match.arg(dimensions, choices = c("member", "time", "lat", "lon"), several.ok = TRUE)
+      dimlist <- lapply(dimensions, function(x) vapply(grid.list, "getShape", integer(1), x))
+      oops <- dimensions[which(!sapply(dimlist, function(x) all(x == x[1])))]
+      if (length(oops) > 0) {
+            stop("Inconsistent sizes found for dimensions: ", paste(oops, collapse = ", "))
+      }
 }
 
 
@@ -393,12 +400,12 @@ checkDim <- function(..., dimensions = c("member", "time", "lat", "lon")) {
 #' checkSeason(agg, EOBS_Iberia_tas)
 
 checkSeason <- function(...) {
-    grid.list <- list(...)
-    sealist <- lapply(grid.list, "getSeason")
-    oops <- sapply(sealist, function(x) all(x == sealist[[1]]))
-    if (!all(oops)) stop("Inconsistent seasons among input grids")
+      grid.list <- list(...)
+      sealist <- lapply(grid.list, "getSeason")
+      oops <- sapply(sealist, function(x) all(x == sealist[[1]]))
+      if (!all(oops)) stop("Inconsistent seasons among input grids")
 }    
-    
+
 
 #' @title Check if the imput grid is regular
 #' @description Check if the coordinates in the data are regular or irregular
