@@ -26,9 +26,9 @@ However, it may be useful for advanced \pkg{sp} users in different contexts
 (e.g. for reprojecting via \code{\link[sp]{spTransform}} etc.)
 }
 \examples{
-data(tasmax_forecast)
+data("CFS_Iberia_tas")
 # Climatology is computed:
-clim <- climatology(tasmax_forecast, by.member = TRUE)
+clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
 sgdf <- clim2sgdf(clim, NULL, NULL)
 class(sgdf)
 }

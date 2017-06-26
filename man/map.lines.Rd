@@ -33,10 +33,10 @@ The function internally transforms the inputs into \code{\link[sp]{Line}} class 
   windows, but any other shapes like for instance storm tracks can be flexibly specified using \code{coords}).
 }
 \examples{
-data("tasmax_forecast")
+data("CFS_Iberia_tas")
 # Define a rectangular window centered on the Iberian Peninsula
 iberia <- map.lines(lonLim = c(-10,3.5), latLim = c(36,43))
-plotClimatology(climatology(tasmax_forecast), backdrop.theme = "coastline",
+plotClimatology(climatology(CFS_Iberia_tas), backdrop.theme = "coastline",
                 sp.layout = list(iberia))
 
 # Some customization options (awful, yes, but just for illustration):
@@ -44,29 +44,27 @@ iberia <- map.lines(lonLim = c(-10,3.5), latLim = c(36,44),
                     lwd = 3, # line width
                     col = "purple", # line color
                     lty = 2) # line type
-plotClimatology(climatology(tasmax_forecast, by.member = FALSE), backdrop.theme = "coastline",
+plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme = "coastline",
                 sp.layout = list(iberia))
 
 # Another window over the Alps
 alps <- map.lines(lonLim = c(4,16), latLim = c(45,49),
-                    lwd = 3,
-                    col = "red") 
-plotClimatology(climatology(tasmax_forecast, by.member = FALSE), backdrop.theme = "coastline",
+                  lwd = 3,
+                  col = "red") 
+plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme = "coastline",
                 sp.layout = list(iberia, alps))
 
 # Adding a line (real data of a storm-track imported from a csv file)
 # Source: http://www.europeanwindstorms.org/
-\dontrun{
+
 dat <- url("http://www.europeanwindstorms.org/repository/Jeanette/Jeanette_track.csv")
 custom.coords <- read.csv(dat, header = FALSE)[ ,5:4]
 storm <- map.lines(coords = custom.coords,
                    lwd = 3,
                    col = "red") 
- plotClimatology(climatology(tasmax_forecast, by.member = FALSE), backdrop.theme = "coastline",
-                 sp.layout = list(storm), # Add storm track
-                 scales = list(draw = TRUE)) # Add coordinate axes
- }
- 
+plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme = "coastline",
+                sp.layout = list(storm), # Add storm track
+                scales = list(draw = TRUE)) # Add coordinate axes
 }
 \seealso{
 \code{\link{plotClimatology}}, to which its output is passed.

@@ -19,21 +19,21 @@
 #' @family visualization
 #' @examples
 #' # A grid
-#' data(iberia_ncep_ta850)
-#' plotMeanGrid(iberia_ncep_ta850)
+#' data(NCEP_Iberia_hus850)
+#' plotMeanGrid(NCEP_Iberia_hus850)
 #' # A multigrid
-#' data(iberia_ncep_hus850)
-#' mf <- makeMultiGrid(iberia_ncep_ta850, iberia_ncep_hus850)
+#' data(NCEP_Iberia_ta850)
+#' mf <- makeMultiGrid(NCEP_Iberia_ta850, NCEP_Iberia_hus850)
 #' plotMeanGrid(mf)
 #' # A multimember grid
-#' data(tasmax_forecast)
-#' plotMeanGrid(tasmax_forecast) # multimember mean
-#' plotMeanGrid(tasmax_forecast, multi.member = TRUE) # by members
+#' data("CFS_Iberia_tas")
+#' plotMeanGrid(CFS_Iberia_tas) # multimember mean
+#' plotMeanGrid(CFS_Iberia_tas, multi.member = TRUE) # by members
 #' # A multimember multigrid
-#' data(tasmin_forecast)
-#' mm.mf <- makeMultiGrid(tasmax_forecast, tasmin_forecast)
+#' data(CFS_Iberia_tp)
+#' mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
 #' plotMeanGrid(mm.mf) # Note: multi-member not supported in this case
-#' 
+
 
 plotMeanGrid <- function(gridData, multi.member = FALSE) {
       .Deprecated(new = "plotClimatology", 

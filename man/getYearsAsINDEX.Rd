@@ -29,28 +29,31 @@ Warning:
 The function should no be used to extract the vector of actual date years
 }
 \examples{
-data(iberia_ncep_hus850)
-getSeason(iberia_ncep_hus850)
-# Winter 1991-2010
-range(iberia_ncep_hus850$Dates$start)
+data("NCEP_Iberia_hus850")
+getSeason(NCEP_Iberia_hus850)
+# Winter 1983-2002
+range(NCEP_Iberia_hus850$Dates$start)
 ## Time series for the first point
 # Dates vector
-time <- as.POSIXlt(iberia_ncep_hus850$Dates$start, tz = "GMT")
-hus850 <- iberia_ncep_hus850$Data[ ,1,1]
+time <- as.POSIXlt(NCEP_Iberia_hus850$Dates$start, tz = "GMT")
+hus850 <- NCEP_Iberia_hus850$Data[ ,1,1]
 plot(time, hus850, ty = "l")
 ## Computation of the annual series for winter specific humidity:
 par(mfrow = c(2,1))
 ## Wrong:
-years <- as.POSIXlt(iberia_ncep_hus850$Dates$start)$year + 1900
+years <- as.POSIXlt(NCEP_Iberia_hus850$Dates$start)$year + 1900
 x <- tapply(hus850, INDEX = list(years), FUN = mean)
 plot(unique(years), x, ty = "b")
 points(1990, x[1], col = "red", cex = 2, lwd = 2)
 ## Correct:
-years <- getYearsAsINDEX(iberia_ncep_hus850)
+years <- getYearsAsINDEX(NCEP_Iberia_hus850)
 x <- tapply(hus850, INDEX = years, FUN = mean)
 plot(unique(years), x, ty = "b")
 par(mfrow = c(1,1))
 
+#Station data:
+data("VALUE_Iberia_tas")
+getYearsAsINDEX(VALUE_Iberia_tas)
 }
 \seealso{
 Other get.helpers: \code{\link{getCoordinates}},

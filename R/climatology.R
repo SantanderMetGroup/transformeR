@@ -52,7 +52,7 @@
 #' str(st_mean_clim)
 #' plotClimatology(st_mean_clim, backdrop.theme = "coastline")
 #' # Standar deviation of surface temperature
-#' st_sd_clim <- climatology(VALUE_Iberia_tas, clim.fun = list(FUN = sd, na.rm = T))
+#' st_sd_clim <- climatology(VALUE_Iberia_tas, clim.fun = list(FUN = sd, na.rm = TRUE))
 #' plotClimatology(st_sd_clim, backdrop.theme = "coastline")
 #' 
 #' # July surface temp forecast climatology
@@ -82,8 +82,6 @@ climatology <- function(grid,
                         max.ncores = 16,
                         ncores = NULL) {
       parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-      irregular <- FALSE
-      if("loc" %in% getDim(grid)) irregular <- TRUE
       grid <- redim(grid, member = FALSE, runtime = FALSE)
       dimNames <- attr(grid[["Data"]], "dimensions")
       ## Member aggregation 
@@ -117,7 +115,7 @@ climatology <- function(grid,
       grid$Dates$start <- grid$Dates$start[1]
       grid$Dates$end <- tail(grid$Dates$end, 1)
       grid <- redim(grid, drop = TRUE) %>% redim(member = FALSE, var = FALSE, drop = FALSE)
-      if(irregular) grid <- redim(grid, irregular = irregular, member = FALSE)
+      if(!isRegular(grid)) grid <- redim(grid, loc = TRUE, member = FALSE)
       attr(grid$Data, "climatology:fun") <- clim.fun[["FUN"]]
       return(grid)
 }

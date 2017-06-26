@@ -22,6 +22,14 @@ It takes into account the particular case when \code{\link{redim}} is applied to
  dimension: in this situation, the \code{"Dates"} component is not changed accordingly, and thus the criterion to
  distinguish multigrids from redim-ed grids is the shape of the array.
 }
+\examples{
+#Station data:
+data("VALUE_Iberia_tas")
+str(getRefDates(VALUE_Iberia_tas))
+#Regular grid
+data("NCEP_Iberia_hus850")
+str(getRefDates(NCEP_Iberia_hus850))
+}
 \seealso{
 Other get.helpers: \code{\link{getCoordinates}},
   \code{\link{getDim}}, \code{\link{getGrid}},

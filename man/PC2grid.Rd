@@ -32,13 +32,11 @@ The XY coordinates correspond to the centroid of the window used for the PCA ana
  Currently, only the start days are returned. The end dates are not returned by the \code{prinComp} output.
 }
 \examples{
-\dontrun{
-data("tasmax_forecast")
-pc <- prinComp(tasmax_forecast, n.eofs = 2)
+data("CFS_Iberia_tas")
+pc <- prinComp(CFS_Iberia_tas, n.eofs = 2)
 # Convert to grid the PC of the leading EOF:
 a <- PC2grid(prinCompObj = pc, pc.idx = 1)
 str(a)
-}
 }
 \author{
 J. Bedia

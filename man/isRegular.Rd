@@ -19,6 +19,8 @@ Check if the coordinates in the data are regular or irregular
 data("EOBS_Iberia_tas")
 isRegular(EOBS_Iberia_tas)
 isRegular(getGrid(EOBS_Iberia_tas))
+data("VALUE_Iberia_tas")
+isRegular(VALUE_Iberia_tas)
 }
 \seealso{
 \code{\link{getGrid}}

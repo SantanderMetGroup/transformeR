@@ -22,12 +22,18 @@ data("EOBS_Iberia_tp")
 grid1 <- subsetGrid(EOBS_Iberia_tas, season = 1)
 grid2 <- subsetGrid(EOBS_Iberia_tp, season = 1)
 checkSeason(grid1, grid2) # ok, go on
+\donttest{
 try(checkSeason(grid1, grid2, EOBS_Iberia_tas)) # oops
-
+}
 # However note that it is insensitive to the level of temporal aggregation:
 agg <- aggregateGrid(EOBS_Iberia_tas, aggr.m = list(FUN = "mean", na.rm = TRUE))
 identical(getSeason(agg), getSeason(EOBS_Iberia_tas))
 checkSeason(agg, EOBS_Iberia_tas)
+
+#Station data
+data("VALUE_Iberia_tas")
+data("VALUE_Iberia_tp")
+checkSeason(VALUE_Iberia_tas, VALUE_Iberia_tp)
 }
 \seealso{
 \code{\link{getSeason}}

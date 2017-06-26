@@ -35,15 +35,16 @@
 #' @author M. Iturbide
 #' @seealso \code{\link[transformeR]{climatology}}; \code{\link[loadeR]{loadGridData}}
 #' @export
-#' @examples \dontrun{
-#' #' # Maximum July surface temp forecast climatology
-#' data("tasmax_forecast")
-#' data("tasmin_forecast")
-#' multigrid <- makeMultiGrid(tasmax_forecast, tasmin_forecast)
+#' @examples
+#' # A raster stack from a multigrid
+#' data("CFS_Iberia_tas")
+#' data("CFS_Iberia_tp")
+#' multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
 #' multigridaggr <- aggregateGrid(multigrid, aggr.mem = list(FUN = "mean"))
-#' t_ras <- grid2mopa(multigridaggr)
-#' spplot(tx_ras)
-#' }
+#' ras <- grid2mopa(multigridaggr)
+#' require(sp)
+#' spplot(ras)
+
 
 
 grid2mopa <- function(grid, clim.fun = list(FUN = "mean", na.rm = TRUE), crs = NA){
@@ -83,15 +84,15 @@ grid2mopa <- function(grid, clim.fun = list(FUN = "mean", na.rm = TRUE), crs = N
 #' @author M. Iturbide
 #' @seealso \code{\link[transformeR]{climatology}}; \code{\link[loadeR]{loadGridData}}
 #' @export
-#' @examples \dontrun{
+#' @examples 
 #' #' # Maximum July surface temp forecast climatology
-#' data("tasmax_forecast")
+#' data("CFS_Iberia_tas")
 #' # Aggregate all members and compute climatology
-#' tx_mean.clim <- climatology(tasmax_forecast, by.member = FALSE)
-#' plotClimatology(tx_mean.clim)
-#' tx_ras <- grid2mopa(tx_mean.clim)
-#' spplot(tx_ras)
-#' }
+#' t.clim <- climatology(CFS_Iberia_tas, by.member = FALSE)
+#' plotClimatology(t.clim)
+#' t.ras <- grid2mopa0(t.clim)
+#' require(sp)
+#' spplot(t.ras)
 
 grid2mopa0 <- function(grid, clim.fun = list(FUN = "mean", na.rm = TRUE), 
                        varname = "variable", crs = NA){

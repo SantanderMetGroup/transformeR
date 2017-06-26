@@ -66,7 +66,7 @@ st_mean_clim <- climatology(VALUE_Iberia_tas)
 str(st_mean_clim)
 plotClimatology(st_mean_clim, backdrop.theme = "coastline")
 # Standar deviation of surface temperature
-st_sd_clim <- climatology(VALUE_Iberia_tas, clim.fun = list(FUN = sd, na.rm = T))
+st_sd_clim <- climatology(VALUE_Iberia_tas, clim.fun = list(FUN = sd, na.rm = TRUE))
 plotClimatology(st_sd_clim, backdrop.theme = "coastline")
 
 # July surface temp forecast climatology

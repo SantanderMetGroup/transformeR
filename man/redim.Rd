@@ -4,8 +4,8 @@
 \alias{redim}
 \title{Complete missing dimensions of Grid objects}
 \usage{
-redim(grid, member = TRUE, runtime = FALSE, var = FALSE,
-  irregular = FALSE, drop = FALSE)
+redim(grid, member = TRUE, runtime = FALSE, var = FALSE, loc = FALSE,
+  drop = FALSE)
 }
 \arguments{
 \item{member}{logical. Add 'member' dimension (default = TRUE)}
@@ -14,7 +14,7 @@ redim(grid, member = TRUE, runtime = FALSE, var = FALSE,
 
 \item{var}{logical. Add 'var' dimension (default = FALSE)}
 
-\item{irregular}{logical. Only if \code{obj} is a stations dataset. If TRUE, the \code{"loc"} 
+\item{loc}{logical. Only if \code{obj} is a stations dataset. If TRUE, the \code{"loc"} 
 dimension is not replaced by fake \code{"lat"} and \code{"lon"} dimensions (default is FALSE).}
 
 \item{drop}{logical. Drop dimensions of length = 1 (default = FALSE)}
@@ -46,10 +46,12 @@ z <- redim(b, drop = TRUE)
 getShape(z)
 }
 \seealso{
-Other internal.helpers: \code{\link{array3Dto2Dmat}},
+Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
+  \code{\link{array3Dto2Dmat}},
   \code{\link{bindGrid.member}},
   \code{\link{bindGrid.time}},
-  \code{\link{grid3Dto2Dmatrix}}
+  \code{\link{grid3Dto2Dmatrix}},
+  \code{\link{mat2Dto3Darray.stations}}
 }
 \author{
 M. Iturbide, J. Bedia

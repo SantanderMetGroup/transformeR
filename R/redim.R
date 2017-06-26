@@ -4,7 +4,7 @@
 #' @param member logical. Add 'member' dimension (default = TRUE)
 #' @param runtime logical. Add 'runtime' dimension (default = FALSE)
 #' @param var logical. Add 'var' dimension (default = FALSE)
-#' @param irregular logical. Only if \code{obj} is a stations dataset. If TRUE, the \code{"loc"} 
+#' @param loc logical. Only if \code{obj} is a stations dataset. If TRUE, the \code{"loc"} 
 #' dimension is not replaced by fake \code{"lat"} and \code{"lon"} dimensions (default is FALSE).
 #' @param drop logical. Drop dimensions of length = 1 (default = FALSE)
 #' @return The same object with all the dimensions (i.e. member, time, loc)
@@ -35,11 +35,11 @@ redim <- function(grid,
                   member = TRUE,
                   runtime = FALSE,
                   var = FALSE,
-                  irregular = FALSE,
+                  loc = FALSE,
                   drop = FALSE) {
       stopifnot(is.logical(member) | is.logical(runtime) | is.logical(drop))
       dimNames <- getDim(grid)
-      if (!"loc" %in% dimNames & irregular & getShape(grid)["lon"] == 1) {
+      if (!"loc" %in% dimNames & loc & getShape(grid)["lon"] == 1) {
             # recover loc dimension  
             ind <- match("lat", dimNames)
             dimNames <- c(dimNames[-c(ind,ind+1)], "loc")
@@ -47,7 +47,7 @@ redim <- function(grid,
             attr(grid$Data, "dimensions") <- dimNames
       }
       if (!drop) {
-            if ("loc" %in% dimNames & !irregular) {
+            if ("loc" %in% dimNames & !loc) {
                   # Add singleton 'coordinates dimension' dimension  
                   ind <- match("loc", dimNames)
                   dimNames <- c(dimNames[-ind], "lat", "lon")
@@ -55,13 +55,13 @@ redim <- function(grid,
                   attr(grid$Data, "dimensions") <- dimNames
             }
             # Add singleton 'lat' dimension  
-            if (!("lat" %in% dimNames) & !irregular) {
+            if (!("lat" %in% dimNames) & !loc) {
                   dimNames <- c("lat", dimNames)
                   grid$Data <- unname(abind(grid$Data, NULL, along = 0))
                   attr(grid$Data, "dimensions") <- dimNames
             }
             # Add singleton 'lon' dimension  
-            if (!("lon" %in% dimNames) & !irregular) {
+            if (!("lon" %in% dimNames) & !loc) {
                   dimNames <- c("lon", dimNames)
                   grid$Data <- unname(abind(grid$Data, NULL, along = 0))
                   attr(grid$Data, "dimensions") <- dimNames
@@ -91,7 +91,7 @@ redim <- function(grid,
                   attr(grid$Data, "dimensions") <- dimNames
             }
             dimNames <- c( "var", "runtime", "member", "time", "lat", "lon")
-            if (isTRUE(irregular)) dimNames <- c( "var", "runtime", "member", "time", "loc")
+            if (isTRUE(loc)) dimNames <- c( "var", "runtime", "member", "time", "loc")
             dimNames.aux <- attr(grid$Data, "dimensions")
             perm <- na.omit(match(dimNames, dimNames.aux))
             grid$Data <- aperm(grid$Data, perm)

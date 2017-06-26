@@ -51,24 +51,42 @@
 #' current extent of the dataset, returning an error message.
 #' @author J. Bedia, S. Herrera, M. de Felice, M. Iturbide
 #' @export
-#' @examples \dontrun{
-#' # Load air temperature at 850 mb isobaric pressure level for boreal winter (DJF) 1991-2010
+#' @examples 
+#' # boreal winter (DJF) precipitation data for the Iberian Peninsula and the period 1983-2002
 #' data(EOBS_Iberia_tp)
 #' plotClimatology(climatology(EOBS_Iberia_tp))
 #' # Bilinear interpolation to domain centered in Spain using a 0.5 degree resolution 
 #' # in both X and Y axes
-#' t <- interpGrid(EOBS_Iberia_tp, new.coordinates = list(x = seq(-10,5,.5),
-#'                                                           y = seq(36,44,.5)),
-#'                                    method = "bilinear",
-#'                                    bilin.method = "akima")
-#' plotClimatology(climatology(t))
+#' t1 <- interpGrid(EOBS_Iberia_tp, new.coordinates = list(x = seq(-10,5,.5),
+#'                                                         y = seq(36,44,.5)),
+#'                  method = "bilinear",
+#'                  bilin.method = "akima")
+#' plotClimatology(climatology(t1), backdrop.theme = "countries")
 #' # New attributes indicate that the data have been interpolated:
-#' attributes(t$xyCoords)
+#' attributes(t1$xyCoords)
 #' 
 #' # Using the coordinate information of another grid
 #' data(NCEP_Iberia_tp)
+#' t2 <- interpGrid(EOBS_Iberia_tp, new.coordinates = getGrid(NCEP_Iberia_tp),
+#'                  method = "nearest")
+#' plotClimatology(climatology(t2), backdrop.theme = "countries")
 #' 
-#' }
+#' #From station data to grid
+#' data(VALUE_Iberia_tp)
+#' plotClimatology(climatology(VALUE_Iberia_tp), backdrop.theme = "countries")
+#' t3 <- interpGrid(VALUE_Iberia_tp, new.coordinates = getGrid(EOBS_Iberia_tp),
+#'                  method = "bilinear")
+#' plotClimatology(climatology(t3), backdrop.theme = "countries")
+#' 
+#' #From grid to station data
+#' t4 <- interpGrid(EOBS_Iberia_tp, new.coordinates = getGrid(VALUE_Iberia_tp),
+#'                  method = "nearest")
+#' plotClimatology(climatology(t4), backdrop.theme = "countries")
+#' t5 <- interpGrid(EOBS_Iberia_tp, 
+#'                new.coordinates = list(x = c(-6.7, -4.5, 2.5), 
+#'                                       y = c(41.8, 40, 39)))
+#' plotClimatology(climatology(t5), backdrop.theme = "countries")
+
 
 interpGrid <- function(grid,
                        new.coordinates = list(x = NULL, y = NULL),

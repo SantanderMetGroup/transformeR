@@ -23,24 +23,30 @@ In case of irregular grid definitions, the function forces the grid to regularit
 The returned grid object inherits the attributes from the input \code{xyCoords} definition.
 }
 \examples{
-\dontrun{
-# Iberia domain
-data(iberia_ncep_hus850)
-getGrid(iberia_ncep_hus850)
-# Europe domain
-data(tasmin_forecast)
-getGrid(tasmin_forecast)
-plotMeanGrid(tasmin_forecast)
-# Interpolate NCEP onto the System4 grid:
-int <- interpGrid(iberia_ncep_hus850, getGrid(tasmin_forecast), "bilinear")
-# Note the warnings because of the non-overlapping domain extents
-plotMeanGrid(int)
-# The other way round, using nearest neighbour interpolation:
-int2 <- interpGrid(tasmin_forecast, getGrid(iberia_ncep_hus850))
-plotMeanGrid(int2)
-# In this case, the mismatch in domain extent occurs only in the longitudes (to the west)
-}
+# Regular grid
+data("NCEP_Iberia_hus850")
+str(getGrid(NCEP_Iberia_hus850))
+# Regular rotated grid with correpondence with a non regular grid in the 
+# lat/lon domain.
+data("CORDEX_Iberia_tas")
+str(getGrid(CORDEX_Iberia_tas))
+# Station data
+data("VALUE_Iberia_tas")
+str(getGrid(VALUE_Iberia_tas))
 
+# Interpolate NCEP onto the System4 grid:
+data("CFS_Iberia_tp")
+NCEP_interpolated <- interpGrid(NCEP_Iberia_hus850, getGrid(CFS_Iberia_tp), "bilinear")
+# Note the warnings because of the non-overlapping domain extents (longitudes)
+plotClimatology(climatology(NCEP_Iberia_hus850), backdrop.theme = "countries")
+plotClimatology(climatology(NCEP_interpolated), backdrop.theme = "countries")
+str(getGrid(NCEP_interpolated))
+str(getGrid(CFS_Iberia_tp))
+
+# The other way round, using nearest neighbour interpolation:
+CFS_interpolated <- interpGrid(CFS_Iberia_tp, getGrid(NCEP_Iberia_hus850))
+plotClimatology(climatology(CFS_interpolated), backdrop.theme = "countries")
+# In this case, the mismatch in domain extent occurs in the longitudes and latitudes
 }
 \seealso{
 Other get.helpers: \code{\link{getCoordinates}},

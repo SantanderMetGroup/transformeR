@@ -11,24 +11,32 @@
 #' @importFrom utils tail
 #' @family get.helpers
 #' @author S. Herrera and J. Bedia 
-#' @examples \dontrun{
-#' # Iberia domain
-#' data(iberia_ncep_hus850)
-#' getGrid(iberia_ncep_hus850)
-#' # Europe domain
-#' data(tasmin_forecast)
-#' getGrid(tasmin_forecast)
-#' plotMeanGrid(tasmin_forecast)
-#' # Interpolate NCEP onto the System4 grid:
-#' int <- interpGrid(iberia_ncep_hus850, getGrid(tasmin_forecast), "bilinear")
-#' # Note the warnings because of the non-overlapping domain extents
-#' plotMeanGrid(int)
-#' # The other way round, using nearest neighbour interpolation:
-#' int2 <- interpGrid(tasmin_forecast, getGrid(iberia_ncep_hus850))
-#' plotMeanGrid(int2)
-#' # In this case, the mismatch in domain extent occurs only in the longitudes (to the west)
-#' }
+#' @examples 
+#' # Regular grid
+#' data("NCEP_Iberia_hus850")
+#' str(getGrid(NCEP_Iberia_hus850))
+#' # Regular rotated grid with correpondence with a non regular grid in the 
+#' # lat/lon domain.
+#' data("CORDEX_Iberia_tas")
+#' str(getGrid(CORDEX_Iberia_tas))
+#' # Station data
+#' data("VALUE_Iberia_tas")
+#' str(getGrid(VALUE_Iberia_tas))
 #' 
+#' # Interpolate NCEP onto the System4 grid:
+#' data("CFS_Iberia_tp")
+#' NCEP_interpolated <- interpGrid(NCEP_Iberia_hus850, getGrid(CFS_Iberia_tp), "bilinear")
+#' # Note the warnings because of the non-overlapping domain extents (longitudes)
+#' plotClimatology(climatology(NCEP_Iberia_hus850), backdrop.theme = "countries")
+#' plotClimatology(climatology(NCEP_interpolated), backdrop.theme = "countries")
+#' str(getGrid(NCEP_interpolated))
+#' str(getGrid(CFS_Iberia_tp))
+#' 
+#' # The other way round, using nearest neighbour interpolation:
+#' CFS_interpolated <- interpGrid(CFS_Iberia_tp, getGrid(NCEP_Iberia_hus850))
+#' plotClimatology(climatology(CFS_interpolated), backdrop.theme = "countries")
+#' # In this case, the mismatch in domain extent occurs in the longitudes and latitudes
+ 
 
 getGrid <- function(gridData) {
       rot <- FALSE
@@ -83,20 +91,34 @@ getGrid <- function(gridData) {
 #' @family get.helpers
 #' @author J. Bedia 
 #' @export
+#' @examples 
+#' # Regular grid
+#' data("NCEP_Iberia_hus850")
+#' str(getCoordinates(NCEP_Iberia_hus850))
+#' # Regular rotated grid with correpondence with a non regular grid in the 
+#' # lat/lon domain.
+#' data("CORDEX_Iberia_tas")
+#' str(getCoordinates(CORDEX_Iberia_tas))
+#' # Station data
+#' data("VALUE_Iberia_tas")
+#' str(getCoordinates(VALUE_Iberia_tas))
+
 
 getCoordinates <- function(obj) {
       if (is.matrix(obj$xyCoords)){
-            xy <- obj$xyCoords
+            xy <- obj$xyCoords[,]
             return(xy)
       }else{
+            x <- obj$xyCoords$x
+            y <- obj$xyCoords$y
             if(!is.matrix(obj$xyCoords) && exists("lon", obj$xyCoords) && exists("lat", obj$xyCoords)){
-                  x <- obj$xyCoords$lon
-                  y <- obj$xyCoords$lat 
+                  lon <- obj$xyCoords$lon 
+                  lat <- obj$xyCoords$lat
+                  return(list("x" = x, "y" = y, "lon" = lon, "lat" = lat))
             }else{
-                  x <- obj$xyCoords$x
-                  y <- obj$xyCoords$y
+                  return(list("x" = x, "y" = y))
             }
-            return(list("x" = x, "y" = y))
+            
       }
 }
 # End
@@ -111,8 +133,8 @@ getCoordinates <- function(obj) {
 #' @family get.helpers
 #' @export
 #' @examples 
-#' data(iberia_ncep_ta850)
-#' getSeason(iberia_ncep_ta850) # Boreal winter (DJF)
+#' data("NCEP_Iberia_hus850")
+#' getSeason(NCEP_Iberia_hus850) # Boreal winter (DJF)
 
 getSeason <- function(obj) {
       if ("season" %in% names(attributes(obj$Dates))) {
@@ -147,28 +169,32 @@ getSeason <- function(obj) {
 #' @author J. Bedia 
 #' @export
 #' @examples 
-#' data(iberia_ncep_hus850)
-#' getSeason(iberia_ncep_hus850)
-#' # Winter 1991-2010
-#' range(iberia_ncep_hus850$Dates$start)
+#' data("NCEP_Iberia_hus850")
+#' getSeason(NCEP_Iberia_hus850)
+#' # Winter 1983-2002
+#' range(NCEP_Iberia_hus850$Dates$start)
 #' ## Time series for the first point
 #' # Dates vector
-#' time <- as.POSIXlt(iberia_ncep_hus850$Dates$start, tz = "GMT")
-#' hus850 <- iberia_ncep_hus850$Data[ ,1,1]
+#' time <- as.POSIXlt(NCEP_Iberia_hus850$Dates$start, tz = "GMT")
+#' hus850 <- NCEP_Iberia_hus850$Data[ ,1,1]
 #' plot(time, hus850, ty = "l")
 #' ## Computation of the annual series for winter specific humidity:
 #' par(mfrow = c(2,1))
 #' ## Wrong:
-#' years <- as.POSIXlt(iberia_ncep_hus850$Dates$start)$year + 1900
+#' years <- as.POSIXlt(NCEP_Iberia_hus850$Dates$start)$year + 1900
 #' x <- tapply(hus850, INDEX = list(years), FUN = mean)
 #' plot(unique(years), x, ty = "b")
 #' points(1990, x[1], col = "red", cex = 2, lwd = 2)
 #' ## Correct:
-#' years <- getYearsAsINDEX(iberia_ncep_hus850)
+#' years <- getYearsAsINDEX(NCEP_Iberia_hus850)
 #' x <- tapply(hus850, INDEX = years, FUN = mean)
 #' plot(unique(years), x, ty = "b")
 #' par(mfrow = c(1,1))
 #' 
+#' #Station data:
+#' data("VALUE_Iberia_tas")
+#' getYearsAsINDEX(VALUE_Iberia_tas)
+
 
 getYearsAsINDEX <- function(obj) {
       season <- getSeason(obj)
@@ -204,6 +230,13 @@ getYearsAsINDEX <- function(obj) {
 #' @family get.helpers
 #' @export
 #' @author J. Bedia
+#' @examples 
+#' #Station data:
+#' data("VALUE_Iberia_tas")
+#' getDim(VALUE_Iberia_tas)
+#' #Regular grid
+#' data("NCEP_Iberia_hus850")
+#' getDim(NCEP_Iberia_hus850)
 
 getDim <- function(obj) {
       attr(obj[["Data"]], "dimensions")
@@ -217,6 +250,13 @@ getDim <- function(obj) {
 #' @keywords internal
 #' @export
 #' @author J. Bedia
+#' @examples 
+#' #Station data:
+#' data("VALUE_Iberia_tas")
+#' getShape(VALUE_Iberia_tas)
+#' #Regular grid
+#' data("NCEP_Iberia_hus850")
+#' getShape(NCEP_Iberia_hus850)
 
 getShape <- function(obj, dimension = NULL) {
       dimNames <- getDim(obj)
@@ -285,7 +325,14 @@ which.leap <- function(years) {
 #' @family get.helpers
 #' @export
 #' @author J. Bedia
-
+#' @examples
+#' #Station data:
+#' data("VALUE_Iberia_tas")
+#' str(getRefDates(VALUE_Iberia_tas))
+#' #Regular grid
+#' data("NCEP_Iberia_hus850")
+#' str(getRefDates(NCEP_Iberia_hus850))
+ 
 getRefDates <- function(obj) {
       if (("var" %in% getDim(obj)) && (getShape(obj, "var") > 1)) {
             obj$Dates[[1]]$start
@@ -356,13 +403,18 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
 #' @family check.helpers
 #' @author J Bedia
 #' @examples 
+#' data("VALUE_Iberia_tas")
+#' data("VALUE_Iberia_tp")
+#' checkDim(VALUE_Iberia_tas, VALUE_Iberia_tp) # ok, go on
 #' data("EOBS_Iberia_tas")
 #' data("EOBS_Iberia_tp")
 #' checkDim(EOBS_Iberia_tas, EOBS_Iberia_tp) # ok, go on
-#' data("iberia_ncep_psl")
-#' try(checkDim(EOBS_Iberia_tas, EOBS_Iberia_tp, iberia_ncep_psl)) # inconsistent dimensions
-#' data("tasmax_forecast")
-#' try(checkDim(iberia_ncep_psl, tasmax_forecast, dimensions = "member")) 
+#' data("NCEP_Iberia_psl")
+#' try(checkDim(EOBS_Iberia_tas, EOBS_Iberia_tp, NCEP_Iberia_psl)) # inconsistent dimensions
+#' data("CFS_Iberia_tas")
+#' try(checkDim(NCEP_Iberia_psl, CFS_Iberia_tas, dimensions = "member")) 
+#' checkDim(VALUE_Iberia_tas, VALUE_Iberia_tp) # ok, go on
+
 
 checkDim <- function(..., dimensions = c("member", "time", "lat", "lon")) {
       grid.list <- list(...)
@@ -392,12 +444,19 @@ checkDim <- function(..., dimensions = c("member", "time", "lat", "lon")) {
 #' grid1 <- subsetGrid(EOBS_Iberia_tas, season = 1)
 #' grid2 <- subsetGrid(EOBS_Iberia_tp, season = 1)
 #' checkSeason(grid1, grid2) # ok, go on
+#' \donttest{
 #' try(checkSeason(grid1, grid2, EOBS_Iberia_tas)) # oops
-#' 
+#' }
 #' # However note that it is insensitive to the level of temporal aggregation:
 #' agg <- aggregateGrid(EOBS_Iberia_tas, aggr.m = list(FUN = "mean", na.rm = TRUE))
 #' identical(getSeason(agg), getSeason(EOBS_Iberia_tas))
 #' checkSeason(agg, EOBS_Iberia_tas)
+#' 
+#' #Station data
+#' data("VALUE_Iberia_tas")
+#' data("VALUE_Iberia_tp")
+#' checkSeason(VALUE_Iberia_tas, VALUE_Iberia_tp)
+
 
 checkSeason <- function(...) {
       grid.list <- list(...)
@@ -420,6 +479,9 @@ checkSeason <- function(...) {
 #' data("EOBS_Iberia_tas")
 #' isRegular(EOBS_Iberia_tas)
 #' isRegular(getGrid(EOBS_Iberia_tas))
+#' data("VALUE_Iberia_tas")
+#' isRegular(VALUE_Iberia_tas)
+
 
 isRegular <- function(grid){
       gr <- tryCatch({getGrid(grid)}, error = function(err){grid})
@@ -433,7 +495,7 @@ isRegular <- function(grid){
       })
       xa <- sum(unlist(xdists) - unlist(xdists)[1])
       ya <- sum(unlist(ydists) - unlist(ydists)[1])
-      if(any(c(xa, ya) > 0.00001)){
+      if(any(abs(c(xa, ya)) > 0.00001)){
             FALSE
       }else{
             TRUE
@@ -442,6 +504,19 @@ isRegular <- function(grid){
 
 #End
 
+#' @title Conversion 2D matrix into a 3D array for station data
+#' @description Converts a 2D matrix of the form [time, lonlat] to a 3D array of the form
+#' [time,lat,lon], in this order. Mainly for PCA analysis and grid reconstruction.
+#' @param mat2D A 2D matrix with time in rows and lonlat in columns, as returned 
+#' by \code{\link{array3Dto2Dmat.stations}} 
+#' @param x unique X coordinates of the points, in ascending order
+#' @param y As argument \code{x}, for the Y coordinates
+#' @return A 3-dimensional array with the dimensions ordered: [time,lat,lon]
+#' @importFrom abind abind
+#' @family internal.helpers
+#' @details The function is the inverse of \code{\link{array3Dto2Dmat.stations}} 
+#' @author M. Iturbide
+#' @seealso \code{\link{array3Dto2Dmat}}, which performs the inverse operation.
 
 mat2Dto3Darray.stations <- function(mat2D, x, y) {
       mat <- matrix(NA, ncol = length(x), nrow = length(y))
@@ -457,6 +532,15 @@ mat2Dto3Darray.stations <- function(mat2D, x, y) {
 }
 #End
 
+#' @title Conversion of a 3D array to a 2D matrix for station data
+#' @description Converts 3D arrays of the form [lon,lat,time] -not strictly in this order-,
+#'  to 2D matrices of the form [time, grid-point], in this order. Mainly for PCA analysis.
+#' @param array3D A 3-dimensional array with longitude, latitude and time dimensions
+#' @return A 2-dimensional matrix with time in rows and grid-points in columns.
+#' @author M. Iturbide
+#' @keywords internal
+#' @family internal.helpers
+#' @seealso \code{\link{mat2Dto3Darray}}, which performs the inverse operation
 array3Dto2Dmat.stations <- function(array3D) {
       dims <- dim(array3D)
       aux.list <- lapply(1:dims[1], function(i) {

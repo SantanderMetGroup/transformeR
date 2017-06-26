@@ -275,40 +275,6 @@ NULL
 NULL
 
 
-#' @title Multimember grid containing CFSv2 seasonal forecast data of daily mean temperature at 850mb for
-#' the Iberian Peninsula (DFJ, 1983-2002).
-#' @description This R data object was obtained from the ECOMS-UDG server 
-#' (\url{http://www.meteo.unican.es/ecoms-udg}, 
-#' log in is requiered, see \code{\link[loadeR]{loginUDG}}) 
-#' by means of function \code{\link[loadeR.ECOMS]{loadECOMS}} 
-#' (package \href{https://github.com/SantanderMetGroup/loadeR.ECOMS}{\code{loadeR.ECOMS}}) 
-#' in the following manner:
-#' 
-#' \code{years <- 1983:2002}\cr 
-#' \code{season <- c(12,1,2)}\cr 
-#' \code{lonLim <- c(-10, 4)}\cr 
-#' \code{latLim <- c(35, 44)}\cr 
-#' 
-#' \code{loginUDG("username", "pasword")}\cr 
-#' 
-#' \code{CFS_Iberia_ta850 <- loadECOMS(dataset = "CFSv2_seasonal",
-#' var = "ta@850", years = years, lonLim = lonLim, latLim = latLim, season = season,
-#' time = "DD", aggr.d = "mean", leadMonth = 1, members = 1:9)}
-#' 
-#' 
-#' @format A multimember grid
-#' @source \url{http://www.meteo.unican.es/ecoms-udg}
-#' @references 
-#' Saha, S. \emph{et al.}, 2013. The NCEP Climate Forecast System Version 2. J Clim 130925135638001. doi:10.1175/JCLI-D-12-00823.1
-#' @name CFS_Iberia_ta850
-#' @examples
-#' data(CFS_Iberia_ta850)
-#' plotClimatology(climatology(CFS_Iberia_ta850, clim.fun = list(FUN = sum)),
-#'                 backdrop.theme = "coastline")
-NULL
-
-
-
 #' @title Multimember grid containing CFSv2 seasonal forecast data of daily sea level pressure for
 #' the Iberian Peninsula (DFJ, 1983-2002).
 #' @description This R data object was obtained from the ECOMS-UDG server 
@@ -690,52 +656,6 @@ NULL
 
 
 
-#' @title Grid containing NCEP reanalysis data of sea-level pressure for the Iberian Peninsula.
-#' @description The data correspond to the wintertime (DJF) period 1991-2010, and it consists of daily mean data, computed as the
-#' mean of the four 6-hourly model outputs. 
-#' @format A grid
-#' @source \url{http://www.meteo.unican.es/ecoms-udg}
-#' @name iberia_ncep_psl
-#' @examples
-#' data(iberia_ncep_psl)
-#' plotClimatology(climatology(iberia_ncep_psl),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
-
-#' @title Grid containing NCEP reanalysis data of air temperature at 850mb for the Iberian Peninsula.
-#' @description The data correspond to the wintertime (DJF) period 1991-2010, and it consists of daily mean data 
-#' @format A grid
-#' @source \url{http://www.meteo.unican.es/ecoms-udg}
-#' @name iberia_ncep_ta850
-#' @examples
-#' data(iberia_ncep_ta850)
-#' plotClimatology(climatology(iberia_ncep_ta850),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
-
-#' @title Multimember grid containing a seasonal forecast of maximum surface temperature for Europe
-#' @description CFSv2 forecast of maximum daily temperature for July 2001 over Europe. Lead-month 2, first 9 members.
-#' @format A multimember grid
-#' @source \url{http://www.meteo.unican.es/ecoms-udg}
-#' @references 
-#' Saha, S. \emph{et al.}, 2013. The NCEP Climate Forecast System Version 2. J Clim 130925135638001. doi:10.1175/JCLI-D-12-00823.1
-#' @name tasmax_forecast
-#' @examples
-#' data(tasmax_forecast)
-#' plotClimatology(climatology(tasmax_forecast), backdrop.theme = "coastline")
-NULL
-
-#' @title Multimember grid containing a seasonal forecast of minimum surface temperature for Europe
-#' @description CFSv2 forecast of minimum daily temperature for July 2001 over Europe. Lead-month 2, first 9 members.
-#' @format A multimember grid
-#' @source \url{http://www.meteo.unican.es/ecoms-udg}
-#' @references 
-#' Saha, S. \emph{et al.}, 2013. The NCEP Climate Forecast System Version 2. J Clim 130925135638001. doi:10.1175/JCLI-D-12-00823.1
-#' @name tasmin_forecast
-#' @examples
-#' data(tasmin_forecast)
-#' plotClimatology(climatology(tasmin_forecast), backdrop.theme = "coastline")
-NULL
 
 
 
@@ -759,21 +679,3 @@ NULL
 #' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
 NULL
 
-
-#' @title Station daily precipitation data
-#' @description Station data from the VALUE_ECA_86_v2 dataset containing daily precipitation for the Igueldo-SanSebastian station. 
-#' @format Station data
-#' @name VALUE_Igueldo_tp
-#' @docType data
-#' @source  Subset of VALUE station data. Full dataset is accessible 
-#' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
-NULL
-
-#' @title Grid containing NCEP reanalysis data of precipitation for the Iberian Peninsula.
-#' @description NCEP_Iberia_tp is a grid object returned by loadECOMS from package loadeR.ECOMS
-#' @format A grid
-#' @name NCEP_Iberia_tp
-#' @docType data
-#' @keywords NCEP reanalysis
-#' @source  subset of NCEP reanalysis data, which is accessible through the \strong{ECOMS User Data Gateway (ECOMS-UDG)} 
-NULL
