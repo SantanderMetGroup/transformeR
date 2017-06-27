@@ -487,18 +487,22 @@ isRegular <- function(grid){
       gr <- tryCatch({getGrid(grid)}, error = function(err){grid})
       x <- sort(gr$x)
       y <- sort(gr$y)
-      xdists <- lapply(1:(length(x)-1), function(l){
-            x[l+1] - x[l]
-      })
-      ydists <- lapply(1:(length(y)-1), function(l){
-            y[l+1] - y[l]
-      })
-      xa <- sum(unlist(xdists) - unlist(xdists)[1])
-      ya <- sum(unlist(ydists) - unlist(ydists)[1])
-      if(any(abs(c(xa, ya)) > 0.00001)){
+      if(length(x)==1 && length(y)==1){
             FALSE
       }else{
-            TRUE
+            xdists <- lapply(1:(length(x)-1), function(l){
+                  x[l+1] - x[l]
+            })
+            ydists <- lapply(1:(length(y)-1), function(l){
+                  y[l+1] - y[l]
+            })
+            xa <- sum(unlist(xdists) - unlist(xdists)[1])
+            ya <- sum(unlist(ydists) - unlist(ydists)[1])
+            if(any(abs(c(xa, ya)) > 0.00001)){
+                  FALSE
+            }else{
+                  TRUE
+            }
       }
 }
 
@@ -544,7 +548,11 @@ mat2Dto3Darray.stations <- function(mat2D, x, y) {
 array3Dto2Dmat.stations <- function(array3D) {
       dims <- dim(array3D)
       aux.list <- lapply(1:dims[1], function(i) {
-            diag(array3D[i, ,])
+            if(!is.matrix(array3D[i, ,])){
+                  array3D[i, ,]
+            } else{
+                  diag(array3D[i, ,])      
+            }
       })
       mat <- unname(do.call("abind", c(aux.list, along = -1)))
       aux.list <- NULL
