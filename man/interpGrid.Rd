@@ -108,6 +108,11 @@ t5 <- interpGrid(EOBS_Iberia_tp,
                new.coordinates = list(x = c(-6.7, -4.5, 2.5), 
                                       y = c(41.8, 40, 39)))
 plotClimatology(climatology(t5), backdrop.theme = "countries")
+
+#From grid to a single point or station
+t6 <- interpGrid(grid = EOBS_Iberia_tp, 
+                 new.coordinates = list(x = -6.7, y = 41.8))
+str(t6$Data)
 }
 \author{
 J. Bedia, S. Herrera, M. de Felice, M. Iturbide
