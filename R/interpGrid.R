@@ -125,6 +125,9 @@ interpGrid <- function(grid,
             bilin.method <- "akima"
             message("NOTE: Input data corresponds to an irregular grid, bilin.method = 'akima'")
             mess <- TRUE
+      }else if("lon" %in% names(coords)){
+            x <- coords$lon
+            y <- coords$lat
       }else if(!is.matrix(coords)){
             x <- list(x = outer(coords$y*0, coords$x, FUN = "+"),
                       y = outer(coords$y, coords$x*0, FUN = "+"))$x
