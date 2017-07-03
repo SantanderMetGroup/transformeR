@@ -112,8 +112,9 @@ temporalCycleGrid <- function(grid, time.frame = c("daily", "monthly"),
         # leap.years: 29th februaries are forced to 28th
         grid$Dates$end <- gsub("-02-29", "-02-28", grid$Dates$end)
         grid$Dates$start <- gsub("-02-29", "-02-28", grid$Dates$start)
-        tindex <- getRefDates(grid) %>% as.Date() %>% format("%j") %>% as.integer()
-        if (tindex %>%  diff() %>% head(1) != 1L) stop("The input grid is not daily")
+        aux <- getRefDates(grid) %>% as.Date() %>% format("%j") %>% as.integer() %>% diff() %>% head(1)
+        if (aux != 1L) stop("The input grid is not daily")
+        tindex <- getRefDates(grid) %>% substr(6, 10) 
         # Remove possible duplicated 28th februaries
         grid$Dates  <- lapply(grid$Dates, "unique")
     } else if (time.frame == "monthly") {
@@ -146,6 +147,7 @@ temporalCycleGrid <- function(grid, time.frame = c("daily", "monthly"),
 #' @author J Bedia    
 
 temporalCycle.1D <- function(x, time.ref.INDEX, aggr.fun, ...) {
+    time.ref.INDEX <- factor(time.ref.INDEX, ordered = TRUE)
     out <- tapply(x, INDEX = time.ref.INDEX, aggr.fun, ...)
     out[which(is.infinite(out))] <- NA
     return(out)

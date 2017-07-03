@@ -78,9 +78,10 @@ persistence <- function(grid,
         attr(grid, "is.signif") <- sigmat
     }
     arr <- unname(abind(cormat, along = -1L))
-    attr(arr, "dimensions") <- c("time", "lat", "lon")
+    attr(arr, "dimensions") <- c("time", dimNames[mar])
     attr(arr, "climatology:fun") <- "acf"
     grid$Data <- arr
+    grid <- redim(grid)
     attr(grid, "lagged_corr:lag") <- lag
     return(grid)
 }

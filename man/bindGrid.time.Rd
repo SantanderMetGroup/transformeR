@@ -18,12 +18,36 @@ This value is passed to the \code{\link{identical}} function to check for spatia
 Flexible binding of (spatially/member consistent) grids by their time dimension
 }
 \details{
+\strong{Input grids consistency checks}
+
 The function makes a number of checks in order to test the spatiotemporal compatibility of the input multi-member grids.
  The spatial consistency of the input grids is also checked. In order to avoid possible errors from the user, the spatial
   consistency (i.e., equal XY coordinates) of the input grids must be ensured before attempting the creation of the multigrid,
   otherwise giving an error. This can be achieved either through the specification of the same 'lonLim' and 'latLim' argument
   values when loading the grids, or using the \code{\link{interpGrid}} interpolator in conjuntion with the \code{\link{getGrid}}
-  method.
+  method, for instance
+  
+\strong{Time dimension ordering}
+
+The "time" dimension will be always returned in ascending order, regardless of the ordering of the input grids.
+The internal helper \code{\link{sortDim.time}} is applied to this aim.
+}
+\examples{
+data("EOBS_Iberia_tas")
+eobs.1998 <- subsetGrid(EOBS_Iberia_tas, years = 1998)
+eobs.1999_2000 <- subsetGrid(EOBS_Iberia_tas, years = 1999:2000)
+eobs1 <- bindGrid.time(eobs.1998, eobs.1999_2000)
+eobs2 <- bindGrid.time(eobs.1999_2000, eobs.1998)
+identical(eobs1, eobs2)
+
+# For convenience while programming, it also accepts a list as input:
+year.list <- list(1998, 1999:2000)
+grid.list <- lapply(year.list, function(x) {
+    subsetGrid(EOBS_Iberia_tas, years = x)
+    # perform any other tasks with the subsets...
+}) 
+eobs3 <- do.call("bindGrid.time", grid.list)
+identical(eobs1, eobs3)
 }
 \examples{
 data("CFS_Iberia_tas")
@@ -42,7 +66,8 @@ Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
   \code{\link{bindGrid.member}},
   \code{\link{grid3Dto2Dmatrix}},
   \code{\link{mat2Dto3Darray.stations}},
-  \code{\link{redim}}
+  \code{\link{redim}},
+  \code{\link{sortDim.time}}
 }
 \author{
 M De Felice, J Bedia
