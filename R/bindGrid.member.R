@@ -36,12 +36,12 @@
 #'   values when loading the grids, or using the \code{\link{interpGrid}} interpolator in conjuntion with the \code{\link{getGrid}}
 #'   method.
 #' @examples 
-#' data("CFS_Iberia_tas")
+#' data("tasmin_forecast")
 #' # We first diaggregate in various grids with different members
-#' members1_2 <- subsetGrid(CFS_Iberia_tas, members = 1:2)
-#' members3_4 <- subsetGrid(CFS_Iberia_tas, members = 3:4)
-#' member7 <- subsetGrid(CFS_Iberia_tas, members = 7)
-#' member8 <- subsetGrid(CFS_Iberia_tas, members = 8)
+#' members1_2 <- subsetGrid(tasmin_forecast, members = 1:2)
+#' members3_4 <- subsetGrid(tasmin_forecast, members = 3:4)
+#' member7 <- subsetGrid(tasmin_forecast, members = 7)
+#' member8 <- subsetGrid(tasmin_forecast, members = 8)
 #' # The function is insensitive to the number of members per input grid
 #' bindedGrid <- bindGrid.member(members1_2, members3_4, member7, member8)
 #' plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline")
@@ -54,7 +54,7 @@
 bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
       grid.list <- list(...)
       if (length(grid.list) == 1) {
-            grid.list <- unlist(grid.list, recursive = FALSE)
+          grid.list <- unlist(grid.list, recursive = FALSE)
       }
       if (length(grid.list) < 2) {
             stop("The input must be a list of at least two grids", call. = FALSE)
@@ -81,7 +81,7 @@ bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
             # temporal test
             if (!identical(as.POSIXlt(grid.list[[1]]$Dates$start)$yday, as.POSIXlt(grid.list[[i]]$Dates$start)$yday) 
                 | !identical(as.POSIXlt(grid.list[[1]]$Dates$start)$year, as.POSIXlt(grid.list[[i]]$Dates$start)$year)) {
-                  stop("Input data is not temporally consistent")
+                        stop("Input data is not temporally consistent")
             }
             # data dimensionality test
             if (!identical(getShape(grid.list[[1]]), getShape(grid.list[[i]]))) {
@@ -112,6 +112,7 @@ bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
       attr(ref[["Data"]], "dimensions") <- dimNames
       return(ref)
 }
+
 
 
 
