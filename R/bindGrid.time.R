@@ -59,6 +59,15 @@
 #' }) 
 #' eobs3 <- do.call("bindGrid.time", grid.list)
 #' identical(eobs1, eobs3)
+#' 
+#' data("CFS_Iberia_tas")
+#' # We first diaggregate in various grids with different time periods
+#' period1 <- subsetGrid(CFS_Iberia_tas, years = 1983:1985)
+#' period2 <- subsetGrid(CFS_Iberia_tas, years = 1986:1988)
+#' # Then we aggregate and compare to the original data (containing the full continuous period)
+#' bindedGrid <- bindGrid.time(period1, period2)
+#' plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline")
+#' plotClimatology(climatology(CFS_Iberia_tas), backdrop.theme = "coastline")
 
 
 bindGrid.time <- function(..., spatial.tolerance = 1e-3) {

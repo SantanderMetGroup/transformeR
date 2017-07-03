@@ -16,23 +16,11 @@
 #' @export
 #' @author J. Bedia 
 #' @seealso \code{\link{prinComp}}, \code{\link{plotEOF}}
-#' @examples \dontrun{
-#' # First a multigrid containing a set of variables is loaded (e.g. data for spring spanning the
-#' # 30-year period 1981--2010):
-#' dir.create("mydirectory")
-#' download.file("http://meteo.unican.es/work/downscaler/data/Iberia_NCEP.tar.gz", 
-#' destfile = "mydirectory/Iberia_NCEP.tar.gz")
-#' # Extract files from the tar.gz file
-#' untar("mydirectory/NCEP_Iberia.tar.gz", exdir = "mydirectory")
-#' # First, the path to the ncml file is defined:
-#' ncep <- "mydirectory/Iberia_NCEP/Iberia_NCEP.ncml"
-#' hus850 <- loadGridData(ncep, var = "hus@@850", season = 3:5, years = 1981:2010)
-#' ta850 <- loadGridData(ncep, var = "ta@@850", season = 3:5, years = 1981:2010)
-#' psl <- loadGridData(ncep, var = "psl", season = 3:5, years = 1981:2010) 
+#' @examples 
 #' # Multigrid constructor:
-#' multigrid <- makeMultiGrid(hus850, ta850, psl)
+#' multigrid <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_ta850, NCEP_Iberia_psl)
 #' # In this example, we retain the first 10 PCs
-#' pca <- prinComp(multifield, n.eofs = 10)
+#' pca <- prinComp(multigrid, n.eofs = 10)
 #' # We recover the sea-level pressure grid from the its PCs:
 #' names(pca)
 #' psl2 <- gridFromPCs(pca, "psl")
@@ -40,37 +28,19 @@
 #' # The attributes of psl2 indicate that this is a reconstructed grid from 10 PCs, 
 #' # explaining 99\% of the variance:
 #' attributes(psl2)
-#' multifield$Variable$varName
+#' multigrid$Variable$varName
 #' # psl is the 3rd one
-#' # The mean fields of both the original and the reconstructed grids is computed:
-#' psl.orig <- multifield$Data[3,,,]
-#' psl.reconstructed <- psl2$Data
-#' z <- apply(psl.orig, c(3,2), mean)
-#' z1 <- apply(psl.reconstructed, c(3,2), mean)
-#' # These are the spatial coordinates
-#' x <- psl2$xyCoords$x
-#' y <- psl2$xyCoords$y
-#' require(fields)
-#' par(mfrow = c(2,2))
-#' image.plot(x,y,z, asp = 1, horizontal = TRUE)
-#' title("Original SLP field")
-#' image.plot(x,y,z1, asp = 1, horizontal = TRUE)
-#' title("Reconstructed SLP field")
-#' mtext("(Using the first 10 PCs)")
-#' image.plot(x,y,z1-z, asp = 1)
-#' title("Difference (bias)")
-#' par(mfrow = c(1,1))
-#'  
+#' 
 #' # An example of multimember reconstruction from a multimember PC analysis:
-#' data(tasmax_forecast)
+#' data("CFS_Iberia_tas")
 #' # Note that multimember pca analysis takes some time, depending on the computer
-#' pca2 <- prinComp(tasmax_forecast, n.eofs = 10)
-#' tasmax_recovered <- gridFromPCs(pca2)
-#' plotMeanGrid(tasmax_recovered, multi.member = TRUE)
+#' pca2 <- prinComp(CFS_Iberia_tas, n.eofs = 10)
+#' tas_recovered <- gridFromPCs(pca2)
+#' plotMeanGrid(tas_recovered, multi.member = TRUE)
 #' # Also note that now the length of the "nPCs" and "explained_variance" matches 
 #' # the number of members:
-#' attributes(tasmax_recovered)
-#' }
+#' attributes(tas_recovered)
+
 
 gridFromPCs <- function(prinCompObj, var) {
       varNames <- attributes(prinCompObj)$names 

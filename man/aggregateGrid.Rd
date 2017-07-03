@@ -83,25 +83,25 @@ Parallel computing is currently not available for Windows machines.
 }
 
 \examples{
-data("tasmax_forecast")
+data("CFS_Iberia_tas")
 ## Aggregating members
 # Ensemble mean
-mn <- aggregateGrid(grid = tasmax_forecast, aggr.mem = list("mean", na.rm = TRUE))
+mn <- aggregateGrid(grid = CFS_Iberia_tas, aggr.mem = list("mean", na.rm = TRUE))
 plotClimatology(climatology(mn, by.member = FALSE),
                 backdrop.theme = "coastline", main = "Ensemble mean tmax climatology")
 # Ensemble 90th percentile
- ens90 <- aggregateGrid(grid = tasmax_forecast,
+ ens90 <- aggregateGrid(grid = CFS_Iberia_tas,
                         aggr.mem = list(FUN = quantile, probs = 0.9, na.rm = TRUE))
 plotClimatology(climatology(ens90, by.member = FALSE),
                 backdrop.theme = "coastline", main = "Ensemble 90th percentile tmax climatology")
 
 ## Monthly aggregation
-monthly.mean <- aggregateGrid(tasmax_forecast, aggr.m = list(FUN = mean, na.rm = TRUE))
+monthly.mean <- aggregateGrid(CFS_Iberia_tas, aggr.m = list(FUN = mean, na.rm = TRUE))
 plotClimatology(climatology(monthly.mean), backdrop.theme = "coastline",
                 main = "Mean tmax climatology")
 
 ## Several dimensions ca be aggregated in one go:
-mm.mean <- aggregateGrid(tasmax_forecast,
+mm.mean <- aggregateGrid(CFS_Iberia_tas,
                          aggr.mem = list(FUN = "mean", na.rm = TRUE),
                          aggr.m = list(FUN = "mean", na.rm = TRUE))
 }

@@ -72,26 +72,26 @@
 #' @family subsetting
 #' @examples
 #' # Example 1 - Spatial / member subset
-#' data(tasmax_forecast)
+#' data("CFS_Iberia_tas")
 #' # Selection of a smaller domain over the Iberian Peninsula and members 3 and 7
-#' sub <- subsetGrid(tasmax_forecast,
+#' sub <- subsetGrid(CFS_Iberia_tas,
 #'                   members = c(3,7),
-#'                   lonLim = c(-10,5),
-#'                   latLim = c(36,44))
-#' plotClimatology(climatology(sub), tol = 0.005, contour = TRUE)
+#'                   lonLim = c(-10,-5),
+#'                   latLim = c(36,43))
+#' plotClimatology(climatology(sub), tol = 0.005, contour = TRUE, 
+#'                 backdrop.theme = "coastline")
 #' ## Example 2 - Subsetting a multimember multigrid by variables
 #' # Multimember multigrid creation
-#' data(tasmax_forecast)
-#' data(tasmin_forecast)
-#' data(tp_forecast)
-#' mm.mf <- makeMultiGrid(tasmax_forecast, tasmin_forecast, tp_forecast)
+#' data("CFS_Iberia_tp")
+#' data("CFS_Iberia_hus850")
+#' mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp, CFS_Iberia_hus850)
 #' plotMeanGrid(mm.mf)
 #' # Extracting just minimum temperature
-#' sub1 <- subsetGrid(mm.mf, var = "tasmin", members = 1:4)
+#' sub1 <- subsetGrid(mm.mf, var = "tas", members = 1:4)
 #' plotClimatology(climatology(sub1, by.member = TRUE), backdrop.theme = "coastline")
 #' # Extracting precipitation and maximum temperature
 #' # (Note that the grid variables are NOT re-ordered)
-#' sub2 <- subsetGrid(mm.mf, var = c("tp", "tasmax"))
+#' sub2 <- subsetGrid(mm.mf, var = c("tp", "tas"))
 #' plotMeanGrid(sub2)
 
 
@@ -471,9 +471,9 @@ subsetSeason <- function(grid, season = NULL) {
 #' @family subsetting
 #' @examples
 #' # Example - Member subset
-#' data(tasmax_forecast)
+#' data("CFS_Iberia_tas")
 #' # Selection of members 3 and 7
-#' sub <- subsetDimension(tasmax_forecast,
+#' sub <- subsetDimension(CFS_Iberia_tas,
 #'                    dimension = "member",
 #'                    indices = c(1,3))
 #' plotClimatology(climatology(sub), backdrop.theme = "coastline")

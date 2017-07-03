@@ -55,9 +55,9 @@ The function applies the \code{\link[sp]{spplot}} method after conversion of the
  be also controlled using \code{\link[lattice]{trellis.par.set}}.
 }
 \examples{
-data(tasmax_forecast)
+data("CFS_Iberia_tas")
 # Climatology is computed:
-clim <- climatology(tasmax_forecast, by.member = TRUE)
+clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
 plotClimatology(clim)
 # Geographical lines can be added using the argument 'backdrop.theme':
 plotClimatology(clim, backdrop.theme = "coastline")
@@ -83,20 +83,20 @@ plotClimatology(clim,
                 col.regions = cm.colors(27), at = seq(10,37,1))
                 
 # For ensemble means climatology should be called with 'by.member' set to FALSE:
-clim <- climatology(tasmax_forecast, by.member = FALSE)
+clim <- climatology(CFS_Iberia_tas, by.member = FALSE)
 
 # Adding contours to the plot is direct with argument 'contour':
 plotClimatology(clim,
                 scales = list(draw = TRUE),
                 contour = TRUE,
-                main = "tasmax Predictions July Ensemble Mean")
+                main = "tas Predictions July Ensemble Mean")
                 
                 
 ## Example of multigrid plotting
-data("iberia_ncep_psl")
+data("NCEP_Iberia_psl")
 ## Winter data are split into monthly climatologies
-monthly.clim.grids <- lapply(getSeason(iberia_ncep_psl), function(x) {
-      climatology(subsetGrid(iberia_ncep_psl, season = x))
+monthly.clim.grids <- lapply(getSeason(NCEP_Iberia_psl), function(x) {
+      climatology(subsetGrid(NCEP_Iberia_psl, season = x))
 })
 ## Skip the temporal checks, as grids correspond to different time slices
 mg <- do.call("makeMultiGrid",
@@ -108,6 +108,9 @@ plotClimatology(mg,
                 main = "Mean PSL climatology 1991-2010",
                 scales = list(draw = TRUE))                
 
+# Station data:
+data("VALUE_Iberia_tp")
+plotClimatology(climatology(VALUE_Iberia_tp), backdrop.theme = "countries")
 }
 \references{
 \itemize{

@@ -45,21 +45,31 @@
 #' \code{\link{persistence}}, for a special case in which the temporal autocorrelation function is applied.
 #' @export
 #' @examples 
-#' # Maximum July surface temp forecast climatology
-#' data("tasmax_forecast")
+#' # Station data:
+#' # Mean surface temperature
+#' data("VALUE_Iberia_tas")
+#' st_mean_clim <- climatology(VALUE_Iberia_tas)
+#' str(st_mean_clim)
+#' plotClimatology(st_mean_clim, backdrop.theme = "coastline")
+#' # Standar deviation of surface temperature
+#' st_sd_clim <- climatology(VALUE_Iberia_tas, clim.fun = list(FUN = sd, na.rm = TRUE))
+#' plotClimatology(st_sd_clim, backdrop.theme = "coastline")
+#' 
+#' # July surface temp forecast climatology
+#' data("CFS_Iberia_tas")
 #' # (Parallelization option has no effect under WinOS)
 #' # Aggregate all members before computing the climatology
-#' tx_mean.clim <- climatology(tasmax_forecast,
+#' t_mean.clim <- climatology(CFS_Iberia_tas,
 #'                             by.member = FALSE,
 #'                             parallel = TRUE)
 #' # Note the new attributes, and that time dimension is preserved as a singleton
-#' str(tx_mean.clim$Data)
-#' str(tx_mean.clim$Dates)
+#' str(t_mean.clim$Data)
+#' str(t_mean.clim$Dates)
 #' # Compute a climatology for each member sepparately
-#' tx_mean_15mem.clim <- climatology(tasmax_forecast,
+#' t_mean_9mem.clim <- climatology(CFS_Iberia_tas,
 #'                                   by.member = TRUE,
 #'                                   parallel = TRUE)
-#' str(tx_mean_15mem.clim$Data)
+#' str(t_mean_9mem.clim$Data)
 #' # 9 different climatologies, one for each member
 #' 
 #' # Flexible aggregation function definition:
@@ -72,7 +82,7 @@ climatology <- function(grid,
                         max.ncores = 16,
                         ncores = NULL) {
       parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-      grid <- redim(grid, runtime = FALSE)
+      grid <- redim(grid, member = FALSE, runtime = FALSE)
       dimNames <- attr(grid[["Data"]], "dimensions")
       ## Member aggregation 
       if (!isTRUE(by.member)) {
@@ -105,6 +115,7 @@ climatology <- function(grid,
       grid$Dates$start <- grid$Dates$start[1]
       grid$Dates$end <- tail(grid$Dates$end, 1)
       grid <- redim(grid, drop = TRUE) %>% redim(member = FALSE, var = FALSE, drop = FALSE)
+      if(!isRegular(grid)) grid <- redim(grid, loc = TRUE, member = FALSE)
       attr(grid$Data, "climatology:fun") <- clim.fun[["FUN"]]
       return(grid)
 }

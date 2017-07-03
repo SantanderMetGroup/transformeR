@@ -31,20 +31,23 @@ The function makes a number of checks in order to test the spatiotemporal compat
   method.
 }
 \examples{
-data("tasmin_forecast")
+data("CFS_Iberia_tas")
 # We first diaggregate in various grids with different members
-members1_2 <- subsetGrid(tasmin_forecast, members = 1:2)
-members3_4 <- subsetGrid(tasmin_forecast, members = 3:4)
-member7 <- subsetGrid(tasmin_forecast, members = 7)
-member8 <- subsetGrid(tasmin_forecast, members = 8)
+members1_2 <- subsetGrid(CFS_Iberia_tas, members = 1:2)
+members3_4 <- subsetGrid(CFS_Iberia_tas, members = 3:4)
+member7 <- subsetGrid(CFS_Iberia_tas, members = 7)
+member8 <- subsetGrid(CFS_Iberia_tas, members = 8)
 # The function is insensitive to the number of members per input grid
 bindedGrid <- bindGrid.member(members1_2, members3_4, member7, member8)
 plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline")
 }
 \seealso{
-Other internal.helpers: \code{\link{array3Dto2Dmat}},
+Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
+  \code{\link{array3Dto2Dmat}},
   \code{\link{bindGrid.time}},
-  \code{\link{grid3Dto2Dmatrix}}, \code{\link{redim}},
+  \code{\link{grid3Dto2Dmatrix}},
+  \code{\link{mat2Dto3Darray.stations}},
+  \code{\link{redim}},
   \code{\link{sortDim.time}}
 }
 \author{

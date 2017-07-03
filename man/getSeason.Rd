@@ -16,8 +16,8 @@ An integer vector with the season
 Retrieves the season encompassed by a station or grid object
 }
 \examples{
-data(iberia_ncep_ta850)
-getSeason(iberia_ncep_ta850) # Boreal winter (DJF)
+data("NCEP_Iberia_hus850")
+getSeason(NCEP_Iberia_hus850) # Boreal winter (DJF)
 }
 \seealso{
 Other get.helpers: \code{\link{getCoordinates}},

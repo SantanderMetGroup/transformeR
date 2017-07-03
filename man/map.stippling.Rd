@@ -34,34 +34,34 @@ The function generates a \code{"sp.points"} layout list. Further formatting argu
  For further details and examples see the help of \code{\link[sp]{spplot}}.
 }
 \examples{
-data("tasmax_forecast")
-p90clim <- climatology(tasmax_forecast,
+data("CFS_Iberia_tas")
+p90clim <- climatology(CFS_Iberia_tas,
                        by.member = FALSE,
                        clim.fun = list("FUN" = quantile, prob = .9))
 plotClimatology(p90clim, backdrop.theme = "coastline",
-                main = "CFSv2 Ensemble mean Tmax 90th percentile (July 2001)")
-                
+                main = "CFSv2 Ensemble mean Tmean 90th percentile (July 2001)")
+
 # We want to highlight the grid points with a 90th percentile > 25.5 degrees, 
-# on top of the Tmax model climatology:
-pts <- map.stippling(p90clim, threshold = 25.5, condition = "GT")
-plotClimatology(climatology(tasmax_forecast),
+# on top of the Tmean model climatology:
+pts <- map.stippling(p90clim, threshold = 15.5, condition = "GT")
+plotClimatology(climatology(CFS_Iberia_tas),
                 backdrop.theme = "coastline",
                 sp.layout = list(pts))
-                
+
 # Some useful parameters that can be passed to the layout list:
-pts <- map.stippling(p90clim, threshold = 25.5, condition = "GT",
+pts <- map.stippling(p90clim, threshold = 15.5, condition = "GT",
                      pch = 19, # dots instead of default crosses
                      col = "black", # black dots
                      cex = .1) # point expansion factor (to make them very small)
-plotClimatology(climatology(tasmax_forecast),
+plotClimatology(climatology(CFS_Iberia_tas),
                 backdrop.theme = "coastline",
                 sp.layout = list(pts))
-                
+
 # Suppose we want the stippling just in the first and fifth panels, for instance:
-pts <- map.stippling(p90clim, threshold = 25.5, condition = "GT",
+pts <- map.stippling(p90clim, threshold = 15.5, condition = "GT",
                      pch = 19, col = "black", cex = .1,
                      which = c(1, 5)) # which controls in which panel(s) the points are displayed
-plotClimatology(climatology(tasmax_forecast),
+plotClimatology(climatology(CFS_Iberia_tas),
                 backdrop.theme = "coastline",
                 sp.layout = list(pts))
 }

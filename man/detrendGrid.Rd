@@ -54,8 +54,8 @@ Parallel computing is currently not available for Windows machines.
 }
 
 \examples{
-data("iberia_ncep_ta850")
-monthly <- aggregateGrid(iberia_ncep_ta850, aggr.m = list(FUN = "mean"))
+data("NCEP_Iberia_ta850")
+monthly <- aggregateGrid(NCEP_Iberia_ta850, aggr.m = list(FUN = "mean"))
 plot(monthly$Data[,4,2], ty = 'l')
 abline(reg = lm(monthly$Data[,4,2] ~ I(1:length(monthly$Data[,4,2]))), lty = 2)
 det <- detrendGrid(monthly, parallel = FALSE)
@@ -64,11 +64,11 @@ lines(det$Data[,4,2], col = "red")
 abline(reg = lm(det$Data[,4,2] ~ I(1:length(det$Data[,4,2]))), col = "red", lty = 2)
 legend("topright", c("Raw", "Detrended"), lty = 1, col = c(1,2))
 ## example of forecast detrend
-# Suppose 1991-2009 is the reference period. We use it to detrend data from year 2010
-grid <- subsetGrid(monthly, years = 1991:2009)
-grid2 <- subsetGrid(monthly, years = 2010)
+# Suppose 1991-2001 is the reference period. We use it to detrend data from year 2002
+grid <- subsetGrid(monthly, years = 1991:2001)
+grid2 <- subsetGrid(monthly, years = 2002)
 det2 <- detrendGrid(grid, grid2, parallel = FALSE)
-# det2 is the grid2 (year 2010) corrected according to the linear trend computed for 1991-2009
+# det2 is the grid2 (year 2002) corrected according to the linear trend computed for 1991-2001
 }
 \author{
 J Bedia, J Fernandez, M.D. Frias

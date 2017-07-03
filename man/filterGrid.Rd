@@ -59,12 +59,12 @@ Parallel computing is currently not available for Windows machines.
 }
 
 \examples{
-data(iberia_ncep_ta850)
-plot(iberia_ncep_ta850[["Data"]][,3,3], ty = 'l')
+data(NCEP_Iberia_ta850)
+plot(NCEP_Iberia_ta850[["Data"]][,3,3], ty = 'l')
 # Apply a moving average considering 2 different window widths of 30 and 90 days
-fgrid30 <- filterGrid(iberia_ncep_ta850, method = "convolution", window.width = 30, sides = 1)
+fgrid30 <- filterGrid(NCEP_Iberia_ta850, method = "convolution", window.width = 30, sides = 1)
 lines(fgrid30[["Data"]][,3,3], col = 'red')
-fgrid90 <- filterGrid(iberia_ncep_ta850, method = "convolution", window.width = 90, sides = 1)
+fgrid90 <- filterGrid(NCEP_Iberia_ta850, method = "convolution", window.width = 90, sides = 1)
 lines(fgrid90[["Data"]][,3,3], col = 'green')
 legend("top", c("raw","30-day MA", "90-day MA"), lty = 1, col = c(1,2,3), ncol = 3)
 }

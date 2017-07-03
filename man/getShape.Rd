@@ -15,6 +15,14 @@ An integer vector with dim values, labelled with the \code{"dimension"} attribut
 \description{
 Retrieve array attributes 'dimensions' and 'dim'
 }
+\examples{
+#Station data:
+data("VALUE_Iberia_tas")
+getShape(VALUE_Iberia_tas)
+#Regular grid
+data("NCEP_Iberia_hus850")
+getShape(NCEP_Iberia_hus850)
+}
 \seealso{
 Other get.helpers: \code{\link{getCoordinates}},
   \code{\link{getDim}}, \code{\link{getGrid}},

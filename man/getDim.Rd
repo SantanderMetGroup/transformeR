@@ -15,6 +15,14 @@ A character vector with the dimensions attribute of the object's \code{Data} com
 \description{
 Retrieve dimensions attribute
 }
+\examples{
+#Station data:
+data("VALUE_Iberia_tas")
+getDim(VALUE_Iberia_tas)
+#Regular grid
+data("NCEP_Iberia_hus850")
+getDim(NCEP_Iberia_hus850)
+}
 \seealso{
 Other get.helpers: \code{\link{getCoordinates}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},

@@ -6,12 +6,14 @@
 \usage{
 interpGrid(grid, new.coordinates = list(x = NULL, y = NULL),
   method = c("nearest", "bilinear"), bilin.method = NULL,
-  parallel = FALSE, max.ncores = 16, ncores = NULL)
+  parallel = FALSE, max.ncores = 16, ncores = NULL, ...)
 }
 \arguments{
 \item{grid}{An input grid to be interpolated/regridded.}
 
 \item{new.coordinates}{Definition of the new grid coordinates, in the form of a list with the x and y components, in thir order.
+If new coordinates correspond to an irregular grid, lengths for x and y must be the same: Each position in x and y correspond to
+a new location (a pair of coordinates).
 Each component consists of a vector of length three with components \emph{from}, \emph{to} and \emph{by},
  in this order, similar as the arguments passed to the \code{\link[base]{seq}} function, giving the 
  westernmost, easternmost and grid cell width in the X axis and, in the same way,
@@ -30,6 +32,9 @@ the \code{"fields"} option, able to handle missing values, need to be used. Othe
 
 \item{ncores}{Integer number of cores used in parallel computation. Self-selected number of
 cores is used when \code{ncpus = NULL} (the default), or when \code{maxcores} exceeds the default \code{ncores} value.}
+
+\item{...}{Further arguments for bilinear interpolation that are passed to function \code{\link[akima]{interp}} 
+from package \pkg{\link[akima]{akima}}.}
 }
 \value{
 An interpolated object preserving the structure of the input
@@ -69,22 +74,45 @@ Parallel computing is currently not available for Windows machines.
 }
 
 \examples{
-\dontrun{
-# Load air temperature at 850 mb isobaric pressure level for boreal winter (DJF) 1991-2010
-data(iberia_ncep_ta850)
-par(mfrow = c(2,1))
-plotMeanGrid(iberia_ncep_ta850)
+# boreal winter (DJF) precipitation data for the Iberian Peninsula and the period 1983-2002
+data(EOBS_Iberia_tp)
+plotClimatology(climatology(EOBS_Iberia_tp))
 # Bilinear interpolation to domain centered in Spain using a 0.5 degree resolution 
 # in both X and Y axes
-t <- interpGrid(iberia_ncep_ta850, new.coordinates = list(x = c(-10,5,.5),
-                                                          y = c(36,44,.5)),
-                                   method = "bilinear",
-                                   bilin.method = "akima")
-plotMeanGrid(t)
-par(mfrow=c(1,1))
+t1 <- interpGrid(EOBS_Iberia_tp, new.coordinates = list(x = seq(-10,5,.5),
+                                                        y = seq(36,44,.5)),
+                 method = "bilinear",
+                 bilin.method = "akima")
+plotClimatology(climatology(t1), backdrop.theme = "countries")
 # New attributes indicate that the data have been interpolated:
-attributes(t$xyCoords)
-}
+attributes(t1$xyCoords)
+
+# Using the coordinate information of another grid
+data(NCEP_Iberia_tp)
+t2 <- interpGrid(EOBS_Iberia_tp, new.coordinates = getGrid(NCEP_Iberia_tp),
+                 method = "nearest")
+plotClimatology(climatology(t2), backdrop.theme = "countries")
+
+#From station data to grid
+data(VALUE_Iberia_tp)
+plotClimatology(climatology(VALUE_Iberia_tp), backdrop.theme = "countries")
+t3 <- interpGrid(VALUE_Iberia_tp, new.coordinates = getGrid(EOBS_Iberia_tp),
+                 method = "bilinear")
+plotClimatology(climatology(t3), backdrop.theme = "countries")
+
+#From grid to station data
+t4 <- interpGrid(EOBS_Iberia_tp, new.coordinates = getGrid(VALUE_Iberia_tp),
+                 method = "nearest")
+plotClimatology(climatology(t4), backdrop.theme = "countries")
+t5 <- interpGrid(EOBS_Iberia_tp, 
+               new.coordinates = list(x = c(-6.7, -4.5, 2.5), 
+                                      y = c(41.8, 40, 39)))
+plotClimatology(climatology(t5), backdrop.theme = "countries")
+
+#From grid to a single point or station
+t6 <- interpGrid(grid = EOBS_Iberia_tp, 
+                 new.coordinates = list(x = -6.7, y = 41.8))
+str(t6$Data)
 }
 \author{
 J. Bedia, S. Herrera, M. de Felice, M. Iturbide

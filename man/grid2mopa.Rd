@@ -28,15 +28,14 @@ Transform a grid or multigrid to collections of raster files for modeling
 with the \code{mopa} package.
 }
 \examples{
-\dontrun{
-#' # Maximum July surface temp forecast climatology
-data("tasmax_forecast")
-data("tasmin_forecast")
-multigrid <- makeMultiGrid(tasmax_forecast, tasmin_forecast)
+# A raster stack from a multigrid
+data("CFS_Iberia_tas")
+data("CFS_Iberia_tp")
+multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
 multigridaggr <- aggregateGrid(multigrid, aggr.mem = list(FUN = "mean"))
-t_ras <- grid2mopa(multigridaggr)
-spplot(tx_ras)
-}
+ras <- grid2mopa(multigridaggr)
+require(sp)
+spplot(ras)
 }
 \seealso{
 \code{\link[transformeR]{climatology}}; \code{\link[loadeR]{loadGridData}}

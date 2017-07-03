@@ -32,13 +32,12 @@
 #' @author J. Bedia
 #' @importFrom abind abind
 #' @importFrom stats median
-#' @examples \dontrun{
-#' data("tasmax_forecast")
-#' pc <- prinComp(tasmax_forecast, n.eofs = 2)
+#' @examples
+#' data("CFS_Iberia_tas")
+#' pc <- prinComp(CFS_Iberia_tas, n.eofs = 2)
 #' # Convert to grid the PC of the leading EOF:
 #' a <- PC2grid(prinCompObj = pc, pc.idx = 1)
 #' str(a)
-#' }
 
 PC2grid <- function(prinCompObj,
                     var = names(prinCompObj)[1],

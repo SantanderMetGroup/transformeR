@@ -2,27 +2,27 @@
 % Please edit documentation in R/redim.R
 \name{redim}
 \alias{redim}
-\title{Complete missing dimensions of Grid or Station objects}
+\title{Complete missing dimensions of Grid objects}
 \usage{
-redim(obj, member = TRUE, runtime = FALSE, var = FALSE, station = FALSE,
+redim(grid, member = TRUE, runtime = FALSE, var = FALSE, loc = FALSE,
   drop = FALSE)
 }
 \arguments{
-\item{obj}{A grid or station data}
-
 \item{member}{logical. Add 'member' dimension (default = TRUE)}
 
 \item{runtime}{logical. Add 'runtime' dimension (default = FALSE)}
 
 \item{var}{logical. Add 'var' dimension (default = FALSE)}
 
-\item{station}{logical. Only if \code{obj} is a stations dataset. If TRUE, the \code{"station"} 
+\item{loc}{logical. Only if \code{obj} is a stations dataset. If TRUE, the \code{"loc"} 
 dimension is not replaced by fake \code{"lat"} and \code{"lon"} dimensions (default is FALSE).}
 
 \item{drop}{logical. Drop dimensions of length = 1 (default = FALSE)}
+
+\item{obj}{A regular or irregular (e.g. station data) grid}
 }
 \value{
-The same object with all the dimensions (i.e. member, time, station)
+The same object with all the dimensions (i.e. member, time, loc)
 }
 \description{
 Add missing dimensions to the 'Data' array as singletons. For internal usage mainly.
@@ -46,10 +46,12 @@ z <- redim(b, drop = TRUE)
 getShape(z)
 }
 \seealso{
-Other internal.helpers: \code{\link{array3Dto2Dmat}},
+Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
+  \code{\link{array3Dto2Dmat}},
   \code{\link{bindGrid.member}},
   \code{\link{bindGrid.time}},
   \code{\link{grid3Dto2Dmatrix}},
+  \code{\link{mat2Dto3Darray.stations}},
   \code{\link{sortDim.time}}
 }
 \author{
