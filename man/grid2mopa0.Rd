@@ -30,15 +30,14 @@ Transform a grid or multigrid to collections of raster files for modeling
 with the \code{mopa} package.
 }
 \examples{
-\dontrun{
 #' # Maximum July surface temp forecast climatology
-data("tasmax_forecast")
+data("CFS_Iberia_tas")
 # Aggregate all members and compute climatology
-tx_mean.clim <- climatology(tasmax_forecast, by.member = FALSE)
-plotClimatology(tx_mean.clim)
-tx_ras <- grid2mopa(tx_mean.clim)
-spplot(tx_ras)
-}
+t.clim <- climatology(CFS_Iberia_tas, by.member = FALSE)
+plotClimatology(t.clim)
+t.ras <- grid2mopa0(t.clim)
+require(sp)
+spplot(t.ras)
 }
 \seealso{
 \code{\link[transformeR]{climatology}}; \code{\link[loadeR]{loadGridData}}

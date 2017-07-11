@@ -58,19 +58,19 @@
 #' 
 #' @examples 
 #' # Creation of a multigrid from three different grids:
-#' data(iberia_ncep_ta850)
-#' data(iberia_ncep_hus850)
-#' data(iberia_ncep_psl)
+#' data(NCEP_Iberia_ta850)
+#' data(NCEP_Iberia_hus850)
+#' data(NCEP_Iberia_psl)
 #' # An example of different temporal aggregations, temporally compatible: 
 #' # sea-level pressure is a daily mean, while specific humidity and air temperature 
 #' # (850 mb surface isobaric pressure level) are instantaneous data verifying at 12:00 UTC:
 #' # air temperature
-#' range(iberia_ncep_ta850$Dates$start)
-#' range(iberia_ncep_ta850$Dates$end) # start and end are identical (instantaneous)
+#' range(NCEP_Iberia_ta850$Dates$start)
+#' range(NCEP_Iberia_ta850$Dates$end) # start and end are identical (instantaneous)
 #' # sea-level pressure
-#' range(iberia_ncep_psl$Dates$start)
-#' range(iberia_ncep_psl$Dates$end) # start and end differ in 24 h (daily mean)
-#' mf <- makeMultiGrid(iberia_ncep_hus850, iberia_ncep_psl, iberia_ncep_ta850)
+#' range(NCEP_Iberia_psl$Dates$start)
+#' range(NCEP_Iberia_psl$Dates$end) # start and end differ in 24 h (daily mean)
+#' mf <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 #' # The new object inherits the global attributes from the first grid, as it is assumed
 #' # that all input grids come from the same data source:
 #' attributes(mf)
@@ -81,10 +81,10 @@
 #' 
 #' # Example of multimember multigrid creation from several multimember grids:
 #' # Load three different multimember grids with the same spatiotemporal ranges:
-#' data(tasmax_forecast)
-#' data(tasmin_forecast)
-#' data(tp_forecast)
-#' mm.mf <- makeMultiGrid(tasmax_forecast, tasmin_forecast, tp_forecast)
+#' data("CFS_Iberia_tas")
+#' data("CFS_Iberia_hus850")
+#' data("CFS_Iberia_tp")
+#' mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_hus850, CFS_Iberia_tp)
 #' # 'plotMeanGrid' can just handle the multi-member mean for each variable in this case:
 #' plotMeanGrid(mm.mf)
 

@@ -15,6 +15,18 @@ A list with x and y components
 \description{
 Returns the coordinates of a climate data object, either stations or grid
 }
+\examples{
+# Regular grid
+data("NCEP_Iberia_hus850")
+str(getCoordinates(NCEP_Iberia_hus850))
+# Regular rotated grid with correpondence with a non regular grid in the 
+# lat/lon domain.
+data("CORDEX_Iberia_tas")
+str(getCoordinates(CORDEX_Iberia_tas))
+# Station data
+data("VALUE_Iberia_tas")
+str(getCoordinates(VALUE_Iberia_tas))
+}
 \seealso{
 Other get.helpers: \code{\link{getDim}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},

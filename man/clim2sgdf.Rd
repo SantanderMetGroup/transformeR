@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotClimatology.R
 \name{clim2sgdf}
 \alias{clim2sgdf}
-\title{Climatology to SpatialGridDataFrame}
+\title{Climatology to SpatialGridDataFrame or SpatialPointsDataFrame}
 \usage{
 clim2sgdf(clim, set.min, set.max)
 }
@@ -26,9 +26,9 @@ However, it may be useful for advanced \pkg{sp} users in different contexts
 (e.g. for reprojecting via \code{\link[sp]{spTransform}} etc.)
 }
 \examples{
-data(tasmax_forecast)
+data("CFS_Iberia_tas")
 # Climatology is computed:
-clim <- climatology(tasmax_forecast, by.member = TRUE)
+clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
 sgdf <- clim2sgdf(clim, NULL, NULL)
 class(sgdf)
 }

@@ -29,9 +29,9 @@ The attribute \code{subset} will be added taking the value of the \code{dimensio
 }
 \examples{
 # Example - Member subset
-data(tasmax_forecast)
+data("CFS_Iberia_tas")
 # Selection of members 3 and 7
-sub <- subsetDimension(tasmax_forecast,
+sub <- subsetDimension(CFS_Iberia_tas,
                    dimension = "member",
                    indices = c(1,3))
 plotClimatology(climatology(sub), backdrop.theme = "coastline")

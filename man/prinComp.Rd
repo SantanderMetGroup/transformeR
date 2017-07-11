@@ -78,21 +78,9 @@ It is therefore advisable to avoid the use of this option for large datasets, an
 multimember grids instead.
 }
 \examples{
-\dontrun{
-# Download dataset
-download.file("http://meteo.unican.es/work/downscaler/data/Iberia_NCEP.tar.gz", 
-destfile = "mydirectory/Iberia_NCEP.tar.gz")
-# Extract files from the tar.gz file
-untar("mydirectory/Iberia_NCEP.tar.gz", exdir = "mydirectory")
-# First, the path to the ncml file is defined:
-ncep <- "mydirectory/Iberia_NCEP/Iberia_NCEP.ncml"
-# A multigrid containing a set of variables is loaded (e.g. data for spring spanning the 
-# 30-year period 1981--2010):
-require(loadeR)
-hus <- loadGridData(ncep, var = "Q@85000", season = 3:5, years = 1981:2010)
-ta <- loadGridData(ncep, var = "T@85000", season = 3:5, years = 1981:2010)
-psl <- loadGridData(ncep, var = "SLP", season = 3:5, years = 1981:2010)
-multigrid <- makeMultiGrid(hus, ta, psl)
+data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
+
+multigrid <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 # In this example, we retain the PCs explaining the 99\\\% of the variance
 pca <- prinComp(multigrid, v.exp = .99)
 # Note that, apart from computing the principal components and EOFs for each grid, 
@@ -107,31 +95,31 @@ str(attributes(pca))
 # are also returned. These are either a single value in case of grid scaling (the default), or a
 # vector of values, one for each grid-cell, for the gridbox scaling. For instance, the parameters
 # for the specific humidity grid are:
-attributes(pca$Q85000[[1]])$`scaled:center`
-attributes(pca$Q85000[[1]])$`scaled:scale`
+attributes(pca$hus850[[1]])$`scaled:center`
+attributes(pca$hus850[[1]])$`scaled:scale`
 # In addition, the (cumulative) explained variance of each PC is also returned:
-vexp <- attributes(pca$Q85000[[1]])$explained_variance
+vexp <- attributes(pca$hus850[[1]])$explained_variance
 # The classical "scree plot":
 barplot(1-vexp, names.arg = paste("PC",1:length(vexp)), las = 2, 
         ylab = "Fraction of unexplained variance")
- 
+
 # This is an example using a multimember object:
-data(tasmax_forecast)
+data("CFS_Iberia_tas")
 # In this case we retain the first 5 EOFs:
-pca.mm <- prinComp(tasmax_forecast, n.eofs = 5) 
+pca.mm <- prinComp(CFS_Iberia_tas, n.eofs = 5) 
 # Note that now the results of the PCA for the variable are a list, with the results 
 # for each member sepparately considered
 str(pca.mm)
 
 # The most complex situation comes from multimember multigrids:
-data(tasmin_forecast)
+data("CFS_Iberia_tp")
 # We interpolate using an identical grid than the previous example:
 # Now the multimember multigrid is constructed
-mm.multigrid <- makeMultiGrid(tasmax_forecast, tasmin_forecast)
+mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
 pca.mm.mf <- prinComp(mm.multigrid, n.eofs = 3)
 # Now there is a "COMBINED" element at the end of the output list
 str(pca.mm.mf)
-}
+plotEOF(pca.mm.mf, var = "tp")
 }
 \references{
 Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Probabil\'{i}sticas

@@ -61,7 +61,7 @@
 #' }
 #'    
 #' @importFrom abind abind
-#' @importFrom sp spplot SpatialGridDataFrame GridTopology
+#' @importFrom sp spplot SpatialGridDataFrame SpatialPointsDataFrame GridTopology
 #' @importFrom grDevices colorRampPalette
 #' 
 #' @export
@@ -71,9 +71,9 @@
 #'  \code{\link{map.stippling}}, for adding a custom point layer on top of the map.
 #' Also see \code{\link[sp]{spplot}} in package \pkg{sp} for further information on plotting capabilities and options
 #' @examples 
-#' data(tasmax_forecast)
+#' data("CFS_Iberia_tas")
 #' # Climatology is computed:
-#' clim <- climatology(tasmax_forecast, by.member = TRUE)
+#' clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
 #' plotClimatology(clim)
 #' # Geographical lines can be added using the argument 'backdrop.theme':
 #' plotClimatology(clim, backdrop.theme = "coastline")
@@ -99,20 +99,20 @@
 #'                 col.regions = cm.colors(27), at = seq(10,37,1))
 #'                 
 #' # For ensemble means climatology should be called with 'by.member' set to FALSE:
-#' clim <- climatology(tasmax_forecast, by.member = FALSE)
+#' clim <- climatology(CFS_Iberia_tas, by.member = FALSE)
 #' 
 #' # Adding contours to the plot is direct with argument 'contour':
 #' plotClimatology(clim,
 #'                 scales = list(draw = TRUE),
 #'                 contour = TRUE,
-#'                 main = "tasmax Predictions July Ensemble Mean")
+#'                 main = "tas Predictions July Ensemble Mean")
 #'                 
 #'                 
 #' ## Example of multigrid plotting
-#' data("iberia_ncep_psl")
+#' data("NCEP_Iberia_psl")
 #' ## Winter data are split into monthly climatologies
-#' monthly.clim.grids <- lapply(getSeason(iberia_ncep_psl), function(x) {
-#'       climatology(subsetGrid(iberia_ncep_psl, season = x))
+#' monthly.clim.grids <- lapply(getSeason(NCEP_Iberia_psl), function(x) {
+#'       climatology(subsetGrid(NCEP_Iberia_psl, season = x))
 #' })
 #' ## Skip the temporal checks, as grids correspond to different time slices
 #' mg <- do.call("makeMultiGrid",
@@ -124,6 +124,10 @@
 #'                 main = "Mean PSL climatology 1991-2010",
 #'                 scales = list(draw = TRUE))                
 #' 
+#' # Station data:
+#' data("VALUE_Iberia_tp")
+#' plotClimatology(climatology(VALUE_Iberia_tp), backdrop.theme = "countries")
+
 
 
 plotClimatology <- function(grid, backdrop.theme = "none", set.min = NULL, set.max = NULL, ...) {
@@ -153,10 +157,11 @@ plotClimatology <- function(grid, backdrop.theme = "none", set.min = NULL, set.m
       ## Other args 
       arg.list[["obj"]] <- df
       arg.list[["asp"]] <- 1
+      arg.list[["sp.layout"]]
       do.call("spplot", arg.list)
 }      
 
-#'@title Climatology to SpatialGridDataFrame
+#'@title Climatology to SpatialGridDataFrame or SpatialPointsDataFrame
 #'@description Convert a climatological grid to a SpatialGridDataFrame object from package sp
 #'@param clim A climatological grid, as returned by function \code{\link{climatology}}
 #'@param set.min Minimum value, as passed by \code{plotClimatology}
@@ -172,9 +177,9 @@ plotClimatology <- function(grid, backdrop.theme = "none", set.min = NULL, set.m
 #'@export
 #'@importFrom sp GridTopology SpatialGridDataFrame
 #'@examples 
-#' data(tasmax_forecast)
+#' data("CFS_Iberia_tas")
 #' # Climatology is computed:
-#' clim <- climatology(tasmax_forecast, by.member = TRUE)
+#' clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
 #' sgdf <- clim2sgdf(clim, NULL, NULL)
 #' class(sgdf)
 
@@ -202,17 +207,24 @@ clim2sgdf <- function(clim, set.min, set.max) {
       dimNames <- getDim(grid)
       mem.ind <- grep("member", dimNames)
       n.mem <- getShape(grid, "member")
-      co <- expand.grid(grid$xyCoords$y, grid$xyCoords$x)[2:1]
+      co <- getCoordinates(grid)
+      if(isRegular(grid)) co <- expand.grid(co$y, co$x)[2:1]
       le <- nrow(co)
-      aux <- vapply(1:n.mem, FUN.VALUE = numeric(le), FUN = function(x) {
-            z <- asub(grid[["Data"]], idx = x, dims = mem.ind, drop = TRUE)
-            z <- unname(abind(z, along = -1L))
-            attr(z, "dimensions") <- c("time", "lat", "lon")
-            array3Dto2Dmat(z)
-      })
-      # Data reordering to match SpatialGrid coordinates
-      aux <- aux[order(-co[,2], co[,1]), ] 
-      aux <- data.frame(aux)
+      #############hemen nago!
+      if(isRegular(grid)){
+            aux <- vapply(1:n.mem, FUN.VALUE = numeric(le), FUN = function(x) {
+                  z <- asub(grid[["Data"]], idx = x, dims = mem.ind, drop = TRUE)
+                  z <- unname(abind(z, along = -1L))
+                  attr(z, "dimensions") <- c("time", "lat", "lon")
+                  array3Dto2Dmat(z)
+            })
+            # Data reordering to match SpatialGrid coordinates
+            aux <- data.frame(aux[order(-co[,2], co[,1]), ])
+      }else{
+            aux <- redim(grid, loc = !isRegular(grid), drop = T)$Data
+            naind <- which(!is.na(aux))
+            aux <- data.frame(as.numeric(aux[naind]))
+      }
       # Set min/max values, if provided
       if (!is.null(set.max)) aux[aux > set.max] <- set.max
       if (!is.null(set.min)) aux[aux < set.min] <- set.min
@@ -231,14 +243,20 @@ clim2sgdf <- function(clim, set.min, set.max) {
       names(aux) <- vname
       # Defining grid topology -----------------
       aux.grid <- getGrid(grid)
-      cellcentre.offset <- vapply(aux.grid, FUN = "[", 1L, FUN.VALUE = numeric(1L))
-      cellsize <- vapply(c("resX", "resY"), FUN.VALUE = numeric(1L), FUN = function(x) attr(aux.grid, which = x))
-      aux.grid <- getCoordinates(grid)
-      cells.dim <- vapply(aux.grid, FUN.VALUE = integer(1L), FUN = "length")
-      grd <- sp::GridTopology(cellcentre.offset, cellsize, cells.dim)
-      df <- sp::SpatialGridDataFrame(grd, aux)
+      if(!isRegular(grid)){
+            df <- sp::SpatialPointsDataFrame(co[naind,], aux)
+      }else{
+            cellcentre.offset <- vapply(aux.grid, FUN = "[", 1L, FUN.VALUE = numeric(1L))
+            cellsize <- vapply(c("resX", "resY"), FUN.VALUE = numeric(1L), FUN = function(x) attr(aux.grid, which = x))
+            aux.grid <- getCoordinates(grid)
+            cells.dim <- vapply(aux.grid, FUN.VALUE = integer(1L), FUN = "length")
+            grd <- sp::GridTopology(c(cellcentre.offset[["x"]], cellcentre.offset[["y"]]), cellsize, c(cells.dim[["x"]], cells.dim[["y"]]))
+            df <- sp::SpatialGridDataFrame(grd, aux)
+      }
       return(df)
 }
+
+
 
 
 #' @title Climatological map stippling
@@ -264,37 +282,38 @@ clim2sgdf <- function(clim, set.min, set.max) {
 #'  \code{\link{map.lines}}, for further map customizations.
 #' @author J. Bedia
 #' @examples
-#' data("tasmax_forecast")
-#' p90clim <- climatology(tasmax_forecast,
+#' data("CFS_Iberia_tas")
+#' p90clim <- climatology(CFS_Iberia_tas,
 #'                        by.member = FALSE,
 #'                        clim.fun = list("FUN" = quantile, prob = .9))
 #' plotClimatology(p90clim, backdrop.theme = "coastline",
-#'                 main = "CFSv2 Ensemble mean Tmax 90th percentile (July 2001)")
-#'                 
+#'                 main = "CFSv2 Ensemble mean Tmean 90th percentile (July 2001)")
+#' 
 #' # We want to highlight the grid points with a 90th percentile > 25.5 degrees, 
-#' # on top of the Tmax model climatology:
-#' pts <- map.stippling(p90clim, threshold = 25.5, condition = "GT")
-#' plotClimatology(climatology(tasmax_forecast),
+#' # on top of the Tmean model climatology:
+#' pts <- map.stippling(p90clim, threshold = 15.5, condition = "GT")
+#' plotClimatology(climatology(CFS_Iberia_tas),
 #'                 backdrop.theme = "coastline",
 #'                 sp.layout = list(pts))
-#'                 
+#' 
 #' # Some useful parameters that can be passed to the layout list:
-#' pts <- map.stippling(p90clim, threshold = 25.5, condition = "GT",
+#' pts <- map.stippling(p90clim, threshold = 15.5, condition = "GT",
 #'                      pch = 19, # dots instead of default crosses
 #'                      col = "black", # black dots
 #'                      cex = .1) # point expansion factor (to make them very small)
-#' plotClimatology(climatology(tasmax_forecast),
+#' plotClimatology(climatology(CFS_Iberia_tas),
 #'                 backdrop.theme = "coastline",
 #'                 sp.layout = list(pts))
-#'                 
+#' 
 #' # Suppose we want the stippling just in the first and fifth panels, for instance:
-#' pts <- map.stippling(p90clim, threshold = 25.5, condition = "GT",
+#' pts <- map.stippling(p90clim, threshold = 15.5, condition = "GT",
 #'                      pch = 19, col = "black", cex = .1,
 #'                      which = c(1, 5)) # which controls in which panel(s) the points are displayed
-#' plotClimatology(climatology(tasmax_forecast),
+#' plotClimatology(climatology(CFS_Iberia_tas),
 #'                 backdrop.theme = "coastline",
 #'                 sp.layout = list(pts))
 
+ 
 map.stippling <- function(clim, threshold = 0.05, condition = "LT", ...) {
     if (!("climatology:fun" %in% names(attributes(clim$Data)))) {
         stop("Input grid was not recognized as a climatology")
@@ -337,10 +356,10 @@ map.stippling <- function(clim, threshold = 0.05, condition = "LT", ...) {
 #' @seealso \code{\link{plotClimatology}}, to which its output is passed.
 #'  \code{\link{map.stippling}}, for further map customizations.
 #' @examples 
-#' data("tasmax_forecast")
+#' data("CFS_Iberia_tas")
 #' # Define a rectangular window centered on the Iberian Peninsula
 #' iberia <- map.lines(lonLim = c(-10,3.5), latLim = c(36,43))
-#' plotClimatology(climatology(tasmax_forecast), backdrop.theme = "coastline",
+#' plotClimatology(climatology(CFS_Iberia_tas), backdrop.theme = "coastline",
 #'                 sp.layout = list(iberia))
 #' 
 #' # Some customization options (awful, yes, but just for illustration):
@@ -348,29 +367,27 @@ map.stippling <- function(clim, threshold = 0.05, condition = "LT", ...) {
 #'                     lwd = 3, # line width
 #'                     col = "purple", # line color
 #'                     lty = 2) # line type
-#' plotClimatology(climatology(tasmax_forecast, by.member = FALSE), backdrop.theme = "coastline",
+#' plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme = "coastline",
 #'                 sp.layout = list(iberia))
 #' 
 #' # Another window over the Alps
 #' alps <- map.lines(lonLim = c(4,16), latLim = c(45,49),
-#'                     lwd = 3,
-#'                     col = "red") 
-#' plotClimatology(climatology(tasmax_forecast, by.member = FALSE), backdrop.theme = "coastline",
+#'                   lwd = 3,
+#'                   col = "red") 
+#' plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme = "coastline",
 #'                 sp.layout = list(iberia, alps))
 #' 
 #' # Adding a line (real data of a storm-track imported from a csv file)
 #' # Source: http://www.europeanwindstorms.org/
-#' \dontrun{
+#' 
 #' dat <- url("http://www.europeanwindstorms.org/repository/Jeanette/Jeanette_track.csv")
 #' custom.coords <- read.csv(dat, header = FALSE)[ ,5:4]
 #' storm <- map.lines(coords = custom.coords,
 #'                    lwd = 3,
 #'                    col = "red") 
-#'  plotClimatology(climatology(tasmax_forecast, by.member = FALSE), backdrop.theme = "coastline",
-#'                  sp.layout = list(storm), # Add storm track
-#'                  scales = list(draw = TRUE)) # Add coordinate axes
-#'  }
-#'  
+#' plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme = "coastline",
+#'                 sp.layout = list(storm), # Add storm track
+#'                 scales = list(draw = TRUE)) # Add coordinate axes
 
 map.lines <- function(lonLim = NULL, latLim = NULL, coords = NULL, ...) {
     if (is.null(lonLim) && is.null(latLim) && is.null(coords)) stop("Undefined polygon coordinates")
