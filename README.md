@@ -1,6 +1,6 @@
 # What is transformeR?
 
-`transformeR` is a R package for climate data transformation, seamlessly integrated with the [`loadeR` bundle](https://github.com/SantanderMetGroup/loadeR). It allows to easily perform many typical climate data manipulations in a flexible way, including:
+`transformeR` is a R package for climate data transformation, seamlessly integrated with the [`climate4R` bundle](https://github.com/SantanderMetGroup/loadeR). It allows to easily perform many typical climate data manipulations in a flexible way, including:
 
 * Computing and visualizing climatological maps
 * Detrending and application of different time filters
