@@ -11,9 +11,10 @@ localScaling(grid, base = NULL, ref = NULL, clim.fun = list(FUN = "mean",
 \arguments{
 \item{grid}{Input grid to be rescaled}
 
-\item{base}{Reference climatology (baseline) to be subtracted to the input grid. If \code{NULL} (the default),
-the climatology is directly computed from the grid via \code{\link{climatology}}, either member-by-member
-or using the ensemble mean climatology, as specified by the \code{by.member} flag.}
+\item{base}{Reference baseline whose climatology will be subtracted to the input grid. If \code{NULL} (the default),
+the climatology is directly computed from the input \code{grid} via \code{\link{climatology}}, either member-by-member
+or using the ensemble mean climatology, as specified by the \code{by.member} flag. \code{base} must NOT be climatology
+ (the base climatology is internally calculated via the argument \code{clim.fun}).}
 
 \item{ref}{Reference grid. After subtracting to grid its climatology (as defined by \code{grid.clim}), the mean
 climatology of this additional grid is added. Default to NULL, so no reference grid is used.}
@@ -56,48 +57,47 @@ w.r.t. the base, and \emph{ref_clim} is a reference climatological value added t
   by the user through the argument \code{clim.fun}, that is passed to \code{\link{climatology}}.
 
 
-The \code{ref} usually corresponds to the control run of the GCM in the training period in climate change applications,
+The \code{ref} usually corresponds to the control (historical, 20C3M...) run of the GCM in the training period in climate change applications,
 or the hindcast data for the training period in s2d applications. Note that by default \code{ref = NULL}. In this 
 case it will be assumed to be the \code{pred} grid. This can be used for instance when train and test correspond
 to the same model.
 }
 \examples{
 ## ANOMALIES
-data("iberia_ncep_psl")
+data("NCEP_Iberia_psl")
 # Define average aggregation function
 f = list(FUN = "mean", na.rm = TRUE)
-psl <- aggregateGrid(iberia_ncep_psl, aggr.y = f) # get interannual DJF series 
+psl <- aggregateGrid(NCEP_Iberia_psl, aggr.y = f) # get interannual DJF series 
 
 ## When 'base' and 'ref' are not supplied,
 ## the input grid climatology (by default the mean) is subtracted, thus yielding anomalies:
 psl.anom <- localScaling(psl)
 # spatial aggregation of the output (for plotting the time series)
 psl.anom.iberia <- aggregateGrid(psl.anom, aggr.lat = f, aggr.lon = f)
-redim(psl.anom.iberia, drop = TRUE)
 plot(getYearsAsINDEX(psl.anom.iberia), psl.anom.iberia$Data, ty = 'b',
      ylab = "MSLP anomalies (Pa)", xlab = "year",
      main = "NCEP Reanalysis - Mean SLP anomalies (DJF)")
 grid()
 abline(h = 0, lty = 2, col = "blue")
-
 # In the particular case of multimember grids, the anomalies are computed for each member
 # by subtracting either their own mean (by.member = TRUE) or the 
 # multimember mean climatology (by.member = FALSE)
-data("tasmax_forecast")
-a <- localScaling(tasmax_forecast, by.member = FALSE)
-aa <- aggregateGrid(a, aggr.lat = f, aggr.lon = f)
-redim(aa, drop = TRUE)
+data("CFS_Iberia_tas")
+a <- localScaling(CFS_Iberia_tas, by.member = FALSE)
+aa <- aggregateGrid(a, aggr.lat = f, aggr.lon = f, aggr.m = f, aggr.y = f)
+# Example, member 4 time series
 plot(as.Date(getRefDates(aa)), aa$Data[4,], ty = "o", xlab = "Date", 
-     ylab = "Tmax anomaly (degC)", main = "Tmax anomaly, Member 4", ylim = c(-2,2))
+     ylab = "Tmean anomaly (degC)", main = "Tmean DJF anomalies, Member 4")
+abline(h = 0, lty = 2, col = "blue")
 grid()
-b <- localScaling(tasmax_forecast, by.member = TRUE)
-bb <- aggregateGrid(b, aggr.lat = f, aggr.lon = f)
-redim(bb, drop = TRUE)
-lines(as.Date(getRefDates(aa)), bb$Data[4,], col = "red", ty = "o")
+b <- localScaling(CFS_Iberia_tas, by.member = TRUE) # almost identical in this case
+bb <- aggregateGrid(b, aggr.lat = f, aggr.lon = f, aggr.m = f, aggr.y = f)
+lines(as.Date(getRefDates(aa)), bb$Data[4,], col = "red", ty = "l")
 legend("bottomright", c("by.member = FALSE", "by.member = TRUE"), lty = 1, col = c(1,2))
 
 # In this example, the anomalies are calculated using a different period specifying a "base".
 # Note that "base" could be also a grid of a different dataset, for instance a reanalysis
+data(EOBS_Iberia_tas)
 grid <- subsetGrid(EOBS_Iberia_tas, years = 1999:2000)
 base <- subsetGrid(EOBS_Iberia_tas, years = 1998)
 lc <- localScaling(grid = grid, base = base)
@@ -121,7 +121,7 @@ base <- subsetGrid(EOBS_Iberia_tas, years = 1998)
 ref <- subsetGrid(EOBS_Iberia_tas, years = 2000)
 lc.ref <- localScaling(grid = grid, base = base, ref = ref)
 lc.ref.m <- localScaling(grid = grid, base = base, ref = ref, time.frame = "monthly")
-plot(grid$Data[,15,15], ty = "l", ylim = c(0,15))
+plot(grid$Data[,15,15], ty = "l", ylim = c(-7.5,10))
 lines(lc.ref$Data[,,15,15], col = "blue")
 lines(lc.ref.m$Data[,,15,15], col = "red")
 plotClimatology(climatology(grid))

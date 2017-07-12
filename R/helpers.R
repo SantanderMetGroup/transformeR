@@ -483,27 +483,27 @@ checkSeason <- function(...) {
 #' isRegular(VALUE_Iberia_tas)
 
 
-isRegular <- function(grid){
-      gr <- tryCatch({getGrid(grid)}, error = function(err){grid})
-      x <- sort(gr$x)
-      y <- sort(gr$y)
-      if(length(x)==1 && length(y)==1){
+isRegular <- function(grid) {
+    gr <- tryCatch({getGrid(grid)}, error = function(err) {grid})
+    x <- sort(gr$x)
+    y <- sort(gr$y)
+    if (length(x) == 1 && length(y) == 1) {
+        FALSE
+    } else {
+        xdists <- lapply(1:(length(x) - 1), function(l) {
+            x[l + 1] - x[l]
+        })
+        ydists <- lapply(1:(length(y) - 1), function(l) {
+            y[l + 1] - y[l]
+        })
+        xa <- sum(unlist(xdists) - unlist(xdists)[1])
+        ya <- sum(unlist(ydists) - unlist(ydists)[1])
+        if (any(abs(c(xa, ya)) > 1e-05)) {
             FALSE
-      }else{
-            xdists <- lapply(1:(length(x)-1), function(l){
-                  x[l+1] - x[l]
-            })
-            ydists <- lapply(1:(length(y)-1), function(l){
-                  y[l+1] - y[l]
-            })
-            xa <- sum(unlist(xdists) - unlist(xdists)[1])
-            ya <- sum(unlist(ydists) - unlist(ydists)[1])
-            if(any(abs(c(xa, ya)) > 0.00001)){
-                  FALSE
-            }else{
-                  TRUE
-            }
-      }
+        } else {
+            TRUE
+        }
+    }
 }
 
 #End
@@ -545,10 +545,11 @@ mat2Dto3Darray.stations <- function(mat2D, x, y) {
 #' @keywords internal
 #' @family internal.helpers
 #' @seealso \code{\link{mat2Dto3Darray}}, which performs the inverse operation
+#' 
 array3Dto2Dmat.stations <- function(array3D) {
       dims <- dim(array3D)
       aux.list <- lapply(1:dims[1], function(i) {
-            if(!is.matrix(array3D[i, ,])){
+            if (!is.matrix(array3D[i, ,])) {
                   array3D[i, ,]
             } else{
                   diag(array3D[i, ,])      

@@ -32,8 +32,7 @@ Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
   \code{\link{bindGrid.time}},
   \code{\link{grid3Dto2Dmatrix}},
   \code{\link{mat2Dto3Darray.stations}},
-  \code{\link{redim}},
-  \code{\link{sortDim.time}}
+  \code{\link{redim}}, \code{\link{sortDim.time}}
 }
 \author{
 M. de Felice, J Bedia
