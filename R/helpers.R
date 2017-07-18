@@ -466,9 +466,9 @@ checkSeason <- function(...) {
 }    
 
 
-#' @title Check if the imput grid is regular
+#' @title Check if the input grid is regular
 #' @description Check if the coordinates in the data are regular or irregular
-#' @param grid a grid or station data, or the objectreturned by function \code{\link{getGrid}}
+#' @param grid a grid or station data, or the object returned by function \code{\link{getGrid}}
 #' @return Logical.
 #' @seealso \code{\link{getGrid}}
 #' @author M Iturbide
@@ -507,6 +507,52 @@ isRegular <- function(grid) {
 }
 
 #End
+
+#' @title Get time resolution
+#' @description Get the time resolution of the input grid as a character
+#' @param grid a grid or station data
+#' @return A character representation of the time resolution. Current possible values are:
+#' \code{"1h", "3h", "6h", "12h", "DD", "MM", "YY"}. If none of these matches, \code{"unknown"} is returned 
+#' @author J Bedia
+#' @keywords internal
+#' @family get.helpers
+#' @export
+#' @examples 
+#' data("EOBS_Iberia_tas")
+#' getTimeResolution(EOBS_Iberia_tas)
+#' monthly.grid <- aggregateGrid(EOBS_Iberia_tas, aggr.m = list(FUN = "mean", na.rm = TRUE))
+#' stopifnot(identical(getTimeResolution(monthly.grid), "MM"))
+#' annual.grid <- aggregateGrid(monthly.grid, aggr.y = list(FUN = "mean", na.rm = TRUE))
+#' stopifnot(identical(getTimeResolution(annual.grid), "YY"))
+
+getTimeResolution <- function(grid) {
+    aux <- getRefDates(grid) 
+    if (length(aux) == 1) {
+        warning("The input grid is a climatology")
+        out <- "unknown"
+    } else {
+        dft <- difftime(aux[2], aux[1], units = "hours") %>% as.numeric()
+        out <- if (dft == 1) {
+            "1h"
+        } else if (dft == 3) {
+            "3h"    
+        } else if (dft == 6) {
+            "6h"
+        } else if (dft == 12) {
+            "12h"
+        } else if (dft == 24) {
+            "DD"
+        } else if (dft >= 672 & dft <= 744) {
+            "MM"
+        } else if (dft >= 8640 & dft <= 8784) {
+            "YY"
+        } else {
+            "unknown"
+        }
+    }
+    return(out)
+}
+
 
 #' @title Conversion 2D matrix into a 3D array for station data
 #' @description Converts a 2D matrix of the form [time, lonlat] to a 3D array of the form
