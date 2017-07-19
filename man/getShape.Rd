@@ -27,6 +27,7 @@ getShape(NCEP_Iberia_hus850)
 Other get.helpers: \code{\link{getCoordinates}},
   \code{\link{getDim}}, \code{\link{getGrid}},
   \code{\link{getRefDates}}, \code{\link{getSeason}},
+  \code{\link{getTimeResolution}},
   \code{\link{getYearsAsINDEX}}, \code{\link{which.leap}}
 }
 \author{

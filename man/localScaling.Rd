@@ -28,7 +28,7 @@ for each member (\code{by.member=TRUE}), or a single climatology calculated from
 
 \item{time.frame}{Character indicating the time frame to perform the scaling. Possible values are
 \code{"none"}, which considers the climatological mean of the whole period given in 
-\code{base} and/or \code{ref}, \code{"monthly"}, that performs the calcuation on a monthly basis
+\code{base} and/or \code{ref}, \code{"monthly"}, that performs the calculation on a monthly basis
 and \code{"daily"}, for a julian day-based approach.}
 
 \item{parallel}{Logical. Should parallel execution be used?}

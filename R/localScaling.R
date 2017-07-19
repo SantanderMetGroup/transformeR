@@ -32,7 +32,7 @@
 #'  (\code{by.member=FALSE})?. Default to \code{TRUE}. Argument passed to \code{\link{climatology}}.
 #' @param time.frame Character indicating the time frame to perform the scaling. Possible values are
 #'  \code{"none"}, which considers the climatological mean of the whole period given in 
-#'  \code{base} and/or \code{ref}, \code{"monthly"}, that performs the calcuation on a monthly basis
+#'  \code{base} and/or \code{ref}, \code{"monthly"}, that performs the calculation on a monthly basis
 #'  and \code{"daily"}, for a julian day-based approach.
 #' @template templateParallelParams
 #' @details The reference grid (\code{ref}) is used to correct the input grid, as follows:

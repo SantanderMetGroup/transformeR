@@ -23,6 +23,7 @@ getSeason(NCEP_Iberia_hus850) # Boreal winter (DJF)
 Other get.helpers: \code{\link{getCoordinates}},
   \code{\link{getDim}}, \code{\link{getGrid}},
   \code{\link{getRefDates}}, \code{\link{getShape}},
+  \code{\link{getTimeResolution}},
   \code{\link{getYearsAsINDEX}}, \code{\link{which.leap}}
 }
 \author{

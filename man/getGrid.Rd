@@ -52,6 +52,7 @@ plotClimatology(climatology(CFS_interpolated), backdrop.theme = "countries")
 Other get.helpers: \code{\link{getCoordinates}},
   \code{\link{getDim}}, \code{\link{getRefDates}},
   \code{\link{getSeason}}, \code{\link{getShape}},
+  \code{\link{getTimeResolution}},
   \code{\link{getYearsAsINDEX}}, \code{\link{which.leap}}
 }
 \author{

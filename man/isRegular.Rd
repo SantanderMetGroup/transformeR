@@ -2,12 +2,12 @@
 % Please edit documentation in R/helpers.R
 \name{isRegular}
 \alias{isRegular}
-\title{Check if the imput grid is regular}
+\title{Check if the input grid is regular}
 \usage{
 isRegular(grid)
 }
 \arguments{
-\item{grid}{a grid or station data, or the objectreturned by function \code{\link{getGrid}}}
+\item{grid}{a grid or station data, or the object returned by function \code{\link{getGrid}}}
 }
 \value{
 Logical.

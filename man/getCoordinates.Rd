@@ -31,6 +31,7 @@ str(getCoordinates(VALUE_Iberia_tas))
 Other get.helpers: \code{\link{getDim}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},
   \code{\link{getSeason}}, \code{\link{getShape}},
+  \code{\link{getTimeResolution}},
   \code{\link{getYearsAsINDEX}}, \code{\link{which.leap}}
 }
 \author{

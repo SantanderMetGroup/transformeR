@@ -20,9 +20,9 @@ Suggests:
     loadeR.ECOMS,
     visualizeR
 Type: Package
-Title: Climate data manipulation and transformation
+Title: An R package for climate data manipulation and transformation
 Version: 0.1.0
-Date: 2017-07-12
+Date: 2017-07-19
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [ctb]",
     "Joaquin Bedia <bediaj@unican.es> [aut, cre]",
@@ -32,7 +32,7 @@ Authors@R: as.person(c(
     "Maialen Iturbide <miturbide@ifca.unican.es> [aut]"))
 BugReports: https://github.com/SantanderMetGroup/transformeR/issues
 URL: https://github.com/SantanderMetGroup/transformeR/wiki
-Description: Tools for climate data analysis, visualization and manipulation.
+Description: The package implements different tools for climate data analysis, visualization and manipulation.
 License: file LICENSE
 LazyData: true
 RoxygenNote: 6.0.1
