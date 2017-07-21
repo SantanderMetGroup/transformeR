@@ -219,17 +219,11 @@ prinComp <- function(grid,
     pca.list <- vector("list", length(Xsc.list))
     for (i in 1:length(pca.list)) {
         pca.list[[i]] <- lapply(1:length(Xsc.list[[i]]), function(x) {
-            # Covariance matrix
-            Cx <- cov(Xsc.list[[i]][[x]])
-            # Singular vectors (EOFs) and values
-            sv <- svd(Cx)
-            F <- sv$u
-            # F <- eigen(Cx)$vectors
-            lambda <- sv$d
-            # lambda <- eigen(Cx)$values            
-            sv <- NULL
+            # Compute PCA with prcomp
+            pr <- prcomp(Xsc.list[[i]][[x]])
+            F <- pr$rotation
             # Explained variance
-            explvar <- cumsum(lambda / sum(lambda))
+            explvar <- cumsum((pr$sdev^2)/sum(pr$sdev^2))
             # Number of EOFs to be retained
             if (!is.null(v.exp)) {
                 n <- findInterval(v.exp, explvar) + 1
@@ -243,7 +237,7 @@ prinComp <- function(grid,
             F <- as.matrix(F[ ,1:n])
             explvar <- explvar[1:n]
             # PCs
-            PCs <- Xsc.list[[i]][[x]] %*% F
+            PCs <- pr$x
             # ouput
             out <- if (i < length(Xsc.list) | length(Xsc.list) == 1L) {
                 list("PCs" = PCs, "EOFs" = F, "orig" = Xsc.list[[i]][[x]])
