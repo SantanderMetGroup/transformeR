@@ -79,14 +79,14 @@
 #'
 #' @export
 #' @importFrom abind asub
-#' @importFrom stats cov sd
+#' @importFrom stats cov sd prcomp
 #' @importFrom magrittr %>%
 #' @seealso \code{\link{gridFromPCs}}, \code{\link{plotEOF}}
 #' @references
 #' Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Probabil\'{i}sticas
 #'  y Neuronales en las Ciencias Atmosf\'{e}ricas. MIMAM, Spain. 279 pp.
 #'   \url{http://www.meteo.unican.es/en/books/dataMiningMeteo}
-#' @author J. Bedia, contributed by M. de Felice 
+#' @author J. Bedia, M. de Felice 
 #' @examples 
 #' data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
 #' 
@@ -130,8 +130,6 @@
 #' # Now there is a "COMBINED" element at the end of the output list
 #' str(pca.mm.mf)
 #' plotEOF(pca.mm.mf, var = "tp")
-
-
 
 prinComp <- function(grid,
                      n.eofs = NULL,
