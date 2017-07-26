@@ -80,7 +80,7 @@
 #' @export
 #' @importFrom abind asub
 #' @importFrom stats cov sd prcomp
-#' @importFrom magrittr %>%
+#' @importFrom magrittr %>% %<>% 
 #' @seealso \code{\link{gridFromPCs}}, \code{\link{plotEOF}}
 #' @references
 #' Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Probabil\'{i}sticas
@@ -131,88 +131,96 @@
 #' str(pca.mm.mf)
 #' plotEOF(pca.mm.mf, var = "tp")
 
+data("CFS_Iberia_tp")
+data("CFS_Iberia_tas")
+grid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
+v.exp = NULL
+combined.PC = TRUE
+scaling = "field"
+quiet = FALSE
+
 prinComp <- function(grid,
                      n.eofs = NULL,
                      v.exp = NULL,
+                     combined.PC = TRUE,
+                     which.combine = NULL,
                      scaling = c("field", "gridbox"),
                      quiet = FALSE) {
+    grid %<>% redim(var = TRUE, member = TRUE)
     if (!is.null(n.eofs) & !is.null(v.exp)) {
         warning("The 'v.exp' argument was ignored as 'n.eofs' has been indicated", call. = FALSE)
     }
     if (is.null(n.eofs) & is.null(v.exp)) {
         warning("All possible PCs/EOFs retained: This may result in an unnecessarily large object", call. = FALSE)
     }
-    if (!is.null(n.eofs)) {
-        v.exp <- NULL
-        if (n.eofs < 1) {
-            stop("Invalid number of EOFs selected", call. = FALSE)
+    n.vars <- getShape(grid, "var")
+    if (isTRUE(combined.PC)) {
+        if (n.vars == 1) {
+            combined.PC <- FALSE
+            which.combine <- NULL
+            warning("It is not possible to obtain a combined PC from one variable: 'combined.PC' was set to FALSE")
+        } else {
+            if (is.null(which.combine)) {
+                which.combine <- 1:n.vars
+            } else if (!all(which.combine %in% 1:n.vars)) {
+                stop("Invalid 'which.combine' definition", call. = FALSE)
+            }
+            n.vars <- n.vars + 1
         }
     }
-    if (!is.null(v.exp)) {
-        if (!(v.exp > 0 & v.exp <= 1)) {
-            stop("The explained variance threshold must be in the range (0,1]", call. = FALSE)
+    if (!is.null(n.eofs)) {
+        v.exp <- NULL
+        if (any(n.eofs) < 1) {
+            stop("Invalid number of EOFs selected", call. = FALSE)
         }
+        if (length(n.eofs) == 1) n.eofs <- rep(n.eofs, n.vars)
+        if (length(n.eofs) != n.vars) stop("The length of 'n.eofs' and the number of variables of the input grid differ\nForgot to include the combined.PC?", call. = FALSE)
+    }
+    if (!is.null(v.exp)) {
+        if (any(v.exp <= 0) | any(v.exp > 1)) {
+            stop("The explained variance thresholds must be in the range (0,1]", call. = FALSE)
+        }
+        if (length(v.exp) == 1) v.exp <- rep(v.exp, n.vars)
+        if (length(v.exp) != n.vars) stop("The length of 'v.exp' and the number of variables of the input grid differ\nForgot to include the combined.PC?", call. = FALSE)
     }
     if (anyNA(grid$Data)) {
         stop("There are missing values in the input data array", call. = FALSE)
     }
-    scaling <- match.arg(scaling, choices = c("field", "gridbox"))
-    if (length(grid$xyCoords$x) < 2 & length(grid$xyCoords$y) < 2) {
+    # Spatial check # doesn't work with stations
+    if (length(grid$xyCoords$x) < 2 | length(grid$xyCoords$y) < 2) {
         stop("The dataset is not a field encompassing multiple grid-cells", call. = FALSE)
     }
-    grid <- redim(grid, member = TRUE, var = TRUE)
-    n.vars <- getShape(grid, dimension = "var")
-    varNames <- grid$Variable$varName
-    var.list <- vector("list", n.vars)
-    for (x in 1:n.vars) {                  
-        l <- suppressWarnings(subsetGrid(grid, var = varNames[x])) %>% redim(member = TRUE)
+    # ref.coords <- getCoordinates(grid)
+    # getGrid(VALUE_Iberia_tas)
+    # getGrid(CORDEX_Iberia_tas)
+    # 
+    # ref.grid <- getGrid(grid)
+    # if (diff(ref.grid$x) | diff(ref.grid$y)
+    var.names <- grid$Variable$varNames
+    scaling <- match.arg(scaling, choices = c("field", "gridbox"), several.ok = TRUE)
+    if (length(scaling) == 1) {
+        scaling <- rep(scaling, length(var.names))  
+    } else {
+        if (length(scaling) != length(var.names)) stop("The length of 'scaling' argument should be either 1 or equal to the number of variables contained in the input grid", call. = FALSE)    
+    }
+    var.list <- lapply(1:length(var.names), function(x) {
+        l <- suppressWarnings(subsetGrid(grid, var = var.names[x])) %>% redim(member = TRUE)
         n.mem <- getShape(l, "member" )
-        var.list[[x]] <- lapply(1:n.mem, function(m) {
+        lapply(1:n.mem, function(m) {
             subsetGrid(l, members = m, drop = TRUE)[["Data"]] %>% array3Dto2Dmat()
         })
-    }
-    # Scaling and centering
-    Xsc.list <- vector("list", length(var.list))
-    if (scaling == "field") {
-        for (i in 1:length(var.list)) {
-            Xsc.list[[i]] <- lapply(1:length(var.list[[i]]), function(x) {
-                mu <- mean(var.list[[i]][[x]], na.rm = TRUE)
-                sigma <- sd(var.list[[i]][[x]], na.rm = TRUE)
-                Xsc <- (var.list[[i]][[x]] - mu) / sigma
-                attr(Xsc, "scaled:center") <- mu
-                attr(Xsc, "scaled:scale") <- sigma
-                return(Xsc)
-            })
-        }
-    } else {
-        for (i in 1:length(var.list)) {
-            Xsc.list[[i]] <- lapply(1:length(var.list[[i]]), function(x) {
-                scale(var.list[[i]][[x]], center = TRUE, scale = TRUE)
-            })
-        }
-    }
+    })
+    # Scaling
+    Xsc.list <- prinComp.scale(var.list, scaling)
     var.list <- NULL      
     # Combined PCs
-    if (length(Xsc.list) > 1) {
-        aux.list <- vector("list", length(Xsc.list[[1]]))
-        for (i in 1:length(aux.list)) {
-            aux <- lapply(1:length(Xsc.list), function(x) Xsc.list[[x]][[i]])
-            aux.list[[i]] <- do.call("cbind", aux)
-        }
-        Xsc.list[[length(Xsc.list) + 1]] <- aux.list
-        aux.list <- NULL
-        if (length(Xsc.list[[1]]) > 1) {
-            if (!quiet) message("[", Sys.time(), "] Performing PC analysis on ", length(Xsc.list) - 1, " variables plus their combination and ", n.mem, " members...")
-        } else {
-            if (!quiet) message("[", Sys.time(), "] Performing PC analysis on ", length(Xsc.list) - 1, " variables plus their combination...")
-        }
+    if (isTRUE(combined.PC)) {
+        Xsc.list %<>% combine.PCs(which = which.combine)
+        if (!quiet) message("[", Sys.time(), "] Performing PC analysis on ", n.vars, " variables plus selected combination ...")
     } else {
-        if (length(Xsc.list[[1]]) > 1) {
-            if (!quiet) message("[", Sys.time(), "] Performing PC analysis on one variable and ", n.mem, " members...")
-        } else {
-            if (!quiet) message("[", Sys.time(), "] Performing PC analysis on one variable...")
-        }
+        if (!quiet) message("[", Sys.time(), "] Performing PC analysis on ", n.vars, "variable(s) ...")
     }
+    
     #PCs
     pca.list <- vector("list", length(Xsc.list))
     for (i in 1:length(pca.list)) {
@@ -283,7 +291,54 @@ prinComp <- function(grid,
 }
 # End      
      
-     
 
+#' @title Local/Global grid scaling     
+#' @description Scale a grid prior to PCA analysis (internal of \code{prinComp})
+#' @param var.list A nested list (variables-members) of fields in the form of 2D matrices (after \code{array3Dto2Dmat})
+#' @param scaling Character vector of scaling types (same length as \code{var.list})
+#' @return A list of the same structure as the input \code{var.list} with the scaled (and centered) fields.
+#' @details The \code{"gridbox"} scaling performs the scaling independently for each grid/station point (the mean and sd is calculated
+#' sepparately for each point). On the contrary, the \code{"field"} approach substracts the same global mean and divides by the global sd
+#' considering the whole field.
+#' @keywords internal
+#' @author J Bedia
 
+prinComp.scale <- function(var.list, scaling) {
+    lapply(1:length(var.list), function(i) {
+        if (scaling[i] == "field") {
+            lapply(1:length(var.list[[i]]), function(x) {
+                mu <- mean(var.list[[i]][[x]], na.rm = TRUE)
+                sigma <- sd(var.list[[i]][[x]], na.rm = TRUE)
+                Xsc <- (var.list[[i]][[x]] - mu) / sigma
+                attr(Xsc, "scaled:center") <- rep(mu, ncol(var.list[[i]][[x]]))
+                attr(Xsc, "scaled:scale") <- rep(sigma, ncol(var.list[[i]][[x]]))
+                return(Xsc)
+            })
+        } else {
+            lapply(1:length(var.list[[i]]), function(x) {
+                scale(var.list[[i]][[x]], center = TRUE, scale = TRUE)
+            })
+        }   
+    })
+}    
+
+#' @title Field Combination
+#' @description Combine different fields into one single input 2D matrix for PCA (internal of \code{\link{prinComp}})
+#' @param Xsc.list A nested list of (scaled and centered) input variables (as returned by \code{\link{prinComp.scale}})
+#' @param which Integer vector of indices of variables to produced the combined element
+#' @return A list like the input \code{Xsc.list} but with an additional element, resulting from the combination of the
+#' input fields
+#' @keywords internal
+#' @author J Bedia
+
+combine.PCs <- function(Xsc.list, which) {
+    aux.list <- vector("list", length(Xsc.list[[1]]))
+    for (i in 1:length(aux.list)) {
+        aux <- lapply(1:length(Xsc.list[which]), function(x) Xsc.list[which][[x]][[i]])
+        aux.list[[i]] <- do.call("cbind", aux)
+    }
+    Xsc.list[[length(Xsc.list) + 1]] <- aux.list
+    return(Xsc.list)
+}
+ 
 
