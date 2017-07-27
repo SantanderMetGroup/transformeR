@@ -610,7 +610,7 @@ array3Dto2Dmat.stations <- function(array3D) {
 #End
 
 
-#' @title Get Grid Variable Names
+#' @title Get grid variable names
 #' @description Get the names of the variables of a (multi)grid
 #' @param grid A grid or station data
 #' @param type Character. Should either the \code{"short"} (default) or the \code{"long"} variable name(s) be returned?.
@@ -643,4 +643,50 @@ getVarNames <- function(grid, type = c("short", "long")) {
            "long" = attr(grid$Variable, "longname"))
 }
     
+
+#' @title Get grid vertical levels
+#' @description A helper function that returns a vector of the variable(s) vertical levels
+#' @param grid Input grid
+#' @param var.index A vector of indices indicating the positions of the variables whose level will be returned.
+#' This can be either an integer vector of positions, or a character vector with the short names of the variables contained
+#'   in the multigrid (see the \code{\link{getVarNames}} helper for more details). Default to \code{NULL} (levels of all variables)
+#' @return A (short-)named vector with the vertical levels of the (multi)grid variable(s)
+#' @author J Bedia
+#' @keywords internal
+#' @export
+#' @family get.helpers
+#' @examples 
+#' data("CFS_Iberia_hus850")
+#' getGridVerticalLevels(CFS_Iberia_hus850)
+#' # Surface variables usually have an undefined vertical level
+#' data("EOBS_Iberia_tas")
+#' getGridVerticalLevels(EOBS_Iberia_tas)
+#' 
+#' data("NCEP_Iberia_hus850")
+#' data("NCEP_Iberia_psl")
+#' data("NCEP_Iberia_ta850")
+#' mg <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+#' getGridVerticalLevels(mg)
+#' # Use of var.index to select some variables:
+#' # either by their shortname...
+#' getGridVerticalLevels(mg, var.index = c("hus850","ta850"))
+#' # ... or by index position in the multigrid
+#' getGridVerticalLevels(mg, var.index = c(1,3))
+
+getGridVerticalLevels <- function(grid, var.index = NULL) {
+    var.names <- getVarNames(grid)
+    var.index <- if (is.null(var.index)) {
+        1:length(var.names)
+    } else if (is.character(var.index)) {
+        match(var.index, var.names)
+    } else {
+        var.index
+    }
+    if (!all(var.index %in% 1:length(var.names))) {
+        stop("Invalid 'var.index' definition", call. = FALSE)
+    }
+    levs <- grid$Variable$level[var.index]
+    names(levs) <- var.names[var.index]
+    return(levs)
+}
     
