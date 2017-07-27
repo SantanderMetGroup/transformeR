@@ -633,7 +633,7 @@ array3Dto2Dmat.stations <- function(array3D) {
 #' getVarNames(mg, "long")
 #' ## Example with station data
 #' data("VALUE_Iberia_tas")
-#' ## The long name is an optional attribute, and may be undefined (returns NULL):
+#' ## The long name is an optional attribute, and may be undefined:
 #' getVarNames(VALUE_Iberia_tas, "long")
 
 getVarNames <- function(grid, type = c("short", "long")) {
