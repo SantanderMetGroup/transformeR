@@ -50,10 +50,12 @@ plotClimatology(climatology(CFS_interpolated), backdrop.theme = "countries")
 }
 \seealso{
 Other get.helpers: \code{\link{getCoordinates}},
-  \code{\link{getDim}}, \code{\link{getRefDates}},
-  \code{\link{getSeason}}, \code{\link{getShape}},
-  \code{\link{getTimeResolution}},
-  \code{\link{getYearsAsINDEX}}, \code{\link{which.leap}}
+  \code{\link{getDim}},
+  \code{\link{getGridVerticalLevels}},
+  \code{\link{getRefDates}}, \code{\link{getSeason}},
+  \code{\link{getShape}}, \code{\link{getTimeResolution}},
+  \code{\link{getVarNames}}, \code{\link{getYearsAsINDEX}},
+  \code{\link{which.leap}}
 }
 \author{
 S. Herrera and J. Bedia

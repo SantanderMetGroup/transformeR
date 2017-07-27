@@ -2,20 +2,29 @@
 % Please edit documentation in R/prinComp.R
 \name{prinComp}
 \alias{prinComp}
-\title{Principal Component Analysis of grid/multigrid/multimember data}
+\title{Principal Component Analysis of Grids}
 \usage{
-prinComp(grid, n.eofs = NULL, v.exp = NULL, scaling = c("field",
-  "gridbox"), quiet = FALSE)
+prinComp(grid, n.eofs = NULL, v.exp = NULL, combined.PC = TRUE,
+  which.combine = NULL, scaling = "field", quiet = FALSE)
 }
 \arguments{
-\item{grid}{A grid, multigrid, multimember grid or multimember multigrid object}
+\item{grid}{A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object}
 
-\item{n.eofs}{Number of EOFs to be retained. Default to \code{NULL}, indicating
+\item{n.eofs}{Integer vector. Number of EOFs to be retained. Default to \code{NULL}, indicating
 that either all EOFs are kept, or that the next argument will be used as criterion
 for its determination. See next argument and details.}
 
 \item{v.exp}{Maximum fraction of explained variance, in the range (0,1]. Used to determine the number of EOFs 
 to be retained, as an alternative to \code{n.eofs}. Default to \code{NULL}. See details.}
+
+\item{combined.PC}{Logical flag. Should PCA be performed on the combined field matrix? Default to \code{TRUE} for
+multigrids (otherwise ignored). See the next argument for further options of the combined PCA.}
+
+\item{which.combine}{Optional. A vector of indices indicating the positions of the variables of the multigrid to be combined.
+This can be either an integer vector of positions, or a character vector with the short names of the variables contained
+ in the multigrid (see the \code{\link{getVarNames}} helper for more details). Default to \code{NULL}, indicating
+ that if the input grid is a multigrid (i.e., it contains more than one variable), all the variables are used for the
+ combination.}
 
 \item{scaling}{Method for performing the scaling (and centering) of the input raw data matrix.
 Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}. See details.}
@@ -39,25 +48,28 @@ A list of \emph{N + 1} elements for multigrids, where \emph{N} is the number of 
  Additional information is returned via the remaining attributes (see details), including geo-referencing and time.
 }
 \description{
-Performs a Principal Component Analysis of grid, multigrid or multi-member data
+Performs a Principal Component Analysis of grids, multigrids or multimember multigrids. The core of this
+ function is \code{stats::prcomp}, with several specific options to deal with climate data.
 }
 \details{
 \strong{Number of EOFs}
+
 \code{n.eofs} and \code{v.exp} are alternative choices for the determination
  of the number of EOFs (hence also the corresponding PCs) to be retained. If both are \code{NULL} (the default)
  , all EOFs will be retained. If both are given a value different from \code{NULL}, 
  the \code{n.eofs} argument will prevail, and \code{v.exp} will be ignored, with a warning.
- Note that when dealing with multigrids, the \code{n.eofs} argument will return the same number of EOFs
- for each variable by sepparate and also for the combined grid, while \code{v.exp} will select
- a different number, depending on the explained variance in each case. 
+ When dealing with multigrids, the \code{n.eofs} argument can be either a single value or a vector
+ of the same length as the number of variables contained in the multigrid plus (possibly) the COMBINED field if any.
+ The same behaviour holds for \code{v.exp}. 
  
 \strong{Scaling and centering}
 
 In order to eliminate the effect of the varying scales of the different climate variables, the input
 data matrix is always scaled and centered, and there is no choice to avoid this step. However, the mean
 and standard deviation can be either computed for each grid box individually (\code{"gridbox"}) or for all
-grid-boxes together (i.e., at the field level, \code{"field"}). The last case is the preferred choice and has
-been set as default, returning one single mean and sigma parameter for each variable. If the \code{"gridbox"}
+grid-boxes globally (i.e., at the field level, \code{"field"}). The last case is preferred in order to preserve
+ the spatial structure of the original field, and has been set as the default, 
+ returning one single mean and sigma parameter for each variable. If the \code{"gridbox"}
 approach is selected, a vector of length \emph{n}, where \emph{n} is the number of grid-cells composing the 
 grid, is returned for both the mean and sigma parameters (this is equivalent to using the \code{\link{scale}}
 function with the input data matrix). 
@@ -65,12 +77,19 @@ function with the input data matrix).
 The method used is returned as a global attribute of the returned object (\code{"scaled:method"}), and the 
 \emph{mu} and \emph{sigma} parameters are returned as attributes of the corresponding variables
  (\code{"scaled:scale"} and \code{"scaled:center"} respectively).
+ 
+As in the case of \code{n.eofs} and \code{v.exp} arguments, it is possible to indicate one single approach
+ for all variables within multigrids (using one single value, as by default), or indicate a specific approach for
+ each variable sepparately (using a vector of the same length as the number of variables contained in the multigrid). However,
+  the latter approach is rarely used and it is just implemented for maximum flexibility in the downscaling experimental setup.
+ 
 
 \strong{Combined EOF analysis}
 
-When dealing with multigrid data, apart from the PCA analysis performed on each variable indivisually,
+When dealing with multigrid data, apart from the PCA analysis performed on each variable individually,
 a combined analysis considering all variables together is done. This is always returned in the last element
-of the output list.
+of the output list under the name \code{"COMBINED"}. The variables used for combination are controlled by the 
+argument \code{which.combine}.
 }
 \note{
 Performing PCA analysis on multimember multigrids may become time-consuming and computationally expensive. 
@@ -79,7 +98,6 @@ multimember grids instead.
 }
 \examples{
 data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
-
 multigrid <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 # In this example, we retain the PCs explaining the 99\\\% of the variance
 pca <- prinComp(multigrid, v.exp = .99)
@@ -92,11 +110,11 @@ str(pca)
 # and the geo-referencing information
 str(attributes(pca))
 # In addition, for each variable (and their combination), the scaling and centering parameters 
-# are also returned. These are either a single value in case of grid scaling (the default), or a
-# vector of values, one for each grid-cell, for the gridbox scaling. For instance, the parameters
-# for the specific humidity grid are:
-attributes(pca$hus850[[1]])$`scaled:center`
-attributes(pca$hus850[[1]])$`scaled:scale`
+# are also returned. There is one value of each parameter per grid point, although in the case 
+# of the default \\code{"field"} scaling, the value is equal for all grid points. For instance, 
+#the parameters for the specific humidity grid are:
+attributes(pca$hus850[[1]]$orig)$`scaled:center`
+attributes(pca$hus850[[1]]$orig)$`scaled:scale`
 # In addition, the (cumulative) explained variance of each PC is also returned:
 vexp <- attributes(pca$hus850[[1]])$explained_variance
 # The classical "scree plot":
@@ -104,22 +122,34 @@ barplot(1-vexp, names.arg = paste("PC",1:length(vexp)), las = 2,
         ylab = "Fraction of unexplained variance")
 
 # This is an example using a multimember object:
-data("CFS_Iberia_tas")
+data("CFS_Iberia_hus850")
 # In this case we retain the first 5 EOFs:
-pca.mm <- prinComp(CFS_Iberia_tas, n.eofs = 5) 
-# Note that now the results of the PCA for the variable are a list, with the results 
+pca.mm <- prinComp(CFS_Iberia_hus850, n.eofs = 5) 
+# Note that now the results of the PCA for the variable are a named list, with the results 
 # for each member sepparately considered
 str(pca.mm)
 
 # The most complex situation comes from multimember multigrids:
 data("CFS_Iberia_tp")
-# We interpolate using an identical grid than the previous example:
 # Now the multimember multigrid is constructed
 mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
-pca.mm.mf <- prinComp(mm.multigrid, n.eofs = 3)
+# Use different n.eofs for each variable:
+try(pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(5,3)))
+## Yes, I forgot to include the number of EOFS for the combined...
+pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(5,3,4))
 # Now there is a "COMBINED" element at the end of the output list
-str(pca.mm.mf)
-plotEOF(pca.mm.mf, var = "tp")
+str(pca.mm.mf$COMBINED)
+
+# The construction of the COMBINED PC can be avoided setting 'combined.PC' to FALSE
+pca.nocomb <- prinComp(mm.multigrid, v.exp = c(.95,.90), combined.PC = FALSE)
+names(pca.nocomb) # COMBINED is missing
+
+# The COMBINED PC can be constructed with a specific subset of variables of the multigrid:
+getVarNames(multigrid)
+pca.comb2 <- prinComp(multigrid, v.exp = .95, which.combine = c("hus850", "psl"))
+# The latter is equivalent to selecting by index position:
+pca.comb3 <- prinComp(multigrid, v.exp = .95, which.combine = 1:2)
+identical(pca.comb2, pca.comb3)
 }
 \references{
 Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Probabil\'{i}sticas
@@ -130,5 +160,5 @@ Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Prob
 \code{\link{gridFromPCs}}, \code{\link{plotEOF}}
 }
 \author{
-J. Bedia, contributed by M. de Felice
+J. Bedia, M. de Felice
 }

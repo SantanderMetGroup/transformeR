@@ -26,9 +26,11 @@ stopifnot(identical(getTimeResolution(annual.grid), "YY"))
 }
 \seealso{
 Other get.helpers: \code{\link{getCoordinates}},
-  \code{\link{getDim}}, \code{\link{getGrid}},
-  \code{\link{getRefDates}}, \code{\link{getSeason}},
-  \code{\link{getShape}}, \code{\link{getYearsAsINDEX}},
+  \code{\link{getDim}},
+  \code{\link{getGridVerticalLevels}},
+  \code{\link{getGrid}}, \code{\link{getRefDates}},
+  \code{\link{getSeason}}, \code{\link{getShape}},
+  \code{\link{getVarNames}}, \code{\link{getYearsAsINDEX}},
   \code{\link{which.leap}}
 }
 \author{

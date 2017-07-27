@@ -32,10 +32,12 @@ str(getRefDates(NCEP_Iberia_hus850))
 }
 \seealso{
 Other get.helpers: \code{\link{getCoordinates}},
-  \code{\link{getDim}}, \code{\link{getGrid}},
-  \code{\link{getSeason}}, \code{\link{getShape}},
-  \code{\link{getTimeResolution}},
-  \code{\link{getYearsAsINDEX}}, \code{\link{which.leap}}
+  \code{\link{getDim}},
+  \code{\link{getGridVerticalLevels}},
+  \code{\link{getGrid}}, \code{\link{getSeason}},
+  \code{\link{getShape}}, \code{\link{getTimeResolution}},
+  \code{\link{getVarNames}}, \code{\link{getYearsAsINDEX}},
+  \code{\link{which.leap}}
 }
 \author{
 J. Bedia
