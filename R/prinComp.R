@@ -1,4 +1,4 @@
-# prinComp.R Principal Component Analysis of grid data
+#     prinComp.R Principal Component Analysis of grid data
 #
 #     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 #
@@ -118,11 +118,11 @@
 #' # and the geo-referencing information
 #' str(attributes(pca))
 #' # In addition, for each variable (and their combination), the scaling and centering parameters 
-#' # are also returned. These are either a single value in case of grid scaling (the default), or a
-#' # vector of values, one for each grid-cell, for the gridbox scaling. For instance, the parameters
-#' # for the specific humidity grid are:
-#' attributes(pca$hus850[[1]])$`scaled:center`
-#' attributes(pca$hus850[[1]])$`scaled:scale`
+#' # are also returned. There is one value of each parameter per grid point, although in the case 
+#' # of the default \code{"field"} scaling, the value is equal for all grid points. For instance, 
+#' #the parameters for the specific humidity grid are:
+#' attributes(pca$hus850[[1]]$orig)$`scaled:center`
+#' attributes(pca$hus850[[1]]$orig)$`scaled:scale`
 #' # In addition, the (cumulative) explained variance of each PC is also returned:
 #' vexp <- attributes(pca$hus850[[1]])$explained_variance
 #' # The classical "scree plot":
@@ -130,61 +130,63 @@
 #'         ylab = "Fraction of unexplained variance")
 #' 
 #' # This is an example using a multimember object:
-#' data("CFS_Iberia_tas")
+#' data("CFS_Iberia_hus850")
 #' # In this case we retain the first 5 EOFs:
-#' pca.mm <- prinComp(CFS_Iberia_tas, n.eofs = 5) 
-#' # Note that now the results of the PCA for the variable are a list, with the results 
+#' pca.mm <- prinComp(CFS_Iberia_hus850, n.eofs = 5) 
+#' # Note that now the results of the PCA for the variable are a named list, with the results 
 #' # for each member sepparately considered
 #' str(pca.mm)
 #' 
 #' # The most complex situation comes from multimember multigrids:
 #' data("CFS_Iberia_tp")
-#' # We interpolate using an identical grid than the previous example:
 #' # Now the multimember multigrid is constructed
 #' mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
-#' pca.mm.mf <- prinComp(mm.multigrid, n.eofs = 3)
+#' # Use different n.eofs for each variable:
+#' try(pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(5,3)))
+#' ## Yes, I forgot to include the number of EOFS for the combined...
+#' pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(5,3,4))
 #' # Now there is a "COMBINED" element at the end of the output list
-#' str(pca.mm.mf)
-#' plotEOF(pca.mm.mf, var = "tp")
-
-data("CFS_Iberia_tp")
-data("CFS_Iberia_tas")
-grid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
-v.exp = NULL
-combined.PC = TRUE
-scaling = "field"
-quiet = FALSE
-v.exp = c(0.95,0.87,0.90)
-n.eofs = NULL
-which.combine = c("tas", "pr")
-
+#' str(pca.mm.mf$COMBINED)
+#' 
+#' # The construction of the COMBINED PC can be avoided setting 'combined.PC' to FALSE
+#' pca.nocomb <- prinComp(mm.multigrid, v.exp = c(.95,.90), combined.PC = FALSE)
+#' names(pca.nocomb) # COMBINED is missing
+#' 
+#' # The COMBINED PC can be constructed with a specific subset of variables of the multigrid:
+#' getVarNames(multigrid)
+#' pca.comb2 <- prinComp(multigrid, v.exp = .95, which.combine = c("hus850", "psl"))
+#' # The latter is equivalent to selecting by index position:
+#' pca.comb3 <- prinComp(multigrid, v.exp = .95, which.combine = 1:2)
+#' identical(pca.comb2, pca.comb3)
 
 prinComp <- function(grid,
                      n.eofs = NULL,
                      v.exp = NULL,
                      combined.PC = TRUE,
                      which.combine = NULL,
-                     scaling = c("field", "gridbox"),
+                     scaling = "field",
                      quiet = FALSE) {
     grid %<>% redim(var = TRUE, member = TRUE)
     n.vars <- getShape(grid, "var")
     var.names <- getVarNames(grid)
     if (!is.null(n.eofs) & !is.null(v.exp)) {
-        warning("The 'v.exp' argument was ignored as 'n.eofs' has been indicated", call. = FALSE)
+        message("NOTE: The 'v.exp' argument was ignored as 'n.eofs' has been indicated")
     }
     if (is.null(n.eofs) & is.null(v.exp)) {
-        warning("All possible PCs/EOFs retained: This may result in an unnecessarily large object", call. = FALSE)
+        message("NOTE: All possible PCs/EOFs retained: This may result in an unnecessarily large object")
     }
     if (isTRUE(combined.PC)) {
         if (n.vars == 1) {
             combined.PC <- FALSE
             which.combine <- NULL
-            warning("It is not possible to obtain a combined PC from one variable: 'combined.PC' was set to FALSE")
+            message("NOTE: It is not possible to obtain a combined PC from one variable: 'combined.PC' was set to FALSE")
         } else {
-            if (is.null(which.combine)) {
-                which.combine <- 1:n.vars
+            which.combine <- if (is.null(which.combine)) {
+                1:n.vars
             } else if (is.character(which.combine)) {
-                which.combine <- match(which.combine, var.names)
+                match(which.combine, var.names)
+            } else {
+                which.combine
             }
             if (!all(which.combine %in% 1:n.vars)) {
                 stop("Invalid 'which.combine' definition", call. = FALSE)
@@ -194,7 +196,7 @@ prinComp <- function(grid,
     }
     if (!is.null(n.eofs)) {
         v.exp <- NULL
-        if (any(n.eofs) < 1) {
+        if (any(n.eofs < 1)) {
             stop("Invalid number of EOFs selected", call. = FALSE)
         }
         if (length(n.eofs) == 1) n.eofs <- rep(n.eofs, n.vars)
@@ -220,60 +222,46 @@ prinComp <- function(grid,
     } else {
         if (length(scaling) != length(var.names)) stop("The length of 'scaling' argument should be either 1 or equal to the number of variables contained in the input grid", call. = FALSE)    
     }
-    var.list <- lapply(1:length(var.names), function(x) {
+    # Variables-members as a nested list of matrices and scaling
+    Xsc.list <- lapply(1:length(var.names), function(x) {
         l <- suppressWarnings(subsetGrid(grid, var = var.names[x])) %>% redim(member = TRUE)
-        n.mem <- getShape(l, "member" )
+        n.mem <- getShape(l, "member")
         lapply(1:n.mem, function(m) {
             subsetGrid(l, members = m, drop = TRUE)[["Data"]] %>% array3Dto2Dmat()
         })
-    })
-    # Scaling
-    Xsc.list <- prinComp.scale(var.list, scaling)
-    var.list <- NULL      
+    }) %>% prinComp.scale(scaling)
     # Combined PCs
     if (isTRUE(combined.PC)) {
         Xsc.list %<>% combine.PCs(which = which.combine)
-        if (!quiet) message("[", Sys.time(), "] Performing PC analysis on ", n.vars, " variables plus their selected combination ...")
+        if (!quiet) message("[", Sys.time(), "] Performing PC analysis on ", n.vars - 1, " variables plus a combination ...")
     } else {
-        if (!quiet) message("[", Sys.time(), "] Performing PC analysis on ", n.vars, "variable(s) ...")
+        if (!quiet) {
+            if (n.vars > 1) {
+                message("[", Sys.time(), "] Performing PC analysis on ", n.vars, " variables ...")
+            } else {
+                message("[", Sys.time(), "] Performing PC analysis on ", n.vars, " variable ...")
+            }
+        }
     }
     # PCA
     pca.list <- prinComp.(Xsc.list, n.eofs, v.exp) 
-    
-    str(pca.list)
-    
-    
-    iter <- ifelse(length(pca.list) > 1, length(pca.list) - 1, 1)
-    for (i in 1:iter) attr(pca.list[[i]], "level") <- grid$Variable$level[i]
     Xsc.list <- NULL
-    #       # Recover field
-    #       Xhat <- t(F %*% t(PCs))
-    #       str(Xhat)
-    #       dim(Xsc)
-    #       image.plot(Xsc.list[[x]])
-    #       image.plot(Xhat)
-    if (length(pca.list) > 1) {
-        names(pca.list) <- c(grid$Variable$varName, "COMBINED")
-        attr(pca.list[[length(pca.list)]], "level") <- NULL
-    } else {
-        names(pca.list) <- grid$Variable$varName 
-    }
+    # Attributes
+    if (isTRUE(combined.PC)) var.names %<>% append("COMBINED")
+    names(pca.list) <- var.names
+    levs <- unname(getGridVerticalLevels(grid))
+    if (isTRUE(combined.PC)) levs %<>% append(NA)
+    attr(pca.list, "level") <- levs
+    attr(pca.list, "dates_start") <- getRefDates(grid)
+    attr(pca.list, "xCoords") <- grid$xyCoords$x
+    attr(pca.list, "yCoords") <- grid$xyCoords$y
+    attr(pca.list, "projection") <- attr(grid$xyCoords, "projection")
     if (length(pca.list[[1]]) > 1) {
         for (i in 1:length(pca.list)) {
             names(pca.list[[i]]) <- grid$Members
         }
     }
-    attr(pca.list, "dates_start") <- if (is.null(names(grid$Dates))) {
-        grid$Dates[[1]]$start   
-    } else {
-        grid$Dates$start 
-    }
-    attr(pca.list, "scaled:method") <- scaling
-    attr(pca.list, "xCoords") <- grid$xyCoords$x
-    attr(pca.list, "yCoords") <- grid$xyCoords$y
-    attr(pca.list, "yCoords") <- grid$xyCoords$y
-    attr(pca.list, "projection") <- attr(grid$xyCoords, "projection")
-    if (!quiet) message("[", Sys.time(), "] Done")
+    if (!quiet) message("[", Sys.time(), "] Done.")
     return(pca.list)
 }
 # End      
@@ -297,6 +285,7 @@ prinComp.scale <- function(var.list, scaling) {
                 mu <- mean(var.list[[i]][[x]], na.rm = TRUE)
                 sigma <- sd(var.list[[i]][[x]], na.rm = TRUE)
                 Xsc <- (var.list[[i]][[x]] - mu) / sigma
+                attr(Xsc, "scaled:method") <- scaling[i]
                 attr(Xsc, "scaled:center") <- rep(mu, ncol(var.list[[i]][[x]]))
                 attr(Xsc, "scaled:scale") <- rep(sigma, ncol(var.list[[i]][[x]]))
                 return(Xsc)
@@ -358,16 +347,12 @@ prinComp. <- function(Xsc.list, n.eofs, v.exp) {
             }
             EOFs <- pr$rotation[ , 1:n, drop = FALSE]
             explvar <- explvar[1:n]
-            # PCs
             PCs <- pr$x[ , 1:n, drop = FALSE]
-            # ouput
             out <- if (is.combined) {
                 list("PCs" = PCs, "EOFs" = EOFs, "orig" = NULL)
             } else {
                 list("PCs" = PCs, "EOFs" = EOFs, "orig" = Xsc.list[[i]][[x]])
             }
-            attr(out, "scaled:center") <- attr(Xsc.list[[i]][[x]], "scaled:center")
-            attr(out, "scaled:scale") <- attr(Xsc.list[[i]][[x]], "scaled:scale")
             attr(out, "explained_variance") <- explvar
             return(out)
         })
