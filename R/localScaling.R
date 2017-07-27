@@ -136,7 +136,7 @@ localScaling <- function(grid,
     time.frame <- match.arg(time.frame, choices = c("none", "monthly", "daily"))
     if (time.frame == "none") {
         message("[", Sys.time(), "] - Scaling ...")
-        out <- .localScaling(grid, base, ref, clim.fun, by.member, parallel, max.ncores, ncores)
+        out <- localScaling.(grid, base, ref, clim.fun, by.member, parallel, max.ncores, ncores)
         message("[", Sys.time(), "] - Done")
     } else if (time.frame == "monthly") {
         message("[", Sys.time(), "] - Scaling by months ...")
@@ -153,7 +153,7 @@ localScaling <- function(grid,
             } else {
                 ref1 <- NULL
             }
-            .localScaling(grid1, base1, ref1, clim.fun, by.member, parallel, max.ncores, ncores)
+            localScaling.(grid1, base1, ref1, clim.fun, by.member, parallel, max.ncores, ncores)
         })
         out <- do.call("bindGrid.time", aux.list)
         message("[", Sys.time(), "] - Done")
@@ -181,7 +181,7 @@ localScaling <- function(grid,
             } else {
                 ref1 <- ref
             }
-            .localScaling(grid1, base1, ref1, clim.fun, by.member, parallel, max.ncores, ncores)
+            localScaling.(grid1, base1, ref1, clim.fun, by.member, parallel, max.ncores, ncores)
         })
         out <- do.call("bindGrid.time", aux.list)
         message("[", Sys.time(), "] - Done")
@@ -198,7 +198,7 @@ localScaling <- function(grid,
 #' @importFrom parallel stopCluster
 #' @author J Bedia
 
-.localScaling <- function(grid, base, ref, clim.fun, by.member, parallel, max.ncores, ncores) {
+localScaling. <- function(grid, base, ref, clim.fun, by.member, parallel, max.ncores, ncores) {
     grid <- redim(grid)
     if (is.null(base)) {
         base <- suppressMessages({
