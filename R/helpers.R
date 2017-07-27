@@ -608,3 +608,39 @@ array3Dto2Dmat.stations <- function(array3D) {
 }
 
 #End
+
+
+#' @title Get Grid Variable Names
+#' @description Get the names of the variables of a (multi)grid
+#' @param grid A grid or station data
+#' @param type Character. Should either the \code{"short"} (default) or the \code{"long"} variable name(s) be returned?.
+#' See Details.
+#' @details The long name is an optional attribute of a grid (not so the short name), and it is sometimes undefined (particularly in station datasets).
+#' In this case, the function returns \code{NULL}.
+#' @return A character vector with the variable name(s) in the indicated \code{type} format.
+#' @author J Bedia
+#' @keywords internal
+#' @family get.helpers
+#' @export
+#' @examples 
+#' data("CFS_Iberia_tp")
+#' getVarNames(CFS_Iberia_tp)
+#' getVarNames(CFS_Iberia_tp, "long")
+#' ## Example with a multigrid
+#' data("CFS_Iberia_tas")
+#' mg <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
+#' getVarNames(mg)
+#' getVarNames(mg, "long")
+#' ## Example with station data
+#' data("VALUE_Iberia_tas")
+#' ## The long name is an optional attribute, and may be undefined (returns NULL):
+#' getVarNames(VALUE_Iberia_tas, "long")
+
+getVarNames <- function(grid, type = c("short", "long")) {
+    type <- match.arg(type, c("short", "long"))
+    switch(type,
+           "short" = grid$Variable$varName,
+           "long" = attr(grid$Variable, "longname"))
+}
+    
+    
