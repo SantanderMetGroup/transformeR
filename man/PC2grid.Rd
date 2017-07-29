@@ -12,7 +12,7 @@ PC2grid(prinCompObj, var = names(prinCompObj)[1], pc.idx = 1,
 
 \item{var}{Character string. Name of the variable for which to extract the PC. Defaults to the first variable in \code{prinCompObj}}
 
-\item{pc.idx}{Index position of the PC to be converted to a grid. Default to the first PC.}
+\item{pc.idx}{Index position of the PC to be converted to a grid. Default to the first PC (\code{pc.idx = 1}).}
 
 \item{scale}{Logical. Should the time series values be scaled?. Default to \code{FALSE}. If \code{TRUE}, the default \code{\link[base]{scale}}
 method is applied to each time series.}
@@ -20,7 +20,7 @@ method is applied to each time series.}
 \item{opp}{Logical. Default to \code{FALSE} and rarely used. The data are multiplied by -1 so the opposite is returned.}
 }
 \value{
-a 'time series' grid (i.e., a grid with dimensions lon and lat of length 1). It can be a multimember.
+A 'time series' grid (i.e., a grid with dimensions lon and lat of length 1). It can be a multimember.
 }
 \description{
 Convert a Principal Component to a 'time-series' grid.
@@ -32,11 +32,22 @@ The XY coordinates correspond to the centroid of the window used for the PCA ana
  Currently, only the start days are returned. The end dates are not returned by the \code{prinComp} output.
 }
 \examples{
-data("CFS_Iberia_tas")
-pc <- prinComp(CFS_Iberia_tas, n.eofs = 2)
-# Convert to grid the PC of the leading EOF:
-a <- PC2grid(prinCompObj = pc, pc.idx = 1)
-str(a)
+data("CFS_Iberia_psl")
+pc <- prinComp(CFS_Iberia_psl, v.exp = .95)
+# Convert to grid the PC of the leading EOF (pc.idx = 1):
+psl.index <- PC2grid(prinCompObj = pc, pc.idx = 1)
+aggr.fun <- list(FUN = "mean", na.rm = TRUE)
+psl.index <- aggregateGrid(psl.index, aggr.m = aggr.fun, aggr.y = aggr.fun,
+                           aggr.mem = aggr.fun)
+plot(as.Date(getRefDates(psl.index)), psl.index$Data, ty = "o",
+     xlab = "year", ylab = "SLP index")
+abline(h=0, lty = 2)
+title(main = "1st PC of multimember mean DJF SLP over Iberia")
+# opp can be used to obtain the inverse:
+psl.index.inv <- PC2grid(prinCompObj = pc, pc.idx = 1, opp = TRUE)
+psl.index.inv <- aggregateGrid(psl.index.inv, aggr.m = aggr.fun, aggr.y = aggr.fun,
+                           aggr.mem = aggr.fun)
+lines(as.Date(getRefDates(psl.index.inv)), psl.index.inv$Data, ty = "o", col = "red")
 }
 \author{
 J. Bedia
