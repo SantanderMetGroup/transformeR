@@ -179,7 +179,7 @@ prinComp <- function(grid,
         if (n.vars == 1) {
             combined.PC <- FALSE
             which.combine <- NULL
-            message("NOTE: It is not possible to obtain a combined PC from one variable: 'combined.PC' was set to FALSE")
+            message("NOTE: 'combined.PC' was set to FALSE")
         } else {
             which.combine <- if (is.null(which.combine)) {
                 1:n.vars
@@ -253,6 +253,7 @@ prinComp <- function(grid,
     if (isTRUE(combined.PC)) levs %<>% append(NA)
     attr(pca.list, "level") <- levs
     attr(pca.list, "dates_start") <- getRefDates(grid)
+    attr(pca.list, "dates_end") <- grid$Dates$end
     attr(pca.list, "xCoords") <- grid$xyCoords$x
     attr(pca.list, "yCoords") <- grid$xyCoords$y
     attr(pca.list, "projection") <- attr(grid$xyCoords, "projection")
