@@ -686,6 +686,10 @@ getGridVerticalLevels <- function(grid, var.index = NULL) {
         stop("Invalid 'var.index' definition", call. = FALSE)
     }
     levs <- grid$Variable$level[var.index]
+    # NULL values (surface vars) are converted to NA
+    if (any(is.null(levs))) {
+        levs[which(is.null(levs))] <- NA
+    }
     names(levs) <- var.names[var.index]
     return(levs)
 }
