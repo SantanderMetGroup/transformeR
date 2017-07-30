@@ -98,7 +98,7 @@
 #' @importFrom abind asub
 #' @importFrom stats cov sd prcomp
 #' @importFrom magrittr %>% %<>% 
-#' @seealso \code{\link{gridFromPCs}}, \code{\link{plotEOF}}
+#' @family pca
 #' @references
 #' Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Probabil\'{i}sticas
 #'  y Neuronales en las Ciencias Atmosf\'{e}ricas. MIMAM, Spain. 279 pp.
@@ -253,7 +253,7 @@ prinComp <- function(grid,
     if (isTRUE(combined.PC)) levs %<>% append(NA)
     attr(pca.list, "level") <- levs
     attr(pca.list, "dates_start") <- getRefDates(grid)
-    attr(pca.list, "dates_end") <- grid$Dates$end
+    attr(pca.list, "dates_end") <- getRefDates(grid, which = "end")
     attr(pca.list, "xCoords") <- grid$xyCoords$x
     attr(pca.list, "yCoords") <- grid$xyCoords$y
     attr(pca.list, "projection") <- attr(grid$xyCoords, "projection")
