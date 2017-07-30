@@ -316,6 +316,8 @@ which.leap <- function(years) {
 #' @description Retrieves the \code{$start} component of the \code{$Dates} element of a grid or station.
 #'  In case of multigrids, the dates from the first grid are returned (i.e.: \code{grid$Dates[[1]]$start}).
 #' @param obj A grid or station object
+#' @param which Character string. The element of the \code{$Dates} list to be extracted.
+#'  Default to \code{"start"}, otherwise \code{"end"}.
 #' @return A character vector of dates
 #' @details This utility function should be used always that reference dates are internally required by any function.
 #' It takes into account the particular case when \code{\link{redim}} is applied to create a singleton \code{"var"}
@@ -331,14 +333,16 @@ which.leap <- function(years) {
 #' str(getRefDates(VALUE_Iberia_tas))
 #' #Regular grid
 #' data("NCEP_Iberia_hus850")
-#' str(getRefDates(NCEP_Iberia_hus850))
- 
-getRefDates <- function(obj) {
-      if (("var" %in% getDim(obj)) && (getShape(obj, "var") > 1)) {
-            obj$Dates[[1]]$start
-      } else {
-            obj$Dates$start 
-      }
+#' str(getRefDates(NCEP_Iberia_hus850, which = "end"))
+
+getRefDates <- function(obj, which = "start") {
+    which <- match.arg(which, choices = c("start", "end"))
+    ind <- switch(which, "start" = 1, "end" = 2)
+    if (("var" %in% getDim(obj)) && (getShape(obj, "var") > 1)) {
+        obj$Dates[[1]][[ind]]
+    } else {
+        obj$Dates[[ind]]
+    }
 }
 
 
