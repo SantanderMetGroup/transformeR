@@ -31,48 +31,53 @@
 #' 
 #' Note that the function is not currently implemented to deal with decadal predictions
 #'  (i.e., 'runtime' dimension is not handled)
+#'  
 #' @author J Bedia
 #' @export
+#' @importFrom magrittr %>% extract2
 #' @seealso \code{\link{prinComp}} for EOF analysis.
-
+#' @family pca
+#' @examples 
+#' # Obtain the Sea-level pressure PCs of CFSv2 forecast using the NCEP reanalysis EOF:
+#' data("NCEP_Iberia_psl")
+#' NCEP_psl_PCAobject <- prinComp(NCEP_Iberia_psl, v.exp = .95)
+#' data("CFS_Iberia_psl")
+#' # Need to be in the same spatial coordinates
+#' CFS_psl_grid <- interpGrid(CFS_Iberia_psl, new.coordinates = getGrid(NCEP_Iberia_psl))
+#' CFSv2_PCs <- grid2PCs(NCEP_psl_PCAobject, grid = CFS_psl_grid)
+#' str(CFSv2_PCs)
 
 grid2PCs <- function(prinCompObj, grid, n.pcs = NULL) {
-      gridName <- grid$Variable$varName
-      if (!(gridName %in% names(prinCompObj))) {
-            stop("Input PCA object and grid name do not match", call. = FALSE)
-      }
-      EOF <- prinCompObj[[gridName]][[1]][["EOFs"]]
-      mu <- attr(prinCompObj[[gridName]][[1]], "scaled:center")
-      sigma <- attr(prinCompObj[[gridName]][[1]], "scaled:scale")
-      prinCompObj <- NULL
-      grid <- redim(grid, runtime = TRUE)
-      dimNames <- attr(grid$Data, "dimensions")
-      lat.ind <- grep("lat", dimNames)
-      lon.ind <- grep("lon", dimNames)
-      if (prod(dim(grid$Data)[c(lat.ind,lon.ind)]) != nrow(EOF)) {
-            stop("Incompatible array dimensions. Input grid and EOF must be in the same grid")
-      }
-      if (is.null(n.pcs)) {
-            n.pcs <- ncol(EOF)
-      } else if (n.pcs > ncol(EOF)) {
-            message("Number of PCs requested exceeds EOF dimensions. ", ncol(EOF), " PCs will be returned.")
-            n.pcs <- ncol(EOF)
-      }
-      mem.ind <- grep("member", dimNames)
-      n.mem <- dim(grid$Data)[mem.ind]
-      rt.ind <- grep("runtime", dimNames)
-      n.rt <- dim(grid$Data)[rt.ind]
-      for (i in 1:n.rt) {# Runtimes are currently ignored, and assumed to be only 1
-            PC.list <- lapply(1:n.mem, function(j) {
-                  X <- grid$Data[i,j,,,]
-                  attr(X, "dimensions") <- c("time","lat","lon")
-                  X <- array3Dto2Dmat(X)
-                  X <- (X - mu) / sigma
-                  PCs <- X %*% EOF 
-                  PCs[,1:n.pcs,drop = FALSE]
-            })
-      }
-      return(PC.list)
+    gridName <- getVarNames(grid)
+    if (!(gridName %in% names(prinCompObj))) {
+        stop("Input PCA object and grid name do not match", call. = FALSE)
+    }
+    grid <- redim(grid, member = TRUE, var = FALSE, runtime = FALSE)
+    dimNames <- getDim(grid)
+    if ("var" %in% dimNames) stop("Multigrids are not allowed in 'grid' argument", call. = FALSE)
+    EOF <- prinCompObj[[gridName]][[1]][["EOFs"]]
+    mu <- attr(prinCompObj[[gridName]][[1]][["orig"]], "scaled:center")
+    sigma <- attr(prinCompObj[[gridName]][[1]][["orig"]], "scaled:scale")
+    prinCompObj <- NULL
+    lat.ind <- grep("lat", dimNames)
+    lon.ind <- grep("lon", dimNames)
+    if (prod(dim(grid$Data)[c(lat.ind,lon.ind)]) != nrow(EOF)) {
+        stop("Incompatible array dimensions. Input grid and EOF must be in the same grid")
+    }
+    if (is.null(n.pcs)) {
+        n.pcs <- ncol(EOF)
+    } else if (n.pcs > ncol(EOF)) {
+        message("Number of PCs requested exceeds EOF dimensions. ", ncol(EOF), " PCs will be returned.")
+        n.pcs <- ncol(EOF)
+    }
+    n.mem <- getShape(grid, "member")
+    PC.list <- lapply(1:n.mem, function(i) {
+        X <- subsetGrid(grid, members = i, drop = TRUE) %>% extract2("Data") %>% array3Dto2Dmat()
+        X  <-  (X - mu) / sigma 
+        PCs <- X %*% EOF
+        PCs[, 1:n.pcs, drop = FALSE]
+    })
+    return(PC.list)
 }
 # End
 
