@@ -286,14 +286,16 @@ prinComp.scale <- function(var.list, scaling) {
                 mu <- mean(var.list[[i]][[x]], na.rm = TRUE)
                 sigma <- sd(var.list[[i]][[x]], na.rm = TRUE)
                 Xsc <- (var.list[[i]][[x]] - mu) / sigma
-                attr(Xsc, "scaled:method") <- scaling[i]
                 attr(Xsc, "scaled:center") <- rep(mu, ncol(var.list[[i]][[x]]))
                 attr(Xsc, "scaled:scale") <- rep(sigma, ncol(var.list[[i]][[x]]))
+                attr(Xsc, "scaled:method") <- scaling[i]
                 return(Xsc)
             })
         } else {
             lapply(1:length(var.list[[i]]), function(x) {
-                scale(var.list[[i]][[x]], center = TRUE, scale = TRUE)
+                Xsc <- scale(var.list[[i]][[x]], center = TRUE, scale = TRUE)
+                attr(Xsc, "scaled:method") <- scaling[i]
+                return(Xsc)
             })
         }   
     })
