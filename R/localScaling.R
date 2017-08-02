@@ -1,4 +1,4 @@
-##     localScaling.R Grid local 
+##     localScaling.R Grid local scaling
 ##
 ##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
@@ -33,24 +33,34 @@
 #' @param time.frame Character indicating the time frame to perform the scaling. Possible values are
 #'  \code{"none"}, which considers the climatological mean of the whole period given in 
 #'  \code{base} and/or \code{ref}, \code{"monthly"}, that performs the calculation on a monthly basis
-#'  and \code{"daily"}, for a julian day-based approach.
+#'  and \code{"daily"}, for a julian day-based approach. See details.
+#' @param type Character string. Either \code{"additive"} or \code{"ratio"}, depending on wheter the correction factor is added (e.g. temperature...)
+#' or applied as a ratio (e.g. precipitation, wind speed...). See details
+#'   
 #' @template templateParallelParams
-#' @details The reference grid (\code{ref}) is used to correct the input grid, as follows:
+#' @details In the \code{type = "additive"} set up the reference grid (\code{ref}) is used to correct the input grid, as follows:
 #' 
-#' \deqn{grid' = grid - base_clim + ref_clim}
+#' \deqn{grid'_{t} = grid - base_{clim} + ref_{clim}}
+#'  
+#' In the case of \code{type = "ratio"}:
 #' 
-#' , where \emph{base_clim} corresponds to the baseline climatology (by default the grid climatology), thus yielding an anomaly
-#' w.r.t. the base, and \emph{ref_clim} is a reference climatological value added to the previously calculated anomaly. Thus, 
+#' \deqn{grid'_{t} = (grid / base_{clim}) * ref_{clim}}
+#'  
+#' , where \emph{grid'_{t}} is each time slice \emph{t} of the input grid, and \emph{base_clim} corresponds to the baseline climatology (by default the grid climatology), thus yielding an anomaly
+#' w.r.t. the base, and \emph{ref_clim} is a reference climatological value added to the previously calculated anomaly. The \code{"additive"} version
+#' is preferably applied to unbounded variables (e.g. temperature) and the \code{"ratio"} to variables with a lower bound 
+#' (e.g. precipitation, because it also preserves the frequency). 
+#' 
+#'   Depending on the value of the argument \code{time.frame}, the baseline and reference climatologies are calculated for
+#'   the whole season (\code{time.frame = "none"}), month by month \code{time.frame = "monthly"} 
+#'   or by day-of-the-year (julian days) (\code{time.frame = "daily"}). Thus, 
 #'  if both \code{base} and \code{ref} are set to \code{NULL}, the output grid corresponds to the anomaly field of the 
 #'  input \code{grid} w.r.t. its own mean. The way \emph{base_clim} and \emph{ref_clim_grid} are computed in case of multimember grids is controlled
 #'  by the argument \code{by.member}. By default the climatological mean is used, but this can be changed
 #'   by the user through the argument \code{clim.fun}, that is passed to \code{\link{climatology}}.
 #' 
-#' 
 #' The \code{ref} usually corresponds to the control (historical, 20C3M...) run of the GCM in the training period in climate change applications,
-#' or the hindcast data for the training period in s2d applications. Note that by default \code{ref = NULL}. In this 
-#' case it will be assumed to be the \code{pred} grid. This can be used for instance when train and test correspond
-#' to the same model.
+#' or the hindcast data for the training period in s2d applications. Note that by default \code{ref = NULL}. 
 #' 
 #' @importFrom abind abind asub
 #' @importFrom stats na.omit
@@ -121,8 +131,24 @@
 #' plot(grid$Data[,15,15], ty = "l", ylim = c(-7.5,10))
 #' lines(lc.ref$Data[,,15,15], col = "blue")
 #' lines(lc.ref.m$Data[,,15,15], col = "red")
-#' plotClimatology(climatology(grid))
-#' plotClimatology(climatology(lc.ref))
+#' 
+#' # AN example using the "ratio" type:
+#' data("EOBS_Iberia_tp")
+#' grid <- subsetGrid(EOBS_Iberia_tp, years = 1999)
+#' base <- subsetGrid(EOBS_Iberia_tp, years = 1998)
+#' ref <- subsetGrid(EOBS_Iberia_tp, years = 2000)
+#' fun <- list(FUN = "sum")
+#' # We plot the climatologies (total accumulated precip) to have a visual comparison of
+#' # the input grid, the grid used as base and the reference
+#' mg <- makeMultiGrid(climatology(grid, clim.fun = fun),
+#'                      climatology(base, clim.fun = fun),
+#'                      climatology(ref, clim.fun = fun), skip.temporal.check = TRUE)
+#' plotClimatology(mg, names.attr = c("input_grid", "base", "ref"))
+#' # Note that for precipitation we use a scaling factor rather than an addition:
+#' grid.corr <- localScaling(grid = grid, base = base, ref = ref,
+#'                           time.frame = "monthly", type = "ratio")
+#' mg.corr <- makeMultiGrid(climatology(grid, clim.fun = fun), climatology(grid.corr, clim.fun = fun))
+#' plotClimatology(mg.corr, at = seq(0,350,10), names.attr = c("Raw","Scaled"))
 
 localScaling <- function(grid,
                          base = NULL,
@@ -130,13 +156,15 @@ localScaling <- function(grid,
                          clim.fun = list(FUN = "mean", na.rm = TRUE),
                          by.member = TRUE,
                          time.frame = c("none", "monthly", "daily"),
+                         type = "additive",
                          parallel = FALSE,
                          max.ncores = 16,
                          ncores = NULL) {
     time.frame <- match.arg(time.frame, choices = c("none", "monthly", "daily"))
+    type <- match.arg(type, choices = c("additive", "ratio"))
     if (time.frame == "none") {
         message("[", Sys.time(), "] - Scaling ...")
-        out <- localScaling.(grid, base, ref, clim.fun, by.member, parallel, max.ncores, ncores)
+        out <- localScaling.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores)
         message("[", Sys.time(), "] - Done")
     } else if (time.frame == "monthly") {
         message("[", Sys.time(), "] - Scaling by months ...")
@@ -153,7 +181,7 @@ localScaling <- function(grid,
             } else {
                 ref1 <- NULL
             }
-            localScaling.(grid1, base1, ref1, clim.fun, by.member, parallel, max.ncores, ncores)
+            localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores)
         })
         out <- do.call("bindGrid.time", aux.list)
         message("[", Sys.time(), "] - Done")
@@ -181,7 +209,7 @@ localScaling <- function(grid,
             } else {
                 ref1 <- ref
             }
-            localScaling.(grid1, base1, ref1, clim.fun, by.member, parallel, max.ncores, ncores)
+            localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores)
         })
         out <- do.call("bindGrid.time", aux.list)
         message("[", Sys.time(), "] - Done")
@@ -198,7 +226,7 @@ localScaling <- function(grid,
 #' @importFrom parallel stopCluster
 #' @author J Bedia
 
-localScaling. <- function(grid, base, ref, clim.fun, by.member, parallel, max.ncores, ncores) {
+localScaling. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores) {
     grid <- redim(grid)
     if (is.null(base)) {
         base <- suppressMessages({
@@ -231,24 +259,45 @@ localScaling. <- function(grid, base, ref, clim.fun, by.member, parallel, max.nc
     n.times <- getShape(grid, "time")
     Xc <- base[["Data"]]
     Xref <- ref[["Data"]]
-    aux.list <- lapply_fun(1:n.times, function(x) {
-        X <- asub(clim, idx = x, dims = ind.time, drop = FALSE)
-        out <- if (dim(X)[1] != dim(Xc)[1]) {
-            aux <- lapply(1:dim(X)[1], function(i) X[i, , , , drop = FALSE] - Xc + Xref)
-            do.call("abind", c(aux, along = 1)) %>% unname()
-        } else {
-            X - Xc + Xref
-        }
-        return(out)
-    })
-    X <- Xc <- Xref <- base <- ref <- NULL
+    aux.list <- localScaling.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun)
+    Xc <- Xref <- base <- ref <- NULL
     grid[["Data"]] <- do.call("abind", c(aux.list, along = ind.time)) %>% unname()
     aux.list <- NULL
     attr(grid[["Data"]], "dimensions") <- dimNames
     return(grid)
 }
 
+#' @title Local scaling type internal    
+#' @description Internal workhorse for local scaling
+#' @keywords internal
+#' @importFrom magrittr %>% 
+#' @importFrom abind abind
+#' @importFrom parallel stopCluster
+#' @author J Bedia
 
+localScaling.type <- function(clim, n.times, ind.time, Xc, Xref, type, lapply_fun) {
+    if (type == "additive") {
+        lapply_fun(1:n.times, function(x) {
+            X <- asub(clim, idx = x, dims = ind.time, drop = FALSE)
+            if (dim(X)[1] != dim(Xc)[1]) {
+                aux <- lapply(1:dim(X)[1], function(i) X[i, , , , drop = FALSE] - Xc + Xref)
+                do.call("abind", c(aux, along = 1)) %>% unname()
+            } else {
+                X - Xc + Xref
+            }
+        })
+    } else {
+        lapply_fun(1:n.times, function(x) {
+            X <- asub(clim, idx = x, dims = ind.time, drop = FALSE)
+            if (dim(X)[1] != dim(Xc)[1]) {
+                aux <- lapply(1:dim(X)[1], function(i) (X[i, , , , drop = FALSE] / Xc) * Xref)
+                do.call("abind", c(aux, along = 1)) %>% unname()
+            } else {
+                (X / Xc) * Xref
+            }
+        })
+    }
+}
 
 
 
