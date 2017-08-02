@@ -260,6 +260,7 @@ prinComp <- function(grid,
     attr(pca.list, "level") <- levs
     attr(pca.list, "dates_start") <- getRefDates(grid)
     attr(pca.list, "dates_end") <- getRefDates(grid, which = "end")
+    attr(pca.list, "season") <- getSeason(grid)
     attr(pca.list, "xCoords") <- grid$xyCoords$x
     attr(pca.list, "yCoords") <- grid$xyCoords$y
     attr(pca.list, "projection") <- attr(grid$xyCoords, "projection")
