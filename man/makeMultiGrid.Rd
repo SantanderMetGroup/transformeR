@@ -57,11 +57,6 @@ data(NCEP_Iberia_psl)
 # sea-level pressure is a daily mean, while specific humidity and air temperature 
 # (850 mb surface isobaric pressure level) are instantaneous data verifying at 12:00 UTC:
 # air temperature
-range(NCEP_Iberia_ta850$Dates$start)
-range(NCEP_Iberia_ta850$Dates$end) # start and end are identical (instantaneous)
-# sea-level pressure
-range(NCEP_Iberia_psl$Dates$start)
-range(NCEP_Iberia_psl$Dates$end) # start and end differ in 24 h (daily mean)
 mf <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 # The new object inherits the global attributes from the first grid, as it is assumed
 # that all input grids come from the same data source:
@@ -69,16 +64,14 @@ attributes(mf)
 # The data structure has now one additional dimension ("var"), along which the data arrays
 # have been binded:
 str(mf$Data)
-plotMeanGrid(mf)
-
 # Example of multimember multigrid creation from several multimember grids:
 # Load three different multimember grids with the same spatiotemporal ranges:
 data("CFS_Iberia_tas")
 data("CFS_Iberia_hus850")
 data("CFS_Iberia_tp")
 mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_hus850, CFS_Iberia_tp)
-# 'plotMeanGrid' can just handle the multi-member mean for each variable in this case:
-plotMeanGrid(mm.mf)
+# Different fields can not be plotted together in the same plot directly.
+# subsetGrid and plotClimatology can be conveniently used to that aim, if needed. For instance:
 }
 \seealso{
 \code{\link{interpGrid}} for spatial consistency of input grids.
