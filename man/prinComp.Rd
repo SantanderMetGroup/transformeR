@@ -5,7 +5,7 @@
 \title{Principal Component Analysis of Grids}
 \usage{
 prinComp(grid, n.eofs = NULL, v.exp = NULL, combined.PC = TRUE,
-  which.combine = NULL, scaling = "field", quiet = FALSE)
+  which.combine = NULL, scaling = "gridbox", quiet = FALSE)
 }
 \arguments{
 \item{grid}{A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object}
@@ -26,7 +26,7 @@ This can be either an integer vector of positions, or a character vector with th
  that if the input grid is a multigrid (i.e., it contains more than one variable), all the variables are used for the
  combination.}
 
-\item{scaling}{Method for performing the scaling (and centering) of the input raw data matrix.
+\item{scaling}{Method for performing the scaling (and centering) of the input raw data matrix. Currently only the \code{"gridbox"} option is available.
 Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}. See details.}
 
 \item{quiet}{True to silence all the messages (but not the warnings)}
@@ -130,13 +130,13 @@ pca.mm <- prinComp(CFS_Iberia_hus850, n.eofs = 5)
 str(pca.mm)
 
 # The most complex situation comes from multimember multigrids:
-data("CFS_Iberia_tp")
+data("CFS_Iberia_tp", "CFS_Iberia_tas")
 # Now the multimember multigrid is constructed
 mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
-# Use different n.eofs for each variable:
-try(pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(5,3)))
+# Use different n.eofs for each variable (will raise an error):
+try(pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(3,5)))
 ## Yes, I forgot to include the number of EOFS for the combined...
-pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(5,3,4))
+pca.mm.mf <- prinComp(mm.multigrid, v.exp = .95)
 # Now there is a "COMBINED" element at the end of the output list
 str(pca.mm.mf$COMBINED)
 
@@ -157,7 +157,8 @@ Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Prob
   \url{http://www.meteo.unican.es/en/books/dataMiningMeteo}
 }
 \seealso{
-\code{\link{gridFromPCs}}, \code{\link{plotEOF}}
+Other pca: \code{\link{PC2grid}}, \code{\link{grid2PCs}},
+  \code{\link{gridFromPCA}}, \code{\link{plotEOF}}
 }
 \author{
 J. Bedia, M. de Felice

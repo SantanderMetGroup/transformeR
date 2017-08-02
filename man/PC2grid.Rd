@@ -49,6 +49,11 @@ psl.index.inv <- aggregateGrid(psl.index.inv, aggr.m = aggr.fun, aggr.y = aggr.f
                            aggr.mem = aggr.fun)
 lines(as.Date(getRefDates(psl.index.inv)), psl.index.inv$Data, ty = "o", col = "red")
 }
+\seealso{
+Other pca: \code{\link{grid2PCs}},
+  \code{\link{gridFromPCA}}, \code{\link{plotEOF}},
+  \code{\link{prinComp}}
+}
 \author{
 J. Bedia
 }

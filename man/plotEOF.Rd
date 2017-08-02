@@ -4,7 +4,7 @@
 \alias{plotEOF}
 \title{Plot EOFs}
 \usage{
-plotEOF(prinCompObj, var = NULL, member = 1, n.eofs = NULL)
+plotEOF(prinCompObj, var = NULL, member = 1, n.eofs = NULL, ...)
 }
 \arguments{
 \item{prinCompObj}{A PCA object as returned by \code{\link{prinComp}}}
@@ -17,6 +17,8 @@ corresponding to the first member. Ignored for non multimember grids.}
 
 \item{n.eofs}{Number of EOFs to be displayed. Default to NULL, indicating that all computed EOFS
 will be represented}
+
+\item{...}{Further arguments passed to \code{\link{plotClimatology}}.}
 }
 \value{
 A plot with as many panels as EOFs requested, in the original units of the variable
@@ -28,26 +30,26 @@ Plots an arbitrary number of EOFs. Useful to have a quick overview of the main s
 \examples{
 # Winter temperature at 850 mb isobaric surface pressure level is loaded (period 1981--2010):
 data("NCEP_Iberia_hus850")
-# PCA analysis, retaining the PCs that explain 95\\\% of the total variance:
-pca <- prinComp(NCEP_Iberia_hus850, v.exp = .95)
+# PCA analysis, retaining the PCs that explain 90\\\% of the total variance:
+pca <- prinComp(NCEP_Iberia_hus850, v.exp = .90)
 # Plot of all EOFs
 plotEOF(pca)
 # Plot the first 4 EOFs:
-plotEOF(pca, n.eofs = 4)
-
+plotEOF(pca, n.eofs = 4, backdrop.theme = "coastline")
+# Plot just the second EOF (passing further arguments to plotClimatology):
+plotEOF(pca, zcol = 2, backdrop.theme = "coastline", main = "2nd EOF ('zcol = 2')")
 # Example with PCA analysis of a multigrid (multiple variables)
-data("NCEP_Iberia_ta850")
-data("NCEP_Iberia_psl")
+data("NCEP_Iberia_ta850", "NCEP_Iberia_psl")
 multigrid <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_ta850, NCEP_Iberia_psl)
 # PCA analysis, retaining the first 9 PCs of each variable:
 pca2 <- prinComp(multigrid, n.eofs = 9)
 names(pca2)
-# EOFs for geopotential
-plotEOF(pca2, "ta850")
-plotEOF(pca2, "psl", n.eofs = 2)
+# EOFs for temperature 850mb
+plotEOF(pca2, "ta850", backdrop.theme = "coastline")
 }
 \seealso{
-\code{\link{prinComp}}
+Other pca: \code{\link{PC2grid}}, \code{\link{grid2PCs}},
+  \code{\link{gridFromPCA}}, \code{\link{prinComp}}
 }
 \author{
 J. Bedia

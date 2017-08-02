@@ -4,10 +4,13 @@
 \alias{getRefDates}
 \title{Retrieve reference dates}
 \usage{
-getRefDates(obj)
+getRefDates(obj, which = "start")
 }
 \arguments{
 \item{obj}{A grid or station object}
+
+\item{which}{Character string. The element of the \code{$Dates} list to be extracted.
+Default to \code{"start"}, otherwise \code{"end"}.}
 }
 \value{
 A character vector of dates
@@ -28,7 +31,7 @@ data("VALUE_Iberia_tas")
 str(getRefDates(VALUE_Iberia_tas))
 #Regular grid
 data("NCEP_Iberia_hus850")
-str(getRefDates(NCEP_Iberia_hus850))
+str(getRefDates(NCEP_Iberia_hus850, which = "end"))
 }
 \seealso{
 Other get.helpers: \code{\link{getCoordinates}},

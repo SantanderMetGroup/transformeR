@@ -52,7 +52,7 @@ attributes(psl_recovered)$'explained_variance'
 }
 \seealso{
 Other pca: \code{\link{PC2grid}}, \code{\link{grid2PCs}},
-  \code{\link{prinComp}}
+  \code{\link{plotEOF}}, \code{\link{prinComp}}
 }
 \author{
 J. Bedia

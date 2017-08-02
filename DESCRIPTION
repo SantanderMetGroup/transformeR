@@ -21,8 +21,8 @@ Suggests:
     visualizeR
 Type: Package
 Title: An R package for climate data manipulation and transformation
-Version: 0.1.0
-Date: 2017-07-19
+Version: 1.0.0
+Date: 2017-08-02
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [ctb]",
     "Joaquin Bedia <bediaj@unican.es> [aut, cre]",
@@ -32,7 +32,7 @@ Authors@R: as.person(c(
     "Maialen Iturbide <miturbide@ifca.unican.es> [aut]"))
 BugReports: https://github.com/SantanderMetGroup/transformeR/issues
 URL: https://github.com/SantanderMetGroup/transformeR/wiki
-Description: The package implements different tools for climate data analysis, visualization and manipulation.
+Description: The package implements different tools for climate data analysis, visualization and manipulation. It is a building block of the climate4R Bundle (an overview, see the Climate Services paper in <http://www.meteo.unican.es/en/node/73360>).
 License: file LICENSE
 LazyData: true
 RoxygenNote: 6.0.1
