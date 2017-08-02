@@ -31,7 +31,7 @@
 #'   in the multigrid (see the \code{\link{getVarNames}} helper for more details). Default to \code{NULL}, indicating
 #'   that if the input grid is a multigrid (i.e., it contains more than one variable), all the variables are used for the
 #'   combination.
-#' @param scaling Method for performing the scaling (and centering) of the input raw data matrix.
+#' @param scaling Method for performing the scaling (and centering) of the input raw data matrix. Currently only the \code{"gridbox"} option is available.
 #' Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}. See details.
 #' @param quiet True to silence all the messages (but not the warnings)
 
@@ -53,6 +53,7 @@
 #' @note Performing PCA analysis on multimember multigrids may become time-consuming and computationally expensive. 
 #' It is therefore advisable to avoid the use of this option for large datasets, and iterate over single
 #' multimember grids instead.
+#' 
 #' @details
 #' 
 #' \strong{Number of EOFs}
@@ -138,13 +139,13 @@
 #' str(pca.mm)
 #' 
 #' # The most complex situation comes from multimember multigrids:
-#' data("CFS_Iberia_tp")
+#' data("CFS_Iberia_tp", "CFS_Iberia_tas")
 #' # Now the multimember multigrid is constructed
 #' mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
-#' # Use different n.eofs for each variable:
-#' try(pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(5,3)))
+#' # Use different n.eofs for each variable (will raise an error):
+#' try(pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(3,5)))
 #' ## Yes, I forgot to include the number of EOFS for the combined...
-#' pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(5,3,4))
+#' pca.mm.mf <- prinComp(mm.multigrid, v.exp = .95)
 #' # Now there is a "COMBINED" element at the end of the output list
 #' str(pca.mm.mf$COMBINED)
 #' 
@@ -164,7 +165,7 @@ prinComp <- function(grid,
                      v.exp = NULL,
                      combined.PC = TRUE,
                      which.combine = NULL,
-                     scaling = "field",
+                     scaling = "gridbox",
                      quiet = FALSE) {
     grid %<>% redim(var = TRUE, member = TRUE)
     n.vars <- getShape(grid, "var")
@@ -222,13 +223,18 @@ prinComp <- function(grid,
     } else {
         if (length(scaling) != length(var.names)) stop("The length of 'scaling' argument should be either 1 or equal to the number of variables contained in the input grid", call. = FALSE)    
     }
+    # field choice is temporarily disabled:
+    if (any(scaling == "field")) {
+        scaling <- gsub("field", "gridbox", scaling)
+        message("NOTE: 'field' scaling is currently unavailable. Scaling was set to 'gridbox'")
+    }
     # Variables-members as a nested list of matrices and scaling
     Xsc.list <- lapply(1:length(var.names), function(x) {
         l <- suppressWarnings(subsetGrid(grid, var = var.names[x])) %>% redim(member = TRUE)
         n.mem <- getShape(l, "member")
         lapply(1:n.mem, function(m) {
             subsetGrid(l, members = m, drop = TRUE)[["Data"]] %>% array3Dto2Dmat()
-        })
+        }) 
     }) %>% prinComp.scale(scaling)
     # Combined PCs
     if (isTRUE(combined.PC)) {
@@ -285,9 +291,8 @@ prinComp.scale <- function(var.list, scaling) {
             lapply(1:length(var.list[[i]]), function(x) {
                 mu <- mean(var.list[[i]][[x]], na.rm = TRUE)
                 sigma <- sd(var.list[[i]][[x]], na.rm = TRUE)
-                Xsc <- (var.list[[i]][[x]] - mu) / sigma
-                attr(Xsc, "scaled:center") <- rep(mu, ncol(var.list[[i]][[x]]))
-                attr(Xsc, "scaled:scale") <- rep(sigma, ncol(var.list[[i]][[x]]))
+                Xsc <- scale(var.list[[i]][[x]], center = rep(mu, ncol(var.list[[i]][[x]])),
+                      scale = rep(sigma, ncol(var.list[[i]][[x]])))
                 attr(Xsc, "scaled:method") <- scaling[i]
                 return(Xsc)
             })
