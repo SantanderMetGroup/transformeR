@@ -1,3 +1,21 @@
+##     helpers.R Helper functions of the climate4R bundle
+##
+##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
+##
+##     This program is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU General Public License as published by
+##     the Free Software Foundation, either version 3 of the License, or
+##     (at your option) any later version.
+## 
+##     This program is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+##     GNU General Public License for more details.
+## 
+##     You should have received a copy of the GNU General Public License
+##     along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
 #' @title Get regular grid definition 
 #' @description Get the (regular) grid definition from an existing (gridded) dataset
 #' @param gridData A grid data object coming from \code{loadGridData} (package \pkg{loadeR}) or \code{\link{interpGrid}}
@@ -478,6 +496,7 @@ checkSeason <- function(...) {
 #' @author M Iturbide
 #' @keywords internal
 #' @family is.helpers
+#' @seealso typeofGrid, for a character representation of the type of grid
 #' @export
 #' @examples 
 #' data("EOBS_Iberia_tas")
@@ -697,4 +716,24 @@ getGridVerticalLevels <- function(grid, var.index = NULL) {
     names(levs) <- var.names[var.index]
     return(levs)
 }
-    
+
+
+#' @title Type of grid
+#' @description Describe the type of grid according to the spatial representation of the data
+#' @param grid An input grid
+#' @return A character vector decribing the type of spatial reference. Three disjoint values possible: \code{"station"}, \code{"rotated_grid"} and \code{"regular_grid"}
+#' @keywords internal
+#' @export
+#' @author J Bedia
+#' @family get.helpers
+
+typeofGrid <- function(grid) {
+    ref.grid <- getGrid(grid)
+    if (attr(ref.grid, "resX") == 0) {
+        "station"
+    } else if (is.na(attr(ref.grid, "resX"))) {
+        "rotated_grid"
+    } else {
+        "regular_grid"
+    }
+}    
