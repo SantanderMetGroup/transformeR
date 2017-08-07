@@ -45,12 +45,12 @@ getGrid <- function(gridData) {
             attr(out, "type") <- "irregular"
             if (!exists("resX", attributes(gridData$xyCoords))) {
                   attr(out, "resX") <- NULL
-            }else{
+            } else {
                   attr(out, "resX") <- attr(gridData$xyCoords, "resX")
             }
             if (!exists("resY", attributes(gridData$xyCoords))) {
                   attr(out, "resY") <- NULL
-            }else{
+            } else {
                   attr(out, "resY") <- attr(gridData$xyCoords, "resY")   
             }
       }else{
@@ -58,23 +58,23 @@ getGrid <- function(gridData) {
             grid.x <- c(gridData$xyCoords$x[1], tail(gridData$xyCoords$x, 1))
             grid.y <- c(gridData$xyCoords$y[1], tail(gridData$xyCoords$y, 1))
             out <- list(x = grid.x, y = grid.y)
-            if(rot){
+            if (rot) {
                   out$lon <- gridData$xyCoords$lon 
                   out$lat <- gridData$xyCoords$lat
             }
             attributes(out) <- attributes(gridData$xyCoords)
             if (!exists("resX", attributes(gridData$xyCoords))) {
                   attr(out, "resX") <- (tail(gridData$xyCoords$x, 1) - gridData$xyCoords$x[1]) / (length(gridData$xyCoords$x) - 1)
-            }else{
+            } else {
                   attr(out, "resX") <- attr(gridData$xyCoords, "resX")
             }
             if (!exists("resY", attributes(gridData$xyCoords))) {
                   attr(out, "resY") <- (tail(gridData$xyCoords$y, 1) - gridData$xyCoords$y[1]) / (length(gridData$xyCoords$y) - 1)
                   
-            }else{
+            } else{ 
                   attr(out, "resY") <- attr(gridData$xyCoords, "resY")   
             }
-            if(rot){
+            if (rot) {
                   attr(out, "resLON") <- NA 
                   attr(out, "resLAT") <- NA
             } 
@@ -105,17 +105,17 @@ getGrid <- function(gridData) {
 
 
 getCoordinates <- function(obj) {
-      if (is.matrix(obj$xyCoords)){
+      if (is.matrix(obj$xyCoords)) {
             xy <- obj$xyCoords[,]
             return(xy)
-      }else{
+      } else {
             x <- obj$xyCoords$x
             y <- obj$xyCoords$y
-            if(!is.matrix(obj$xyCoords) && exists("lon", obj$xyCoords) && exists("lat", obj$xyCoords)){
+            if (!is.matrix(obj$xyCoords) && exists("lon", obj$xyCoords) && exists("lat", obj$xyCoords)) {
                   lon <- obj$xyCoords$lon 
                   lat <- obj$xyCoords$lat
                   return(list("x" = x, "y" = y, "lon" = lon, "lat" = lat))
-            }else{
+            } else {
                   return(list("x" = x, "y" = y))
             }
             
@@ -285,7 +285,7 @@ getShape <- function(obj, dimension = NULL) {
 #' @export
 
 draw.world.lines <- function(...) {
-      load(system.file(package="transformeR","wrl.Rda"), envir = environment())
+      load(system.file(package = "transformeR","wrl.Rda"), envir = environment())
       for (i in 1:length(node.list)) {
             lines(node.list[[i]][,1], node.list[[i]][,2], ...)            
       }

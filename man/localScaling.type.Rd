@@ -7,7 +7,7 @@
 localScaling.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun)
 }
 \description{
-Internal workhorse for local scaling
+Internal for additive/ratio local scaling
 }
 \author{
 J Bedia

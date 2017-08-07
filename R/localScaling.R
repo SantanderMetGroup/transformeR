@@ -268,7 +268,7 @@ localScaling. <- function(grid, base, ref, clim.fun, by.member, type, parallel, 
 }
 
 #' @title Local scaling type internal    
-#' @description Internal workhorse for local scaling
+#' @description Internal for additive/ratio local scaling
 #' @keywords internal
 #' @importFrom magrittr %>% 
 #' @importFrom abind abind
