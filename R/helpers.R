@@ -437,10 +437,10 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
 #' checkDim(VALUE_Iberia_tas, VALUE_Iberia_tp) # ok, go on
 
 
-checkDim <- function(..., dimensions = c("member", "time", "lat", "lon")) {
+checkDim <- function(..., dimensions = c("var", "member", "time", "lat", "lon")) {
       grid.list <- list(...)
       grid.list <- lapply(grid.list, "redim")
-      dimensions <- match.arg(dimensions, choices = c("member", "time", "lat", "lon"), several.ok = TRUE)
+      dimensions <- match.arg(dimensions, choices = c("var", "member", "time", "lat", "lon"), several.ok = TRUE)
       dimlist <- lapply(dimensions, function(x) vapply(grid.list, "getShape", integer(1), x))
       oops <- dimensions[which(!sapply(dimlist, function(x) all(x == x[1])))]
       if (length(oops) > 0) {
