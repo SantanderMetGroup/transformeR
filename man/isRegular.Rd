@@ -24,6 +24,8 @@ isRegular(VALUE_Iberia_tas)
 }
 \seealso{
 \code{\link{getGrid}}
+
+typeofGrid, for a character representation of the type of grid
 }
 \author{
 M Iturbide

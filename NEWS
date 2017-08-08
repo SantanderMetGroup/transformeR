@@ -1,14 +1,13 @@
-transformeR 0.1.0
+transformeR 1.0.0
 =================
 
-* New function `localScaling` for flexible local scaling and anomaly calculation
-* New function `temporalCycleGrid`, for annual/seasonal cycle grid calculation
+* New option `ratio` for `localScaling` 
+* New options and improved metadata for PCA analysis: 
+   * `which.combine`, allows to flexible definition of combined PCs
+   * `v.exp` and `n.eofs`. now allow for different values for different grids within the input multigrid
 * Internal adaptation of several functions to transparently handle stations and grids
 * `interpGrid` has been adapted to transparently deal with rotated coordinates (RCMs) and stations
-* New collection of built-in datasets, including CORDEX projections
-* Implemented the automatic sorting of the time dimension when binding wih `bindGrid.time`
 * New internal helpers  
-* Bug fix affecting the output data array of `persistence`
 * Other minor changes, new examples and documentation updates
 
 

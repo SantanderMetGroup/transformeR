@@ -55,7 +55,7 @@ Other get.helpers: \code{\link{getCoordinates}},
   \code{\link{getRefDates}}, \code{\link{getSeason}},
   \code{\link{getShape}}, \code{\link{getTimeResolution}},
   \code{\link{getVarNames}}, \code{\link{getYearsAsINDEX}},
-  \code{\link{which.leap}}
+  \code{\link{typeofGrid}}, \code{\link{which.leap}}
 }
 \author{
 S. Herrera and J. Bedia
