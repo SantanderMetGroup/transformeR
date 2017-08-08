@@ -412,7 +412,7 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
 #' @description Checks that the input grids have the same lon/lat shape
 #' @param ... Input grids to be compared
 #' @param dimension Character vector. Dimensions to check for consistency. Several dimensions can be tested at once.
-#' Possible values are: \code{"member"}, \code{"time"}, \code{"lat"} and \code{"lon"}.  
+#' Possible values are: \code{"var"}, \code{"member"}, \code{"time"}, \code{"lat"} and \code{"lon"}.  
 #' @return In case of spatial inconsistency of any of the inputs grids, 
 #' the function stops the execution of the current expression, with an error message.
 #' @description The function simply compares the size of the dimension across input grids for 

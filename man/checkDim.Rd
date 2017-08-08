@@ -4,13 +4,13 @@
 \alias{checkDim}
 \title{Spatial check of input grids}
 \usage{
-checkDim(..., dimensions = c("member", "time", "lat", "lon"))
+checkDim(..., dimensions = c("var", "member", "time", "lat", "lon"))
 }
 \arguments{
 \item{...}{Input grids to be compared}
 
 \item{dimension}{Character vector. Dimensions to check for consistency. Several dimensions can be tested at once.
-Possible values are: \code{"member"}, \code{"time"}, \code{"lat"} and \code{"lon"}.}
+Possible values are: \code{"var"}, \code{"member"}, \code{"time"}, \code{"lat"} and \code{"lon"}.}
 }
 \value{
 In case of spatial inconsistency of any of the inputs grids, 
