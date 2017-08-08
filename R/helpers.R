@@ -123,21 +123,20 @@ getGrid <- function(gridData) {
 
 
 getCoordinates <- function(obj) {
-      if (is.matrix(obj$xyCoords)) {
-            xy <- obj$xyCoords[,]
-            return(xy)
-      } else {
-            x <- obj$xyCoords$x
-            y <- obj$xyCoords$y
-            if (!is.matrix(obj$xyCoords) && exists("lon", obj$xyCoords) && exists("lat", obj$xyCoords)) {
-                  lon <- obj$xyCoords$lon 
-                  lat <- obj$xyCoords$lat
-                  return(list("x" = x, "y" = y, "lon" = lon, "lat" = lat))
-            } else {
-                  return(list("x" = x, "y" = y))
-            }
-            
-      }
+    if (is.matrix(obj$xyCoords)) {
+        xy <- obj$xyCoords[ , ,drop = FALSE]
+        return(xy)
+    } else {
+        x <- obj$xyCoords$x
+        y <- obj$xyCoords$y
+        if (!is.matrix(obj$xyCoords) && exists("lon", obj$xyCoords) && exists("lat", obj$xyCoords)) {
+            lon <- obj$xyCoords$lon 
+            lat <- obj$xyCoords$lat
+            return(list("x" = x, "y" = y, "lon" = lon, "lat" = lat))
+        } else {
+            return(list("x" = x, "y" = y))
+        }
+    }
 }
 # End
 
