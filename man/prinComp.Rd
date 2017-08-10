@@ -5,7 +5,8 @@
 \title{Principal Component Analysis of Grids}
 \usage{
 prinComp(grid, n.eofs = NULL, v.exp = NULL, combined.PC = TRUE,
-  which.combine = NULL, scaling = "gridbox", quiet = FALSE)
+  which.combine = NULL, scaling = "gridbox", keep.orig = FALSE,
+  quiet = FALSE)
 }
 \arguments{
 \item{grid}{A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object}
@@ -29,6 +30,9 @@ This can be either an integer vector of positions, or a character vector with th
 \item{scaling}{Method for performing the scaling (and centering) of the input raw data matrix. Currently only the \code{"gridbox"} option is available.
 Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}. See details.}
 
+\item{keep.orig}{Logical flag indicating wheter to return the input data -the standardized input data matrices-
+used to perform the PCA (\code{keep.orig = TRUE}) or not (\code{FALSE}). Default to \code{FALSE}.}
+
 \item{quiet}{True to silence all the messages (but not the warnings)}
 }
 \value{
@@ -40,8 +44,9 @@ A list of \emph{N + 1} elements for multigrids, where \emph{N} is the number of 
  \itemize{
  \item \code{PCs}: A matrix of principal components, arranged in columns by decreasing importance order 
  \item \code{EOFs}: A matrix of EOFs, arranged in columns by decreasing importance order
- \item \code{orig}: The original variable in the form of a 2D-matrix. This is standardized according
- to the approach indicated in argument \code{scaling}.
+ \item \code{orig}: Either the original variable in the form of a 2D-matrix (when \code{keep.orig = TRUE}),
+ or \code{NA} when \code{keep.origin = FALSE} (the default). In both cases, the parameters used for input data standardization
+ (mean and standard deviation) are returned as attributes of this component (see the examples).
  }
  The \dQuote{order of importance} is given by the explained variance of each PC, as indicated
  in the attribute \code{"explained_variance"} as a cumulative vector.
@@ -100,7 +105,7 @@ multimember grids instead.
 data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
 multigrid <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 # In this example, we retain the PCs explaining the 99\\\% of the variance
-pca <- prinComp(multigrid, v.exp = .99)
+pca <- prinComp(multigrid, v.exp = .99, keep.orig = FALSE)
 # Note that, apart from computing the principal components and EOFs for each grid, 
 # it also returns, in the last element of the output list,
 # the results of a PC analysis of all the variables combined (named "COMBINED"):
@@ -110,9 +115,8 @@ str(pca)
 # and the geo-referencing information
 str(attributes(pca))
 # In addition, for each variable (and their combination), the scaling and centering parameters 
-# are also returned. There is one value of each parameter per grid point, although in the case 
-# of the default \\code{"field"} scaling, the value is equal for all grid points. For instance, 
-#the parameters for the specific humidity grid are:
+# are also returned. There is one value of each parameter per grid point. For instance, 
+# the parameters for the specific humidity field are:
 attributes(pca$hus850[[1]]$orig)$`scaled:center`
 attributes(pca$hus850[[1]]$orig)$`scaled:scale`
 # In addition, the (cumulative) explained variance of each PC is also returned:

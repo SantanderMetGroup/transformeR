@@ -4,7 +4,7 @@
 \alias{prinComp.}
 \title{Principal Component Analysis}
 \usage{
-prinComp.(Xsc.list, n.eofs, v.exp)
+prinComp.(Xsc.list, n.eofs, v.exp, keep.orig)
 }
 \arguments{
 \item{Xsc.list}{A nested list of (scaled and centered) input variables (as returned by \code{\link{prinComp.scale}})}
