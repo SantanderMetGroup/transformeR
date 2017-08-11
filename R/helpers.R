@@ -444,7 +444,7 @@ checkDim <- function(..., dimensions = c("var", "member", "time", "lat", "lon"))
       dimlist <- lapply(dimensions, function(x) vapply(grid.list, "getShape", integer(1), x))
       oops <- dimensions[which(!sapply(dimlist, function(x) all(x == x[1])))]
       if (length(oops) > 0) {
-            stop("Inconsistent sizes found for dimensions: ", paste(oops, collapse = ", "))
+            stop("Inconsistent sizes found for dimensions: ", paste(oops, collapse = ", "), call. = FALSE)
       }
 }
 
