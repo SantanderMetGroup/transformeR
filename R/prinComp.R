@@ -25,12 +25,12 @@
 #' @param v.exp Maximum fraction of explained variance, in the range (0,1]. Used to determine the number of EOFs 
 #' to be retained, as an alternative to \code{n.eofs}. Default to \code{NULL}. See details.
 #' @param combined.PC Logical flag. Should PCA be performed on the combined field matrix? Default to \code{TRUE} for
-#' multigrids (otherwise ignored). See the next argument for further options of the combined PCA.
-#' @param which.combine Optional. A vector of indices indicating the positions of the variables of the multigrid to be combined.
-#'  This can be either an integer vector of positions, or a character vector with the short names of the variables contained
-#'   in the multigrid (see the \code{\link{getVarNames}} helper for more details). Default to \code{NULL}, indicating
-#'   that if the input grid is a multigrid (i.e., it contains more than one variable), all the variables are used for the
-#'   combination.
+#' multigrids (otherwise ignored). All variables in the multigrid are combined, but see the next argument for further
+#'  options in predictor screening operations.
+#' @param which.var Optional. A character vector with the short names of the variables of the multigrid to be retained for PCA
+#' (use the \code{\link{getVarNames}} helper if not sure about variable names). This argument just produces a call 
+#' to \code{subsetGrid}, but it is included here for better flexibility in downscaling experiments
+#' (predictor screening...). Default to \code{NULL}, all variables included. 
 #' @param scaling Method for performing the scaling (and centering) of the input raw data matrix. Currently only the \code{"gridbox"} option is available.
 #' Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}. See details.
 #' @param keep.orig Logical flag indicating wheter to return the input data -the standardized input data matrices-
@@ -157,44 +157,32 @@
 #' 
 #' # The COMBINED PC can be constructed with a specific subset of variables of the multigrid:
 #' getVarNames(multigrid)
-#' pca.comb2 <- prinComp(multigrid, v.exp = .95, which.combine = c("hus850", "psl"))
-#' # The latter is equivalent to selecting by index position:
-#' pca.comb3 <- prinComp(multigrid, v.exp = .95, which.combine = 1:2)
-#' identical(pca.comb2, pca.comb3)
+#' pca.comb2 <- prinComp(multigrid, v.exp = .95, which.var = c("hus850", "psl"))
+#' str(pca.comb2)
 
 prinComp <- function(grid,
                      n.eofs = NULL,
                      v.exp = NULL,
                      combined.PC = TRUE,
-                     which.combine = NULL,
+                     which.var = NULL,
                      scaling = "gridbox",
                      keep.orig = FALSE,
                      quiet = FALSE) {
-    grid %<>% redim(var = TRUE, member = TRUE)
-    n.vars <- getShape(grid, "var")
-    var.names <- getVarNames(grid)
     if (!is.null(n.eofs) & !is.null(v.exp)) {
         message("NOTE: The 'v.exp' argument was ignored as 'n.eofs' has been indicated")
     }
     if (is.null(n.eofs) & is.null(v.exp)) {
         message("NOTE: All possible PCs/EOFs retained: This may result in an unnecessarily large object")
     }
+    if (!is.null(which.var)) grid %<>% subsetGrid(var = which.var) 
+    grid %<>% redim(var = TRUE, member = TRUE)
+    n.vars <- getShape(grid, "var")
+    var.names <- getVarNames(grid)
     if (isTRUE(combined.PC)) {
         if (n.vars == 1) {
             combined.PC <- FALSE
-            which.combine <- NULL
-            message("NOTE: 'combined.PC' was set to FALSE")
+            message("NOTE: Only one variable selected: 'combined.PC' was set to FALSE")
         } else {
-            which.combine <- if (is.null(which.combine)) {
-                1:n.vars
-            } else if (is.character(which.combine)) {
-                match(which.combine, var.names)
-            } else {
-                which.combine
-            }
-            if (!all(which.combine %in% 1:n.vars)) {
-                stop("Invalid 'which.combine' definition", call. = FALSE)
-            }
             n.vars <- n.vars + 1
         }
     }
@@ -241,7 +229,7 @@ prinComp <- function(grid,
     }) %>% prinComp.scale(scaling)
     # Combined PCs
     if (isTRUE(combined.PC)) {
-        Xsc.list %<>% combine.PCs(which = which.combine)
+        Xsc.list %<>% combine.PCs()
         if (!quiet) message("[", Sys.time(), "] Performing PC analysis on ", n.vars - 1, " variables plus a combination ...")
     } else {
         if (!quiet) {
@@ -313,16 +301,15 @@ prinComp.scale <- function(var.list, scaling) {
 #' @title Field Combination
 #' @description Combine different fields into one single input 2D matrix for PCA (internal of \code{\link{prinComp}})
 #' @param Xsc.list A nested list of (scaled and centered) input variables (as returned by \code{\link{prinComp.scale}})
-#' @param which Integer vector of indices of variables to produced the combined element
 #' @return A list like the input \code{Xsc.list} but with an additional element, resulting from the combination of the
 #' input fields
 #' @keywords internal
 #' @author J Bedia
 
-combine.PCs <- function(Xsc.list, which) {
+combine.PCs <- function(Xsc.list) {
     aux.list <- vector("list", length(Xsc.list[[1]]))
     for (i in 1:length(aux.list)) {
-        aux <- lapply(1:length(Xsc.list[which]), function(x) Xsc.list[which][[x]][[i]])
+        aux <- lapply(1:length(Xsc.list), function(x) Xsc.list[[x]][[i]])
         aux.list[[i]] <- do.call("cbind", aux)
     }
     Xsc.list[[length(Xsc.list) + 1]] <- aux.list

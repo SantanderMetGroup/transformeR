@@ -4,12 +4,10 @@
 \alias{combine.PCs}
 \title{Field Combination}
 \usage{
-combine.PCs(Xsc.list, which)
+combine.PCs(Xsc.list)
 }
 \arguments{
 \item{Xsc.list}{A nested list of (scaled and centered) input variables (as returned by \code{\link{prinComp.scale}})}
-
-\item{which}{Integer vector of indices of variables to produced the combined element}
 }
 \value{
 A list like the input \code{Xsc.list} but with an additional element, resulting from the combination of the

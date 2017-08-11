@@ -5,7 +5,7 @@
 \title{Principal Component Analysis of Grids}
 \usage{
 prinComp(grid, n.eofs = NULL, v.exp = NULL, combined.PC = TRUE,
-  which.combine = NULL, scaling = "gridbox", keep.orig = FALSE,
+  which.var = NULL, scaling = "gridbox", keep.orig = FALSE,
   quiet = FALSE)
 }
 \arguments{
@@ -19,13 +19,13 @@ for its determination. See next argument and details.}
 to be retained, as an alternative to \code{n.eofs}. Default to \code{NULL}. See details.}
 
 \item{combined.PC}{Logical flag. Should PCA be performed on the combined field matrix? Default to \code{TRUE} for
-multigrids (otherwise ignored). See the next argument for further options of the combined PCA.}
+multigrids (otherwise ignored). All variables in the multigrid are combined, but see the next argument for further
+ options in predictor screening operations.}
 
-\item{which.combine}{Optional. A vector of indices indicating the positions of the variables of the multigrid to be combined.
-This can be either an integer vector of positions, or a character vector with the short names of the variables contained
- in the multigrid (see the \code{\link{getVarNames}} helper for more details). Default to \code{NULL}, indicating
- that if the input grid is a multigrid (i.e., it contains more than one variable), all the variables are used for the
- combination.}
+\item{which.var}{Optional. A character vector with the short names of the variables of the multigrid to be retained for PCA
+(use the \code{\link{getVarNames}} helper if not sure about variable names). This argument just produces a call 
+to \code{subsetGrid}, but it is included here for better flexibility in downscaling experiments
+(predictor screening...). Default to \code{NULL}, all variables included.}
 
 \item{scaling}{Method for performing the scaling (and centering) of the input raw data matrix. Currently only the \code{"gridbox"} option is available.
 Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}. See details.}
@@ -150,10 +150,8 @@ names(pca.nocomb) # COMBINED is missing
 
 # The COMBINED PC can be constructed with a specific subset of variables of the multigrid:
 getVarNames(multigrid)
-pca.comb2 <- prinComp(multigrid, v.exp = .95, which.combine = c("hus850", "psl"))
-# The latter is equivalent to selecting by index position:
-pca.comb3 <- prinComp(multigrid, v.exp = .95, which.combine = 1:2)
-identical(pca.comb2, pca.comb3)
+pca.comb2 <- prinComp(multigrid, v.exp = .95, which.var = c("hus850", "psl"))
+str(pca.comb2)
 }
 \references{
 Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Probabil\'{i}sticas
