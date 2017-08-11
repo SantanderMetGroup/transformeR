@@ -280,7 +280,7 @@ getShape <- function(obj, dimension = NULL) {
       shape <- dim(obj[["Data"]])
       if (!is.null(dimension)) {
             ind <- match(dimension, dimNames)
-            if (anyNA(ind)) stop("Input 'dimension' value not found")
+            if (anyNA(ind)) message("NOTE: Some of the specified dimensions do not exist in the grid")
             shape <- shape[ind]
             dimNames <- dimNames[ind]
       }
