@@ -22,10 +22,11 @@ Retrieves a grid that is a logical subset of the input grid along its 'time' dim
 An attribute 'subset' with value 'subsetSeason' is added to the Dates slot of the output subset.
 }
 \seealso{
-Other subsetting: \code{\link{subsetDimension}},
-  \code{\link{subsetGrid}}, \code{\link{subsetMembers}},
-  \code{\link{subsetRuntime}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetVar}}, \code{\link{subsetYears}}
+Other subsetting: \code{\link{getTemporalIntersection}},
+  \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
+  \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
+  \code{\link{subsetSpatial}}, \code{\link{subsetVar}},
+  \code{\link{subsetYears}}
 }
 \author{
 J. Bedia

@@ -2,7 +2,7 @@
 % Please edit documentation in R/subsetGrid.R
 \name{subsetDimension}
 \alias{subsetDimension}
-\title{Select an arbitrary subset from a grid or multigrid along one of its dimensions}
+\title{Arbitrary grid subsetting along one of its dimensions}
 \usage{
 subsetDimension(grid, dimension = NULL, indices = NULL)
 }
@@ -22,7 +22,7 @@ A new grid object that is a logical subset of the input grid along the specified
 }
 \description{
 Create a new grid/multigrid that is a subset of the input grid 
-along the selected dimension
+along the selected dimension.
 }
 \details{
 The attribute \code{subset} will be added taking the value of the \code{dimension} parameter.
@@ -33,15 +33,17 @@ data("CFS_Iberia_tas")
 # Selection of members 3 and 7
 sub <- subsetDimension(CFS_Iberia_tas,
                    dimension = "member",
-                   indices = c(1,3))
+                   indices = 1:2)
 plotClimatology(climatology(sub), backdrop.theme = "coastline")
 }
 \seealso{
-Other subsetting: \code{\link{subsetGrid}},
-  \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
-  \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetVar}}, \code{\link{subsetYears}}
+Other subsetting: \code{\link{getTemporalIntersection}},
+  \code{\link{subsetGrid}}, \code{\link{subsetMembers}},
+  \code{\link{subsetRuntime}}, \code{\link{subsetSeason}},
+  \code{\link{subsetSpatial}}, \code{\link{subsetVar}},
+  \code{\link{subsetYears}}
 }
 \author{
 J. Bedia and S. Herrera
 }
+\keyword{internal}

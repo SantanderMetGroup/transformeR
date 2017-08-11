@@ -103,26 +103,26 @@ subsetGrid <- function(grid,
                        latLim = NULL,
                        outside = FALSE,
                        drop = TRUE) {
-      if (!is.null(var)) {
-            grid <- subsetVar(grid, var)
-      }
-      if (!is.null(runtime)) {
-            grid <- subsetRuntime(grid, runtime)
-      }
-      if (!is.null(members)) {
-            grid <- subsetMembers(grid, members)
-      }
-      if (!is.null(years)) {
-            grid <- subsetYears(grid, years)
-      }
-      if (!is.null(season)) {
-            grid <- subsetSeason(grid, season)
-      }
-      if (!is.null(lonLim) | !is.null(latLim)) {
-            grid <- subsetSpatial(grid, lonLim, latLim, outside)
-      }
-      if (isTRUE(drop)) grid <- redim(grid, drop = TRUE)
-      return(grid)
+    if (!is.null(var)) {
+        grid <- subsetVar(grid, var)
+    }
+    if (!is.null(runtime)) {
+        grid <- subsetRuntime(grid, runtime)
+    }
+    if (!is.null(members)) {
+        grid <- subsetMembers(grid, members)
+    }
+    if (!is.null(years)) {
+        grid <- subsetYears(grid, years)
+    }
+    if (!is.null(season)) {
+        grid <- subsetSeason(grid, season)
+    }
+    if (!is.null(lonLim) | !is.null(latLim)) {
+        grid <- subsetSpatial(grid, lonLim, latLim, outside)
+    }
+    if (isTRUE(drop)) grid <- redim(grid, drop = TRUE)
+    return(grid)
 }
 # End
 
@@ -148,31 +148,31 @@ subsetGrid <- function(grid,
 #' @family subsetting
 
 subsetVar <- function(grid, var) {
-      if (length(grid$Variable$varName) == 1) {
-            warning("Argument 'var' was ignored: Input grid is not a multigrid object")
-            return(grid)
-      } 
-      var.idx <- grep(paste0("^", var, "$", collapse = "|"), grid$Variable$varName)
-      if (length(var.idx) == 0) {
-            stop("Variables indicated in argument 'var' not found", call. = FALSE)
-      }
-      if (length(var.idx) < length(var)) {
-            stop("Some variables indicated in argument 'var' not found", call. = FALSE)
-      }
-      dimNames <- getDim(grid)
-      var.dim <- grep("var", dimNames)
-      grid$Data <- asub(grid$Data, idx = var.idx, dims = var.dim, drop = FALSE)                  
-      grid$Variable$varName <- grid$Variable$varName[var.idx]
-      grid$Variable$level <- grid$Variable$level[var.idx]
-      attributes(grid$Variable)[-1] <- lapply(attributes(grid$Variable)[-1], "[", var.idx)
-      grid$Dates <- if (length(var.idx) > 1L) {
-            grid$Dates[var.idx]
-      } else {
-            grid$Dates[[var.idx]]
-      }
-      attr(grid$Variable, "subset") <- "subsetVar"
-      attr(grid$Data, "dimensions") <- dimNames
-      return(grid)
+    if (length(grid$Variable$varName) == 1) {
+        warning("Argument 'var' was ignored: Input grid is not a multigrid object")
+        return(grid)
+    } 
+    var.idx <- grep(paste0("^", var, "$", collapse = "|"), grid$Variable$varName)
+    if (length(var.idx) == 0) {
+        stop("Variables indicated in argument 'var' not found", call. = FALSE)
+    }
+    if (length(var.idx) < length(var)) {
+        stop("Some variables indicated in argument 'var' not found", call. = FALSE)
+    }
+    dimNames <- getDim(grid)
+    var.dim <- grep("var", dimNames)
+    grid$Data <- asub(grid$Data, idx = var.idx, dims = var.dim, drop = FALSE)                  
+    grid$Variable$varName <- grid$Variable$varName[var.idx]
+    grid$Variable$level <- grid$Variable$level[var.idx]
+    attributes(grid$Variable)[-1] <- lapply(attributes(grid$Variable)[-1], "[", var.idx)
+    grid$Dates <- if (length(var.idx) > 1L) {
+        grid$Dates[var.idx]
+    } else {
+        grid$Dates[[var.idx]]
+    }
+    attr(grid$Variable, "subset") <- "subsetVar"
+    attr(grid$Data, "dimensions") <- dimNames
+    return(grid)
 }
 # End
 
@@ -194,24 +194,24 @@ subsetVar <- function(grid, var) {
 #' @family subsetting
 
 subsetMembers <- function(grid, members) {
-      dimNames <- attr(grid$Data, "dimensions")
-      if (length(grep("member", dimNames)) == 0) {
-            warning("Argument 'members' was ignored: Input grid is not a multimember grid object",
-                    call. = FALSE)
-            return(grid)
-      }      
-      mem.dim <- grep("member", attr(grid$Data, "dimensions"))
-      if (!all(members %in% (1:dim(grid$Data)[mem.dim]))) {
-            stop("'members' dimension subscript out of bounds", call. = FALSE)
-      }
-      grid$Data <- asub(grid$Data, idx = members, dims = mem.dim, drop = FALSE)  
-      attr(grid$Data, "dimensions") <- dimNames
-      grid$Members <- grid$Members[members]
-      if (is.list(grid$InitializationDates)) { # e.g. CFSv2 (members defined through lagged runtimes)
-            grid$InitializationDates <- grid$InitializationDates[members]
-      } 
-      if (!is.null(grid$Runtime)) attr(grid$Members, "subset") <- "subsetMembers"
-      return(grid)
+    dimNames <- attr(grid$Data, "dimensions")
+    if (length(grep("member", dimNames)) == 0) {
+        warning("Argument 'members' was ignored: Input grid is not a multimember grid object",
+                call. = FALSE)
+        return(grid)
+    }      
+    mem.dim <- grep("member", attr(grid$Data, "dimensions"))
+    if (!all(members %in% (1:dim(grid$Data)[mem.dim]))) {
+        stop("'members' dimension subscript out of bounds", call. = FALSE)
+    }
+    grid$Data <- asub(grid$Data, idx = members, dims = mem.dim, drop = FALSE)  
+    attr(grid$Data, "dimensions") <- dimNames
+    grid$Members <- grid$Members[members]
+    if (is.list(grid$InitializationDates)) { # e.g. CFSv2 (members defined through lagged runtimes)
+        grid$InitializationDates <- grid$InitializationDates[members]
+    } 
+    if (!is.null(grid$Runtime)) attr(grid$Members, "subset") <- "subsetMembers"
+    return(grid)
 }
 # End
 
@@ -231,29 +231,29 @@ subsetMembers <- function(grid, members) {
 #' @family subsetting
 
 subsetRuntime <- function(grid, runtime) {
-      dimNames <- attr(grid$Data, "dimensions")
-      if (length(grep("runtime", dimNames)) == 0) {
-            warning("Argument 'runtime' was ignored: Input grid is not a multiruntime grid object")
-            return(grid)
-      }      
-      run.dim <- grep("runtime", attr(grid$Data, "dimensions"))
-      if (!all(runtime %in% (1:dim(grid$Data)[run.dim]))) {
-            stop("'runtime' dimension subscript out of bounds")
-      }
-      grid$Data <- asub(grid$Data, idx = runtime, dims = run.dim, drop = FALSE)                  
-      mf <- FALSE
-      attr(grid$Data, "dimensions") <- if (length(dim(grid$Data)) == length(dimNames)) {
-            mf <- TRUE
-            dimNames
-      } else {
-            dimNames[-run.dim]
-      }
-      grid$Runtime <- grid$Members[runtime]
-      if (is.list(grid$InitializationDates)) { # e.g. CFSv2 (members defined through lagged runtimes)
-            grid$InitializationDates <- grid$InitializationDates[runtime]
-      } 
-      if (!is.null(grid$Runtime)) attr(grid$Runtime, "subset") <- "subsetRuntime"
-      return(grid)
+    dimNames <- attr(grid$Data, "dimensions")
+    if (length(grep("runtime", dimNames)) == 0) {
+        warning("Argument 'runtime' was ignored: Input grid is not a multiruntime grid object")
+        return(grid)
+    }      
+    run.dim <- grep("runtime", attr(grid$Data, "dimensions"))
+    if (!all(runtime %in% (1:dim(grid$Data)[run.dim]))) {
+        stop("'runtime' dimension subscript out of bounds")
+    }
+    grid$Data <- asub(grid$Data, idx = runtime, dims = run.dim, drop = FALSE)                  
+    mf <- FALSE
+    attr(grid$Data, "dimensions") <- if (length(dim(grid$Data)) == length(dimNames)) {
+        mf <- TRUE
+        dimNames
+    } else {
+        dimNames[-run.dim]
+    }
+    grid$Runtime <- grid$Members[runtime]
+    if (is.list(grid$InitializationDates)) { # e.g. CFSv2 (members defined through lagged runtimes)
+        grid$InitializationDates <- grid$InitializationDates[runtime]
+    } 
+    if (!is.null(grid$Runtime)) attr(grid$Runtime, "subset") <- "subsetRuntime"
+    return(grid)
 }
 # End
 
@@ -276,41 +276,41 @@ subsetRuntime <- function(grid, runtime) {
 #' @family subsetting
 
 subsetYears <- function(grid, years) {
-      dimNames <- getDim(grid)
-      season <- getSeason(grid)
-      all.years <- getYearsAsINDEX(grid)
-      aux.year.ind <- match(years, unique(all.years))
-      if (length(intersect(years, all.years)) == 0) {
-            stop("No valid years for subsetting. The argument \'years\' was ignored")
-      }
-      if (any(years < min(all.years) | years > max(all.years))) {
-            stop("Some subset time boundaries outside the current grid extent")
-      }
-      time.ind <- which(all.years %in% years)
-      dims <- grep("^time", dimNames)
-      if ((isTRUE(drop)) & ((getShape(grid, "time") == 1L) | length(time.ind) == 1L)) {
-            dimNames <- dimNames[-grep("^time", dimNames)]    
-      } 
-      grid$Data <- asub(grid$Data, time.ind, dims, drop = FALSE)
-      attr(grid$Data, "dimensions") <- dimNames
-      # Verification Date adjustment
-      grid$Dates <- if (any(grepl("var", dimNames))) {
-            lapply(1:length(grid$Dates), function(i) {
-                  lapply(grid$Dates[[i]], function(x) x[time.ind])})
-      } else {
-            lapply(grid$Dates, FUN = "[", time.ind)
-      }
-      # Initialization time adjustment
-      if ("member" %in% dimNames) {
-            grid$InitializationDates <- if (is.list(grid$InitializationDates)) { # Lagged runtime config
-                  lapply(grid$InitializationDates, "[", aux.year.ind)      
-            } else {
-                  grid$InitializationDates[aux.year.ind]
-            }
-      }
-      attr(grid$Dates, "subset") <- "subsetYears"
-      attr(grid$Dates, "season") <- season
-      return(grid)
+    dimNames <- getDim(grid)
+    season <- getSeason(grid)
+    all.years <- getYearsAsINDEX(grid)
+    aux.year.ind <- match(years, unique(all.years))
+    if (length(intersect(years, all.years)) == 0) {
+        stop("No valid years for subsetting. The argument \'years\' was ignored")
+    }
+    if (any(years < min(all.years) | years > max(all.years))) {
+        stop("Some subset time boundaries outside the current grid extent")
+    }
+    time.ind <- which(all.years %in% years)
+    dims <- grep("^time", dimNames)
+    if ((isTRUE(drop)) & ((getShape(grid, "time") == 1L) | length(time.ind) == 1L)) {
+        dimNames <- dimNames[-grep("^time", dimNames)]    
+    } 
+    grid$Data <- asub(grid$Data, time.ind, dims, drop = FALSE)
+    attr(grid$Data, "dimensions") <- dimNames
+    # Verification Date adjustment
+    grid$Dates <- if (any(grepl("var", dimNames))) {
+        lapply(1:length(grid$Dates), function(i) {
+            lapply(grid$Dates[[i]], function(x) x[time.ind])})
+    } else {
+        lapply(grid$Dates, FUN = "[", time.ind)
+    }
+    # Initialization time adjustment
+    if ("member" %in% dimNames) {
+        grid$InitializationDates <- if (is.list(grid$InitializationDates)) { # Lagged runtime config
+            lapply(grid$InitializationDates, "[", aux.year.ind)      
+        } else {
+            grid$InitializationDates[aux.year.ind]
+        }
+    }
+    attr(grid$Dates, "subset") <- "subsetYears"
+    attr(grid$Dates, "season") <- season
+    return(grid)
 }
 # End
 
@@ -338,73 +338,73 @@ subsetYears <- function(grid, years) {
 #' @family subsetting
 #' 
 subsetSpatial <- function(grid, lonLim, latLim, outside) {
-      dimNames <- getDim(grid)
-      if (!is.null(lonLim)) {
-            if (!is.vector(lonLim) | length(lonLim) > 2) {
-                  stop("Invalid longitudinal boundary definition")
-            }
-            lons <- getCoordinates(grid)$x
-            if (lonLim[1] < lons[1] | lonLim[1] > tail(lons, 1)) {
-                  if (outside == FALSE) {
-                        stop("Subset longitude boundaries outside the current grid extent: \n(",
+    dimNames <- getDim(grid)
+    if (!is.null(lonLim)) {
+        if (!is.vector(lonLim) | length(lonLim) > 2) {
+            stop("Invalid longitudinal boundary definition")
+        }
+        lons <- getCoordinates(grid)$x
+        if (lonLim[1] < lons[1] | lonLim[1] > tail(lons, 1)) {
+            if (outside == FALSE) {
+                stop("Subset longitude boundaries outside the current grid extent: \n(",
+                     paste(getGrid(grid)$x, collapse = ","), ")")
+            } else {
+                warning("Subset longitude boundaries outside the current grid extent: \n(",
                         paste(getGrid(grid)$x, collapse = ","), ")")
-                  } else {
-                        warning("Subset longitude boundaries outside the current grid extent: \n(",
-                          paste(getGrid(grid)$x, collapse = ","), ")")
-                  }
             }
-            lon.ind <- which.min(abs(lons - lonLim[1]))
-            if (length(lonLim) > 1) {
-                  if (lonLim[2] < lons[1] | lonLim[2] > tail(lons, 1)) {
-                        if (outside == FALSE) {
-                              stop("Subset longitude boundaries outside the current grid extent: \n(",
-                                   paste(getGrid(grid)$x, collapse = ","), ")")
-                        } else {
-                              warning("Subset longitude boundaries outside the current grid extent: \n(",
-                                      paste(getGrid(grid)$x, collapse = ","), ")")
-                        }
-                  }
-                  lon2 <- which.min(abs(lons - lonLim[2]))
-                  lon.ind <- lon.ind:lon2
+        }
+        lon.ind <- which.min(abs(lons - lonLim[1]))
+        if (length(lonLim) > 1) {
+            if (lonLim[2] < lons[1] | lonLim[2] > tail(lons, 1)) {
+                if (outside == FALSE) {
+                    stop("Subset longitude boundaries outside the current grid extent: \n(",
+                         paste(getGrid(grid)$x, collapse = ","), ")")
+                } else {
+                    warning("Subset longitude boundaries outside the current grid extent: \n(",
+                            paste(getGrid(grid)$x, collapse = ","), ")")
+                }
             }
-            grid$Data <- asub(grid$Data, idx = lon.ind, dims = grep("lon", dimNames), drop = FALSE)
-            attr(grid$Data, "dimensions") <- dimNames
-            grid$xyCoords$x <- grid$xyCoords$x[lon.ind]
-      }
-      if (!is.null(latLim)) {
-            if (!is.vector(latLim) | length(latLim) > 2) {
-                  stop("Invalid latitudinal boundary definition")
+            lon2 <- which.min(abs(lons - lonLim[2]))
+            lon.ind <- lon.ind:lon2
+        }
+        grid$Data <- asub(grid$Data, idx = lon.ind, dims = grep("lon", dimNames), drop = FALSE)
+        attr(grid$Data, "dimensions") <- dimNames
+        grid$xyCoords$x <- grid$xyCoords$x[lon.ind]
+    }
+    if (!is.null(latLim)) {
+        if (!is.vector(latLim) | length(latLim) > 2) {
+            stop("Invalid latitudinal boundary definition")
+        }
+        lats <- getCoordinates(grid)$y
+        if (latLim[1] < lats[1] | latLim[1] > tail(lats, 1)) {
+            if (outside == FALSE) {
+                stop("Subset latitude boundaries outside the current grid extent: \n(",
+                     paste(getGrid(grid)$y, collapse = ","), ")")
+            } else {
+                warning("Subset longitude boundaries outside the current grid extent: \n(",
+                        paste(getGrid(grid)$x, collapse = ","), ")")
             }
-            lats <- getCoordinates(grid)$y
-            if (latLim[1] < lats[1] | latLim[1] > tail(lats, 1)) {
-                  if (outside == FALSE) {
-                        stop("Subset latitude boundaries outside the current grid extent: \n(",
-                        paste(getGrid(grid)$y, collapse = ","), ")")
-                  } else {
-                        warning("Subset longitude boundaries outside the current grid extent: \n(",
-                          paste(getGrid(grid)$x, collapse = ","), ")")
-                  }
+        }
+        lat.ind <- which.min(abs(lats - latLim[1]))
+        if (length(latLim) > 1) {
+            if (latLim[2] < lats[1] | latLim[2] > tail(lats, 1)) {
+                if (outside == FALSE) {
+                    stop("Subset latitude boundaries outside the current grid extent: \n(",
+                         paste(getGrid(grid)$y, collapse = ","), ")")
+                } else {
+                    warning("Subset longitude boundaries outside the current grid extent: \n(",
+                            paste(getGrid(grid)$x, collapse = ","), ")")
+                }
             }
-            lat.ind <- which.min(abs(lats - latLim[1]))
-            if (length(latLim) > 1) {
-                  if (latLim[2] < lats[1] | latLim[2] > tail(lats, 1)) {
-                        if (outside == FALSE) {
-                              stop("Subset latitude boundaries outside the current grid extent: \n(",
-                              paste(getGrid(grid)$y, collapse = ","), ")")
-                        } else {
-                              warning("Subset longitude boundaries outside the current grid extent: \n(",
-                                paste(getGrid(grid)$x, collapse = ","), ")")
-                        }
-                  }
-                  lat2 <- which.min(abs(lats - latLim[2]))
-                  lat.ind <- lat.ind:lat2
-            }
-            grid$Data <- asub(grid$Data, lat.ind, grep("lat", dimNames), drop = FALSE)
-            attr(grid$Data, "dimensions") <- dimNames
-            grid$xyCoords$y <- grid$xyCoords$y[lat.ind]
-      }
-      attr(grid$xyCoords, "subset") <- "subsetSpatial"
-      return(grid)
+            lat2 <- which.min(abs(lats - latLim[2]))
+            lat.ind <- lat.ind:lat2
+        }
+        grid$Data <- asub(grid$Data, lat.ind, grep("lat", dimNames), drop = FALSE)
+        attr(grid$Data, "dimensions") <- dimNames
+        grid$xyCoords$y <- grid$xyCoords$y[lat.ind]
+    }
+    attr(grid$xyCoords, "subset") <- "subsetSpatial"
+    return(grid)
 }
 # End
 
@@ -425,34 +425,34 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
 #' @family subsetting
 
 subsetSeason <- function(grid, season = NULL) {
-      dimNames <- getDim(grid)
-      season0 <- getSeason(grid)
-      if (!all(season %in% season0)) stop("Month selection outside original season values")      
-      mon <- if (any(grepl("var", dimNames))) {
-            as.integer(substr(grid$Dates[[1]]$start, 6, 7))
-      } else {
-            as.integer(substr(grid$Dates$start, 6, 7))
-      }
-      time.ind <- which(mon %in% season)
-      grid$Data <- asub(grid$Data, time.ind, grep("time", dimNames), drop = FALSE)
-      attr(grid$Data, "dimensions") <- dimNames
-      # Verification Date adjustment
-      grid$Dates <- if (any(grepl("var", dimNames))) {
-            lapply(1:length(grid$Dates), function(i) {
-                  lapply(grid$Dates[[i]], function(x) x[time.ind])
-            })
-      } else {
-            lapply(grid$Dates, function(x) x[time.ind])
-      }
-      attr(grid$Dates, "subset") <- "subsetSeason"
-      return(grid)
+    dimNames <- getDim(grid)
+    season0 <- getSeason(grid)
+    if (!all(season %in% season0)) stop("Month selection outside original season values")      
+    mon <- if (any(grepl("var", dimNames))) {
+        as.integer(substr(grid$Dates[[1]]$start, 6, 7))
+    } else {
+        as.integer(substr(grid$Dates$start, 6, 7))
+    }
+    time.ind <- which(mon %in% season)
+    grid$Data <- asub(grid$Data, time.ind, grep("time", dimNames), drop = FALSE)
+    attr(grid$Data, "dimensions") <- dimNames
+    # Verification Date adjustment
+    grid$Dates <- if (any(grepl("var", dimNames))) {
+        lapply(1:length(grid$Dates), function(i) {
+            lapply(grid$Dates[[i]], function(x) x[time.ind])
+        })
+    } else {
+        lapply(grid$Dates, function(x) x[time.ind])
+    }
+    attr(grid$Dates, "subset") <- "subsetSeason"
+    return(grid)
 }
 # End
 
 
-#' @title Select an arbitrary subset from a grid or multigrid along one of its dimensions
+#' @title Arbitrary grid subsetting along one of its dimensions
 #' @description Create a new grid/multigrid that is a subset of the input grid 
-#' along the selected dimension
+#' along the selected dimension.
 #' @param grid The input grid to be subset. This is either a grid, as returned e.g. by \code{loadGridData} from package \pkg{loadeR} or a
 #' multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
 #' (possibly multimember multigrids) as returned e.g. by \code{loadECOMS}, from package \pkg{loadeR.ECOMS}.
@@ -465,6 +465,7 @@ subsetSeason <- function(grid, season = NULL) {
 #' The attribute \code{subset} will be added taking the value of the \code{dimension} parameter.
 #' @importFrom abind asub
 #' @author J. Bedia and S. Herrera
+#' @keywords internal
 #' @export
 #' @family subsetting
 #' @examples
@@ -473,43 +474,115 @@ subsetSeason <- function(grid, season = NULL) {
 #' # Selection of members 3 and 7
 #' sub <- subsetDimension(CFS_Iberia_tas,
 #'                    dimension = "member",
-#'                    indices = c(1,3))
+#'                    indices = 1:2)
 #' plotClimatology(climatology(sub), backdrop.theme = "coastline")
 
 subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
-      dimension <- match.arg(dimension, choices = c("runtime","var","member","time","lat","lon"),
-                             several.ok = TRUE)
-      dimNames <- getDim(grid)
-      dims <- match(dimension, dimNames)
-      if (length(dims) == 0) stop("Dimension names passed to 'dimension' not found")
-      if (!is.null(indices)) {
-            grid$Data <- asub(grid$Data, idx = indices,
-                              dims = dims,
-                              drop = FALSE)
-            attr(grid$Data, "dimensions") <- dimNames
-            if ("time" %in% dimension) {
-                  grid$Dates$start <- grid$Dates$start[indices]
-                  grid$Dates$end <- grid$Dates$end[indices]
+    dimension <- match.arg(dimension, choices = c("runtime","var","member","time","lat","lon"),
+                           several.ok = TRUE)
+    dimNames <- getDim(grid)
+    dims <- match(dimension, dimNames)
+    if (length(dims) == 0) stop("Dimension names passed to 'dimension' not found")
+    if (!is.null(indices)) {
+        grid$Data <- asub(grid$Data, idx = indices,
+                          dims = dims,
+                          drop = FALSE)
+        attr(grid$Data, "dimensions") <- dimNames
+        if ("time" %in% dimension) {
+            attr(grid$Dates, "season") <- NULL
+            var.shape <- suppressMessages(getShape(grid, "var"))
+            attrs <- attributes(grid$Dates)
+            if (is.na(var.shape) || var.shape == 1) {
+                grid$Dates %<>% lapply(., "[", indices)
+            } else {
+                grid$Dates <- lapply(1:var.shape, function(i) {
+                    grid$Dates[[i]] %<>% lapply(., "[", indices)
+                })
             }
-            if ("lon" %in% dimension) {
-                  grid$xyCoords$x <- grid$xyCoords$x[indices]
-            }
-            if ("lat" %in% dimension) {
-                  grid$xyCoords$y <- grid$xyCoords$y[indices]
-            }
-            if ("member" %in% dimension) {
-                  grid$Members <- grid$Members[indices]
-                  if (is.list(grid$InitializationDates)) { # e.g. CFSv2 (members defined through lagged runtimes)
-                        grid$InitializationDates <- grid$InitializationDates[indices]
-                  } 
-            }
-            attr(grid$Variable, "subset") <- dimension
-      } else {
-            warning("Argument 'indices' is NULL and no subsetting has been applied. The same input 'grid' is returned.",
-                    call. = FALSE)
-      }
-      return(grid)
+            mostattributes(grid$Dates) <- attrs
+            attr(grid$Dates, "season") <- getSeason(grid)
+        }
+        if ("lon" %in% dimension) {
+            grid$xyCoords$x <- grid$xyCoords$x[indices]
+        }
+        if ("lat" %in% dimension) {
+            grid$xyCoords$y <- grid$xyCoords$y[indices]
+        }
+        if ("member" %in% dimension) {
+            grid$Members <- grid$Members[indices]
+            if (is.list(grid$InitializationDates)) { # e.g. CFSv2 (members defined through lagged runtimes)
+                grid$InitializationDates <- grid$InitializationDates[indices]
+            } 
+        }
+        attr(grid$Variable, "subset") <- dimension
+    } else {
+        warning("Argument 'indices' is NULL and no subsetting has been applied. The same input 'grid' is returned.",
+                call. = FALSE)
+    }
+    return(grid)
 }
 # End
+
+
+#' @title Temporal intersection
+#' @description Takes two input grids and crops the overlapping part along time dimension
+#' @param obs First grid (typically observations, but not necessarily)
+#' @param prd Second grid (typically predictors in downscaling applications, but not necessarily)
+#' @param which.return Which subset grid should be returned, \code{obs} or \code{prd}?
+#' @return The grid indicated in \code{which.return}, encompassing the overlapping time period with the other one.
+#' @importFrom magrittr %<>% %>% 
+#' @author J Bedia
+#' @family subsetting
+#' @seealso \code{\link{checkDim}}, \code{\link{checkSeason}}, \code{\link{getYearsAsINDEX}}, \code{\link{getSeason}}, for other time dimension helpers
+#' @export
+#' @examples 
+#' data("NCEP_Iberia_psl")
+#' range(getRefDates(NCEP_Iberia_psl))
+#' data("VALUE_Iberia_tas")
+#' range(getRefDates(EOBS_Iberia_tas))
+#' # Assuming sea-level pressure field from NCEP is the predictor, and VALUE observations are the predictand,
+#' # suppose theyhave different temporal periods
+#' predictor <- subsetGrid(NCEP_Iberia_psl, years = 1987:2001, season = 1)
+#' getSeason(predictor) # January
+#' range(getYearsAsINDEX(predictor)) # period 1987-2001 
+#' predictand <- EOBS_Iberia_tas
+#' getSeason(predictand) # December-January-February (winter)
+#' range(getYearsAsINDEX(predictand)) # period 1983-2002
+#' # We often want to ensure that their time dimension matches perfectly before downscaling:
+#' try(checkDim(predictor, predictand, dimensions = "time"))
+#' # getTemporalIntersection is the solution:
+#' predictand.adj <- getTemporalIntersection(obs = predictand, prd = predictor, which.return = "obs")
+#' getSeason(predictand.adj) # January 
+#' range(getYearsAsINDEX(predictand.adj)) # 1987-2001 
+#' # In the same vein, it is often required to be done again on the predictor 
+#' predictor.adj <- getTemporalIntersection(obs = predictand, prd = predictor, which.return = "prd")
+#' checkDim(predictor.adj, predictand.adj, dimensions = "time") # perfect
+
+
+getTemporalIntersection <- function(obs, prd, which.return = c("obs", "prd")) {
+    which.return <- match.arg(which.return, choices = c("obs", "prd"))
+    obs.dates <- getRefDates(obs) %>% as.Date(tz = "GMT", format = "%Y-%m-%d")
+    prd.dates <- getRefDates(prd) %>% as.Date(tz = "GMT", format = "%Y-%m-%d")
+    auxDates <- intersect(obs.dates, prd.dates) %>% as.Date(origin = "1970-01-01", tz = "GMT", format = "%Y-%m-%d")
+    if (which.return == "obs") {
+        out <- obs
+        ind <- which(is.element(obs.dates, auxDates))
+        seas <- getSeason(prd)
+        attr(out$Dates, "season") <- NULL
+        prd <- auxDates <- NULL
+    } else {
+        out <- prd
+        ind <- which(is.element(prd.dates, auxDates))
+        seas <- getSeason(obs)
+        attr(out$Dates, "season") <- NULL
+        obs <- auxDates <- NULL
+    }
+    out %<>% subsetDimension(dimension = "time", indices = ind)
+    attr(out$Variable, "time_subset") <- "getTemporalIntersection"
+    return(out)
+}
+
+
+
 
 

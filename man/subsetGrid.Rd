@@ -96,7 +96,8 @@ getShape(sub2)
 getVarNames(sub2)
 }
 \seealso{
-Other subsetting: \code{\link{subsetDimension}},
+Other subsetting: \code{\link{getTemporalIntersection}},
+  \code{\link{subsetDimension}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
   \code{\link{subsetVar}}, \code{\link{subsetYears}}
