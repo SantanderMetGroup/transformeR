@@ -148,16 +148,17 @@ subsetGrid <- function(grid,
 #' @family subsetting
 
 subsetVar <- function(grid, var) {
-    if (length(grid$Variable$varName) == 1) {
-        warning("Argument 'var' was ignored: Input grid is not a multigrid object")
+    varnames <- getVarNames(grid)
+    if (length(varnames) == 1) {
+        message("NOTE: Variable subsetting was ignored: Input grid is not a multigrid object")
         return(grid)
     } 
-    var.idx <- grep(paste0("^", var, "$", collapse = "|"), grid$Variable$varName)
+    var.idx <- grep(paste0("^", var, "$", collapse = "|"), varnames)
     if (length(var.idx) == 0) {
-        stop("Variables indicated in argument 'var' not found", call. = FALSE)
+        stop("Variables indicated for subsetting not found", call. = FALSE)
     }
     if (length(var.idx) < length(var)) {
-        stop("Some variables indicated in argument 'var' not found", call. = FALSE)
+        stop("Some variables indicated for subsetting not found", call. = FALSE)
     }
     dimNames <- getDim(grid)
     var.dim <- grep("var", dimNames)
