@@ -1,4 +1,4 @@
-##     subsetGrid.R Select an arbitrary subset from a grid
+##     subsetGrid.R Arbitrary subsetting of grids along one or more of its dimensions
 ##
 ##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
@@ -478,12 +478,15 @@ subsetSeason <- function(grid, season = NULL) {
 #' plotClimatology(climatology(sub), backdrop.theme = "coastline")
 
 subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
-    dimension <- match.arg(dimension, choices = c("runtime","var","member","time","lat","lon"),
-                           several.ok = TRUE)
-    dimNames <- getDim(grid)
-    dims <- match(dimension, dimNames)
-    if (length(dims) == 0) stop("Dimension names passed to 'dimension' not found")
-    if (!is.null(indices)) {
+    if (is.null(indices)) {
+        message("NOTE: Argument 'indices' is NULL. Nothing was done.")
+    } else {
+        dimension <- match.arg(dimension,
+                               choices = c("runtime","var","member","time","lat","lon"),
+                               several.ok = TRUE)
+        dimNames <- getDim(grid)
+        dims <- match(dimension, dimNames)
+        if (length(dims) == 0) stop("Dimension names passed to 'dimension' not found")
         grid$Data <- asub(grid$Data, idx = indices,
                           dims = dims,
                           drop = FALSE)
@@ -493,10 +496,10 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
             var.shape <- suppressMessages(getShape(grid, "var"))
             attrs <- attributes(grid$Dates)
             if (is.na(var.shape) || var.shape == 1) {
-                grid$Dates %<>% lapply(., "[", indices)
+                grid$Dates %<>% lapply(FUN = "[", indices)
             } else {
                 grid$Dates <- lapply(1:var.shape, function(i) {
-                    grid$Dates[[i]] %<>% lapply(., "[", indices)
+                    grid$Dates[[i]] %<>% lapply(FUN = "[", indices)
                 })
             }
             mostattributes(grid$Dates) <- attrs
@@ -515,9 +518,6 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
             } 
         }
         attr(grid$Variable, "subset") <- dimension
-    } else {
-        warning("Argument 'indices' is NULL and no subsetting has been applied. The same input 'grid' is returned.",
-                call. = FALSE)
     }
     return(grid)
 }
@@ -540,8 +540,9 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
 #' range(getRefDates(NCEP_Iberia_psl))
 #' data("VALUE_Iberia_tas")
 #' range(getRefDates(EOBS_Iberia_tas))
-#' # Assuming sea-level pressure field from NCEP is the predictor, and VALUE observations are the predictand,
-#' # suppose theyhave different temporal periods
+#' # Assuming sea-level pressure field from NCEP is the predictor, 
+#' # and VALUE observations are the predictand,
+#' # suppose they have different temporal periods:
 #' predictor <- subsetGrid(NCEP_Iberia_psl, years = 1987:2001, season = 1)
 #' getSeason(predictor) # January
 #' range(getYearsAsINDEX(predictor)) # period 1987-2001 
@@ -557,7 +558,6 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
 #' # In the same vein, it is often required to be done again on the predictor 
 #' predictor.adj <- getTemporalIntersection(obs = predictand, prd = predictor, which.return = "prd")
 #' checkDim(predictor.adj, predictand.adj, dimensions = "time") # perfect
-
 
 getTemporalIntersection <- function(obs, prd, which.return = c("obs", "prd")) {
     which.return <- match.arg(which.return, choices = c("obs", "prd"))
