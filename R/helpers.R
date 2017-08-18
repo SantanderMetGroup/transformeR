@@ -58,7 +58,7 @@
 
 getGrid <- function(gridData) {
       rot <- FALSE
-      if (is.matrix(gridData$xyCoords)) {
+      if (is.data.frame(gridData$xyCoords)) {
             out <- list(x = as.numeric(gridData$xyCoords[,1]), y = as.numeric(gridData$xyCoords[,2]))
             attr(out, "type") <- "irregular"
             if (!exists("resX", attributes(gridData$xyCoords))) {
@@ -123,13 +123,13 @@ getGrid <- function(gridData) {
 
 
 getCoordinates <- function(obj) {
-    if (is.matrix(obj$xyCoords)) {
-        xy <- obj$xyCoords[ , ,drop = FALSE]
+    if (is.data.frame(obj$xyCoords)) {
+        xy <- obj$xyCoords#[ , ,drop = FALSE]
         return(xy)
     } else {
         x <- obj$xyCoords$x
         y <- obj$xyCoords$y
-        if (!is.matrix(obj$xyCoords) && exists("lon", obj$xyCoords) && exists("lat", obj$xyCoords)) {
+        if (!is.data.frame(obj$xyCoords) && exists("lon", obj$xyCoords) && exists("lat", obj$xyCoords)) {
             lon <- obj$xyCoords$lon 
             lat <- obj$xyCoords$lat
             return(list("x" = x, "y" = y, "lon" = lon, "lat" = lat))
@@ -503,7 +503,6 @@ checkSeason <- function(...) {
 #' isRegular(getGrid(EOBS_Iberia_tas))
 #' data("VALUE_Iberia_tas")
 #' isRegular(VALUE_Iberia_tas)
-
 
 isRegular <- function(grid) {
     gr <- tryCatch({getGrid(grid)}, error = function(err) {grid})

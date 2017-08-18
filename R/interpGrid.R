@@ -20,7 +20,7 @@
 #' @importFrom akima interp
 #' @importFrom abind abind
 #' @importFrom fields interp.surface.grid interp.surface
-#' @importFrom stats na.exclude
+#' @importFrom stats na.exclude setNames
 #' @param grid An input grid to be interpolated/regridded.
 #' @param new.coordinates Definition of the new grid coordinates, in the form of a list with the x and y components, in thir order.
 #' If new coordinates correspond to an irregular grid, lengths for x and y must be the same: Each position in x and y correspond to
@@ -119,7 +119,7 @@ interpGrid <- function(grid,
       lat.ind <- grep("^lat", getDim(grid))
       coords <- getCoordinates(grid)
       #Old coordinates
-      if(is.matrix(coords)){
+      if(is.data.frame(coords)){
             x <- coords[,1]
             y <- coords[,2]
             bilin.method <- "akima"
@@ -128,7 +128,7 @@ interpGrid <- function(grid,
       }else if("lon" %in% names(coords)){
             x <- coords$lon
             y <- coords$lat
-      }else if(!is.matrix(coords)){
+      }else if(!is.data.frame(coords)){
             x <- list(x = outer(coords$y*0, coords$x, FUN = "+"),
                       y = outer(coords$y, coords$x*0, FUN = "+"))$x
             y <- list(x = outer(coords$y*0, coords$x, FUN = "+"),
@@ -141,7 +141,7 @@ interpGrid <- function(grid,
             if(mess && method == "bilinear") stop("Both original and new coordinates are irregular: bilinear method is not implemented for this case")
             dimNames.ref <- c("member", "time", "loc")
             tab <- c("member", "time", "level", "loc")
-            output.coords <- cbind("x" = new.coordinates$x, "y" = new.coordinates$y)
+            output.coords <- setNames(data.frame(cbind("x" = new.coordinates$x, "y" = new.coordinates$y)), nm = c("x", "y"))
             new.resX <- 0
             new.resY <- 0
             bilin.method <- "fields"
