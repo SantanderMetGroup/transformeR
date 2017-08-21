@@ -16,34 +16,27 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #' @title Grid interpolation
-#' @description Interpolation of gridded datasets into a user-defined grid using nearest-neighbour or bilinear weights. 
+#' @description Interpolation of grids (gridded data or stations) into a user-defined grid using nearest-neighbour or bilinear weights. 
 #' @importFrom akima interp
 #' @importFrom abind abind
 #' @importFrom fields interp.surface.grid interp.surface
 #' @importFrom stats na.exclude setNames
 #' @param grid An input grid to be interpolated/regridded.
-#' @param new.coordinates Definition of the new grid coordinates, in the form of a list with the x and y components, in thir order.
-#' If new coordinates correspond to an irregular grid, lengths for x and y must be the same: Each position in x and y correspond to
+#' @param new.coordinates Definition of the new grid (or points) coordinates, in the form of a list with the x and y components, in this order.
+#' If new coordinates correspond to an irregular grid (e.g. point locations), lengths for x and y must be the same: Each position in x and y correspond to
 #' a new location (a pair of coordinates).
-#' Each component consists of a vector of length three with components \emph{from}, \emph{to} and \emph{by},
-#'  in this order, similar as the arguments passed to the \code{\link[base]{seq}} function, giving the 
-#'  westernmost, easternmost and grid cell width in the X axis and, in the same way,
-#'  the southernmost, northernmost and grid cell resolution in the Y axis. See details.
 #' @param method Method for interpolation. Currently implemented methods are either \code{"bilinear"},
 #' for bilinear interpolation, and \code{"nearest"}, for nearest-neighbor interpolation (default).
 #' @param bilin.method Algorithm chosen for bilinear interpolation. Two options available: \code{"akima"} uses \code{\link[akima]{interp}} and
-#' \code{"fields"} the \code{\link[fields]{interp.surface.grid}} algorithm. In case any missing values exist in the input data matrix, 
+#' \code{"fields"} (default) the \code{\link[fields]{interp.surface.grid}} algorithm. In case any missing values exist in the input data matrix, 
 #' the \code{"fields"} option, able to handle missing values, need to be used. Otherwise, the \code{"akima"} option performs much faster.
 #' @template templateParallelParams 
 #' @return An interpolated object preserving the structure of the input
-#' @details  In case of default definition of either x, y or both grid coordinates, the default grid
-#' is calculated taking the corners of the current grid and assuming x and y resolutions equal to 
-#' the default \code{by} argument value in function \code{\link[base]{seq}}: \emph{by = ((to - from)/(length.out - 1))}.
-#' The output has special attributes in the \code{xyCoords} element that indicate that the object
+#' @details  The output has special attributes in the \code{xyCoords} element that indicate that the object
 #'  has been interpolated. These attributes are \code{interpolation}, which indicates the method used and
 #'  \code{resX} and \code{resY}, for the grid-cell resolutions in the X and Y axes respectively.
 #'  It is also possible to pass the interpolator the grid of a previously existing grid dataset using the
-#'  \code{\link{getGrid}} method.
+#'  \code{\link{getGrid}} method. See examples.
 #' @template templateParallel
 #' @param ... Further arguments for bilinear interpolation that are passed to function \code{\link[akima]{interp}} 
 #' from package \pkg{\link[akima]{akima}}.
@@ -55,8 +48,7 @@
 #' # boreal winter (DJF) precipitation data for the Iberian Peninsula and the period 1983-2002
 #' data(EOBS_Iberia_tp)
 #' plotClimatology(climatology(EOBS_Iberia_tp))
-#' # Bilinear interpolation to domain centered in Spain using a 0.5 degree resolution 
-#' # in both X and Y axes
+#' # Bilinear interpolation to a regular grid of 0.5 degree resolution centered in the Iberian Peninsula
 #' t1 <- interpGrid(EOBS_Iberia_tp, new.coordinates = list(x = seq(-10,5,.5),
 #'                                                         y = seq(36,44,.5)),
 #'                  method = "bilinear",
@@ -65,7 +57,7 @@
 #' # New attributes indicate that the data have been interpolated:
 #' attributes(t1$xyCoords)
 #' 
-#' # Using the coordinate information of another grid
+#' # Using the coordinate information of another grid via getGrid()
 #' data(NCEP_Iberia_tp)
 #' t2 <- interpGrid(EOBS_Iberia_tp, new.coordinates = getGrid(NCEP_Iberia_tp),
 #'                  method = "nearest")
@@ -96,7 +88,7 @@
 interpGrid <- function(grid,
                        new.coordinates = list(x = NULL, y = NULL),
                        method = c("nearest", "bilinear"),
-                       bilin.method = NULL,
+                       bilin.method = "fields",
                        parallel = FALSE,
                        max.ncores = 16,
                        ncores = NULL,
