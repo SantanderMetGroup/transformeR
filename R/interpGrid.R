@@ -48,7 +48,8 @@
 #' # boreal winter (DJF) precipitation data for the Iberian Peninsula and the period 1983-2002
 #' data(EOBS_Iberia_tp)
 #' plotClimatology(climatology(EOBS_Iberia_tp))
-#' # Bilinear interpolation to a regular grid of 0.5 degree resolution centered in the Iberian Peninsula
+#' # Bilinear interpolation to a regular grid of 0.5 degree 
+#' # resolution centered in the Iberian Peninsula
 #' t1 <- interpGrid(EOBS_Iberia_tp, new.coordinates = list(x = seq(-10,5,.5),
 #'                                                         y = seq(36,44,.5)),
 #'                  method = "bilinear",
