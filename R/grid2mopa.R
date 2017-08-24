@@ -58,7 +58,7 @@ grid2mopa <- function(grid, clim.fun = list(FUN = "mean", na.rm = TRUE), crs = N
     rr <- stack(r)
   }else{
     rr <- grid2mopa0(grid = grid, clim.fun = clim.fun, 
-                     varname = grid$Variable$varName[i], crs = crs)
+                     varname = grid$Variable$varName, crs = crs)
   }
   return(rr)
 }

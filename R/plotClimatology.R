@@ -221,8 +221,17 @@ clim2sgdf <- function(clim, set.min, set.max) {
         aux <- data.frame(aux[order(-co[,2], co[,1]), ])
     } else {
         aux <- redim(grid, loc = !isRegular(grid), drop = T)$Data
-        naind <- which(!is.na(aux))
-        aux <- data.frame(as.numeric(aux[naind]))
+        if(n.mem > 1){
+              naind <- list()
+              for(i in 1:n.mem){
+                    naind[[i]] <- which(!is.na(aux[i,]), arr.ind = T)
+              }
+              naind <- Reduce(intersect, naind)
+              aux <- data.frame(t(aux[,naind]))
+        }else{
+            naind <- which(!is.na(aux), arr.ind = T)
+            aux <- data.frame(as.numeric(aux[naind]))
+        }
     }
     # Set min/max values, if provided
     if (!is.null(set.max)) aux[aux > set.max] <- set.max
