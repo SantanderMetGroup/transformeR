@@ -1,14 +1,8 @@
-transformeR 1.0.0
+transformeR 1.0.1
 =================
 
-* New option `ratio` for `localScaling` 
-* New options and improved metadata for PCA analysis: 
-   * `which.var`, allows to flexible definition of combined PCs
-   * `v.exp` and `n.eofs` now allow for different values for different grids within the input multigrid
-* Internal adaptation of several functions to transparently handle stations and grids
-* `interpGrid` has been adapted to transparently deal with rotated coordinates (RCMs) and station datasets
-* New internal helpers  
-* Other minor changes, new examples and documentation updates
+* Bug fix in attribute definition in `subsetVar` internal
+
 
 
 

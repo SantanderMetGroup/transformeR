@@ -160,12 +160,16 @@ subsetVar <- function(grid, var) {
     if (length(var.idx) < length(var)) {
         stop("Some variables indicated for subsetting not found", call. = FALSE)
     }
+    # Recovering attributes
     dimNames <- getDim(grid)
     var.dim <- grep("var", dimNames)
     grid$Data <- asub(grid$Data, idx = var.idx, dims = var.dim, drop = FALSE)                  
     grid$Variable$varName <- grid$Variable$varName[var.idx]
     grid$Variable$level <- grid$Variable$level[var.idx]
-    attributes(grid$Variable)[-1] <- lapply(attributes(grid$Variable)[-1], "[", var.idx)
+    attrs <- attributes(grid$Variable)
+    attr.ind <- which(sapply(attrs, "length") == length(varnames))
+    add.attr <- attrs[setdiff(1:length(attrs), attr.ind)]
+    attributes(grid$Variable) <- c(lapply(attrs[attr.ind], "[", var.idx), add.attr)
     grid$Dates <- if (length(var.idx) > 1L) {
         grid$Dates[var.idx]
     } else {
