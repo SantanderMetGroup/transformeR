@@ -220,16 +220,13 @@ clim2sgdf <- function(clim, set.min, set.max) {
         # Data reordering to match SpatialGrid coordinates
         aux <- data.frame(aux[order(-co[,2], co[,1]), ])
     } else {
-        aux <- redim(grid, loc = !isRegular(grid), drop = T)$Data
-        if(n.mem > 1){
-              naind <- list()
-              for(i in 1:n.mem){
-                    naind[[i]] <- which(!is.na(aux[i,]), arr.ind = T)
-              }
-              naind <- Reduce(intersect, naind)
-              aux <- data.frame(t(aux[,naind]))
-        }else{
-            naind <- which(!is.na(aux), arr.ind = T)
+        aux <- redim(grid, loc = !isRegular(grid), drop = TRUE)$Data
+        if (n.mem > 1) {
+            naind <- lapply(1:n.mem, function(i) which(!is.na(aux[i,]), arr.ind = TRUE))
+            naind <- Reduce(intersect, naind)
+            aux <- data.frame(t(aux[,naind]))
+        } else {
+            naind <- which(!is.na(aux), arr.ind = TRUE)
             aux <- data.frame(as.numeric(aux[naind]))
         }
     }
