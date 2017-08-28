@@ -97,10 +97,10 @@ bindGrid.time <- function(..., spatial.tolerance = 1e-3) {
     ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
     data.list <- NULL
     start.list <- lapply(grid.list, FUN = function(x) {
-        x$Dates$start
+        getRefDates(x)
     })
     end.list <- lapply(grid.list, FUN = function(x) {
-        x$Dates$end
+        getRefDates(x, "end")
     })
     grid.list <- NULL
     ref[["Dates"]] = list(start = do.call(c, start.list),
