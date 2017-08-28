@@ -65,29 +65,23 @@ data("VALUE_Iberia_tas")
 st_mean_clim <- climatology(VALUE_Iberia_tas)
 str(st_mean_clim)
 plotClimatology(st_mean_clim, backdrop.theme = "coastline")
-# Standar deviation of surface temperature
+# Standard deviation of surface temperature
 st_sd_clim <- climatology(VALUE_Iberia_tas, clim.fun = list(FUN = sd, na.rm = TRUE))
 plotClimatology(st_sd_clim, backdrop.theme = "coastline")
 
 # July surface temp forecast climatology
 data("CFS_Iberia_tas")
-# (Parallelization option has no effect under WinOS)
 # Aggregate all members before computing the climatology
 t_mean.clim <- climatology(CFS_Iberia_tas,
-                            by.member = FALSE,
-                            parallel = TRUE)
+                           by.member = FALSE)
 # Note the new attributes, and that time dimension is preserved as a singleton
 str(t_mean.clim$Data)
 str(t_mean.clim$Dates)
 # Compute a climatology for each member sepparately
 t_mean_9mem.clim <- climatology(CFS_Iberia_tas,
-                                  by.member = TRUE,
-                                  parallel = TRUE)
+                                by.member = TRUE)
 str(t_mean_9mem.clim$Data)
 # 9 different climatologies, one for each member
-
-# Flexible aggregation function definition:
-# See the example in help("EOBS_Iberia_tp")
 }
 \seealso{
 \code{\link{plotClimatology}}, for plotting climatologies.

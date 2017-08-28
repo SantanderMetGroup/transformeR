@@ -14,8 +14,8 @@ localScaling(grid, base = NULL, ref = NULL, clim.fun = list(FUN = "mean",
 
 \item{base}{Reference baseline whose climatology will be subtracted to the input grid. If \code{NULL} (the default),
 the climatology is directly computed from the input \code{grid} via \code{\link{climatology}}, either member-by-member
-or using the ensemble mean climatology, as specified by the \code{by.member} flag. \code{base} must NOT be climatology
- (the base climatology is internally calculated via the argument \code{clim.fun}).}
+or using the ensemble mean climatology, as specified by the \code{by.member} flag. Note that \code{base} 
+must NOT be a climatology (the base climatology is internally calculated via the argument \code{clim.fun}).}
 
 \item{ref}{Reference grid. After subtracting to grid its climatology (as defined by \code{grid.clim}), the mean
 climatology of this additional grid is added. Default to NULL, so no reference grid is used.}
@@ -136,7 +136,7 @@ plot(grid$Data[,15,15], ty = "l", ylim = c(-7.5,10))
 lines(lc.ref$Data[,,15,15], col = "blue")
 lines(lc.ref.m$Data[,,15,15], col = "red")
 
-# AN example using the "ratio" type:
+# An example using the "ratio" type:
 data("EOBS_Iberia_tp")
 grid <- subsetGrid(EOBS_Iberia_tp, years = 1999)
 base <- subsetGrid(EOBS_Iberia_tp, years = 1998)

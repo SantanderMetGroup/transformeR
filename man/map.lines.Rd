@@ -54,9 +54,11 @@ alps <- map.lines(lonLim = c(4,16), latLim = c(45,49),
 plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme = "coastline",
                 sp.layout = list(iberia, alps))
 
+\dontrun{
 # Adding a line (real data of a storm-track imported from a csv file)
 # Source: http://www.europeanwindstorms.org/
 
+# Requires the target server to be operative...
 dat <- url("http://www.europeanwindstorms.org/repository/Jeanette/Jeanette_track.csv")
 custom.coords <- read.csv(dat, header = FALSE)[ ,5:4]
 storm <- map.lines(coords = custom.coords,
@@ -65,6 +67,7 @@ storm <- map.lines(coords = custom.coords,
 plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme = "coastline",
                 sp.layout = list(storm), # Add storm track
                 scales = list(draw = TRUE)) # Add coordinate axes
+}
 }
 \seealso{
 \code{\link{plotClimatology}}, to which its output is passed.
