@@ -487,6 +487,56 @@ checkSeason <- function(...) {
 }    
 
 
+#' @title Variable name check
+#' @description Check the consistency of variable (short)names across grids/multigrids
+#' @param ... Input grids to be compared
+#' @param check.order Check if the order is consistent across input grids. This is the default. When set to
+#' \code{TRUE}, the function does not only check that the variable names match, but also that their order is the same
+#' (in case of multigrids)
+#' @return In case of inconsistency of any of the inputs grids, the function stops the execution 
+#' of the current expression, with an error message.
+#' @seealso \code{\link{getVarNames}}
+#' @author J Bedia
+#' @keywords internal
+#' @family check.helpers
+#' @export
+#' @examples 
+#' data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
+#' #' # Testing grids that contain different variables:
+#' \donttest{
+#' try(checkVarNames(NCEP_Iberia_hus850, NCEP_Iberia_psl))
+#' }
+#' # Testing multigrid contents:
+#' mg <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+#' mg1 <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_ta850, NCEP_Iberia_psl)
+#' mg2 <- makeMultiGrid(NCEP_Iberia_ta850, NCEP_Iberia_psl, NCEP_Iberia_hus850)
+#' # The input grids contains the same variables, but their ordering is different:
+#' checkVarNames(mg, mg1, mg2, check.order = FALSE) # OK
+#' # If we do check.order = TRUE (the default), it gives an error:
+#' \donttest{
+#' try(checkVarNames(mg, mg1, mg2, check.order = TRUE)) # Error
+#' }
+
+checkVarNames <- function(..., check.order = TRUE) {
+    grid.list <- list(...)
+    if (length(grid.list) == 1) {
+        message("NOTE: Only one input grid: 'checkVarNames' was skipped")   
+    } else {
+        out <- lapply(grid.list, FUN = "getVarNames")
+        lengths <- sapply(out, "length")
+        if (!all(lengths == lengths[[1]])) stop("The number of variables stored in the input grids differ")
+        if (!all(sapply(2:length(out), function(x) all(out[[x]] %in% out[[1]])))) {
+            stop("Variable names in the input grids differ")
+        }
+        if (check.order) {
+            if (!all(sapply(2:length(out), function(x) identical(out[[x]], out[[1]])))) {
+                stop("Variable ordering of the input grids differ")
+            }
+        }
+    }
+}
+
+
 #' @title Check if the input grid is regular
 #' @description Check if the coordinates in the data are regular or irregular
 #' @param grid a grid or station data, or the object returned by function \code{\link{getGrid}}

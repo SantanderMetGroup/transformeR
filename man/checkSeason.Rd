@@ -38,7 +38,8 @@ checkSeason(VALUE_Iberia_tas, VALUE_Iberia_tp)
 \seealso{
 \code{\link{getSeason}}
 
-Other check.helpers: \code{\link{checkDim}}
+Other check.helpers: \code{\link{checkDim}},
+  \code{\link{checkVarNames}}
 }
 \author{
 J Bedia
