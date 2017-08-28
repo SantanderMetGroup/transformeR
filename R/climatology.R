@@ -51,29 +51,23 @@
 #' st_mean_clim <- climatology(VALUE_Iberia_tas)
 #' str(st_mean_clim)
 #' plotClimatology(st_mean_clim, backdrop.theme = "coastline")
-#' # Standar deviation of surface temperature
+#' # Standard deviation of surface temperature
 #' st_sd_clim <- climatology(VALUE_Iberia_tas, clim.fun = list(FUN = sd, na.rm = TRUE))
 #' plotClimatology(st_sd_clim, backdrop.theme = "coastline")
 #' 
 #' # July surface temp forecast climatology
 #' data("CFS_Iberia_tas")
-#' # (Parallelization option has no effect under WinOS)
 #' # Aggregate all members before computing the climatology
 #' t_mean.clim <- climatology(CFS_Iberia_tas,
-#'                             by.member = FALSE,
-#'                             parallel = TRUE)
+#'                            by.member = FALSE)
 #' # Note the new attributes, and that time dimension is preserved as a singleton
 #' str(t_mean.clim$Data)
 #' str(t_mean.clim$Dates)
 #' # Compute a climatology for each member sepparately
 #' t_mean_9mem.clim <- climatology(CFS_Iberia_tas,
-#'                                   by.member = TRUE,
-#'                                   parallel = TRUE)
+#'                                 by.member = TRUE)
 #' str(t_mean_9mem.clim$Data)
 #' # 9 different climatologies, one for each member
-#' 
-#' # Flexible aggregation function definition:
-#' # See the example in help("EOBS_Iberia_tp")
 
 climatology <- function(grid,
                         clim.fun = list(FUN = "mean", na.rm = TRUE),
@@ -83,7 +77,7 @@ climatology <- function(grid,
                         ncores = NULL) {
       parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
       grid <- redim(grid, member = FALSE, runtime = FALSE)
-      dimNames <- attr(grid[["Data"]], "dimensions")
+      dimNames <- getDim(grid)
       ## Member aggregation 
       if (!isTRUE(by.member)) {
             grid <- memberAggregation(grid,
@@ -102,14 +96,11 @@ climatology <- function(grid,
       clim <- do.call("pply_fun", arg.list)
       message("[", Sys.time(), "] - Done.")
       clim <- abind(clim, along = -1L)
-      dimNames.aux <- c("time", dimNames[-grep("^time", dimNames)])
-      attr(clim, "dimensions") <- dimNames.aux
-      ## Dimension reordering
-      perm <- na.omit(match(c("member","time","lat","lon"), dimNames.aux))
-      clim <- aperm(clim, perm)
-      grid[["Data"]] <- unname(clim)
       ## Attributes of Data
+      dimNames <- c("time", dimNames[-grep("^time", dimNames)])
+      grid[["Data"]] <- unname(clim)
       attr(grid$Data, "dimensions") <- dimNames
+      grid %<>% redim()
       ## Date adjustment
       attr(grid$Dates, "season") <- getSeason(grid)
       grid$Dates$start <- grid$Dates$start[1]
