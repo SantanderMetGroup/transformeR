@@ -352,7 +352,7 @@ prinComp. <- function(Xsc.list, n.eofs, v.exp, keep.orig) {
                 list("PCs" = PCs, "EOFs" = EOFs, "orig" = NULL)
             } else {
                 attrs <- attributes(aux)
-                aux <- NA
+                if (!keep.orig) aux <- NA
                 mostattributes(aux) <- attrs
                 list("PCs" = PCs, "EOFs" = EOFs, "orig" = aux)
             }
