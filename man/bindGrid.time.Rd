@@ -51,12 +51,12 @@ identical(eobs1, eobs3)
 
 data("CFS_Iberia_tas")
 # We first diaggregate in various grids with different time periods
-period1 <- subsetGrid(CFS_Iberia_tas, years = 1983:1985)
-period2 <- subsetGrid(CFS_Iberia_tas, years = 1986:1988)
+period1 <- subsetGrid(CFS_Iberia_tas, years = 1983:1991)
+period2 <- subsetGrid(CFS_Iberia_tas, years = 1992:2002)
 # Then we aggregate and compare to the original data (containing the full continuous period)
 bindedGrid <- bindGrid.time(period1, period2)
-plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline")
-plotClimatology(climatology(CFS_Iberia_tas), backdrop.theme = "coastline")
+plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline", at = seq(0,17,1))
+plotClimatology(climatology(CFS_Iberia_tas), backdrop.theme = "coastline", at = seq(0,17,1))
 }
 \seealso{
 Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},

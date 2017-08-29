@@ -111,8 +111,8 @@
 #' plot(lc$Data[,,15,15], ty = 'l', ylim = c(-10,10),
 #'      xlab = "time", ylab = "Anomaly (degC)",
 #'      main = "Anomalies w.r.t. 1998")
-#' grid()
 #' abline(h = 0, lty = 2, col = "grey30")
+#' str(lc)
 #' # The anomalies are calculated on a monthly basis using the 'time.frame' argument:
 #' lc.m <- localScaling(grid = grid, base = base, time.frame = "monthly")
 #' lines(lc.m$Data[,,15,15], col = "red")
@@ -171,18 +171,19 @@ localScaling <- function(grid,
         months <- getSeason(grid)
         aux.list <- lapply(1:length(months), function(x) {
             grid1 <- subsetGrid(grid, season = months[x])
-            if (!is.null(base)) {
-                base1 <- subsetGrid(base, season = months[x])
+            base1 <- if (!is.null(base)) {
+                subsetGrid(base, season = months[x])
             } else {
-                base1 <- NULL
+                NULL
             }
-            if (!is.null(ref)) {
-                ref1 <- subsetGrid(ref, season = months[x])
+            ref1 <- if (!is.null(ref)) {
+                subsetGrid(ref, season = months[x])
             } else {
-                ref1 <- NULL
+                NULL
             }
             localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores)
         })
+        grid.list <- aux.list
         out <- do.call("bindGrid.time", aux.list)
         message("[", Sys.time(), "] - Done")
     } else if (time.frame == "daily") {

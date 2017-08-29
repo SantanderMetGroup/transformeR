@@ -115,8 +115,8 @@ lc <- localScaling(grid = grid, base = base)
 plot(lc$Data[,,15,15], ty = 'l', ylim = c(-10,10),
      xlab = "time", ylab = "Anomaly (degC)",
      main = "Anomalies w.r.t. 1998")
-grid()
 abline(h = 0, lty = 2, col = "grey30")
+str(lc)
 # The anomalies are calculated on a monthly basis using the 'time.frame' argument:
 lc.m <- localScaling(grid = grid, base = base, time.frame = "monthly")
 lines(lc.m$Data[,,15,15], col = "red")

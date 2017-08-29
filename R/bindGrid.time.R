@@ -62,13 +62,12 @@
 #' 
 #' data("CFS_Iberia_tas")
 #' # We first diaggregate in various grids with different time periods
-#' period1 <- subsetGrid(CFS_Iberia_tas, years = 1983:1985)
-#' period2 <- subsetGrid(CFS_Iberia_tas, years = 1986:1988)
+#' period1 <- subsetGrid(CFS_Iberia_tas, years = 1983:1991)
+#' period2 <- subsetGrid(CFS_Iberia_tas, years = 1992:2002)
 #' # Then we aggregate and compare to the original data (containing the full continuous period)
 #' bindedGrid <- bindGrid.time(period1, period2)
-#' plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline")
-#' plotClimatology(climatology(CFS_Iberia_tas), backdrop.theme = "coastline")
-
+#' plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline", at = seq(0,17,1))
+#' plotClimatology(climatology(CFS_Iberia_tas), backdrop.theme = "coastline", at = seq(0,17,1))
 
 bindGrid.time <- function(..., spatial.tolerance = 1e-3) {
     grid.list <- list(...)
@@ -78,7 +77,7 @@ bindGrid.time <- function(..., spatial.tolerance = 1e-3) {
     if (length(grid.list) < 2) {
         stop("The input must be a list of at least two grids")
     }
-    grid.list <- lapply(grid.list, "redim")
+    grid.list <- lapply(grid.list, "redim", var = TRUE)
     tol <- spatial.tolerance
     for (i in 2:length(grid.list)) {
         # Spatial test
@@ -103,9 +102,12 @@ bindGrid.time <- function(..., spatial.tolerance = 1e-3) {
         getRefDates(x, "end")
     })
     grid.list <- NULL
-    ref[["Dates"]] = list(start = do.call(c, start.list),
-                          end = do.call(c, end.list))
+    refdates <- list(start = do.call(c, start.list),
+                     end = do.call(c, end.list))
     attr(ref[["Data"]], "dimensions") <- dimNames
+    n.vars <- getShape(ref, "var")
+    if (n.vars > 1) refdates <- rep(list(refdates), n.vars)
+    ref[["Dates"]] <- refdates
     ref %<>% sortDim.time()
     return(ref)
 }
@@ -127,7 +129,11 @@ sortDim.time <- function(grid) {
     dates <- grid %>% getRefDates() %>% as.Date() %>% as.integer()
     ind <- sort.int(dates, index.return = TRUE)$ix
     attrs <- attributes(grid$Dates)
-    grid$Dates %<>% lapply("[", ind)
+    refdates <- list("start" = getRefDates(grid, "start"), "end" = getRefDates(grid, "end"))
+    refdates %<>% lapply("[", ind)
+    n.vars <- getShape(grid, "var")
+    if (n.vars > 1) refdates <- rep(list(refdates), n.vars)
+    grid$Dates <- refdates
     attributes(grid$Dates) <- attrs
     dimNames <- getDim(grid)
     time.ind <- grep("^time", dimNames)
