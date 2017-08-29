@@ -1,8 +1,10 @@
-transformeR 1.0.2
+transformeR 1.1.0
 =================
 
+* Modifications to `prinComp` interface
 * Minor bug fix in setting `climatology`output attributes
 * Add support to `bindGrid.time` for dealing with multiGrids
+* Add  climatologyVariogram  function for empirical variogram calculation
 * Bug fix in attribute definition in `subsetVar` internal
 
 

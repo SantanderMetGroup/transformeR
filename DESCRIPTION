@@ -22,7 +22,7 @@ Suggests:
 Type: Package
 Title: An R package for climate data manipulation and transformation
 Version: 1.0.2
-Date: 2017-08-28
+Date: 2017-08-29
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
     "Joaquin Bedia <bediaj@unican.es> [aut, cre]",
@@ -32,7 +32,8 @@ Authors@R: as.person(c(
     "Maialen Iturbide <miturbide@ifca.unican.es> [aut]"))
 BugReports: https://github.com/SantanderMetGroup/transformeR/issues
 URL: https://github.com/SantanderMetGroup/transformeR/wiki
-Description: The package implements different tools for climate data analysis, visualization and manipulation. It is a building block of the climate4R Bundle (for an overview, see the Climate Services paper in <http://www.meteo.unican.es/en/node/73360>).
+Encoding: UTF-8
+Description: Implements different tools for climate data analysis, visualization and manipulation. It is a building block of the climate4R Bundle (for an overview, see the Climate Services paper in <http://www.meteo.unican.es/en/node/73360>). 
 License: file LICENSE
 LazyData: true
 RoxygenNote: 6.0.1

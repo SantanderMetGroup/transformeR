@@ -140,8 +140,8 @@ mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
 pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(3,5))
 }
 \references{
-Gutierrez, J.M., R. Ancell, A. S. Cofiño and C. Sordo (2004). Redes Probabil\'{i}sticas
- y Neuronales en las Ciencias Atmosf\'{e}ricas. MIMAM, Spain. 279 pp.
+Gutierrez, J.M., R. Ancell, A. S. Cofiño and C. Sordo (2004). Redes Probabilisticas
+ y Neuronales en las Ciencias Atmosfericas. MIMAM, Spain. 279 pp.
   \url{http://www.meteo.unican.es/en/books/dataMiningMeteo}
 }
 \seealso{
