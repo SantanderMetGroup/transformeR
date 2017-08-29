@@ -115,9 +115,9 @@
 #' str(lc)
 #' # The anomalies are calculated on a monthly basis using the 'time.frame' argument:
 #' lc.m <- localScaling(grid = grid, base = base, time.frame = "monthly")
-#' lines(lc.m$Data[,,15,15], col = "red")
+#' lines(lc.m$Data[,,,15,15], col = "red")
 #' lc.d <- localScaling(grid = grid, base = base, time.frame = "daily")
-#' lines(lc.d$Data[,,15,15], col = "blue")
+#' lines(lc.d$Data[,,,15,15], col = "blue")
 #' legend("topleft", c("none", "monthly","daily"), title = "'time.frame'",
 #'        lty = 1, col = c(1,2,4), bty = "n")
 #'
@@ -130,7 +130,7 @@
 #' lc.ref.m <- localScaling(grid = grid, base = base, ref = ref, time.frame = "monthly")
 #' plot(grid$Data[,15,15], ty = "l", ylim = c(-7.5,10))
 #' lines(lc.ref$Data[,,15,15], col = "blue")
-#' lines(lc.ref.m$Data[,,15,15], col = "red")
+#' lines(lc.ref.m$Data[,,,15,15], col = "red")
 #' 
 #' # An example using the "ratio" type:
 #' data("EOBS_Iberia_tp")
