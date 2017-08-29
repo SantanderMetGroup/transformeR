@@ -24,23 +24,17 @@
 #'  for its determination. See next argument and details.
 #' @param v.exp Maximum fraction of explained variance, in the range (0,1]. Used to determine the number of EOFs 
 #' to be retained, as an alternative to \code{n.eofs}. Default to \code{NULL}. See details.
-#' @param combined.PC Logical flag. Should PCA be performed on the combined field matrix? Default to \code{TRUE} for
-#' multigrids (otherwise ignored). All variables in the multigrid are combined, but see the next argument for further
-#'  options in predictor screening operations.
-#' @param which.var Optional. A character vector with the short names of the variables of the multigrid to be retained for PCA
-#' (use the \code{\link{getVarNames}} helper if not sure about variable names). This argument just produces a call 
-#' to \code{subsetGrid}, but it is included here for better flexibility in downscaling experiments
-#' (predictor screening...). Default to \code{NULL}, all variables included. 
+#' @param which.combine Optional. A character vector with the short names of the variables of the multigrid used
+#' to construct 'combined' PCs (use the \code{\link{getVarNames}} helper if not sure about variable names).
 #' @param scaling Method for performing the scaling (and centering) of the input raw data matrix. Currently only the \code{"gridbox"} option is available.
 #' Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}. See details.
 #' @param keep.orig Logical flag indicating wheter to return the input data -the standardized input data matrices-
 #'  used to perform the PCA (\code{keep.orig = TRUE}) or not (\code{FALSE}). Default to \code{FALSE}.
 #' @param quiet True to silence all the messages (but not the warnings)
 
-#' @return A list of \emph{N + 1} elements for multigrids, where \emph{N} is the number of input variables used
-#'  and the last element contains the results of the combined PCA (See details). The list is named as the variables,
-#'  including the last element named \code{"COMBINED"}. In case of single grids (1 variable only), a list of length 1
-#'   (without the combined element). For each element of the list, the following objects are returned, either in the form of
+#' @return A list of \emph{N} elements for multigrids, where \emph{N} is the number of input variables used, and 
+#' \emph{N+1} if combined PCs are calculated, placed in the last place under the \code{"COMBINED"} name.
+#'  In case of single grids (1 variable only), a list of length 1  (without the combined element). For each element of the list, the following objects are returned, either in the form of
 #'   another list (1 element for each member) for multimembers, or not in the case of non multimember inputs:
 #'  \itemize{
 #'  \item \code{PCs}: A matrix of principal components, arranged in columns by decreasing importance order 
@@ -94,8 +88,8 @@
 #' \strong{Combined EOF analysis}
 #' 
 #' When dealing with multigrid data, apart from the PCA analysis performed on each variable individually,
-#' a combined analysis considering all variables together is done. This is always returned in the last element
-#' of the output list under the name \code{"COMBINED"}. The variables used for combination are controlled by the 
+#' a combined analysis considering some or all variables together can be done. This is always returned in the last element
+#' of the output list under the name \code{"COMBINED"}. The variables used for combination (if any) are controlled by the 
 #' argument \code{which.combine}. 
 #'
 #' @export
@@ -104,20 +98,27 @@
 #' @importFrom magrittr %>% %<>% 
 #' @family pca
 #' @references
-#' Guti\'{e}rrez, J.M., R. Ancell, A. S. Cofi\~{n}o and C. Sordo (2004). Redes Probabil\'{i}sticas
-#'  y Neuronales en las Ciencias Atmosf\'{e}ricas. MIMAM, Spain. 279 pp.
+#' Gutierrez, J.M., R. Ancell, A. S. Cofiño and C. Sordo (2004). Redes Probabilisticas
+#'  y Neuronales en las Ciencias Atmosfericas. MIMAM, Spain. 279 pp.
 #'   \url{http://www.meteo.unican.es/en/books/dataMiningMeteo}
 #' @author J. Bedia, M. de Felice 
 #' @examples 
 #' data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
 #' multigrid <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 #' # In this example, we retain the PCs explaining the 99\% of the variance
-#' pca <- prinComp(multigrid, v.exp = .99, keep.orig = FALSE)
+#' pca <- prinComp(multigrid, v.exp = c(.95,0.90,.90), keep.orig = FALSE)
+#' # The output is a named list with the PC's and EOFs (plus additional atttributes) for each variable
+#' # within the input grid:
+#' str(pca)
 #' # Note that, apart from computing the principal components and EOFs for each grid, 
 #' # it also returns, in the last element of the output list,
-#' # the results of a PC analysis of all the variables combined (named "COMBINED"):
+#' # the results of a PC analysis of the combined variables when which.combine is activated:
+#' pca <- prinComp(multigrid, v.exp = c(.99,.95,.90,.95),
+#'                 which.combine = c("ta850", "psl"), keep.orig = FALSE)
 #' names(pca)
 #' str(pca)
+#' # A special attribute indicates the variables used for combination
+#' attributes(pca$COMBINED)
 #' # The different attributes of the pca object provide information regarding the variables involved
 #' # and the geo-referencing information
 #' str(attributes(pca))
@@ -144,27 +145,13 @@
 #' data("CFS_Iberia_tp", "CFS_Iberia_tas")
 #' # Now the multimember multigrid is constructed
 #' mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
-#' # Use different n.eofs for each variable (will raise an error):
-#' try(pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(3,5)))
-#' ## Yes, I forgot to include the number of EOFS for the combined...
-#' pca.mm.mf <- prinComp(mm.multigrid, v.exp = .95)
-#' # Now there is a "COMBINED" element at the end of the output list
-#' str(pca.mm.mf$COMBINED)
-#' 
-#' # The construction of the COMBINED PC can be avoided setting 'combined.PC' to FALSE
-#' pca.nocomb <- prinComp(mm.multigrid, v.exp = c(.95,.90), combined.PC = FALSE)
-#' names(pca.nocomb) # COMBINED is missing
-#' 
-#' # The COMBINED PC can be constructed with a specific subset of variables of the multigrid:
-#' getVarNames(multigrid)
-#' pca.comb2 <- prinComp(multigrid, v.exp = .95, which.var = c("hus850", "psl"))
-#' str(pca.comb2)
+#' # Use different n.eofs for each variable:
+#' pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(3,5))
 
 prinComp <- function(grid,
                      n.eofs = NULL,
                      v.exp = NULL,
-                     combined.PC = TRUE,
-                     which.var = NULL,
+                     which.combine = NULL,
                      scaling = "gridbox",
                      keep.orig = FALSE,
                      quiet = FALSE) {
@@ -174,14 +161,13 @@ prinComp <- function(grid,
     if (is.null(n.eofs) & is.null(v.exp)) {
         message("NOTE: All possible PCs/EOFs retained: This may result in an unnecessarily large object")
     }
-    if (!is.null(which.var)) grid %<>% subsetGrid(var = which.var) 
     grid %<>% redim(var = TRUE, member = TRUE)
     n.vars <- getShape(grid, "var")
     var.names <- getVarNames(grid)
-    if (isTRUE(combined.PC)) {
+    if (!is.null(which.combine)) {
         if (n.vars == 1) {
-            combined.PC <- FALSE
-            message("NOTE: Only one variable selected: 'combined.PC' was set to FALSE")
+            which.combine <- NULL
+            message("NOTE: Only one variable available: 'which.combine' was set to NULL")
         } else {
             n.vars <- n.vars + 1
         }
@@ -192,14 +178,14 @@ prinComp <- function(grid,
             stop("Invalid number of EOFs selected", call. = FALSE)
         }
         if (length(n.eofs) == 1) n.eofs <- rep(n.eofs, n.vars)
-        if (length(n.eofs) != n.vars) stop("The length of 'n.eofs' and the number of variables of the input grid differ\nForgot to include the combined.PC?", call. = FALSE)
+        if (length(n.eofs) != n.vars) stop("The length of 'n.eofs' and the number of variables of the input grid differ\nForgot to include the combined PC?", call. = FALSE)
     }
     if (!is.null(v.exp)) {
         if (any(v.exp <= 0) | any(v.exp > 1)) {
             stop("The explained variance thresholds must be in the range (0,1]", call. = FALSE)
         }
         if (length(v.exp) == 1) v.exp <- rep(v.exp, n.vars)
-        if (length(v.exp) != n.vars) stop("The length of 'v.exp' and the number of variables of the input grid differ\nForgot to include the combined.PC?", call. = FALSE)
+        if (length(v.exp) != n.vars) stop("The length of 'v.exp' and the number of variables of the input grid differ\nForgot to include the combined PC?", call. = FALSE)
     }
     if (anyNA(grid$Data)) {
         stop("There are missing values in the input data array", call. = FALSE)
@@ -226,10 +212,13 @@ prinComp <- function(grid,
         lapply(1:n.mem, function(m) {
             subsetGrid(l, members = m, drop = TRUE)[["Data"]] %>% array3Dto2Dmat()
         }) 
-    }) %>% prinComp.scale(scaling)
+    }) 
+    names(Xsc.list) <- var.names
+    Xsc.list %<>% prinComp.scale(scaling)
     # Combined PCs
-    if (isTRUE(combined.PC)) {
-        Xsc.list %<>% combine.PCs()
+    if (!is.null(which.combine)) {
+        if (!all(which.combine %in% names(Xsc.list))) stop("Variables in 'which.combine' not found in the input grid", call. = FALSE)
+        Xsc.list[["COMBINED"]] <- Xsc.list[match(which.combine, names(Xsc.list))] %>% combine.PCs()
         if (!quiet) message("[", Sys.time(), "] Performing PC analysis on ", n.vars - 1, " variables plus a combination ...")
     } else {
         if (!quiet) {
@@ -244,10 +233,13 @@ prinComp <- function(grid,
     pca.list <- prinComp.(Xsc.list, n.eofs, v.exp, keep.orig) 
     Xsc.list <- NULL
     # Attributes
-    if (isTRUE(combined.PC)) var.names %<>% append("COMBINED")
     names(pca.list) <- var.names
     levs <- unname(getGridVerticalLevels(grid))
-    if (isTRUE(combined.PC)) levs %<>% append(NA)
+    if (!is.null(which.combine)) {
+        names(pca.list)[length(pca.list)] <- "COMBINED"
+        attr(pca.list[["COMBINED"]], "combined_variables") <- which.combine
+        levs %<>% append(NA)
+    }
     attr(pca.list, "level") <- levs
     attr(pca.list, "dates_start") <- getRefDates(grid)
     attr(pca.list, "dates_end") <- getRefDates(grid, which = "end")
@@ -268,9 +260,10 @@ prinComp <- function(grid,
 
 #' @title Local/Global grid scaling     
 #' @description Scale a grid prior to PCA analysis (internal of \code{prinComp})
-#' @param var.list A nested list (variables-members) of fields in the form of 2D matrices (after \code{array3Dto2Dmat})
+#' @param var.list A named nested list (variables-members) of fields in the form of 2D matrices (after \code{array3Dto2Dmat})
 #' @param scaling Character vector of scaling types (same length as \code{var.list})
-#' @return A list of the same structure as the input \code{var.list} with the scaled (and centered) fields.
+#' @return A named list of the same structure as the input \code{var.list} with the scaled (and centered) fields (the
+#' names of the elements of the list are the variable names).
 #' @details The \code{"gridbox"} scaling performs the scaling independently for each grid/station point (the mean and sd is calculated
 #' sepparately for each point). On the contrary, the \code{"field"} approach substracts the same global mean and divides by the global sd
 #' considering the whole field.
@@ -278,13 +271,13 @@ prinComp <- function(grid,
 #' @author J Bedia
 
 prinComp.scale <- function(var.list, scaling) {
-    lapply(1:length(var.list), function(i) {
+    out <- lapply(1:length(var.list), function(i) {
         if (scaling[i] == "field") {
             lapply(1:length(var.list[[i]]), function(x) {
                 mu <- mean(var.list[[i]][[x]], na.rm = TRUE)
                 sigma <- sd(var.list[[i]][[x]], na.rm = TRUE)
                 Xsc <- scale(var.list[[i]][[x]], center = rep(mu, ncol(var.list[[i]][[x]])),
-                      scale = rep(sigma, ncol(var.list[[i]][[x]])))
+                             scale = rep(sigma, ncol(var.list[[i]][[x]])))
                 attr(Xsc, "scaled:method") <- scaling[i]
                 return(Xsc)
             })
@@ -296,13 +289,15 @@ prinComp.scale <- function(var.list, scaling) {
             })
         }   
     })
+    names(out) <- names(var.list)
+    return(out)
 }    
 
 #' @title Field Combination
 #' @description Combine different fields into one single input 2D matrix for PCA (internal of \code{\link{prinComp}})
 #' @param Xsc.list A nested list of (scaled and centered) input variables (as returned by \code{\link{prinComp.scale}})
-#' @return A list like the input \code{Xsc.list} but with an additional element, resulting from the combination of the
-#' input fields
+#' @return A list of members with 2D combined scaled and centered matrices, resulting from the combination of the
+#' input fields. A special attribute \code{"combined_variables"} indicated the variables combined
 #' @keywords internal
 #' @author J Bedia
 
@@ -312,8 +307,8 @@ combine.PCs <- function(Xsc.list) {
         aux <- lapply(1:length(Xsc.list), function(x) Xsc.list[[x]][[i]])
         aux.list[[i]] <- do.call("cbind", aux)
     }
-    Xsc.list[[length(Xsc.list) + 1]] <- aux.list
-    return(Xsc.list)
+    attr(aux.list, "combined_variables") <- names(Xsc.list)
+    return(aux.list)
 }
 
 #' @title Principal Component Analysis

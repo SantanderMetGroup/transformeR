@@ -10,8 +10,8 @@ combine.PCs(Xsc.list)
 \item{Xsc.list}{A nested list of (scaled and centered) input variables (as returned by \code{\link{prinComp.scale}})}
 }
 \value{
-A list like the input \code{Xsc.list} but with an additional element, resulting from the combination of the
-input fields
+A list of members with 2D combined scaled and centered matrices, resulting from the combination of the
+input fields. A special attribute \code{"combined_variables"} indicated the variables combined
 }
 \description{
 Combine different fields into one single input 2D matrix for PCA (internal of \code{\link{prinComp}})

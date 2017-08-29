@@ -7,12 +7,13 @@
 prinComp.scale(var.list, scaling)
 }
 \arguments{
-\item{var.list}{A nested list (variables-members) of fields in the form of 2D matrices (after \code{array3Dto2Dmat})}
+\item{var.list}{A named nested list (variables-members) of fields in the form of 2D matrices (after \code{array3Dto2Dmat})}
 
 \item{scaling}{Character vector of scaling types (same length as \code{var.list})}
 }
 \value{
-A list of the same structure as the input \code{var.list} with the scaled (and centered) fields.
+A named list of the same structure as the input \code{var.list} with the scaled (and centered) fields (the
+names of the elements of the list are the variable names).
 }
 \description{
 Scale a grid prior to PCA analysis (internal of \code{prinComp})
