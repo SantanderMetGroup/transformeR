@@ -1,6 +1,6 @@
     ## grid2PCs.R Projection of a grid onto an EOF
 
-    ## Copyright (C) 2016 Santander Meteorology Group (http://www.meteo.unican.es)
+    ## Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 
     ## This program is free software: you can redistribute it and/or modify
     ## it under the terms of the GNU General Public License as published by
@@ -49,8 +49,8 @@
 
 grid2PCs <- function(prinCompObj, grid, n.pcs = NULL) {
     gridName <- getVarNames(grid)
-    if (!(gridName %in% names(prinCompObj))) {
-        stop("Input PCA object and grid name do not match", call. = FALSE)
+    if (!all(gridName %in% names(prinCompObj))) {
+        stop("Input PCA object and grid variable names do not match", call. = FALSE)
     }
     grid <- redim(grid, member = TRUE, var = FALSE, runtime = FALSE)
     dimNames <- getDim(grid)
@@ -62,7 +62,7 @@ grid2PCs <- function(prinCompObj, grid, n.pcs = NULL) {
     lat.ind <- grep("lat", dimNames)
     lon.ind <- grep("lon", dimNames)
     if (prod(dim(grid$Data)[c(lat.ind,lon.ind)]) != nrow(EOF)) {
-        stop("Incompatible array dimensions. Input grid and EOF must be in the same grid")
+        stop("Incompatible array dimensions. Input grid and EOF must be in the same grid", call. = FALSE)
     }
     if (is.null(n.pcs)) {
         n.pcs <- ncol(EOF)
