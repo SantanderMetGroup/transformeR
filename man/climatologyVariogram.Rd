@@ -22,10 +22,10 @@ Plots a semivariogram and invisibly returns the data used to construct it (semiv
 Calculate (and draw) the empirical semivariogram of a climatological grid
 }
 \details{
-The x-axis of the variogram is tyically truncated at half the maximum distance of the dataset.
+The x-axis of the variogram is tyically truncated at half the maximum distance of the dataset, so this is the default behaviour.
 
-Note that the empirical semi-variogram is used under the assumption of normality. Thus, the 
-\code{do.log} option may need to be activated for non-gaussian fields.
+Note that the empirical semivariogram is used under the assumption of normality. Thus, the 
+\code{do.log} option may be activated for non-gaussian fields.
 }
 \examples{
 data("EOBS_Iberia_tp")
@@ -37,6 +37,12 @@ tp.clim <- climatology(annual.tp)
 plotClimatology(tp.clim,
                 backdrop.theme = "countries",
                 main = "mean DJF precip (1983-2002)")
+# Visual assessment of normality                
+par(mfrow = c(1,2))
+hist(tp.clim$Data, main = "raw field")
+hist(log1p(tp.clim$Data), main = "log-transformed")
+par(mfrow = c(1,1))
+# Log transformation seems advisable
 # The empirical variogram:
 climatologyVariogram(clim = tp.clim, n.classes = 20, do.log = TRUE)
 # The number of paris of points within each distance class is

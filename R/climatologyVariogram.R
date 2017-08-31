@@ -23,10 +23,10 @@
 #' Otherwise \code{\link{log1p}} is used.
 #' @return Plots a semivariogram and invisibly returns the data used to construct it (semivariance, distance class and number
 #'  of pairs of points per distance class).
-#' @details The x-axis of the variogram is tyically truncated at half the maximum distance of the dataset.
+#' @details The x-axis of the variogram is tyically truncated at half the maximum distance of the dataset, so this is the default behaviour.
 #' 
-#' Note that the empirical semi-variogram is used under the assumption of normality. Thus, the 
-#' \code{do.log} option may need to be activated for non-gaussian fields.
+#' Note that the empirical semivariogram is used under the assumption of normality. Thus, the 
+#' \code{do.log} option may be activated for non-gaussian fields.
 #' 
 #' @author J Bedia
 #' @export
@@ -43,6 +43,12 @@
 #' plotClimatology(tp.clim,
 #'                 backdrop.theme = "countries",
 #'                 main = "mean DJF precip (1983-2002)")
+#' # Visual assessment of normality                
+#' par(mfrow = c(1,2))
+#' hist(tp.clim$Data, main = "raw field")
+#' hist(log1p(tp.clim$Data), main = "log-transformed")
+#' par(mfrow = c(1,1))
+#' # Log transformation seems advisable
 #' # The empirical variogram:
 #' climatologyVariogram(clim = tp.clim, n.classes = 20, do.log = TRUE)
 #' # The number of paris of points within each distance class is
@@ -81,10 +87,10 @@ climatologyVariogram <- function(clim, n.classes = 20, do.log = FALSE) {
         }
     }
     plot(dist.classes, semivar, ty = "b", cex = 0,
-         xlim = c(0, tail(dist.classes,1)/2),
+         xlim = c(0, tail(dist.classes,1) / 2),
          ylim = c(0, max(semivar, na.rm = TRUE)),
          ylab = "semivariance",
-         xlab = "distance classes",
+         xlab = "distance class (in grid distance units)",
          main = "Empirical climatology semivariogram")
     grid()
     text(dist.classes, semivar, n.pares, cex = .8)
