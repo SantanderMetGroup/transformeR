@@ -34,7 +34,7 @@
 #' # Example with station data
 #' data("VALUE_Iberia_tp")
 #' getShape(VALUE_Iberia_tp)
-#' # By dafault, the internal data array is converted to the time.lat-lon structure.
+#' # By default, the internal data array is converted to the time.lat-lon structure.
 #' # This is a conveninet behaviour for internal usage:
 #' getShape(redim(VALUE_Iberia_tp, member = TRUE))
 #' # Use the argument 'loc=TRUE' to avoid this behaviour:

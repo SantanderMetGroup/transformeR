@@ -44,6 +44,15 @@ getShape(y)
 # 'drop = TRUE' performs the reverse operation:
 z <- redim(b, drop = TRUE)
 getShape(z)
+
+# Example with station data
+data("VALUE_Iberia_tp")
+getShape(VALUE_Iberia_tp)
+# By default, the internal data array is converted to the time.lat-lon structure.
+# This is a conveninet behaviour for internal usage:
+getShape(redim(VALUE_Iberia_tp, member = TRUE))
+# Use the argument 'loc=TRUE' to avoid this behaviour:
+getShape(redim(VALUE_Iberia_tp, member = TRUE, loc = TRUE))
 }
 \seealso{
 Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
