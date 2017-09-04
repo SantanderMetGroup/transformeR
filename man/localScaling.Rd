@@ -97,13 +97,13 @@ data("CFS_Iberia_tas")
 a <- localScaling(CFS_Iberia_tas, by.member = FALSE)
 aa <- aggregateGrid(a, aggr.lat = f, aggr.lon = f, aggr.m = f, aggr.y = f)
 # Example, member 4 time series
-plot(as.Date(getRefDates(aa)), aa$Data[4,], ty = "o", xlab = "Date", 
+plot(as.Date(getRefDates(aa)), aa$Data[,4], ty = "o", xlab = "Date", 
      ylab = "Tmean anomaly (degC)", main = "Tmean DJF anomalies, Member 4")
 abline(h = 0, lty = 2, col = "blue")
 grid()
 b <- localScaling(CFS_Iberia_tas, by.member = TRUE) # almost identical in this case
 bb <- aggregateGrid(b, aggr.lat = f, aggr.lon = f, aggr.m = f, aggr.y = f)
-lines(as.Date(getRefDates(aa)), bb$Data[4,], col = "red", ty = "l")
+lines(as.Date(getRefDates(aa)), bb$Data[,4], col = "red", ty = "l")
 legend("bottomright", c("by.member = FALSE", "by.member = TRUE"), lty = 1, col = c(1,2))
 
 # In this example, the anomalies are calculated using a different period specifying a "base".
