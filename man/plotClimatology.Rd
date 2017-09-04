@@ -121,6 +121,7 @@ plotClimatology(climatology(VALUE_Iberia_tp), backdrop.theme = "countries")
 \seealso{
 \code{\link{climatology}} for details on climatology calculation.
  \code{\link{map.stippling}}, for adding a custom point layer on top of the map.
+ \code{\link{map.lines}}, to add lines and polygons to climatological maps
 Also see \code{\link[sp]{spplot}} in package \pkg{sp} for further information on plotting capabilities and options
 }
 \author{

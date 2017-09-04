@@ -30,6 +30,15 @@
 #' # 'drop = TRUE' performs the reverse operation:
 #' z <- redim(b, drop = TRUE)
 #' getShape(z)
+#' 
+#' # Example with station data
+#' data("VALUE_Iberia_tp")
+#' getShape(VALUE_Iberia_tp)
+#' # By dafault, the internal data array is converted to the time.lat-lon structure.
+#' # This is a conveninet behaviour for internal usage:
+#' getShape(redim(VALUE_Iberia_tp, member = TRUE))
+#' # Use the argument 'loc=TRUE' to avoid this behaviour:
+#' getShape(redim(VALUE_Iberia_tp, member = TRUE, loc = TRUE))
 
 redim <- function(grid,
                   member = TRUE,
@@ -42,8 +51,8 @@ redim <- function(grid,
       if (!"loc" %in% dimNames & loc & getShape(grid)["lon"] == 1) {
             # recover loc dimension  
             ind <- match("lat", dimNames)
-            dimNames <- c(dimNames[-c(ind,ind+1)], "loc")
-            grid$Data <- adrop(grid$Data, drop = ind+1)
+            dimNames <- c(dimNames[-c(ind,ind + 1)], "loc")
+            grid$Data <- adrop(grid$Data, drop = ind + 1)
             attr(grid$Data, "dimensions") <- dimNames
       }
       if (!drop) {
