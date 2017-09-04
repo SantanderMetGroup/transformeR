@@ -224,7 +224,7 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
         # 'time' is now the most external
         grid$Data <- unname(arr)
         attr(grid$Data, "dimensions") <- dimNames[c(grep("^time", dimNames), grep("^time", dimNames, invert = TRUE))]
-        grid <- redim(grid, member = FALSE)
+        if ("loc" %in% dimNames) grid <- redim(grid, member = FALSE, loc = TRUE)
         if (any(names(attr.all) != "dim" & names(attr.all) != "dimensions")) {
             attributes(grid$Data) <- attr.all[grep("^dim$|^dimensions$", names(attr.all), invert = TRUE)]
         }
