@@ -182,12 +182,12 @@ memberAggregation <- function(grid, aggr.mem, parallel, max.ncores, ncores) {
 
 timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, parallel, max.ncores, ncores) {
     aux.dates <- getRefDates(grid) 
-    dff <- abs(difftime(aux.dates[1], aux.dates[2], units = "hours"))
-    if (aggr.type == "DD" & dff >= 24) {
+    time.res <- getTimeResolution(grid)
+    if (aggr.type == "DD" & time.res == "DD") {
         message("Data is already daily: 'aggr.d' option was ignored.")
-    } else if (aggr.type == "MM" & dff >= 672) {
+    } else if (aggr.type == "MM" & time.res == 'MM') {
         message("Data is already monthly: 'aggr.m' option was ignored.")
-    } else if (aggr.type == "YY" & dff >= 8640) {
+    } else if (aggr.type == "YY" & time.res == 'YY') {
         message("Data is already annual: 'aggr.y' option was ignored.")
     } else {
         dimNames <- getDim(grid)
