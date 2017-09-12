@@ -73,10 +73,6 @@ grid2mopa <- function(grid, crs = NA){
 #' with the \code{mopa} package.
 #' @param grid Input grid or multigrid without member or runtime dimensions. Grid returned by function 
 #' \code{\link[transformeR]{climatology}} are also supported.
-#' @param clim.fun Function to compute the climatology (i.e. function for temporal aggregation). 
-#' This is specified as a list, indicating the name 
-#' of the aggregation function in first place (as character), and other optional arguments to be passed 
-#' to the aggregation function. Default to mean (i.e., clim.fun = list(FUN="mean",na.rm = TRUE)).
 #' @param varname Variable name of the grid
 #' @param crs Optional (Default NA). Character or object of class CRS. PROJ.4 type description of a Coordinate Reference System (map projection). 
 #' If this argument is missing, and the x coordinates are withing -360 .. 360 and the y coordinates are 
