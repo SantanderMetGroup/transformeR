@@ -785,3 +785,26 @@ typeofGrid <- function(grid) {
         "regular_grid"
     }
 }    
+
+
+
+
+
+#' @title Level depth in a list
+#' @description Level depth in a list 
+#' 
+#' @param this list
+#' 
+#' @return number of nesting lists
+#' @keywords internal
+#' @author M. Iturbide 
+listDepth <- function(this){
+      that <- this
+      i <- 0
+      while(is.list(that)){
+            i <- i + 1
+            that <- that[[1]]
+      }
+      return(i)
+}
+#end
