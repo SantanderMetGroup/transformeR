@@ -86,6 +86,11 @@
 
 makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = FALSE) {
       field.list <- list(...)
+      for(i in 1:length(field.list)){
+        if("var" %in% names(getShape(field.list[[i]])))
+          if(getShape(field.list[[i]])[["var"]] == 1)
+            field.list[[i]] <- redim(field.list[[i]], drop = T)
+      }
       if (length(field.list) == 1) {
                   field.list <- unlist(field.list, recursive = FALSE)
       }
