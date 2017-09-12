@@ -4,17 +4,11 @@
 \alias{grid2mopa0}
 \title{Transform a grid or multigrid to a set of predictors to be used for modeling}
 \usage{
-grid2mopa0(grid, clim.fun = list(FUN = "mean", na.rm = TRUE),
-  varname = "variable", crs = NA)
+grid2mopa0(grid, varname = "variable", crs = NA)
 }
 \arguments{
 \item{grid}{Input grid or multigrid without member or runtime dimensions. Grid returned by function 
 \code{\link[transformeR]{climatology}} are also supported.}
-
-\item{clim.fun}{Function to compute the climatology (i.e. function for temporal aggregation). 
-This is specified as a list, indicating the name 
-of the aggregation function in first place (as character), and other optional arguments to be passed 
-to the aggregation function. Default to mean (i.e., clim.fun = list(FUN="mean",na.rm = TRUE)).}
 
 \item{varname}{Variable name of the grid}
 

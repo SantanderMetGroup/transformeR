@@ -97,17 +97,16 @@ data("CFS_Iberia_tas")
 a <- localScaling(CFS_Iberia_tas, by.member = FALSE)
 aa <- aggregateGrid(a, aggr.lat = f, aggr.lon = f, aggr.m = f, aggr.y = f)
 # Example, member 4 time series
-plot(as.Date(getRefDates(aa)), aa$Data[,4], ty = "o", xlab = "Date", 
+plot(as.Date(getRefDates(aa)), aa$Data[4,], ty = "o", xlab = "Date", 
      ylab = "Tmean anomaly (degC)", main = "Tmean DJF anomalies, Member 4")
 abline(h = 0, lty = 2, col = "blue")
 grid()
 b <- localScaling(CFS_Iberia_tas, by.member = TRUE) # almost identical in this case
 bb <- aggregateGrid(b, aggr.lat = f, aggr.lon = f, aggr.m = f, aggr.y = f)
-lines(as.Date(getRefDates(aa)), bb$Data[,4], col = "red", ty = "l")
+lines(as.Date(getRefDates(aa)), bb$Data[4,], col = "red", ty = "l")
 legend("bottomright", c("by.member = FALSE", "by.member = TRUE"), lty = 1, col = c(1,2))
 
 # In this example, the anomalies are calculated using a different period specifying a "base".
-# Note that "base" could be also a grid of a different dataset, for instance a reanalysis
 data(EOBS_Iberia_tas)
 grid <- subsetGrid(EOBS_Iberia_tas, years = 1999:2000)
 base <- subsetGrid(EOBS_Iberia_tas, years = 1998)
@@ -145,8 +144,8 @@ fun <- list(FUN = "sum")
 # We plot the climatologies (total accumulated precip) to have a visual comparison of
 # the input grid, the grid used as base and the reference
 mg <- makeMultiGrid(climatology(grid, clim.fun = fun),
-                     climatology(base, clim.fun = fun),
-                     climatology(ref, clim.fun = fun), skip.temporal.check = TRUE)
+                    climatology(base, clim.fun = fun),
+                    climatology(ref, clim.fun = fun), skip.temporal.check = TRUE)
 plotClimatology(mg, names.attr = c("input_grid", "base", "ref"))
 # Note that for precipitation we use a scaling factor rather than an addition:
 grid.corr <- localScaling(grid = grid, base = base, ref = ref,

@@ -4,38 +4,38 @@
 \alias{grid2mopa}
 \title{Transform a grid or multigrid to a set of predictors to be used for modeling}
 \usage{
-grid2mopa(grid, clim.fun = list(FUN = "mean", na.rm = TRUE), crs = NA)
+grid2mopa(grid, crs = NA)
 }
 \arguments{
 \item{grid}{Input grid or multigrid without member or runtime dimensions. Grids returned by function 
 \code{\link[transformeR]{climatology}} are also supported.}
-
-\item{clim.fun}{Function to compute the climatology (i.e. function for temporal aggregation). 
-This is specified as a list, indicating the name 
-of the aggregation function in first place (as character), and other optional arguments to be passed 
-to the aggregation function. Default to mean (i.e., clim.fun = list(FUN="mean",na.rm = TRUE)) and
-ignored if \code{\link[transformeR]{climatology}} has been previously applied.}
 
 \item{crs}{Optional (Default NA). Character or object of class CRS. PROJ.4 type description of a Coordinate Reference System (map projection). 
 If this argument is missing, and the x coordinates are withing -360 .. 360 and the y coordinates are 
 within -90 .. 90, "+proj=longlat +datum=WGS84" is used. Also see under Details if x is a character (filename).}
 }
 \value{
-A raster for grid objects and a RasterStack for multigrids.
+A raster/RasterStack for grid objects and a list of rasters/RasterStacks for multigrids.
 }
 \description{
 Transform a grid or multigrid to collections of raster files for modeling
 with the \code{mopa} package.
 }
+\details{
+Function grid2mopa generates a raster object for each time unit in the "time" dimension, for instance, if 
+time dimension length is 12 (e.g. monthly data), a RasterStack of 12 rasters is obtained. Functions in \pkg{transformeR}
+allow to operate over the grids in order to obtain the desired temporal means (etc.) at the desired temporal resolution.
+}
 \examples{
 # A raster stack from a multigrid
-data("CFS_Iberia_tas")
-data("CFS_Iberia_tp")
-multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
-multigridaggr <- aggregateGrid(multigrid, aggr.mem = list(FUN = "mean"))
+# A raster stack from a multigrid
+data("EOBS_Iberia_tas")
+data("EOBS_Iberia_tp")
+multigrid <- makeMultiGrid(EOBS_Iberia_tas, EOBS_Iberia_tp)
+multigridaggr <- aggregateGrid(multigrid, aggr.y = list(FUN = "mean"))
 ras <- grid2mopa(multigridaggr)
 require(sp)
-spplot(ras)
+spplot(ras$rr)
 }
 \seealso{
 \code{\link[transformeR]{climatology}}; \code{\link[loadeR]{loadGridData}}
