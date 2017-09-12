@@ -229,7 +229,7 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
             attributes(grid$Data) <- attr.all[grep("^dim$|^dimensions$", names(attr.all), invert = TRUE)]
         }
         # Date adjustment
-        if (is.list(grid$Dates$start)) {
+        if (listDepth(grid$Dates)>1) {
             grid$Dates <- lapply(1:length(grid$Dates), function(x) {
                 list("start" = unname(tapply(grid$Dates[[x]]$start, INDEX = fac, FUN = min)),
                      "end" = unname(tapply(grid$Dates[[x]]$end, INDEX = fac, FUN = max)))
@@ -238,7 +238,10 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
             grid$Dates <- list("start" = unname(tapply(grid$Dates$start, INDEX = fac, FUN = min)),
                                "end" = unname(tapply(grid$Dates$end, INDEX = fac, FUN = max)))
         }
+        dimInd <- match(names(getShape(grid)), dimNames)
+        grid$Data <- aperm(grid$Data, dimInd)
         # Temporal aggregation attributes 
+        attr(grid$Data, "dimensions") <- dimNames
         attr(grid$Variable, paste0(type,"_agg_cellfun")) <- arg.list$FUN
         if (aggr.type == "YY") attr(grid$Dates, "season") <- season
     }
