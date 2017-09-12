@@ -22,42 +22,44 @@
 #' with the \code{mopa} package.
 #' @param grid Input grid or multigrid without member or runtime dimensions. Grids returned by function 
 #' \code{\link[transformeR]{climatology}} are also supported.
-#' @param clim.fun Function to compute the climatology (i.e. function for temporal aggregation). 
-#' This is specified as a list, indicating the name 
-#' of the aggregation function in first place (as character), and other optional arguments to be passed 
-#' to the aggregation function. Default to mean (i.e., clim.fun = list(FUN="mean",na.rm = TRUE)) and
-#' ignored if \code{\link[transformeR]{climatology}} has been previously applied.
 #' @param crs Optional (Default NA). Character or object of class CRS. PROJ.4 type description of a Coordinate Reference System (map projection). 
 #' If this argument is missing, and the x coordinates are withing -360 .. 360 and the y coordinates are 
 #' within -90 .. 90, "+proj=longlat +datum=WGS84" is used. Also see under Details if x is a character (filename).
-#' @return A raster for grid objects and a RasterStack for multigrids.
+#' @return A raster/RasterStack for grid objects and a list of rasters/RasterStacks for multigrids.
+#' @details Function grid2mopa generates a raster object for each time unit in the "time" dimension, for instance, if 
+#' time dimension length is 12 (e.g. monthly data), a RasterStack of 12 rasters is obtained. Functions in \pkg{transformeR}
+#' allow to operate over the grids in order to obtain the desired temporal means (etc.) at the desired temporal resolution. 
 #' @importFrom raster raster flip stack
 #' @author M. Iturbide
 #' @seealso \code{\link[transformeR]{climatology}}; \code{\link[loadeR]{loadGridData}}
 #' @export
 #' @examples
 #' # A raster stack from a multigrid
-#' data("CFS_Iberia_tas")
-#' data("CFS_Iberia_tp")
-#' multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
-#' multigridaggr <- aggregateGrid(multigrid, aggr.mem = list(FUN = "mean"))
+#' # A raster stack from a multigrid
+#' data("EOBS_Iberia_tas")
+#' data("EOBS_Iberia_tp")
+#' multigrid <- makeMultiGrid(EOBS_Iberia_tas, EOBS_Iberia_tp)
+#' multigridaggr <- aggregateGrid(multigrid, aggr.y = list(FUN = "mean"))
 #' ras <- grid2mopa(multigridaggr)
 #' require(sp)
-#' spplot(ras)
+#' spplot(ras$rr)
 
 
-
-grid2mopa <- function(grid, clim.fun = list(FUN = "mean", na.rm = TRUE), crs = NA){
+grid2mopa <- function(grid, crs = NA){
+  if("runtime" %in% getDim(grid) | "member" %in% getDim(grid)){
+        stop("runtime and member dimensions are not allowed at the moment. 
+             Use function subsetGrid in advance to apply the function")
+  }
   if("var" %in% getDim(grid)){
-    r <- list()
+    rr <- list()
     for(i in 1:getShape(grid)["var"]){
       grid1 <- subsetGrid(grid, var = grid$Variable$varName[i])
-      r[[i]] <- grid2mopa0(grid = grid1, clim.fun = clim.fun, 
+      rr[[i]] <- grid2mopa0(grid = grid1, 
                            varname = grid$Variable$varName[i], crs = crs)
     }
-    rr <- stack(r)
+     names(rr) <- grid$Variable$varName
   }else{
-    rr <- grid2mopa0(grid = grid, clim.fun = clim.fun, 
+    rr <- grid2mopa0(grid = grid, 
                      varname = grid$Variable$varName, crs = crs)
   }
   return(rr)
@@ -94,23 +96,32 @@ grid2mopa <- function(grid, clim.fun = list(FUN = "mean", na.rm = TRUE), crs = N
 #' require(sp)
 #' spplot(t.ras)
 
-grid2mopa0 <- function(grid, clim.fun = list(FUN = "mean", na.rm = TRUE), 
+grid2mopa0 <- function(grid, 
                        varname = "variable", crs = NA){
-  if(!any(names(attributes(grid$Data)) == "climatology:fun")){
-    grid <- climatology(grid, clim.fun = clim.fun)
-  }
+  # if(!any(names(attributes(grid$Data)) == "climatology:fun")){
+  #   grid <- climatology(grid, clim.fun = clim.fun)
+  # }
   grid <- redim(grid, drop = T)
+  grid <- redim(grid, runtime = FALSE, member = FALSE)
   bbox <- getGrid(grid)
   xmn <- bbox$x[1]
   xmx <- bbox$x[2]
   ymn <- bbox$y[1]
   ymx <- bbox$y[2]
-  if (length(dim(grid$Data)) != 2) stop("Grid with extra dimensions (member or runtime).
+  if (length(dim(grid$Data)) > 3) stop("Grid with extra dimensions (member or runtime).
                                          Apply function aggregateGrid to reduce dimensionality.")
-  r <- raster(grid$Data, xmn = xmn, xmx = xmx, ymn = ymn, ymx = ymx, crs = crs)
-  r@data@unit <- attr(grid$Variable, "units")
-  r@data@names <- varname
-  rr <- flip(r, direction = "y")
+  rr <- list()
+  for(i in 1:getShape(grid)["time"]){
+    r <- raster(grid$Data[i,,], xmn = xmn, xmx = xmx, ymn = ymn, ymx = ymx, crs = crs)
+    r@data@unit <- attr(grid$Variable, "units")
+    r@data@names <- varname
+    rr[[i]] <- flip(r, direction = "y")
+  }
+  if(length(rr) > 1){
+    rr <- stack(rr)
+  } else{
+    rr <- rr[[1]]
+  }
   return(rr)
 }
 
