@@ -28,10 +28,10 @@ Note that the empirical semivariogram is used under the assumption of normality.
 \code{do.log} option may be activated for non-gaussian fields.
 }
 \examples{
-data("EOBS_Iberia_tp")
+data("EOBS_Iberia_pr")
 # We compute the mean annual DJF precipitation
 aggr.fun <- list(FUN = "sum")
-annual.tp <- aggregateGrid(EOBS_Iberia_tp, aggr.m = aggr.fun, aggr.y = aggr.fun)
+annual.tp <- aggregateGrid(EOBS_Iberia_pr, aggr.m = aggr.fun, aggr.y = aggr.fun)
 # Now the winter precipitation climatology is computed
 tp.clim <- climatology(annual.tp)
 plotClimatology(tp.clim,

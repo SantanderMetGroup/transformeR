@@ -32,13 +32,13 @@
 #' getShape(z)
 #' 
 #' # Example with station data
-#' data("VALUE_Iberia_tp")
-#' getShape(VALUE_Iberia_tp)
+#' data("VALUE_Iberia_pr")
+#' getShape(VALUE_Iberia_pr)
 #' # By default, the internal data array is converted to the time.lat-lon structure.
 #' # This is a conveninet behaviour for internal usage:
-#' getShape(redim(VALUE_Iberia_tp, member = TRUE))
+#' getShape(redim(VALUE_Iberia_pr, member = TRUE))
 #' # Use the argument 'loc=TRUE' to avoid this behaviour:
-#' getShape(redim(VALUE_Iberia_tp, member = TRUE, loc = TRUE))
+#' getShape(redim(VALUE_Iberia_pr, member = TRUE, loc = TRUE))
 
 redim <- function(grid,
                   member = TRUE,

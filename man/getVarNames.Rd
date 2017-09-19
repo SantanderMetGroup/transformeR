@@ -23,12 +23,12 @@ The long name is an optional attribute of a grid (not so the short name), and it
 In this case, the function returns \code{NULL}.
 }
 \examples{
-data("CFS_Iberia_tp")
-getVarNames(CFS_Iberia_tp)
-getVarNames(CFS_Iberia_tp, "long")
+data("CFS_Iberia_pr")
+getVarNames(CFS_Iberia_pr)
+getVarNames(CFS_Iberia_pr, "long")
 ## Example with a multigrid
 data("CFS_Iberia_tas")
-mg <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
+mg <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
 getVarNames(mg)
 getVarNames(mg, "long")
 ## Example with station data

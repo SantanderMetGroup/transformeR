@@ -18,9 +18,9 @@ Check the consistency of seasons across the input grids
 }
 \examples{
 data("EOBS_Iberia_tas")
-data("EOBS_Iberia_tp")
+data("EOBS_Iberia_pr")
 grid1 <- subsetGrid(EOBS_Iberia_tas, season = 1)
-grid2 <- subsetGrid(EOBS_Iberia_tp, season = 1)
+grid2 <- subsetGrid(EOBS_Iberia_pr, season = 1)
 checkSeason(grid1, grid2) # ok, go on
 \donttest{
 try(checkSeason(grid1, grid2, EOBS_Iberia_tas)) # oops
@@ -32,8 +32,8 @@ checkSeason(agg, EOBS_Iberia_tas)
 
 #Station data
 data("VALUE_Iberia_tas")
-data("VALUE_Iberia_tp")
-checkSeason(VALUE_Iberia_tas, VALUE_Iberia_tp)
+data("VALUE_Iberia_pr")
+checkSeason(VALUE_Iberia_tas, VALUE_Iberia_pr)
 }
 \seealso{
 \code{\link{getSeason}}

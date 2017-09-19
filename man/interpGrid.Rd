@@ -68,11 +68,11 @@ Parallel computing is currently not available for Windows machines.
 
 \examples{
 # boreal winter (DJF) precipitation data for the Iberian Peninsula and the period 1983-2002
-data(EOBS_Iberia_tp)
-plotClimatology(climatology(EOBS_Iberia_tp))
+data(EOBS_Iberia_pr)
+plotClimatology(climatology(EOBS_Iberia_pr))
 # Bilinear interpolation to a regular grid of 0.5 degree 
 # resolution centered in the Iberian Peninsula
-t1 <- interpGrid(EOBS_Iberia_tp, new.coordinates = list(x = seq(-10,5,.5),
+t1 <- interpGrid(EOBS_Iberia_pr, new.coordinates = list(x = seq(-10,5,.5),
                                                         y = seq(36,44,.5)),
                  method = "bilinear",
                  bilin.method = "akima")
@@ -81,29 +81,29 @@ plotClimatology(climatology(t1), backdrop.theme = "countries")
 attributes(t1$xyCoords)
 
 # Using the coordinate information of another grid via getGrid()
-data(NCEP_Iberia_tp)
-t2 <- interpGrid(EOBS_Iberia_tp, new.coordinates = getGrid(NCEP_Iberia_tp),
+data(NCEP_Iberia_pr)
+t2 <- interpGrid(EOBS_Iberia_pr, new.coordinates = getGrid(NCEP_Iberia_pr),
                  method = "nearest")
 plotClimatology(climatology(t2), backdrop.theme = "countries")
 
 #From station data to grid
-data(VALUE_Iberia_tp)
-plotClimatology(climatology(VALUE_Iberia_tp), backdrop.theme = "countries")
-t3 <- interpGrid(VALUE_Iberia_tp, new.coordinates = getGrid(EOBS_Iberia_tp),
+data(VALUE_Iberia_pr)
+plotClimatology(climatology(VALUE_Iberia_pr), backdrop.theme = "countries")
+t3 <- interpGrid(VALUE_Iberia_pr, new.coordinates = getGrid(EOBS_Iberia_pr),
                  method = "bilinear")
 plotClimatology(climatology(t3), backdrop.theme = "countries")
 
 #From grid to station data
-t4 <- interpGrid(EOBS_Iberia_tp, new.coordinates = getGrid(VALUE_Iberia_tp),
+t4 <- interpGrid(EOBS_Iberia_pr, new.coordinates = getGrid(VALUE_Iberia_pr),
                  method = "nearest")
 plotClimatology(climatology(t4), backdrop.theme = "countries")
-t5 <- interpGrid(EOBS_Iberia_tp, 
+t5 <- interpGrid(EOBS_Iberia_pr, 
                new.coordinates = list(x = c(-6.7, -4.5, 2.5), 
                                       y = c(41.8, 40, 39)))
 plotClimatology(climatology(t5), backdrop.theme = "countries")
 
 #From grid to a single point or station
-t6 <- interpGrid(grid = EOBS_Iberia_tp, 
+t6 <- interpGrid(grid = EOBS_Iberia_pr, 
                  new.coordinates = list(x = -6.7, y = 41.8))
 str(t6$Data)
 }

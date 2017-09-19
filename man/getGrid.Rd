@@ -35,16 +35,16 @@ data("VALUE_Iberia_tas")
 str(getGrid(VALUE_Iberia_tas))
 
 # Interpolate NCEP onto the System4 grid:
-data("CFS_Iberia_tp")
-NCEP_interpolated <- interpGrid(NCEP_Iberia_hus850, getGrid(CFS_Iberia_tp), "bilinear")
+data("CFS_Iberia_pr")
+NCEP_interpolated <- interpGrid(NCEP_Iberia_hus850, getGrid(CFS_Iberia_pr), "bilinear")
 # Note the warnings because of the non-overlapping domain extents (longitudes)
 plotClimatology(climatology(NCEP_Iberia_hus850), backdrop.theme = "countries")
 plotClimatology(climatology(NCEP_interpolated), backdrop.theme = "countries")
 str(getGrid(NCEP_interpolated))
-str(getGrid(CFS_Iberia_tp))
+str(getGrid(CFS_Iberia_pr))
 
 # The other way round, using nearest neighbour interpolation:
-CFS_interpolated <- interpGrid(CFS_Iberia_tp, getGrid(NCEP_Iberia_hus850))
+CFS_interpolated <- interpGrid(CFS_Iberia_pr, getGrid(NCEP_Iberia_hus850))
 plotClimatology(climatology(CFS_interpolated), backdrop.theme = "countries")
 # In this case, the mismatch in domain extent occurs in the longitudes and latitudes
 }

@@ -142,9 +142,9 @@
 #' str(pca.mm)
 #' 
 #' # The most complex situation comes from multimember multigrids:
-#' data("CFS_Iberia_tp", "CFS_Iberia_tas")
+#' data("CFS_Iberia_pr", "CFS_Iberia_tas")
 #' # Now the multimember multigrid is constructed
-#' mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
+#' mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
 #' # Use different n.eofs for each variable:
 #' pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(3,5))
 
