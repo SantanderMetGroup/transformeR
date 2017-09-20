@@ -93,52 +93,6 @@ Performing PCA analysis on multimember multigrids may become time-consuming and 
 It is therefore advisable to avoid the use of this option for large datasets, and iterate over single
 multimember grids instead.
 }
-\examples{
-data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
-multigrid <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
-# In this example, we retain the PCs explaining the 99\\\% of the variance
-pca <- prinComp(multigrid, v.exp = c(.95,0.90,.90), keep.orig = FALSE)
-# The output is a named list with the PC's and EOFs (plus additional atttributes) for each variable
-# within the input grid:
-str(pca)
-# Note that, apart from computing the principal components and EOFs for each grid, 
-# it also returns, in the last element of the output list,
-# the results of a PC analysis of the combined variables when which.combine is activated:
-pca <- prinComp(multigrid, v.exp = c(.99,.95,.90,.95),
-                which.combine = c("ta850", "psl"), keep.orig = FALSE)
-names(pca)
-str(pca)
-# A special attribute indicates the variables used for combination
-attributes(pca$COMBINED)
-# The different attributes of the pca object provide information regarding the variables involved
-# and the geo-referencing information
-str(attributes(pca))
-# In addition, for each variable (and their combination), the scaling and centering parameters 
-# are also returned. There is one value of each parameter per grid point. For instance, 
-# the parameters for the specific humidity field are:
-attributes(pca$hus850[[1]]$orig)$`scaled:center`
-attributes(pca$hus850[[1]]$orig)$`scaled:scale`
-# In addition, the (cumulative) explained variance of each PC is also returned:
-vexp <- attributes(pca$hus850[[1]])$explained_variance
-# The classical "scree plot":
-barplot(1-vexp, names.arg = paste("PC",1:length(vexp)), las = 2, 
-        ylab = "Fraction of unexplained variance")
-
-# This is an example using a multimember object:
-data("CFS_Iberia_hus850")
-# In this case we retain the first 5 EOFs:
-pca.mm <- prinComp(CFS_Iberia_hus850, n.eofs = 5) 
-# Note that now the results of the PCA for the variable are a named list, with the results 
-# for each member sepparately considered
-str(pca.mm)
-
-# The most complex situation comes from multimember multigrids:
-data("CFS_Iberia_pr", "CFS_Iberia_tas")
-# Now the multimember multigrid is constructed
-mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
-# Use different n.eofs for each variable:
-pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(3,5))
-}
 \references{
 Gutierrez, J.M., R. Ancell, A. S. Cofiño and C. Sordo (2004). Redes Probabilisticas
  y Neuronales en las Ciencias Atmosfericas. MIMAM, Spain. 279 pp.
