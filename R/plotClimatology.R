@@ -146,7 +146,7 @@ plotClimatology <- function(grid, backdrop.theme = "none", set.min = NULL, set.m
         if (is.null(arg.list[["sp.layout"]])) {
             arg.list[["sp.layout"]] <- list(l1)
         } else {
-            arg.list[["sp.layout"]][[length(arg.list[["sp.layout"]]) + 1]] <- l1
+           arg.list[["sp.layout"]][[length(arg.list[["sp.layout"]]) + 1]] <- list(l1)
         } 
     }
     ## Default colorbar 
