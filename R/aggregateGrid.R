@@ -229,7 +229,7 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
             attributes(grid$Data) <- attr.all[grep("^dim$|^dimensions$", names(attr.all), invert = TRUE)]
         }
         # Date adjustment
-        if (listDepth(grid$Dates)>1) {
+        if (listDepth(grid$Dates) > 1) {
             grid$Dates <- lapply(1:length(grid$Dates), function(x) {
                 list("start" = unname(tapply(grid$Dates[[x]]$start, INDEX = fac, FUN = min)),
                      "end" = unname(tapply(grid$Dates[[x]]$end, INDEX = fac, FUN = max)))
