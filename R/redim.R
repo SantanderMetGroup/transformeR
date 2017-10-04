@@ -48,12 +48,18 @@ redim <- function(grid,
                   drop = FALSE) {
       stopifnot(is.logical(member) | is.logical(runtime) | is.logical(drop))
       dimNames <- getDim(grid)
-      if (!"loc" %in% dimNames & loc & getShape(grid)["lon"] == 1) {
-            # recover loc dimension  
-            ind <- match("lat", dimNames)
-            dimNames <- c(dimNames[-c(ind,ind + 1)], "loc")
-            grid$Data <- adrop(grid$Data, drop = ind + 1)
-            attr(grid$Data, "dimensions") <- dimNames
+      if (loc) {
+           if (!any(getDim(grid) == "time")) {
+                 dimNames <- c(dimNames, "loc")
+                 grid$Data <- unname(abind(grid$Data, NULL, along = 2)) 
+                 attr(grid$Data, "dimensions") <- dimNames
+           } else if (!"loc" %in% dimNames & getShape(grid)["lon"] == 1) {
+                  # recover loc dimension  
+                  ind <- match("lat", dimNames)
+                  dimNames <- c(dimNames[-c(ind,ind + 1)], "loc")
+                  grid$Data <- adrop(grid$Data, drop = ind + 1)
+                  attr(grid$Data, "dimensions") <- dimNames
+           } 
       }
       if (!drop) {
             if ("loc" %in% dimNames & !loc) {
