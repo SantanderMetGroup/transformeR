@@ -199,21 +199,21 @@ subsetVar <- function(grid, var) {
 #' @family subsetting
 
 subsetMembers <- function(grid, members) {
-    dimNames <- attr(grid$Data, "dimensions")
+    dimNames <- getDim(grid)
     if (length(grep("member", dimNames)) == 0) {
         warning("Argument 'members' was ignored: Input grid is not a multimember grid object",
                 call. = FALSE)
         return(grid)
     }      
-    mem.dim <- grep("member", attr(grid$Data, "dimensions"))
-    if (!all(members %in% (1:dim(grid$Data)[mem.dim]))) {
+    mem.dim <- grep("member", dimNames)
+    if (!all(members %in% (1:getShape(grid, "member")))) {
         stop("'members' dimension subscript out of bounds", call. = FALSE)
     }
     grid$Data <- asub(grid$Data, idx = members, dims = mem.dim, drop = FALSE)  
     attr(grid$Data, "dimensions") <- dimNames
     grid$Members <- grid$Members[members]
     if (is.list(grid$InitializationDates)) { # e.g. CFSv2 (members defined through lagged runtimes)
-        grid$InitializationDates <- grid$InitializationDates[members]
+            grid$InitializationDates <- grid$InitializationDates[members]
     } 
     if (!is.null(grid$Runtime)) attr(grid$Members, "subset") <- "subsetMembers"
     return(grid)
