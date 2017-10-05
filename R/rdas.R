@@ -552,9 +552,10 @@ NULL
 #' \code{loginUDG("username", "pasword")}\cr 
 #' 
 #' 
-#' \code{NCEP_Iberia_pr <- loadECOMS(dataset = "NCEP_reanalysis1",
-#' var = "pr", years = years, lonLim = lonLim, latLim = latLim, season = season,
-#' time = "DD", aggr.d = "mean")}
+#' \code{NCEP_Iberia_pr <- loadGridData(
+#' dataset = "http://meteo.unican.es/tds5/dodsC/ncepReanalysis1/ncepReanalysis1_4xDaily.ncml", 
+#' var = "prate", years = years, lonLim = lonLim, latLim = latLim, 
+#' season = season, time = "DD", aggr.d = "mean")}
 #' 
 #' 
 #' @format A grid
