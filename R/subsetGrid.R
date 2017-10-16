@@ -433,7 +433,7 @@ subsetSeason <- function(grid, season = NULL) {
     dimNames <- getDim(grid)
     season0 <- getSeason(grid)
     if (!all(season %in% season0)) stop("Month selection outside original season values")      
-    mon <- if (any(grepl("var", dimNames))) {
+    mon <- if (listDepth(grid$Dates) > 1) {
         as.integer(substr(grid$Dates[[1]]$start, 6, 7))
     } else {
         as.integer(substr(grid$Dates$start, 6, 7))
@@ -442,7 +442,7 @@ subsetSeason <- function(grid, season = NULL) {
     grid$Data <- asub(grid$Data, time.ind, grep("time", dimNames), drop = FALSE)
     attr(grid$Data, "dimensions") <- dimNames
     # Verification Date adjustment
-    grid$Dates <- if (any(grepl("var", dimNames))) {
+    grid$Dates <- if (listDepth(grid$Dates) > 1) {
         lapply(1:length(grid$Dates), function(i) {
             lapply(grid$Dates[[i]], function(x) x[time.ind])
         })
