@@ -96,11 +96,14 @@ getShape(sub2)
 getVarNames(sub2)
 }
 \seealso{
-Other subsetting: \code{\link{getTemporalIntersection}},
+Other subsetting: \code{\link{convert2bin}},
+  \code{\link{filterNA}},
+  \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetVar}}, \code{\link{subsetYears}}
+  \code{\link{subsetVar}}, \code{\link{subsetYears}},
+  \code{\link{train2test}}
 }
 \author{
 J. Bedia, M. Iturbide

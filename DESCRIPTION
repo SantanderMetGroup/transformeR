@@ -8,6 +8,7 @@ Imports:
     graphics,
     grDevices,
     magrittr,
+    matlab,
     parallel,
     RcppEigen,
     sp,

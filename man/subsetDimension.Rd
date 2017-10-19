@@ -37,11 +37,13 @@ sub <- subsetDimension(CFS_Iberia_tas,
 plotClimatology(climatology(sub), backdrop.theme = "coastline")
 }
 \seealso{
-Other subsetting: \code{\link{getTemporalIntersection}},
+Other subsetting: \code{\link{convert2bin}},
+  \code{\link{filterNA}},
+  \code{\link{getTemporalIntersection}},
   \code{\link{subsetGrid}}, \code{\link{subsetMembers}},
   \code{\link{subsetRuntime}}, \code{\link{subsetSeason}},
   \code{\link{subsetSpatial}}, \code{\link{subsetVar}},
-  \code{\link{subsetYears}}
+  \code{\link{subsetYears}}, \code{\link{train2test}}
 }
 \author{
 J. Bedia and S. Herrera
