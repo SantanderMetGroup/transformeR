@@ -41,7 +41,7 @@
 #' getShape(new.datasets2$grid.train)
 #' getShape(new.datasets2$grid.test)
 
-train2test <- function(grid, spliting.size = c(3/4,1/4), only.index = FALSE) {
+train2test <- function(grid, splitting.size = c(3/4,1/4), only.index = FALSE) {
   ind.train <- sample(1:getShape(grid,dimension = "time"),size = floor(spliting.size[1]*getShape(grid,dimension = "time")),replace = FALSE)
   ind.test  <- setdiff(1:getShape(grid,dimension = "time"),ind.train)
   if (only.index) {

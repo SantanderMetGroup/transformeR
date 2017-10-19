@@ -7,11 +7,11 @@
 convert2bin(x, threshold = 0.5, partial = FALSE)
 }
 \arguments{
+\item{x}{The input grid to be converted to binary. It can be an object or a matrix/array.}
+
 \item{threshold}{Upon or equal the threshold the grid values turn to 1, whereas below it turns to 0. Default is 0.5.}
 
 \item{partial}{If TRUE, only values below the threshold will turn to 0 and the others will remain with their original grid real value. Default is FALSE.}
-
-\item{grid}{The input grid to be converted to binary. It can be an object or a matrix/array.}
 }
 \value{
 A new grid object with binary values

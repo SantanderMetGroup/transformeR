@@ -7,23 +7,24 @@
 estandarize(grid, dataset, grid.ref = NULL)
 }
 \arguments{
-\item{grid}{Is a grid object to be estandarized as returned from \code{link[downscaleR]{prepare_predictors}} or \code{link[downscaleR]{prepare_newdata}}, depending if it is a "train" or a "test" dataset, respectively.}
+\item{grid}{Is a grid object to be estandarized as returned from \code{\link[downscaleR]{prepare_predictors}} or \code{\link[downscaleR]{prepare_newdata}}, depending if it is a "train" or a "test" dataset, respectively.}
 
 \item{dataset}{Indicates if the data is going to be used as a "train" or "test" dataset. There is no default option.}
 
-\item{grid.ref}{If the grid is a "test" dataset the this parameter is the grid object of the "train" dataset as returned from \code{link[downscaleR]{prepare_predictors}}.}
+\item{grid.ref}{If the grid is a "test" dataset then this parameter is the grid object of the "train" dataset as returned from \code{\link[downscaleR]{prepare_predictors}}.}
 }
 \value{
 A new grid object with estandarized values.
 }
 \description{
-Estandarize all given variables of a dataset to 0 mean and 1 unit standard deviatoin. If the input dataset if a dataset used for test or validation then it is standarized by the train mean and standard deviatoins.
+Estandarize all given variables of a dataset to 0 mean and 1 unit standard deviation. If the input dataset if a dataset used for test or validation then it is standarized by the train mean and standard deviations.
 }
 \details{
-The function estandarizes via the internal R function \code{\link[base]{scale}}.
+The function estandarizes via the base R function \code{\link[base]{scale}}.
 }
 \examples{
 # Loading data
+library(downscaleR)
 x <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 x <- subsetGrid(x, years = 1985:1995)
 y <- VALUE_Iberia_tp

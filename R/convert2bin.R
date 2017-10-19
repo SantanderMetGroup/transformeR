@@ -17,7 +17,7 @@
 
 #' @title Convert grid values to a binary variable
 #' @description Convert a real variable into a binary variable (i.e., 0 or 1) filtering by a threshold. 
-#' @param grid The input grid to be converted to binary. It can be an object or a matrix/array.
+#' @param x The input grid to be converted to binary. It can be an object or a matrix/array.
 #' @param threshold Upon or equal the threshold the grid values turn to 1, whereas below it turns to 0. Default is 0.5.
 #' @param partial If TRUE, only values below the threshold will turn to 0 and the others will remain with their original grid real value. Default is FALSE.
 #' @return A new grid object with binary values

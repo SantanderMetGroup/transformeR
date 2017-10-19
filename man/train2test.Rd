@@ -4,14 +4,14 @@
 \alias{train2test}
 \title{Splits a dataset into a train and a test dataset}
 \usage{
-train2test(grid, spliting.size = c(3/4, 1/4), only.index = FALSE)
+train2test(grid, splitting.size = c(3/4, 1/4), only.index = FALSE)
 }
 \arguments{
 \item{grid}{The dataset to be splitted.}
 
-\item{only.index}{If TRUE, returns a list containing both the index of the train data and the test data. If FALSE, returns the both indexes and the new train and test datasets generated. Default is FALSE.}
-
 \item{splitting.size}{A numeric vector of two coordinates indicating the fraction that goes to the train dataset (first coordinate) and to the test dataset (second coordinate). Default is c(3/4,1/4).}
+
+\item{only.index}{If TRUE, returns a list containing both the index of the train data and the test data. If FALSE, returns the both indexes and the new train and test datasets generated. Default is FALSE.}
 }
 \value{
 Depends on the parameter "only.index". A list containing: two grid objects (train and test datasets), and two index vectors (train and test index)
