@@ -32,7 +32,7 @@
 #' pca2 <- prinComp(multigrid, n.eofs = 9)
 #' names(pca2)
 #' # EOFs for temperature 850mb
-#' plotEOF(pca2, "ta850", backdrop.theme = "coastline")
+#' plotEOF(pca2, "air850", backdrop.theme = "coastline")
 
 plotEOF <- function(prinCompObj, var = NULL, member = 1, n.eofs = NULL, ...) {
     arg.list <- list(...)

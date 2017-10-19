@@ -136,10 +136,10 @@ lines(lc.ref$Data[,,15,15], col = "blue")
 lines(lc.ref.m$Data[,,,15,15], col = "red")
 
 # An example using the "ratio" type:
-data("EOBS_Iberia_tp")
-grid <- subsetGrid(EOBS_Iberia_tp, years = 1999)
-base <- subsetGrid(EOBS_Iberia_tp, years = 1998)
-ref <- subsetGrid(EOBS_Iberia_tp, years = 2000)
+data("EOBS_Iberia_pr")
+grid <- subsetGrid(EOBS_Iberia_pr, years = 1999)
+base <- subsetGrid(EOBS_Iberia_pr, years = 1998)
+ref <- subsetGrid(EOBS_Iberia_pr, years = 2000)
 fun <- list(FUN = "sum")
 # We plot the climatologies (total accumulated precip) to have a visual comparison of
 # the input grid, the grid used as base and the reference

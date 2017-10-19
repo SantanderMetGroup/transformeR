@@ -9,12 +9,10 @@ Iberian Peninsula (DJF, 1983-2002).}
 \url{http://www.meteo.unican.es/ecoms-udg}
 }
 \description{
-This R data object was obtained from the ECOMS-UDG server 
-(\url{http://www.meteo.unican.es/ecoms-udg}, 
-log in is requiered, see \code{\link[loadeR]{loginUDG}}) 
-by means of function \code{\link[loadeR.ECOMS]{loadECOMS}} 
-(package \href{https://github.com/SantanderMetGroup/loadeR.ECOMS}{\code{loadeR.ECOMS}}) 
-in the following manner:
+This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
+log in is requiered, 
+see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
+(package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
 
 \code{years <- 1983:2002}\cr 
 \code{season <- c(12,1,2)}\cr 
@@ -25,9 +23,10 @@ in the following manner:
 \code{loginUDG("username", "pasword")}\cr 
 
 
-\code{NCEP_Iberia_psl <- loadECOMS(dataset = "NCEP_reanalysis1",
-var = "psl", years = years, lonLim = lonLim, latLim = latLim, season = season,
-time = "DD", aggr.d = "mean")}
+\code{NCEP_Iberia_psl <- loadGridData(
+dataset = "http://meteo.unican.es/tds5/dodsC/ncepReanalysis1/ncepReanalysis1_4xDaily.ncml", 
+var = "slp", years = years, lonLim = lonLim, latLim = latLim, 
+season = season, time = "DD", aggr.d = "mean")}
 }
 \examples{
 data(NCEP_Iberia_psl)

@@ -109,8 +109,8 @@ plotClimatology(mg,
                 scales = list(draw = TRUE))                
 
 # Station data:
-data("VALUE_Iberia_tp")
-plotClimatology(climatology(VALUE_Iberia_tp), backdrop.theme = "countries")
+data("VALUE_Iberia_pr")
+plotClimatology(climatology(VALUE_Iberia_pr), backdrop.theme = "countries")
 }
 \references{
 \itemize{

@@ -84,8 +84,8 @@ plotClimatology(climatology(sub), tol = 0.005, contour = TRUE,
                 backdrop.theme = "coastline")
 ## Example 2 - Subsetting a multimember multigrid by variables
 # Multimember multigrid creation
-data("CFS_Iberia_tp", "CFS_Iberia_hus850")
-mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp, CFS_Iberia_hus850)
+data("CFS_Iberia_pr", "CFS_Iberia_hus850")
+mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr, CFS_Iberia_hus850)
 # Extracting just minimum temperature
 sub1 <- subsetGrid(mm.mf, var = "tas", members = 1:4)
 plotClimatology(climatology(sub1, by.member = TRUE), backdrop.theme = "coastline")

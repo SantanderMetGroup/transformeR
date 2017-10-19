@@ -61,8 +61,9 @@
 #' }
 #'    
 #' @importFrom abind abind
-#' @importFrom sp spplot SpatialGridDataFrame SpatialPointsDataFrame GridTopology
+#' @importFrom sp spplot SpatialGridDataFrame SpatialPointsDataFrame GridTopology SpatialPoints
 #' @importFrom grDevices colorRampPalette
+#' 
 #' 
 #' @export
 #' 
@@ -126,8 +127,8 @@
 #'                 scales = list(draw = TRUE))                
 #' 
 #' # Station data:
-#' data("VALUE_Iberia_tp")
-#' plotClimatology(climatology(VALUE_Iberia_tp), backdrop.theme = "countries")
+#' data("VALUE_Iberia_pr")
+#' plotClimatology(climatology(VALUE_Iberia_pr), backdrop.theme = "countries")
 
 
 
@@ -146,7 +147,7 @@ plotClimatology <- function(grid, backdrop.theme = "none", set.min = NULL, set.m
         if (is.null(arg.list[["sp.layout"]])) {
             arg.list[["sp.layout"]] <- list(l1)
         } else {
-            arg.list[["sp.layout"]][[length(arg.list[["sp.layout"]]) + 1]] <- l1
+           arg.list[["sp.layout"]][[length(arg.list[["sp.layout"]]) + 1]] <- list(l1)
         } 
     }
     ## Default colorbar 

@@ -25,16 +25,16 @@ so equal array shapes do not entail full temporal/spatial consistency.
 }
 \examples{
 data("VALUE_Iberia_tas")
-data("VALUE_Iberia_tp")
-checkDim(VALUE_Iberia_tas, VALUE_Iberia_tp) # ok, go on
+data("VALUE_Iberia_pr")
+checkDim(VALUE_Iberia_tas, VALUE_Iberia_pr) # ok, go on
 data("EOBS_Iberia_tas")
-data("EOBS_Iberia_tp")
-checkDim(EOBS_Iberia_tas, EOBS_Iberia_tp) # ok, go on
+data("EOBS_Iberia_pr")
+checkDim(EOBS_Iberia_tas, EOBS_Iberia_pr) # ok, go on
 data("NCEP_Iberia_psl")
-try(checkDim(EOBS_Iberia_tas, EOBS_Iberia_tp, NCEP_Iberia_psl)) # inconsistent dimensions
+try(checkDim(EOBS_Iberia_tas, EOBS_Iberia_pr, NCEP_Iberia_psl)) # inconsistent dimensions
 data("CFS_Iberia_tas")
 try(checkDim(NCEP_Iberia_psl, CFS_Iberia_tas, dimensions = "member")) 
-checkDim(VALUE_Iberia_tas, VALUE_Iberia_tp) # ok, go on
+checkDim(VALUE_Iberia_tas, VALUE_Iberia_pr) # ok, go on
 }
 \seealso{
 \code{\link{getShape}}

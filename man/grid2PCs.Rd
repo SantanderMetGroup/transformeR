@@ -37,6 +37,8 @@ NCEP_psl_PCAobject <- prinComp(NCEP_Iberia_psl, v.exp = .95)
 data("CFS_Iberia_psl")
 # Need to be in the same spatial coordinates
 CFS_psl_grid <- interpGrid(CFS_Iberia_psl, new.coordinates = getGrid(NCEP_Iberia_psl))
+# Need to have the same short name of the variable
+CFS_psl_grid$Variable$varName <- "slp"
 CFSv2_PCs <- grid2PCs(NCEP_psl_PCAobject, grid = CFS_psl_grid)
 str(CFSv2_PCs)
 }

@@ -42,16 +42,16 @@
 #' str(getGrid(VALUE_Iberia_tas))
 #' 
 #' # Interpolate NCEP onto the System4 grid:
-#' data("CFS_Iberia_tp")
-#' NCEP_interpolated <- interpGrid(NCEP_Iberia_hus850, getGrid(CFS_Iberia_tp), "bilinear")
+#' data("CFS_Iberia_pr")
+#' NCEP_interpolated <- interpGrid(NCEP_Iberia_hus850, getGrid(CFS_Iberia_pr), "bilinear")
 #' # Note the warnings because of the non-overlapping domain extents (longitudes)
 #' plotClimatology(climatology(NCEP_Iberia_hus850), backdrop.theme = "countries")
 #' plotClimatology(climatology(NCEP_interpolated), backdrop.theme = "countries")
 #' str(getGrid(NCEP_interpolated))
-#' str(getGrid(CFS_Iberia_tp))
+#' str(getGrid(CFS_Iberia_pr))
 #' 
 #' # The other way round, using nearest neighbour interpolation:
-#' CFS_interpolated <- interpGrid(CFS_Iberia_tp, getGrid(NCEP_Iberia_hus850))
+#' CFS_interpolated <- interpGrid(CFS_Iberia_pr, getGrid(NCEP_Iberia_hus850))
 #' plotClimatology(climatology(CFS_interpolated), backdrop.theme = "countries")
 #' # In this case, the mismatch in domain extent occurs in the longitudes and latitudes
  
@@ -425,16 +425,16 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
 #' @author J Bedia
 #' @examples 
 #' data("VALUE_Iberia_tas")
-#' data("VALUE_Iberia_tp")
-#' checkDim(VALUE_Iberia_tas, VALUE_Iberia_tp) # ok, go on
+#' data("VALUE_Iberia_pr")
+#' checkDim(VALUE_Iberia_tas, VALUE_Iberia_pr) # ok, go on
 #' data("EOBS_Iberia_tas")
-#' data("EOBS_Iberia_tp")
-#' checkDim(EOBS_Iberia_tas, EOBS_Iberia_tp) # ok, go on
+#' data("EOBS_Iberia_pr")
+#' checkDim(EOBS_Iberia_tas, EOBS_Iberia_pr) # ok, go on
 #' data("NCEP_Iberia_psl")
-#' try(checkDim(EOBS_Iberia_tas, EOBS_Iberia_tp, NCEP_Iberia_psl)) # inconsistent dimensions
+#' try(checkDim(EOBS_Iberia_tas, EOBS_Iberia_pr, NCEP_Iberia_psl)) # inconsistent dimensions
 #' data("CFS_Iberia_tas")
 #' try(checkDim(NCEP_Iberia_psl, CFS_Iberia_tas, dimensions = "member")) 
-#' checkDim(VALUE_Iberia_tas, VALUE_Iberia_tp) # ok, go on
+#' checkDim(VALUE_Iberia_tas, VALUE_Iberia_pr) # ok, go on
 
 
 checkDim <- function(..., dimensions = c("var", "member", "time", "lat", "lon")) {
@@ -461,9 +461,9 @@ checkDim <- function(..., dimensions = c("var", "member", "time", "lat", "lon"))
 #' @export
 #' @examples 
 #' data("EOBS_Iberia_tas")
-#' data("EOBS_Iberia_tp")
+#' data("EOBS_Iberia_pr")
 #' grid1 <- subsetGrid(EOBS_Iberia_tas, season = 1)
-#' grid2 <- subsetGrid(EOBS_Iberia_tp, season = 1)
+#' grid2 <- subsetGrid(EOBS_Iberia_pr, season = 1)
 #' checkSeason(grid1, grid2) # ok, go on
 #' \donttest{
 #' try(checkSeason(grid1, grid2, EOBS_Iberia_tas)) # oops
@@ -475,8 +475,8 @@ checkDim <- function(..., dimensions = c("var", "member", "time", "lat", "lon"))
 #' 
 #' #Station data
 #' data("VALUE_Iberia_tas")
-#' data("VALUE_Iberia_tp")
-#' checkSeason(VALUE_Iberia_tas, VALUE_Iberia_tp)
+#' data("VALUE_Iberia_pr")
+#' checkSeason(VALUE_Iberia_tas, VALUE_Iberia_pr)
 
 
 checkSeason <- function(...) {
@@ -694,12 +694,12 @@ array3Dto2Dmat.stations <- function(array3D) {
 #' @family get.helpers
 #' @export
 #' @examples 
-#' data("CFS_Iberia_tp")
-#' getVarNames(CFS_Iberia_tp)
-#' getVarNames(CFS_Iberia_tp, "long")
+#' data("CFS_Iberia_pr")
+#' getVarNames(CFS_Iberia_pr)
+#' getVarNames(CFS_Iberia_pr, "long")
 #' ## Example with a multigrid
 #' data("CFS_Iberia_tas")
-#' mg <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_tp)
+#' mg <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
 #' getVarNames(mg)
 #' getVarNames(mg, "long")
 #' ## Example with station data
@@ -740,7 +740,7 @@ getVarNames <- function(grid, type = c("short", "long")) {
 #' getGridVerticalLevels(mg)
 #' # Use of var.index to select some variables:
 #' # either by their shortname...
-#' getGridVerticalLevels(mg, var.index = c("hus850","ta850"))
+#' getGridVerticalLevels(mg, var.index = c("shum850","air850"))
 #' # ... or by index position in the multigrid
 #' getGridVerticalLevels(mg, var.index = c(1,3))
 
