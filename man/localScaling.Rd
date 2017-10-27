@@ -7,7 +7,7 @@
 localScaling(grid, base = NULL, ref = NULL, clim.fun = list(FUN = "mean",
   na.rm = TRUE), by.member = TRUE, time.frame = c("none", "monthly",
   "daily"), type = "additive", parallel = FALSE, max.ncores = 16,
-  ncores = NULL)
+  ncores = NULL, scale = FALSE)
 }
 \arguments{
 \item{grid}{Input grid to be rescaled}
@@ -41,6 +41,8 @@ or applied as a ratio (e.g. precipitation, wind speed...). See details}
 
 \item{ncores}{Integer number of cores used in parallel computation. Self-selected number of
 cores is used when \code{ncpus = NULL} (the default), or when \code{maxcores} exceeds the default \code{ncores} value.}
+
+\item{scale}{Logical. If TRUE data is standarized. Default is FALSE.}
 }
 \value{
 A locally scaled grid

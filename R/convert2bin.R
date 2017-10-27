@@ -1,4 +1,4 @@
-##     convert2bin.R Convert grid values to binary variable
+##     convert2bin.R Convert grid values to a binary variable
 ##
 ##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
@@ -18,40 +18,48 @@
 #' @title Convert grid values to a binary variable
 #' @description Convert a real variable into a binary variable (i.e., 0 or 1) filtering by a threshold. 
 #' @param x The input grid to be converted to binary. It can be an object or a matrix/array.
-#' @param threshold Upon or equal the threshold the grid values turn to 1, whereas below it turns to 0. Default is 0.5.
+#' @param threshold Upon or equal the threshold the grid values turn to 1, whereas below it turns to 0. This can be a single value or a vector. In case it is a vector it will apply a different threshold on each station. If threshold is NULL, then the data is converted to binary by a value that makes the ref.pred to have the same number of 0 values than those in the ref.obs. Default is NULL. 
 #' @param partial If TRUE, only values below the threshold will turn to 0 and the others will remain with their original grid real value. Default is FALSE.
+#' @param ref.obs Grid of observations. It is used to determine the number of days where there is no event (or value equal to 0).
+#' @param ref.pred Grid of predictions- It is used to calculate the threshold that will further be used to convert to binary the grid x.
 #' @return A new grid object with binary values
 #' @details The function only works for a vector of observations/predictands downloaded from \code{\link{loadeR}}).
-#' 
-#' Appends the attribute \code{subset = "convert2bin"} in the \code{Variable} element.
-#' 
 #' @author J. Bano-Medina
+#' @importFrom stats quantile
 #' @export
-#' @family subsetting
 #' @examples
-#' data("VALUE_Iberia_tp")
+#' data("VALUE_Iberia_pr")
 #' # Take a look at the data:
-#' head(VALUE_Iberia_tp$Data)
+#' head(VALUE_Iberia_pr$Data)
 #' # Convert to complete binary variable:
-#' bin.total <- convert2bin(VALUE_Iberia_tp,threshold = 1)
-#' head(bin.total$Data)
+#' ybin <- convert2bin(VALUE_Iberia_pr,threshold = 1)
+#' head(ybin$Data)
 #' # Convert to partial binary variable:
-#' bin.partial <- convert2bin(VALUE_Iberia_tp,threshold = 1, partial = TRUE)
-#' head(bin.partial$Data)
+#' ybin2 <- convert2bin(VALUE_Iberia_pr,threshold = 1, partial = TRUE)
+#' head(ybin2$Data)
 
-convert2bin <- function(x,threshold = 0.5, partial = FALSE) {
-  if (class(x) == 'list') {
-    if (!partial) {
-      x$Data[x$Data >= threshold] <- 1 
-      x$Data[x$Data < threshold] <- 0}
-    else {
-      x$Data[x$Data < threshold] <- 0}}
-  
-  if (class(x) == 'numeric' || class(x) == 'matrix' || class(x) == 'array') {
-    if (!partial) {
-      x[x >= threshold] <- 1 
-      x[x < threshold] <- 0}
-    else {
-      x[x < threshold] <- 0}}
-  
+convert2bin <- function(x, threshold = NULL, partial = FALSE, ref.obs = NULL, ref.pred = NULL) {
+  dimNames <- getDim(x)
+  if (is.null(ref.pred)) {ref.pred <- x}
+  if (is.null(threshold)) {
+    frec <- apply(X = ref.obs$Data, MARGIN = 2, function(X){
+      return(length(which(X == 0))/length(X))})
+    for (i in 1:length(frec)) {
+      thre <- quantile(ref.pred$Data[,i],frec[i])
+      x$Data[,i] <- convert2bin.(x$Data[,i], threshold = thre, partial = partial)}}
+  if (!is.null(threshold)) {}
+  if (length(threshold) == 1) {
+    x$Data <- convert2bin.(x$Data, threshold = threshold, partial = partial)}
+  else{
+    for (i in 1:length(threshold)) {
+    x$Data[,i] <- convert2bin.(x$Data[,i], threshold = threshold[i], partial = partial)}}
+  attr(x$Data, "dimensions") <- dimNames
   return(x)}
+
+convert2bin. <- function(x,threshold, partial) {
+  if (!partial) {
+    x[x >= threshold] <- 1 
+    x[x < threshold] <- 0}
+  else {
+    x[x < threshold] <- 0}
+return(x)}

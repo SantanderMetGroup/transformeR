@@ -28,11 +28,11 @@
 #' @export
 #' @family subsetting
 #' @examples
-#' data("VALUE_Iberia_tp")
+#' data("VALUE_Iberia_pr")
 #' # Check if the dataset contains missing values (YES):
-#' anyNA(VALUE_Iberia_tp$Data)
-#' getShape(VALUE_Iberia_tp)
-#' na.filtered <- filterNA(VALUE_Iberia_tp)
+#' anyNA(VALUE_Iberia_pr$Data)
+#' getShape(VALUE_Iberia_pr)
+#' na.filtered <- filterNA(VALUE_Iberia_pr)
 #' # Check if the dataset contains missing values (NO):
 #' anyNA(na.filtered$Data)
 #' getShape(na.filtered)
@@ -46,6 +46,4 @@ filterNA <- function(grid) {
     na.index <- setdiff(1:getShape(grid, "time"), na.index)
     grid <- subsetDimension(grid, dimension = "time", indices = na.index)
     attr(grid$Variable, "subset") <- "filterNA"}
-  
-    return(grid)
-}
+    return(grid)}

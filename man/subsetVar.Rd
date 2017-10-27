@@ -27,13 +27,13 @@ will be always returned in the same order they are in the original multigrid.
 An attribute 'subset' with value 'subsetVar' is added to the Variable slot of the output subset.
 }
 \seealso{
-Other subsetting: \code{\link{convert2bin}},
+Other subsetting: \code{\link{data_split}},
   \code{\link{filterNA}},
   \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetYears}}, \code{\link{train2test}}
+  \code{\link{subsetYears}}
 }
 \author{
 J. Bedia

@@ -36,6 +36,7 @@
 #'  and \code{"daily"}, for a julian day-based approach. See details.
 #' @param type Character string. Either \code{"additive"} or \code{"ratio"}, depending on wheter the correction factor is added (e.g. temperature...)
 #' or applied as a ratio (e.g. precipitation, wind speed...). See details
+#' @param scale Logical. If TRUE data is standarized. Default is FALSE.
 #'   
 #' @template templateParallelParams
 #' @details In the \code{type = "additive"} set up the reference grid (\code{ref}) is used to correct the input grid, as follows:
@@ -160,12 +161,13 @@ localScaling <- function(grid,
                          type = "additive",
                          parallel = FALSE,
                          max.ncores = 16,
-                         ncores = NULL) {
+                         ncores = NULL,
+                         scale = FALSE) {
     time.frame <- match.arg(time.frame, choices = c("none", "monthly", "daily"))
     type <- match.arg(type, choices = c("additive", "ratio"))
     if (time.frame == "none") {
         message("[", Sys.time(), "] - Scaling ...")
-        out <- localScaling.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores)
+        out <- localScaling.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, scale)
         message("[", Sys.time(), "] - Done")
     } else if (time.frame == "monthly") {
         message("[", Sys.time(), "] - Scaling by months ...")
@@ -182,7 +184,7 @@ localScaling <- function(grid,
             } else {
                 NULL
             }
-            localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores)
+            localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale)
         })
         grid.list <- aux.list
         out <- do.call("bindGrid.time", aux.list)
@@ -211,7 +213,7 @@ localScaling <- function(grid,
             } else {
                 ref1 <- ref
             }
-            localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores)
+            localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale)
         })
         out <- do.call("bindGrid.time", aux.list)
         message("[", Sys.time(), "] - Done")
@@ -228,45 +230,57 @@ localScaling <- function(grid,
 #' @importFrom parallel stopCluster
 #' @author J Bedia
 
-localScaling. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores) {
-    grid <- redim(grid)
-    if (is.null(base)) {
-        base <- suppressMessages({
-            climatology(grid, clim.fun, by.member, parallel, max.ncores, ncores)
-        }) %>% redim()
-    } else {
-        checkSeason(grid, base)
-        checkDim(grid, base, dimensions = c("lat", "lon"))
-        base <- suppressMessages({
-            climatology(base, clim.fun, by.member, parallel, max.ncores, ncores)
-        }) %>% redim()
-    }
-    if (!is.null(ref)) {
-        checkDim(grid, ref, dimensions = c("lat", "lon"))
-        checkSeason(grid, ref)
-        ref <- suppressMessages({
-            climatology(ref, clim.fun, by.member, parallel, max.ncores,ncores)
-        }) %>% redim()
-    } else {
-        ref <- list()
-        ref[["Data"]] <- array(0, getShape(base))
-        attr(ref[["Data"]], "dimensions") <- getDim(base)
-    }    
-    parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-    lapply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "lapply")
-    if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
-    clim <- grid[["Data"]]
-    dimNames <- getDim(grid)
-    ind.time <- grep("^time", dimNames)
-    n.times <- getShape(grid, "time")
-    Xc <- base[["Data"]]
-    Xref <- ref[["Data"]]
-    aux.list <- localScaling.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun)
-    Xc <- Xref <- base <- ref <- NULL
-    grid[["Data"]] <- do.call("abind", c(aux.list, along = ind.time)) %>% unname()
-    aux.list <- NULL
-    attr(grid[["Data"]], "dimensions") <- dimNames
-    return(grid)
+localScaling. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, scale) {
+  grid <- redim(grid)
+  if (is.null(base)) {
+    base.m <- suppressMessages({
+      climatology(grid, clim.fun, by.member, parallel, max.ncores, ncores)
+    }) %>% redim()
+    base.std <- 1
+    if (isTRUE(scale)) {
+      base.std <- suppressMessages({
+        climatology(grid, clim.fun = list(FUN = "sd", na.rm = TRUE), by.member, parallel, max.ncores, ncores)
+      }) %>% redim()
+      base.std <- base.std$Data}
+  } else {
+    checkSeason(grid, base)
+    checkDim(grid, base, dimensions = c("lat", "lon"))
+    base.m <- suppressMessages({
+      climatology(base, clim.fun, by.member, parallel, max.ncores, ncores)
+    }) %>% redim()
+    base.std <- 1
+    if (isTRUE(scale)) {
+      base.std <- suppressMessages({
+        climatology(base, clim.fun = list(FUN = "sd", na.rm = TRUE), by.member, parallel, max.ncores, ncores)
+      }) %>% redim()
+      base.std <- base.std$Data}
+  }
+  if (!is.null(ref)) {
+    checkDim(grid, ref, dimensions = c("lat", "lon"))
+    checkSeason(grid, ref)
+    ref <- suppressMessages({
+      climatology(ref, clim.fun, by.member, parallel, max.ncores,ncores)
+    }) %>% redim()
+  } else {
+    ref <- list()
+    ref[["Data"]] <- array(0, getShape(base.m))
+    attr(ref[["Data"]], "dimensions") <- getDim(base.m)
+  }    
+  parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
+  lapply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "lapply")
+  if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
+  clim <- grid[["Data"]]
+  dimNames <- getDim(grid)
+  ind.time <- grep("^time", dimNames)
+  n.times <- getShape(grid, "time")
+  Xc <- base.m[["Data"]]
+  Xref <- ref[["Data"]]
+  aux.list <- localScaling.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun, base.std)
+  Xc <- Xref <- base <- base.m <- base.std <- ref <- NULL
+  grid[["Data"]] <- do.call("abind", c(aux.list, along = ind.time)) %>% unname()
+  aux.list <- NULL
+  attr(grid[["Data"]], "dimensions") <- dimNames
+  return(grid)
 }
 
 #' @title Local scaling type internal    
@@ -277,28 +291,28 @@ localScaling. <- function(grid, base, ref, clim.fun, by.member, type, parallel, 
 #' @importFrom parallel stopCluster
 #' @author J Bedia
 
-localScaling.type <- function(clim, n.times, ind.time, Xc, Xref, type, lapply_fun) {
-    if (type == "additive") {
-        lapply_fun(1:n.times, function(x) {
-            X <- asub(clim, idx = x, dims = ind.time, drop = FALSE)
-            if (dim(X)[1] != dim(Xc)[1]) {
-                aux <- lapply(1:dim(X)[1], function(i) X[i, , , , drop = FALSE] - Xc + Xref)
-                do.call("abind", c(aux, along = 1)) %>% unname()
-            } else {
-                X - Xc + Xref
-            }
-        })
-    } else {
-        lapply_fun(1:n.times, function(x) {
-            X <- asub(clim, idx = x, dims = ind.time, drop = FALSE)
-            if (dim(X)[1] != dim(Xc)[1]) {
-                aux <- lapply(1:dim(X)[1], function(i) (X[i, , , , drop = FALSE] / Xc) * Xref)
-                do.call("abind", c(aux, along = 1)) %>% unname()
-            } else {
-                (X / Xc) * Xref
-            }
-        })
-    }
+localScaling.type <- function(clim, n.times, ind.time, Xc, Xref, type, lapply_fun, base.std) {
+  if (type == "additive") {
+    lapply_fun(1:n.times, function(x) {
+      X <- asub(clim, idx = x, dims = ind.time, drop = FALSE)
+      if (dim(X)[1] != dim(Xc)[1]) {
+        aux <- lapply(1:dim(X)[1], function(i) {(X[i, , , , drop = FALSE] - Xc) / base.std + Xref})
+        do.call("abind", c(aux, along = 1)) %>% unname()
+      } else {
+        (X - Xc) / base.std + Xref
+      }
+    })
+  } else {
+    lapply_fun(1:n.times, function(x) {
+      X <- asub(clim, idx = x, dims = ind.time, drop = FALSE)
+      if (dim(X)[1] != dim(Xc)[1]) {
+        aux <- lapply(1:dim(X)[1], function(i) (X[i, , , , drop = FALSE] / Xc) * Xref)
+        do.call("abind", c(aux, along = 1)) %>% unname()
+      } else {
+        (X / Xc) * Xref
+      }
+    })
+  }
 }
 
 

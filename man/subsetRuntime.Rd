@@ -22,13 +22,13 @@ Retrieves a grid that is a logical subset of a multiruntime grid along its 'runt
 An attribute 'subset' with value 'subsetRuntime' is added to the Runtime slot of the output subset.
 }
 \seealso{
-Other subsetting: \code{\link{convert2bin}},
+Other subsetting: \code{\link{data_split}},
   \code{\link{filterNA}},
   \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetSeason}},
   \code{\link{subsetSpatial}}, \code{\link{subsetVar}},
-  \code{\link{subsetYears}}, \code{\link{train2test}}
+  \code{\link{subsetYears}}
 }
 \author{
 M. Iturbide

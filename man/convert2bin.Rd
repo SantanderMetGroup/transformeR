@@ -4,14 +4,19 @@
 \alias{convert2bin}
 \title{Convert grid values to a binary variable}
 \usage{
-convert2bin(x, threshold = 0.5, partial = FALSE)
+convert2bin(x, threshold = NULL, partial = FALSE, ref.obs = NULL,
+  ref.pred = NULL)
 }
 \arguments{
 \item{x}{The input grid to be converted to binary. It can be an object or a matrix/array.}
 
-\item{threshold}{Upon or equal the threshold the grid values turn to 1, whereas below it turns to 0. Default is 0.5.}
+\item{threshold}{Upon or equal the threshold the grid values turn to 1, whereas below it turns to 0. This can be a single value or a vector. In case it is a vector it will apply a different threshold on each station. If threshold is NULL, then the data is converted to binary by a value that makes the ref.pred to have the same number of 0 values than those in the ref.obs. Default is NULL.}
 
 \item{partial}{If TRUE, only values below the threshold will turn to 0 and the others will remain with their original grid real value. Default is FALSE.}
+
+\item{ref.obs}{Grid of observations. It is used to determine the number of days where there is no event (or value equal to 0).}
+
+\item{ref.pred}{Grid of predictions- It is used to calculate the threshold that will further be used to convert to binary the grid x.}
 }
 \value{
 A new grid object with binary values
@@ -21,28 +26,17 @@ Convert a real variable into a binary variable (i.e., 0 or 1) filtering by a thr
 }
 \details{
 The function only works for a vector of observations/predictands downloaded from \code{\link{loadeR}}).
-
-Appends the attribute \code{subset = "convert2bin"} in the \code{Variable} element.
 }
 \examples{
-data("VALUE_Iberia_tp")
+data("VALUE_Iberia_pr")
 # Take a look at the data:
-head(VALUE_Iberia_tp$Data)
+head(VALUE_Iberia_pr$Data)
 # Convert to complete binary variable:
-bin.total <- convert2bin(VALUE_Iberia_tp,threshold = 1)
-head(bin.total$Data)
+ybin <- convert2bin(VALUE_Iberia_pr,threshold = 1)
+head(ybin$Data)
 # Convert to partial binary variable:
-bin.partial <- convert2bin(VALUE_Iberia_tp,threshold = 1, partial = TRUE)
-head(bin.partial$Data)
-}
-\seealso{
-Other subsetting: \code{\link{filterNA}},
-  \code{\link{getTemporalIntersection}},
-  \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
-  \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
-  \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetVar}}, \code{\link{subsetYears}},
-  \code{\link{train2test}}
+ybin2 <- convert2bin(VALUE_Iberia_pr,threshold = 1, partial = TRUE)
+head(ybin2$Data)
 }
 \author{
 J. Bano-Medina
