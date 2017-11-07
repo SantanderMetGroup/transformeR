@@ -430,14 +430,16 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
 #' @family subsetting
 
 subsetSeason <- function(grid, season = NULL) {
-    season0 <- getSeason(grid)
-    if (!all(season %in% season0)) stop("Month selection outside original season values")      
+  season0 <- getSeason(grid)
+  if (!all(season %in% season0)) stop("Month selection outside original season values")      
+  if (getTimeResolution(grid) != "YY") {
     mon <- getRefDates(grid) %>% substr(6,7) %>% as.integer()
     time.ind <- which(mon %in% season)
     grid %<>% subsetDimension(dimension = "time", indices = time.ind)
-    return(grid)
+  }
+  return(grid)
 }
-# End
+
 
 
 #' @title Arbitrary grid subsetting along one of its dimensions
