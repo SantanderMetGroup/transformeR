@@ -430,26 +430,11 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
 #' @family subsetting
 
 subsetSeason <- function(grid, season = NULL) {
-    dimNames <- getDim(grid)
     season0 <- getSeason(grid)
     if (!all(season %in% season0)) stop("Month selection outside original season values")      
-    mon <- if (any(grepl("var", dimNames))) {
-        as.integer(substr(grid$Dates[[1]]$start, 6, 7))
-    } else {
-        as.integer(substr(grid$Dates$start, 6, 7))
-    }
+    mon <- getRefDates(grid) %>% substr(6,7) %>% as.integer()
     time.ind <- which(mon %in% season)
-    grid$Data <- asub(grid$Data, time.ind, grep("time", dimNames), drop = FALSE)
-    attr(grid$Data, "dimensions") <- dimNames
-    # Verification Date adjustment
-    grid$Dates <- if (any(grepl("var", dimNames))) {
-        lapply(1:length(grid$Dates), function(i) {
-            lapply(grid$Dates[[i]], function(x) x[time.ind])
-        })
-    } else {
-        lapply(grid$Dates, function(x) x[time.ind])
-    }
-    attr(grid$Dates, "subset") <- "subsetSeason"
+    grid %<>% subsetDimension(dimension = "time", indices = time.ind)
     return(grid)
 }
 # End
