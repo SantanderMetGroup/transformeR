@@ -423,7 +423,7 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
 #' @param season An integer vector indicating the months to be subset.
 #' @details An attribute 'subset' with value 'subsetSeason' is added to the Dates slot of the output subset.
 #' @return A grid (or multigrid) that is a logical subset of the input grid along its 'time' dimension.
-#' @importFrom abind asub
+#' @importFrom magrittr %>% %<>% 
 #' @keywords internal
 #' @export
 #' @author J. Bedia 
@@ -454,6 +454,7 @@ subsetSeason <- function(grid, season = NULL) {
 #' @details
 #' The attribute \code{subset} will be added taking the value of the \code{dimension} parameter.
 #' @importFrom abind asub
+#' @importFrom magrittr %<>% 
 #' @author J. Bedia and S. Herrera
 #' @keywords internal
 #' @export
