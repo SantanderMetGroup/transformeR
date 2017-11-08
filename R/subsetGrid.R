@@ -421,7 +421,7 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
 #'
 #' @param grid Input grid to be subset (possibly a multimember/multigrid).
 #' @param season An integer vector indicating the months to be subset.
-#' @details An attribute 'subset' with value 'subsetSeason' is added to the Dates slot of the output subset.
+#' @details An attribute 'subset' with value 'time' is added to the Variable slot of the output grid.
 #' @return A grid (or multigrid) that is a logical subset of the input grid along its 'time' dimension.
 #' @importFrom magrittr %>% %<>% 
 #' @keywords internal
@@ -436,6 +436,8 @@ subsetSeason <- function(grid, season = NULL) {
     mon <- getRefDates(grid) %>% substr(6,7) %>% as.integer()
     time.ind <- which(mon %in% season)
     grid %<>% subsetDimension(dimension = "time", indices = time.ind)
+  } else {
+    message("NOTE: Can't perform monthly subsetting on annual data. 'season' argument was ignored.")
   }
   return(grid)
 }
