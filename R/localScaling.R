@@ -243,7 +243,7 @@ localScaling. <- function(grid, base, ref, clim.fun, by.member, type, parallel, 
       }) %>% redim()
       base.std <- base.std$Data}
   } else {
-    checkSeason(grid, base)
+    if (!scale) checkSeason(grid, base)
     checkDim(grid, base, dimensions = c("lat", "lon"))
     base.m <- suppressMessages({
       climatology(base, clim.fun, by.member, parallel, max.ncores, ncores)
@@ -257,7 +257,7 @@ localScaling. <- function(grid, base, ref, clim.fun, by.member, type, parallel, 
   }
   if (!is.null(ref)) {
     checkDim(grid, ref, dimensions = c("lat", "lon"))
-    checkSeason(grid, ref)
+    if (!scale) checkSeason(grid, ref)
     ref <- suppressMessages({
       climatology(ref, clim.fun, by.member, parallel, max.ncores,ncores)
     }) %>% redim()
