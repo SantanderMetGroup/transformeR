@@ -35,7 +35,6 @@
 #' @export
 #' @examples
 #' # A raster stack from a multigrid
-#' # A raster stack from a multigrid
 #' data("EOBS_Iberia_tas")
 #' data("EOBS_Iberia_pr")
 #' multigrid <- makeMultiGrid(EOBS_Iberia_tas, EOBS_Iberia_pr)
