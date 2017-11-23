@@ -85,62 +85,64 @@
 # plotClimatology(climatology(tas), backdrop.theme = "coastline")
 
 makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = FALSE) {
-      field.list <- list(...)
-      for(i in 1:length(field.list)){
-        if("var" %in% names(getShape(field.list[[i]])))
-          if(getShape(field.list[[i]])[["var"]] == 1)
-            field.list[[i]] <- redim(field.list[[i]], drop = T)
+  field.list <- list(...)
+  stopifnot(is.logical(skip.temporal.check))
+  # for (i in 1:length(field.list)) {
+  #   if ("var" %in% getDim(field.list[[i]])) {
+  #     if (getShape(field.list[[i]], "var") == 1)
+  #       field.list[[i]] <- redim(field.list[[i]], drop = TRUE)
+  #   }
+  # }
+  if (length(field.list) == 1) {
+    field.list <- unlist(field.list, recursive = FALSE)
+  }
+  if (length(field.list) < 2) {
+    stop("The input must be a list of at least two grids", call. = FALSE)
+  }
+  tol <- spatial.tolerance
+  for (i in 2:length(field.list)) {
+    # Spatial test
+    if (!isTRUE(all.equal(field.list[[1]]$xyCoords, field.list[[i]]$xyCoords, check.attributes = FALSE, tolerance = tol))) {
+      stop("Input data is not spatially consistent")
+    }
+    # temporal test
+    if (!skip.temporal.check) {
+      if (!identical(as.POSIXlt(field.list[[1]]$Dates$start)$yday, as.POSIXlt(field.list[[i]]$Dates$start)$yday) | !identical(as.POSIXlt(field.list[[1]]$Dates$start)$year, as.POSIXlt(field.list[[i]]$Dates$start)$year)) {
+        stop("Input data is not temporally consistent")
       }
-      if (length(field.list) == 1) {
-                  field.list <- unlist(field.list, recursive = FALSE)
-      }
-      stopifnot(is.logical(skip.temporal.check))
-      if (length(field.list) < 2) {
-            stop("The input must be a list of at least two grids", call. = FALSE)
-      }
-      tol <- spatial.tolerance
-      for (i in 2:length(field.list)) {
-            # Spatial test
-            if (!isTRUE(all.equal(field.list[[1]]$xyCoords, field.list[[i]]$xyCoords, check.attributes = FALSE, tolerance = tol))) {
-                  stop("Input data is not spatially consistent")
-            }
-            # temporal test
-            if (!skip.temporal.check) {
-                  if (!identical(as.POSIXlt(field.list[[1]]$Dates$start)$yday, as.POSIXlt(field.list[[i]]$Dates$start)$yday) | !identical(as.POSIXlt(field.list[[1]]$Dates$start)$year, as.POSIXlt(field.list[[i]]$Dates$start)$year)) {
-                        stop("Input data is not temporally consistent")
-                  }
-            }
-            # data dimensionality
-            if (!identical(dim(field.list[[1]]$Data), dim(field.list[[i]]$Data))) {
-                  stop("Incompatible data array dimensions")
-            }
-            if (!identical(attr(field.list[[1]]$Data, "dimensions"), attr(field.list[[i]]$Data, "dimensions"))) {
-                  stop("Inconsistent 'dimensions' attribute")
-            }
-      }
-      ## $Variable attrs ----------
-      aux.list <- lapply(1:length(field.list), function(x) field.list[[x]]$Variable)
-      varName <- vapply(1:length(aux.list), FUN.VALUE = character(1), FUN = function(x) paste(aux.list[[x]]$varName, aux.list[[x]]$level, sep = ""))
-      level <- sapply(1:length(aux.list), function(x) ifelse(is.null(aux.list[[x]]$level), NA, aux.list[[x]]$level))      
-      attr.mf <- lapply(1:length(aux.list), function(x) attributes(aux.list[[x]]))
-      aux.list <- NULL
-      field.list[[1]]$Variable <- list("varName" = varName, "level" = level)      
-      if (length(attr.mf[[1]]) > 1) {
-            attr.list <- lapply(2:length(attr.mf[[1]]), function(x) {
-                  unlist(sapply(attr.mf, "c")[x,])
-            })
-            names(attr.list) <- names(attr.mf[[1]])[-1]
-            attributes(field.list[[1]]$Variable) <- attr.list
-      }
-      names(field.list[[1]]$Variable) <- c("varName", "level")
-      ## Climatologies ----------
-      climfun <- attr(field.list[[1]]$Data, "climatology:fun")
-      ## $Dates -------------------
-      field.list[[1]]$Dates <- lapply(1:length(field.list), function(x) field.list[[x]]$Dates)
-      dimNames <- attr(field.list[[1]]$Data, "dimensions")
-      field.list[[1]]$Data <- unname(do.call("abind", c(lapply(1:length(field.list), function(x) field.list[[x]]$Data), along = -1))) 
-      attr(field.list[[1]]$Data, "dimensions") <- c("var", dimNames)
-      if (!is.null(climfun)) attr(field.list[[1]]$Data, "climatology:fun") <- climfun 
-      return(field.list[[1]])
+    }
+    # data dimensionality
+    suppressMessages(checkDim(field.list[[1]], field.list[[i]]))
+    # if (!identical(dim(field.list[[1]]$Data), dim(field.list[[i]]$Data))) {
+    #   stop("Incompatible data array dimensions")
+    # }
+    # if (!identical(attr(field.list[[1]]$Data, "dimensions"), attr(field.list[[i]]$Data, "dimensions"))) {
+    #   stop("Inconsistent 'dimensions' attribute")
+    # }
+  }
+  ## $Variable attrs ----------
+  aux.list <- lapply(1:length(field.list), function(x) field.list[[x]]$Variable)
+  varName <- vapply(1:length(aux.list), FUN.VALUE = character(1), FUN = function(x) paste(aux.list[[x]]$varName[x], aux.list[[x]]$level[x], sep = ""))
+  level <- sapply(1:length(aux.list), function(x) ifelse(is.null(aux.list[[x]]$level), NA, aux.list[[x]]$level))      
+  attr.mf <- lapply(1:length(aux.list), function(x) attributes(aux.list[[x]]))
+  aux.list <- NULL
+  field.list[[1]]$Variable <- list("varName" = varName, "level" = level)      
+  if (length(attr.mf[[1]]) > 1) {
+    attr.list <- lapply(2:length(attr.mf[[1]]), function(x) {
+      unlist(sapply(attr.mf, "c")[x,])
+    })
+    names(attr.list) <- names(attr.mf[[1]])[-1]
+    attributes(field.list[[1]]$Variable) <- attr.list
+  }
+  names(field.list[[1]]$Variable) <- c("varName", "level")
+  ## Climatologies ----------
+  climfun <- attr(field.list[[1]]$Data, "climatology:fun")
+  ## $Dates -------------------
+  field.list[[1]]$Dates <- lapply(1:length(field.list), function(x) field.list[[x]]$Dates)
+  dimNames <- attr(field.list[[1]]$Data, "dimensions")
+  field.list[[1]]$Data <- unname(do.call("abind", c(lapply(1:length(field.list), function(x) field.list[[x]]$Data), along = -1))) 
+  attr(field.list[[1]]$Data, "dimensions") <- c("var", dimNames)
+  if (!is.null(climfun)) attr(field.list[[1]]$Data, "climatology:fun") <- climfun 
+  return(field.list[[1]])
 }
 # End

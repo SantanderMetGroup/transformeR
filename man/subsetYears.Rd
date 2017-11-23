@@ -22,13 +22,11 @@ Retrieves a grid that is a logical subset of a multimember grid along its 'time'
 An attribute 'subset' with value 'subsetYears' is added to the Dates slot of the output subset.
 }
 \seealso{
-Other subsetting: \code{\link{convert2bin}},
-  \code{\link{filterNA}},
-  \code{\link{getTemporalIntersection}},
+Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetVar}}, \code{\link{train2test}}
+  \code{\link{subsetVar}}
 }
 \author{
 J. Bedia

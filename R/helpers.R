@@ -315,7 +315,7 @@ draw.world.lines <- function(...) {
 #' @description Return the indices of leap years in a vector of years
 #' @param years a integer vector of (gregorian) years
 #' @return a vector of indices of the position of leap years
-#' @references \url{https://en.wikipedia.org/wiki/Leap_year}
+#' @references \url{https://en.wikipedia.org/wiki/Leap_year#Algorithm}
 #' @keywords internal
 #' @export
 #' @family get.helpers

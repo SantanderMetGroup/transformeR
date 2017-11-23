@@ -114,7 +114,7 @@
 #' # it also returns, in the last element of the output list,
 #' # the results of a PC analysis of the combined variables when which.combine is activated:
 #' pca <- prinComp(multigrid, v.exp = c(.99,.95,.90,.95),
-#'                 which.combine = c("air850", "slp), keep.orig = FALSE)
+#'                 which.combine = c("air850", "slp"), keep.orig = FALSE)
 #' names(pca)
 #' str(pca)
 #' # A special attribute indicates the variables used for combination
