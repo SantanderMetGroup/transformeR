@@ -524,9 +524,11 @@ checkVarNames <- function(..., check.order = TRUE) {
     } else {
         out <- lapply(grid.list, FUN = "getVarNames")
         lengths <- sapply(out, "length")
-        if (!all(lengths == lengths[[1]])) stop("The number of variables stored in the input grids differ")
+        if (!all(lengths == lengths[[1]])) {
+          stop("The number of variables stored in the input grids differ")
+        }
         if (!all(sapply(2:length(out), function(x) all(out[[x]] %in% out[[1]])))) {
-            stop("Variable names in the input grids differ")
+            stop("Variable names of the input grids differ")
         }
         if (check.order) {
             if (!all(sapply(2:length(out), function(x) identical(out[[x]], out[[1]])))) {
@@ -729,7 +731,7 @@ getVarNames <- function(grid, type = c("short", "long")) {
 #' @examples 
 #' data("CFS_Iberia_hus850")
 #' getGridVerticalLevels(CFS_Iberia_hus850)
-#' # Surface variables usually have an undefined vertical level
+#' # Surface variables usually have an undefined vertical level <NA>
 #' data("EOBS_Iberia_tas")
 #' getGridVerticalLevels(EOBS_Iberia_tas)
 #' 
@@ -740,7 +742,7 @@ getVarNames <- function(grid, type = c("short", "long")) {
 #' getGridVerticalLevels(mg)
 #' # Use of var.index to select some variables:
 #' # either by their shortname...
-#' getGridVerticalLevels(mg, var.index = c("shum850","air850"))
+#' getGridVerticalLevels(mg, var.index = c("shum","air"))
 #' # ... or by index position in the multigrid
 #' getGridVerticalLevels(mg, var.index = c(1,3))
 

@@ -22,7 +22,7 @@ A helper function that returns a vector of the variable(s) vertical levels
 \examples{
 data("CFS_Iberia_hus850")
 getGridVerticalLevels(CFS_Iberia_hus850)
-# Surface variables usually have an undefined vertical level
+# Surface variables usually have an undefined vertical level <NA>
 data("EOBS_Iberia_tas")
 getGridVerticalLevels(EOBS_Iberia_tas)
 
@@ -33,7 +33,7 @@ mg <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 getGridVerticalLevels(mg)
 # Use of var.index to select some variables:
 # either by their shortname...
-getGridVerticalLevels(mg, var.index = c("shum850","air850"))
+getGridVerticalLevels(mg, var.index = c("shum","air"))
 # ... or by index position in the multigrid
 getGridVerticalLevels(mg, var.index = c(1,3))
 }
