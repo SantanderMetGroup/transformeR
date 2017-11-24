@@ -46,12 +46,11 @@ checkDim(predictor.adj, predictand.adj, dimensions = "time") # perfect
 \seealso{
 \code{\link{checkDim}}, \code{\link{checkSeason}}, \code{\link{getYearsAsINDEX}}, \code{\link{getSeason}}, for other time dimension helpers
 
-Other subsetting: \code{\link{convert2bin}},
-  \code{\link{filterNA}}, \code{\link{subsetDimension}},
+Other subsetting: \code{\link{subsetDimension}},
   \code{\link{subsetGrid}}, \code{\link{subsetMembers}},
   \code{\link{subsetRuntime}}, \code{\link{subsetSeason}},
   \code{\link{subsetSpatial}}, \code{\link{subsetVar}},
-  \code{\link{subsetYears}}, \code{\link{train2test}}
+  \code{\link{subsetYears}}
 }
 \author{
 J Bedia

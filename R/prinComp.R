@@ -110,12 +110,13 @@
 #' # The output is a named list with the PC's and EOFs (plus additional atttributes) for each variable
 #' # within the input grid:
 #' str(pca)
+#' names(pca)
 #' # Note that, apart from computing the principal components and EOFs for each grid, 
 #' # it also returns, in the last element of the output list,
-#' # the results of a PC analysis of the combined variables when which.combine is activated:
+#' # the results of a PC analysis of the combined variables when 'which.combine' is activated:
 #' pca <- prinComp(multigrid, v.exp = c(.99,.95,.90,.95),
-#'                 which.combine = c("air850", "slp), keep.orig = FALSE)
-#' names(pca)
+#'                 which.combine = c("air@@850", "slp"), keep.orig = FALSE)
+#'                 
 #' str(pca)
 #' # A special attribute indicates the variables used for combination
 #' attributes(pca$COMBINED)
@@ -128,7 +129,7 @@
 #' attributes(pca$shum850[[1]]$orig)$`scaled:center`
 #' attributes(pca$shum850[[1]]$orig)$`scaled:scale`
 #' # In addition, the (cumulative) explained variance of each PC is also returned:
-#' vexp <- attributes(pca$shum850[[1]])$explained_variance
+#' vexp <- attributes(pca$"shum@@850"[[1]])$explained_variance
 #' # The classical "scree plot":
 #' barplot(1-vexp, names.arg = paste("PC",1:length(vexp)), las = 2, 
 #'         ylab = "Fraction of unexplained variance")

@@ -19,16 +19,14 @@ Retrieves a grid that is a logical subset of the input grid along its 'time' dim
  on a monthly basis. Multimember multigrids are supported. Subroutine of \code{\link{subsetGrid}}.
 }
 \details{
-An attribute 'subset' with value 'subsetSeason' is added to the Dates slot of the output subset.
+An attribute 'subset' with value 'time' is added to the Variable slot of the output grid.
 }
 \seealso{
-Other subsetting: \code{\link{convert2bin}},
-  \code{\link{filterNA}},
-  \code{\link{getTemporalIntersection}},
+Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSpatial}}, \code{\link{subsetVar}},
-  \code{\link{subsetYears}}, \code{\link{train2test}}
+  \code{\link{subsetYears}}
 }
 \author{
 J. Bedia

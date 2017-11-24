@@ -1,8 +1,10 @@
 transformeR 1.1.2
 =================
 
-* Minor bug fix in the temporal aggregation of station datasets
-* Other documentation and example updates
+* Bug fix in `subsetSeason` (exit with message when attempting to aggregate already annual grids)
+* Bug fix in `makeMultigrid` attribute retrieval from input grids
+* Changed the variable naming convention when multigrids are created. Now the vertical level (when defined) is appended to the name of the variable, following the definition  `"var@@level"`. 
+* Other minor documentation updates
 
 
 
