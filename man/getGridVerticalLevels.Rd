@@ -33,7 +33,7 @@ mg <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 getGridVerticalLevels(mg)
 # Use of var.index to select some variables:
 # either by their shortname...
-getGridVerticalLevels(mg, var.index = c("shum","air"))
+getGridVerticalLevels(mg, var.index = c("shum@850","air@850"))
 # ... or by index position in the multigrid
 getGridVerticalLevels(mg, var.index = c(1,3))
 }
