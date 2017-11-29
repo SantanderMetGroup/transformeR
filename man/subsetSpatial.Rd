@@ -33,8 +33,8 @@ component of the output grid.
 Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
-  \code{\link{subsetSeason}}, \code{\link{subsetVar}},
-  \code{\link{subsetYears}}
+  \code{\link{subsetSeason}}, \code{\link{subsetStation}},
+  \code{\link{subsetVar}}, \code{\link{subsetYears}}
 }
 \author{
 J. Bedia

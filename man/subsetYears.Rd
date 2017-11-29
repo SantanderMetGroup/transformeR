@@ -26,7 +26,7 @@ Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetVar}}
+  \code{\link{subsetStation}}, \code{\link{subsetVar}}
 }
 \author{
 J. Bedia

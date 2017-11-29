@@ -31,7 +31,7 @@ Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetYears}}
+  \code{\link{subsetStation}}, \code{\link{subsetYears}}
 }
 \author{
 J. Bedia
