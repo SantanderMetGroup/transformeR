@@ -19,7 +19,7 @@ Retrieves a grid that is a logical subset of the input grid along its 'time' dim
  on a monthly basis. Multimember multigrids are supported. Subroutine of \code{\link{subsetGrid}}.
 }
 \details{
-An attribute 'subset' with value 'subsetSeason' is added to the Dates slot of the output subset.
+An attribute 'subset' with value 'time' is added to the Variable slot of the output grid.
 }
 \seealso{
 Other subsetting: \code{\link{getTemporalIntersection}},

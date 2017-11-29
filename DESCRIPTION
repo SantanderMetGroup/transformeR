@@ -22,9 +22,10 @@ Suggests:
 Type: Package
 Title: An R package for climate data manipulation and transformation
 Version: 1.1.2
-Date: 2017-09-27
+Date: 2017-11-23
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
+    "Jorge Bano Medina <bmedina@ifca.unican.es> [ctb]",
     "Joaquin Bedia <bediaj@unican.es> [aut, cre]",
     "Matteo De Felice <matteo.defelice@enea.it> [ctb]",
     "Jose Manuel Gutierrez <gutierjm@unican.es> [ctb]",

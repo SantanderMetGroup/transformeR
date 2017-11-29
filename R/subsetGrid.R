@@ -421,38 +421,27 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
 #'
 #' @param grid Input grid to be subset (possibly a multimember/multigrid).
 #' @param season An integer vector indicating the months to be subset.
-#' @details An attribute 'subset' with value 'subsetSeason' is added to the Dates slot of the output subset.
+#' @details An attribute 'subset' with value 'time' is added to the Variable slot of the output grid.
 #' @return A grid (or multigrid) that is a logical subset of the input grid along its 'time' dimension.
-#' @importFrom abind asub
+#' @importFrom magrittr %>% %<>% 
 #' @keywords internal
 #' @export
 #' @author J. Bedia 
 #' @family subsetting
 
 subsetSeason <- function(grid, season = NULL) {
-    dimNames <- getDim(grid)
-    season0 <- getSeason(grid)
-    if (!all(season %in% season0)) stop("Month selection outside original season values")      
-    mon <- if (listDepth(grid$Dates) > 1) {
-        as.integer(substr(grid$Dates[[1]]$start, 6, 7))
-    } else {
-        as.integer(substr(grid$Dates$start, 6, 7))
-    }
+  season0 <- getSeason(grid)
+  if (!all(season %in% season0)) stop("Month selection outside original season values")      
+  if (getTimeResolution(grid) != "YY") {
+    mon <- getRefDates(grid) %>% substr(6,7) %>% as.integer()
     time.ind <- which(mon %in% season)
-    grid$Data <- asub(grid$Data, time.ind, grep("time", dimNames), drop = FALSE)
-    attr(grid$Data, "dimensions") <- dimNames
-    # Verification Date adjustment
-    grid$Dates <- if (listDepth(grid$Dates) > 1) {
-        lapply(1:length(grid$Dates), function(i) {
-            lapply(grid$Dates[[i]], function(x) x[time.ind])
-        })
-    } else {
-        lapply(grid$Dates, function(x) x[time.ind])
-    }
-    attr(grid$Dates, "subset") <- "subsetSeason"
-    return(grid)
+    grid %<>% subsetDimension(dimension = "time", indices = time.ind)
+  } else {
+    message("NOTE: Can't perform monthly subsetting on annual data. 'season' argument was ignored.")
+  }
+  return(grid)
 }
-# End
+
 
 
 #' @title Arbitrary grid subsetting along one of its dimensions
@@ -469,6 +458,7 @@ subsetSeason <- function(grid, season = NULL) {
 #' @details
 #' The attribute \code{subset} will be added taking the value of the \code{dimension} parameter.
 #' @importFrom abind asub
+#' @importFrom magrittr %<>% 
 #' @author J. Bedia and S. Herrera
 #' @keywords internal
 #' @export
