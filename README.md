@@ -9,7 +9,7 @@ The recommended installation procedure is to use the `install_github` command fr
 ```r
 devtools::install_github("SantanderMetGroup/transformeR")
 ```
-**NOTE:** The utilities in `transformeR` were formerly part of `downscaleR` (up to v1.3-4). Since `downscaleR` v2.0-0, these are in `transformeR` and `downscaleR` is strictly aimed to statistical downscaling and bias correction. 
+**NOTE:** The utilities in transformeR were formerly part of downscaleR (up to v1.3-4). Since downscaleR v2.0-0, these are in transformeR and downscaleR is strictly aimed to statistical downscaling and bias correction. 
 
 ---
 Reference and further information: 
