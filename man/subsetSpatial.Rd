@@ -30,9 +30,7 @@ An attribute \code{subset} with value \code{subsetSpatial} is added to the \code
 component of the output grid.
 }
 \seealso{
-Other subsetting: \code{\link{data_split}},
-  \code{\link{filterNA}},
-  \code{\link{getTemporalIntersection}},
+Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetVar}},

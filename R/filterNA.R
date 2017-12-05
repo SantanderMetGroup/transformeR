@@ -21,14 +21,10 @@
 #' @return A new grid object without missing values
 #' @details The function also takes care of adjusting dates and other relevant metadata (via the internal \code{\link{subsetDimension}}).
 #' 
-#' Appends the attribute \code{subset = "filterNA"} in the \code{Variable} element.
-#' 
 #' @importFrom magrittr %>% 
 #' @author J. Bano-Medina
 #' @export
-#' @family subsetting
 #' @examples
-#' data("VALUE_Iberia_pr")
 #' # Check if the dataset contains missing values (YES):
 #' anyNA(VALUE_Iberia_pr$Data)
 #' getShape(VALUE_Iberia_pr)

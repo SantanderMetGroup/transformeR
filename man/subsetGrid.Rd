@@ -96,9 +96,7 @@ getShape(sub2)
 getVarNames(sub2)
 }
 \seealso{
-Other subsetting: \code{\link{data_split}},
-  \code{\link{filterNA}},
-  \code{\link{getTemporalIntersection}},
+Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},

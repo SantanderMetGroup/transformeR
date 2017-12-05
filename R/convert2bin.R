@@ -23,12 +23,11 @@
 #' @param ref.obs Grid of observations. It is used to determine the number of days where there is no event (or value equal to 0).
 #' @param ref.pred Grid of predictions- It is used to calculate the threshold that will further be used to convert to binary the grid x.
 #' @return A new grid object with binary values
-#' @details The function only works for a vector of observations/predictands downloaded from \code{\link{loadeR}}).
+#' @details The function only works for a vector of observations/predictands downloaded from \pkg{loadeR}).
 #' @author J. Bano-Medina
 #' @importFrom stats quantile
 #' @export
 #' @examples
-#' data("VALUE_Iberia_pr")
 #' # Take a look at the data:
 #' head(VALUE_Iberia_pr$Data)
 #' # Convert to complete binary variable:
@@ -45,7 +44,7 @@ convert2bin <- function(x, threshold = NULL, partial = FALSE, ref.obs = NULL, re
     frec <- apply(X = ref.obs$Data, MARGIN = 2, function(X){
       return(length(which(X == 0))/length(X))})
     for (i in 1:length(frec)) {
-      thre <- quantile(ref.pred$Data[,i],frec[i])
+      thre <- quantile(ref.pred$Data[,i],frec[i], na.rm = TRUE)
       x$Data[,i] <- convert2bin.(x$Data[,i], threshold = thre, partial = partial)}}
   if (!is.null(threshold)) {}
   if (length(threshold) == 1) {

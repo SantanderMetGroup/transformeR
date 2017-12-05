@@ -17,11 +17,8 @@ Removes the dates for all grid points whenever there exists missing values such 
 }
 \details{
 The function also takes care of adjusting dates and other relevant metadata (via the internal \code{\link{subsetDimension}}).
-
-Appends the attribute \code{subset = "filterNA"} in the \code{Variable} element.
 }
 \examples{
-data("VALUE_Iberia_pr")
 # Check if the dataset contains missing values (YES):
 anyNA(VALUE_Iberia_pr$Data)
 getShape(VALUE_Iberia_pr)
@@ -29,14 +26,6 @@ na.filtered <- filterNA(VALUE_Iberia_pr)
 # Check if the dataset contains missing values (NO):
 anyNA(na.filtered$Data)
 getShape(na.filtered)
-}
-\seealso{
-Other subsetting: \code{\link{data_split}},
-  \code{\link{getTemporalIntersection}},
-  \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
-  \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
-  \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetVar}}, \code{\link{subsetYears}}
 }
 \author{
 J. Bano-Medina

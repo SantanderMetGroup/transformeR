@@ -25,10 +25,9 @@ A new grid object with binary values
 Convert a real variable into a binary variable (i.e., 0 or 1) filtering by a threshold.
 }
 \details{
-The function only works for a vector of observations/predictands downloaded from \code{\link{loadeR}}).
+The function only works for a vector of observations/predictands downloaded from \pkg{loadeR}).
 }
 \examples{
-data("VALUE_Iberia_pr")
 # Take a look at the data:
 head(VALUE_Iberia_pr$Data)
 # Convert to complete binary variable:
