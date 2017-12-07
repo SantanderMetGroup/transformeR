@@ -5,7 +5,7 @@
 \title{Lattice plot methods for climatological grids}
 \usage{
 plotClimatology(grid, backdrop.theme = "none", set.min = NULL,
-  set.max = NULL, ...)
+  set.max = NULL, lonCenter = NULL, ...)
 }
 \arguments{
 \item{grid}{Input grid}
@@ -15,6 +15,8 @@ plotClimatology(grid, backdrop.theme = "none", set.min = NULL,
 \item{set.min}{Numeric value indicating an absolute minimum value (default to \code{NULL}). All grid values below this are mapped to \code{set.min}. See details.}
 
 \item{set.max}{Same as \code{set.min} argument, but to force a ceiling.}
+
+\item{lonCenter}{Value of the longitude to be centered in the plot.}
 
 \item{...}{Further arguments passed to \code{spplot}}
 }
@@ -53,64 +55,6 @@ The function applies the \code{\link[sp]{spplot}} method after conversion of the
  Many different aspects of the map can be controlled passing the relevant arguments to 
  \code{spplot}. Fine control of graphical parameters for the trellis display can
  be also controlled using \code{\link[lattice]{trellis.par.set}}.
-}
-\examples{
-data("CFS_Iberia_tas")
-# Climatology is computed:
-clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
-plotClimatology(clim)
-# Geographical lines can be added using the argument 'backdrop.theme':
-plotClimatology(clim, backdrop.theme = "coastline")
-
-# Further arguments can be passed to 'spplot'...
-
-# ... a subset of members to be displayed, using 'zcol':
-plotClimatology(clim,
-                backdrop.theme = "coastline",
-                zcol = 1:4)
-                
-# ... regional focuses (e.g. the Iberian Peninsula). 
-plotClimatology(clim,
-                backdrop.theme = "countries",
-                xlim = c(-10,5), ylim = c(35,44),
-                zcol = 1:4,
-                scales = list(draw = TRUE))
-
-# Changing the default color palette and ranges:
-plotClimatology(clim,
-                backdrop.theme = "coastline",
-                zcol = 1:4,
-                col.regions = cm.colors(27), at = seq(10,37,1))
-                
-# For ensemble means climatology should be called with 'by.member' set to FALSE:
-clim <- climatology(CFS_Iberia_tas, by.member = FALSE)
-
-# Adding contours to the plot is direct with argument 'contour':
-plotClimatology(clim,
-                scales = list(draw = TRUE),
-                contour = TRUE,
-                main = "tas Predictions July Ensemble Mean")
-                
-                
-## Example of multigrid plotting
-data("NCEP_Iberia_psl")
-## Winter data are split into monthly climatologies
-monthly.clim.grids <- lapply(getSeason(NCEP_Iberia_psl), function(x) {
-      climatology(subsetGrid(NCEP_Iberia_psl, season = x))
-})
-## Skip the temporal checks, as grids correspond to different time slices
-mg <- do.call("makeMultiGrid",
-              c(monthly.clim.grids, skip.temporal.check = TRUE))
-              ## We change the panel names
-plotClimatology(mg, 
-                backdrop.theme = "coastline",
-                names.attr = c("DEC","JAN","FEB"),
-                main = "Mean PSL climatology 1991-2010",
-                scales = list(draw = TRUE))                
-
-# Station data:
-data("VALUE_Iberia_pr")
-plotClimatology(climatology(VALUE_Iberia_pr), backdrop.theme = "countries")
 }
 \references{
 \itemize{

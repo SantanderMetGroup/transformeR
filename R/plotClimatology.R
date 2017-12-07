@@ -23,6 +23,7 @@
 #' @param backdrop.theme Reference geographical lines to be added to the plot. See Details. 
 #' @param set.min Numeric value indicating an absolute minimum value (default to \code{NULL}). All grid values below this are mapped to \code{set.min}. See details.
 #' @param set.max Same as \code{set.min} argument, but to force a ceiling. 
+#' @param lonCenter Value of the longitude to be centered in the plot.
 #' @param ... Further arguments passed to \code{spplot}
 #' @details The function applies the \code{\link[sp]{spplot}} method after conversion of the climatological map(s) to a
 #'  \code{SpatialGridDataFrame}.
@@ -72,94 +73,111 @@
 #'  \code{\link{map.stippling}}, for adding a custom point layer on top of the map.
 #'  \code{\link{map.lines}}, to add lines and polygons to climatological maps
 #' Also see \code{\link[sp]{spplot}} in package \pkg{sp} for further information on plotting capabilities and options
-#' @examples 
-#' data("CFS_Iberia_tas")
-#' # Climatology is computed:
-#' clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
-#' plotClimatology(clim)
-#' # Geographical lines can be added using the argument 'backdrop.theme':
-#' plotClimatology(clim, backdrop.theme = "coastline")
-#' 
-#' # Further arguments can be passed to 'spplot'...
-#' 
-#' # ... a subset of members to be displayed, using 'zcol':
-#' plotClimatology(clim,
-#'                 backdrop.theme = "coastline",
-#'                 zcol = 1:4)
-#'                 
-#' # ... regional focuses (e.g. the Iberian Peninsula). 
-#' plotClimatology(clim,
-#'                 backdrop.theme = "countries",
-#'                 xlim = c(-10,5), ylim = c(35,44),
-#'                 zcol = 1:4,
-#'                 scales = list(draw = TRUE))
-#' 
-#' # Changing the default color palette and ranges:
-#' plotClimatology(clim,
-#'                 backdrop.theme = "coastline",
-#'                 zcol = 1:4,
-#'                 col.regions = cm.colors(27), at = seq(10,37,1))
-#'                 
-#' # For ensemble means climatology should be called with 'by.member' set to FALSE:
-#' clim <- climatology(CFS_Iberia_tas, by.member = FALSE)
-#' 
-#' # Adding contours to the plot is direct with argument 'contour':
-#' plotClimatology(clim,
-#'                 scales = list(draw = TRUE),
-#'                 contour = TRUE,
-#'                 main = "tas Predictions July Ensemble Mean")
-#'                 
-#'                 
-#' ## Example of multigrid plotting
-#' data("NCEP_Iberia_psl")
-#' ## Winter data are split into monthly climatologies
-#' monthly.clim.grids <- lapply(getSeason(NCEP_Iberia_psl), function(x) {
-#'       climatology(subsetGrid(NCEP_Iberia_psl, season = x))
-#' })
-#' ## Skip the temporal checks, as grids correspond to different time slices
-#' mg <- do.call("makeMultiGrid",
-#'               c(monthly.clim.grids, skip.temporal.check = TRUE))
-#'               ## We change the panel names
-#' plotClimatology(mg, 
-#'                 backdrop.theme = "coastline",
-#'                 names.attr = c("DEC","JAN","FEB"),
-#'                 main = "Mean PSL climatology 1991-2010",
-#'                 scales = list(draw = TRUE))                
-#' 
-#' # Station data:
-#' data("VALUE_Iberia_pr")
-#' plotClimatology(climatology(VALUE_Iberia_pr), backdrop.theme = "countries")
+#' @examples
+# data("CFS_Iberia_tas")
+# # Climatology is computed:
+# clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
+# plotClimatology(clim)
+# # Geographical lines can be added using the argument 'backdrop.theme':
+# plotClimatology(clim, backdrop.theme = "coastline")
+# plotClimatology(clim, backdrop.theme = "coastline", center = 180)
+# 
+# # Further arguments can be passed to 'spplot'...
+# 
+# # ... a subset of members to be displayed, using 'zcol':
+# plotClimatology(clim,
+#                 backdrop.theme = "coastline",
+#                 zcol = 1:4)
+# 
+# # ... regional focuses (e.g. the Iberian Peninsula).
+# plotClimatology(clim,
+#                 backdrop.theme = "countries",
+#                 xlim = c(-10,5), ylim = c(35,44),
+#                 zcol = 1:4,
+#                 scales = list(draw = TRUE))
+# 
+# # Changing the default color palette and ranges:
+# plotClimatology(clim,
+#                 backdrop.theme = "coastline",
+#                 zcol = 1:4,
+#                 col.regions = cm.colors(27), at = seq(10,37,1))
+# 
+# # For ensemble means climatology should be called with 'by.member' set to FALSE:
+# clim <- climatology(CFS_Iberia_tas, by.member = FALSE)
+# 
+# # Adding contours to the plot is direct with argument 'contour':
+# plotClimatology(clim,
+#                 scales = list(draw = TRUE),
+#                 contour = TRUE,
+#                 main = "tas Predictions July Ensemble Mean")
+# 
+# 
+# ## Example of multigrid plotting
+# data("NCEP_Iberia_psl")
+# ## Winter data are split into monthly climatologies
+# monthly.clim.grids <- lapply(getSeason(NCEP_Iberia_psl), function(x) {
+#       climatology(subsetGrid(NCEP_Iberia_psl, season = x))
+# })
+# ## Skip the temporal checks, as grids correspond to different time slices
+# mg <- do.call("makeMultiGrid",
+#               c(monthly.clim.grids, skip.temporal.check = TRUE))
+#               ## We change the panel names
+# plotClimatology(mg,
+#                 backdrop.theme = "coastline",
+#                 names.attr = c("DEC","JAN","FEB"),
+#                 main = "Mean PSL climatology 1991-2010",
+#                 scales = list(draw = TRUE))
+# 
+# # Station data:
+# data("VALUE_Iberia_pr")
+# plotClimatology(climatology(VALUE_Iberia_pr), backdrop.theme = "countries")
 
 
 
-plotClimatology <- function(grid, backdrop.theme = "none", set.min = NULL, set.max = NULL, ...) {
-    arg.list <- list(...)
-    bt <- match.arg(backdrop.theme, choices = c("none", "coastline", "countries"))
-    if (!is.null(set.min) && !is.numeric(set.min)) stop("Invalid 'set.min' value")
-    if (!is.null(set.min) && !is.numeric(set.max)) stop("Invalid 'set.max' value")
-    df <- clim2sgdf(clim = grid, set.min, set.max)
-    ## Backdrop theme 
-    if (bt != "none") {
-        uri <- switch(bt,
-                      "coastline" = system.file("coastline.rda", package = "transformeR"),
-                      "countries" = system.file("countries.rda", package = "transformeR"))
-        load(uri)      
-        if (is.null(arg.list[["sp.layout"]])) {
-            arg.list[["sp.layout"]] <- list(l1)
-        } else {
-           arg.list[["sp.layout"]][[length(arg.list[["sp.layout"]]) + 1]] <- list(l1)
-        } 
-    }
-    ## Default colorbar 
-    if (is.null(arg.list[["col.regions"]])) {
-        jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
-                                         "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
-        arg.list[["col.regions"]] <- jet.colors(101)
-    }
-    ## Other args 
-    arg.list[["obj"]] <- df
-    arg.list[["asp"]] <- 1
-    do.call("spplot", arg.list)
+plotClimatology <- function(grid, backdrop.theme = "none", set.min = NULL, set.max = NULL, lonCenter = NULL, ...) {
+      arg.list <- list(...)
+      bt <- match.arg(backdrop.theme, choices = c("none", "coastline", "countries"))
+      if (!is.null(set.min) && !is.numeric(set.min)) stop("Invalid 'set.min' value")
+      if (!is.null(set.min) && !is.numeric(set.max)) stop("Invalid 'set.max' value")
+      ## Change lon center
+      if(!is.null(lonCenter)) {
+            indcenter <- which(abs(grid$xyCoords$x - lonCenter) == min(abs(grid$xyCoords$x - lonCenter)))
+            indcenter <- abs(length(grid$xyCoords$x)/2 - indcenter)
+            newlon <- if (indcenter == 0) grid$xyCoords$x else c(tail(grid$xyCoords$x, -indcenter), 
+                                                                 head(grid$xyCoords$x, indcenter))
+            dimNames <-  attr(grid$Data, "dimensions")
+            climfun <-  attr(grid$Data, "climatology:fun")
+            ind <- match(newlon, grid$xyCoords$x)
+            grid$Data <- asub(grid$Data, idx = ind, 
+                              dims = which(getDim(grid) == "lon"), drop = FALSE)
+            attr(grid$Data, "dimensions") <- dimNames
+            attr(grid$Data, "climatology:fun") <- climfun
+            grid$xyCoords$x <- newlon
+      }
+      ## Covert to spatial object
+      df <- clim2sgdf(clim = grid, set.min, set.max)
+      ## Backdrop theme 
+      if (bt != "none") {
+            uri <- switch(bt,
+                          "coastline" = system.file("coastline.rda", package = "transformeR"),
+                          "countries" = system.file("countries.rda", package = "transformeR"))
+            load(uri)      
+            if (is.null(arg.list[["sp.layout"]])) {
+                  arg.list[["sp.layout"]] <- list(l1)
+            } else {
+                  arg.list[["sp.layout"]][[length(arg.list[["sp.layout"]]) + 1]] <- list(l1)
+            } 
+      }
+      ## Default colorbar 
+      if (is.null(arg.list[["col.regions"]])) {
+            jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
+                                             "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
+            arg.list[["col.regions"]] <- jet.colors(101)
+      }
+      ## Other args 
+      arg.list[["obj"]] <- df
+      arg.list[["asp"]] <- 1
+      do.call("spplot", arg.list)
 }      
 
 #'@title Climatology to SpatialGridDataFrame or SpatialPointsDataFrame
@@ -187,80 +205,80 @@ plotClimatology <- function(grid, backdrop.theme = "none", set.min = NULL, set.m
 
 
 clim2sgdf <- function(clim, set.min, set.max) {
-    grid <- clim
-    if (is.null(attr(grid[["Data"]], "climatology:fun"))) {
-        stop("The input grid is not a climatology: Use function 'climatology' first")
-    }
-    dimNames <- getDim(grid)
-    ## Multigrids are treated as realizations, previously aggregated by members if present
-    is.multigrid <- "var" %in% dimNames
-    if (is.multigrid) {
-        if ("member" %in% dimNames) {
-            mem.ind <- grep("member", dimNames)
-            n.mem <- getShape(grid, "member")
-            if (n.mem > 1) message("NOTE: The multimember mean will be displayed for each variable in the multigrid")
-            grid <- suppressMessages(aggregateGrid(grid, aggr.mem = list(FUN = "mean", na.rm = TRUE)))
-            dimNames <- getDim(grid)
-        }
-        attr(grid[["Data"]], "dimensions") <- gsub("var", "member", dimNames)      
-    }
-    grid <- redim(grid, drop = FALSE)
-    dimNames <- getDim(grid)
-    mem.ind <- grep("member", dimNames)
-    n.mem <- getShape(grid, "member")
-    co <- getCoordinates(grid)
-    if (isRegular(grid)) co <- expand.grid(co$y, co$x)[2:1]
-    le <- nrow(co)
-    #############hemen nago!
-    if (isRegular(grid)) {
-        aux <- vapply(1:n.mem, FUN.VALUE = numeric(le), FUN = function(x) {
-            z <- asub(grid[["Data"]], idx = x, dims = mem.ind, drop = TRUE)
-            z <- unname(abind(z, along = -1L))
-            attr(z, "dimensions") <- c("time", "lat", "lon")
-            array3Dto2Dmat(z)
-        })
-        # Data reordering to match SpatialGrid coordinates
-        aux <- data.frame(aux[order(-co[,2], co[,1]), ])
-    } else {
-        aux <- redim(grid, loc = !isRegular(grid), drop = TRUE)$Data
-        if (n.mem > 1) {
-            naind <- lapply(1:n.mem, function(i) which(!is.na(aux[i,]), arr.ind = TRUE))
-            naind <- Reduce(intersect, naind)
-            aux <- data.frame(t(aux[,naind]))
-        } else {
-            naind <- which(!is.na(aux), arr.ind = TRUE)
-            aux <- data.frame(as.numeric(aux[naind]))
-        }
-    }
-    # Set min/max values, if provided
-    if (!is.null(set.max)) aux[aux > set.max] <- set.max
-    if (!is.null(set.min)) aux[aux < set.min] <- set.min
-    # Panel names 
-    if (is.multigrid) {
-        vname <- attr(grid$Variable, "longname")
-        if (!is.null(grid$Variable$level)) {
-            auxstr <- paste(vname, grid$Variable$level, sep = "@")
-            vname <- gsub("@NA", "", auxstr)
-        }
-        vname <- gsub("\\s", "_", vname)
-        vname <- make.names(vname, unique = TRUE)
-    } else {
-        vname <- paste0("Member_", 1:n.mem)
-    }
-    names(aux) <- vname
-    # Defining grid topology -----------------
-    aux.grid <- getGrid(grid)
-    if (!isRegular(grid)) {
-        df <- sp::SpatialPointsDataFrame(co[naind,], aux)
-    } else {
-        cellcentre.offset <- vapply(aux.grid, FUN = "[", 1L, FUN.VALUE = numeric(1L))
-        cellsize <- vapply(c("resX", "resY"), FUN.VALUE = numeric(1L), FUN = function(x) attr(aux.grid, which = x))
-        aux.grid <- getCoordinates(grid)
-        cells.dim <- vapply(aux.grid, FUN.VALUE = integer(1L), FUN = "length")
-        grd <- sp::GridTopology(c(cellcentre.offset[["x"]], cellcentre.offset[["y"]]), cellsize, c(cells.dim[["x"]], cells.dim[["y"]]))
-        df <- sp::SpatialGridDataFrame(grd, aux)
-    }
-    return(df)
+      grid <- clim
+      if (is.null(attr(grid[["Data"]], "climatology:fun"))) {
+            stop("The input grid is not a climatology: Use function 'climatology' first")
+      }
+      dimNames <- getDim(grid)
+      ## Multigrids are treated as realizations, previously aggregated by members if present
+      is.multigrid <- "var" %in% dimNames
+      if (is.multigrid) {
+            if ("member" %in% dimNames) {
+                  mem.ind <- grep("member", dimNames)
+                  n.mem <- getShape(grid, "member")
+                  if (n.mem > 1) message("NOTE: The multimember mean will be displayed for each variable in the multigrid")
+                  grid <- suppressMessages(aggregateGrid(grid, aggr.mem = list(FUN = "mean", na.rm = TRUE)))
+                  dimNames <- getDim(grid)
+            }
+            attr(grid[["Data"]], "dimensions") <- gsub("var", "member", dimNames)      
+      }
+      grid <- redim(grid, drop = FALSE)
+      dimNames <- getDim(grid)
+      mem.ind <- grep("member", dimNames)
+      n.mem <- getShape(grid, "member")
+      co <- getCoordinates(grid)
+      if (isRegular(grid)) co <- expand.grid(co$y, co$x)[2:1]
+      le <- nrow(co)
+      #############hemen nago!
+      if (isRegular(grid)) {
+            aux <- vapply(1:n.mem, FUN.VALUE = numeric(le), FUN = function(x) {
+                  z <- asub(grid[["Data"]], idx = x, dims = mem.ind, drop = TRUE)
+                  z <- unname(abind(z, along = -1L))
+                  attr(z, "dimensions") <- c("time", "lat", "lon")
+                  array3Dto2Dmat(z)
+            })
+            # Data reordering to match SpatialGrid coordinates
+            aux <- data.frame(aux[order(-co[,2], co[,1]), ])
+      } else {
+            aux <- redim(grid, loc = !isRegular(grid), drop = TRUE)$Data
+            if (n.mem > 1) {
+                  naind <- lapply(1:n.mem, function(i) which(!is.na(aux[i,]), arr.ind = TRUE))
+                  naind <- Reduce(intersect, naind)
+                  aux <- data.frame(t(aux[,naind]))
+            } else {
+                  naind <- which(!is.na(aux), arr.ind = TRUE)
+                  aux <- data.frame(as.numeric(aux[naind]))
+            }
+      }
+      # Set min/max values, if provided
+      if (!is.null(set.max)) aux[aux > set.max] <- set.max
+      if (!is.null(set.min)) aux[aux < set.min] <- set.min
+      # Panel names 
+      if (is.multigrid) {
+            vname <- attr(grid$Variable, "longname")
+            if (!is.null(grid$Variable$level)) {
+                  auxstr <- paste(vname, grid$Variable$level, sep = "@")
+                  vname <- gsub("@NA", "", auxstr)
+            }
+            vname <- gsub("\\s", "_", vname)
+            vname <- make.names(vname, unique = TRUE)
+      } else {
+            vname <- paste0("Member_", 1:n.mem)
+      }
+      names(aux) <- vname
+      # Defining grid topology -----------------
+      aux.grid <- getGrid(grid)
+      if (!isRegular(grid)) {
+            df <- sp::SpatialPointsDataFrame(co[naind,], aux)
+      } else {
+            cellcentre.offset <- vapply(aux.grid, FUN = "[", 1L, FUN.VALUE = numeric(1L))
+            cellsize <- vapply(c("resX", "resY"), FUN.VALUE = numeric(1L), FUN = function(x) attr(aux.grid, which = x))
+            aux.grid <- getCoordinates(grid)
+            cells.dim <- vapply(aux.grid, FUN.VALUE = integer(1L), FUN = "length")
+            grd <- sp::GridTopology(c(cellcentre.offset[["x"]], cellcentre.offset[["y"]]), cellsize, c(cells.dim[["x"]], cells.dim[["y"]]))
+            df <- sp::SpatialGridDataFrame(grd, aux)
+      }
+      return(df)
 }
 
 
@@ -322,21 +340,21 @@ clim2sgdf <- function(clim, set.min, set.max) {
 
 
 map.stippling <- function(clim, threshold = 0.05, condition = "LT", ...) {
-    if (!("climatology:fun" %in% names(attributes(clim$Data)))) {
-        stop("Input grid was not recognized as a climatology")
-    }
-    condition <- match.arg(condition, choices = c("GT", "GE", "LT", "LE"))
-    ineq <- switch(condition,
-                   "GT" = ">",
-                   "GE" = ">=",
-                   "LT" = "<",
-                   "LE" = "<=")
-    arg.list <- list(...)
-    aux <- array3Dto2Dmat(clim$Data)[1, ]
-    ind <- eval(parse(text = paste("which(aux", ineq, "threshold)")))
-    coords <- as.matrix(expand.grid(clim$xyCoords$y, clim$xyCoords$x)[2:1][ind, ])
-    if (nrow(coords) == 0) stop("None of the grid points is below the specified threshold")
-    do.call("list", c("sp.points", SpatialPoints(coords), arg.list))
+      if (!("climatology:fun" %in% names(attributes(clim$Data)))) {
+            stop("Input grid was not recognized as a climatology")
+      }
+      condition <- match.arg(condition, choices = c("GT", "GE", "LT", "LE"))
+      ineq <- switch(condition,
+                     "GT" = ">",
+                     "GE" = ">=",
+                     "LT" = "<",
+                     "LE" = "<=")
+      arg.list <- list(...)
+      aux <- array3Dto2Dmat(clim$Data)[1, ]
+      ind <- eval(parse(text = paste("which(aux", ineq, "threshold)")))
+      coords <- as.matrix(expand.grid(clim$xyCoords$y, clim$xyCoords$x)[2:1][ind, ])
+      if (nrow(coords) == 0) stop("None of the grid points is below the specified threshold")
+      do.call("list", c("sp.points", SpatialPoints(coords), arg.list))
 }
 
 
@@ -400,18 +418,18 @@ map.stippling <- function(clim, threshold = 0.05, condition = "LT", ...) {
 #' }
 
 map.lines <- function(lonLim = NULL, latLim = NULL, coords = NULL, ...) {
-    if (is.null(lonLim) && is.null(latLim) && is.null(coords)) stop("Undefined polygon coordinates")
-    if (is.null(lonLim) && !is.null(latLim) || !is.null(lonLim) && is.null(latLim)) stop("Undefined 'lonLim' or 'latLim'")
-    arg.list <- list(...)
-    spLines <- if (is.null(coords)) {
-        coords <- as.matrix(expand.grid(lonLim, latLim))
-        coords[1:2, ] <- coords[2:1, ]
-        coords <- rbind(coords, coords[1,])
-        Line(coords) %>% list() %>% Lines(ID = "id") %>% list() %>% SpatialLines()
-    } else {
-        lapply(1:(nrow(coords) - 1), function(x) {
-            Line(coords[x:(x + 1),])
-        }) %>% Lines(ID = "id") %>% list() %>% SpatialLines()
-    }    
-    do.call("list", c("sp.lines", spLines, arg.list))
+      if (is.null(lonLim) && is.null(latLim) && is.null(coords)) stop("Undefined polygon coordinates")
+      if (is.null(lonLim) && !is.null(latLim) || !is.null(lonLim) && is.null(latLim)) stop("Undefined 'lonLim' or 'latLim'")
+      arg.list <- list(...)
+      spLines <- if (is.null(coords)) {
+            coords <- as.matrix(expand.grid(lonLim, latLim))
+            coords[1:2, ] <- coords[2:1, ]
+            coords <- rbind(coords, coords[1,])
+            Line(coords) %>% list() %>% Lines(ID = "id") %>% list() %>% SpatialLines()
+      } else {
+            lapply(1:(nrow(coords) - 1), function(x) {
+                  Line(coords[x:(x + 1),])
+            }) %>% Lines(ID = "id") %>% list() %>% SpatialLines()
+      }    
+      do.call("list", c("sp.lines", spLines, arg.list))
 }

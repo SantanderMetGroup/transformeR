@@ -315,7 +315,7 @@ draw.world.lines <- function(...) {
 #' @description Return the indices of leap years in a vector of years
 #' @param years a integer vector of (gregorian) years
 #' @return a vector of indices of the position of leap years
-#' @references \url{https://en.wikipedia.org/wiki/Leap_year}
+#' @references \url{https://en.wikipedia.org/wiki/Leap_year#Algorithm}
 #' @keywords internal
 #' @export
 #' @family get.helpers
@@ -524,9 +524,11 @@ checkVarNames <- function(..., check.order = TRUE) {
     } else {
         out <- lapply(grid.list, FUN = "getVarNames")
         lengths <- sapply(out, "length")
-        if (!all(lengths == lengths[[1]])) stop("The number of variables stored in the input grids differ")
+        if (!all(lengths == lengths[[1]])) {
+          stop("The number of variables stored in the input grids differ")
+        }
         if (!all(sapply(2:length(out), function(x) all(out[[x]] %in% out[[1]])))) {
-            stop("Variable names in the input grids differ")
+            stop("Variable names of the input grids differ")
         }
         if (check.order) {
             if (!all(sapply(2:length(out), function(x) identical(out[[x]], out[[1]])))) {
@@ -729,7 +731,7 @@ getVarNames <- function(grid, type = c("short", "long")) {
 #' @examples 
 #' data("CFS_Iberia_hus850")
 #' getGridVerticalLevels(CFS_Iberia_hus850)
-#' # Surface variables usually have an undefined vertical level
+#' # Surface variables usually have an undefined vertical level <NA>
 #' data("EOBS_Iberia_tas")
 #' getGridVerticalLevels(EOBS_Iberia_tas)
 #' 
@@ -740,7 +742,7 @@ getVarNames <- function(grid, type = c("short", "long")) {
 #' getGridVerticalLevels(mg)
 #' # Use of var.index to select some variables:
 #' # either by their shortname...
-#' getGridVerticalLevels(mg, var.index = c("shum850","air850"))
+#' getGridVerticalLevels(mg, var.index = c("shum@@850","air@@850"))
 #' # ... or by index position in the multigrid
 #' getGridVerticalLevels(mg, var.index = c(1,3))
 
@@ -807,4 +809,39 @@ listDepth <- function(this){
       }
       return(i)
 }
+#end
+
+
+
+#' Reorder loc dimension in irregular grids
+#' 
+#' Retrieves a grid that is with the 'loc' dimension reordered.
+#'  Multimember multigrids are supported. Subroutine of \code{\link{subsetGrid}}.
+#'
+#' @param grid Input irregular grid to be subset (possibly a multimember/multigrid).
+#' @param lon Logical to order data according to longitudes.
+#' @param lat Logical to order data according to latitudes.
+#' @return An irregular grid (or multigrid).
+#' @keywords internal
+#' @importFrom magrittr %>% %<>%
+#' @export
+#' @author M. Iturbide
+
+reorderStation <- function(grid, axis = c("x", "y")) {
+      dimNames <- getDim(grid)
+      axis <- match.arg(axis, choices = c("x", "y"))
+      if (isRegular(grid)) stop("This function is applied only to irregular grids")
+      indloc <- order(getCoordinates(grid)[[axis]])
+      grid$Data <- asub(grid$Data, idx = indloc, dims = grep("loc", dimNames), drop = FALSE)
+      attr(grid$Data, "dimensions") <- dimNames
+      grid$xyCoords <- grid$xyCoords[indloc,]
+      if ("Metadata" %in% names(grid)) {
+            if ("station_id" %in% names(grid$Metadata)) grid$Metadata$station_id <- grid$Metadata$station_id[indloc]
+            if ("name" %in% names(grid$Metadata)) grid$Metadata$name <- grid$Metadata$name[indloc]
+            if ("altitude" %in% names(grid$Metadata)) grid$Metadata$altitude <- grid$Metadata$altitude[indloc]      
+            if ("source" %in% names(grid$Metadata)) grid$Metadata$source <- grid$Metadata$source[indloc]
+      }
+      return(grid)
+}
+
 #end

@@ -12,12 +12,15 @@ dataSplit(x, y, f = 3/4, type = "random", test.pos = NULL,
 
 \item{y}{The observations object.}
 
-\item{f}{Could be a fraction, value between (0,1) indicating the fraction of the data that will define the train set, or an integer indicating the number of folds.}
+\item{f}{Could be a fraction, value between (0,1) indicating the fraction of the data that will define the train set, 
+or an integer indicating the number of folds.}
 
-\item{type}{A string, c("random","chronological"), indicating if the splittins should be random or in a choronological order. Default is "random".}
+\item{type}{A string, c("random","chronological"), indicating if the splittins should be random or in a choronological order. 
+Default is "random".}
 
 \item{test.pos}{An integer indicating the fold that would be the test posittion. Default is NULL.
-Example: if you divide the data in 4 folds and define test.pos = 2. then the second fold would be the test set and the first, third and fourth would be the train set.}
+Example: if you divide the data in 4 folds and define test.pos = 2. then the second fold would be the test set and the first, 
+third and fourth would be the train set.}
 
 \item{scale}{A logical value. Indicates if the data should be estandardized (i.e., 0 mean and 1 standard deviation).}
 }
@@ -25,7 +28,8 @@ Example: if you divide the data in 4 folds and define test.pos = 2. then the sec
 A list containing the grids x and y splitted.
 }
 \description{
-Split data into two different sets by a specific fraction. Splitting data is normally used to obtain a train and a validation set.
+Split data into two different sets by a specific fraction. Splitting data is 
+normally used to obtain a train and a validation set.
 }
 \examples{
 x <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
@@ -45,7 +49,8 @@ c(mean(data.splitted$xT$Data[1,,1,1]),sd(data.splitted$xT$Data[1,,1,1]))
 head(data.splitted2$xT$Data[1,1,,1,1])
 c(mean(data.splitted2$xT$Data[1,1,,1,1]),sd(data.splitted2$xT$Data[1,1,,1,1]))
 
-# Split the data in a train and test dataset (i.e., 2 folds) indicating the fraction of the train dataset.
+# Split the data in a train and test dataset (i.e., 2 folds) 
+# indicating the fraction of the train dataset.
 data.splitted3 <- dataSplit(x,y,f = 0.82, type = "random")
 dim(y$Data)
 dim(data.splitted3$yT$Data)

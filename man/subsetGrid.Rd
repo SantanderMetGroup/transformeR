@@ -6,7 +6,7 @@
 \usage{
 subsetGrid(grid, var = NULL, runtime = NULL, members = NULL,
   years = NULL, season = NULL, lonLim = NULL, latLim = NULL,
-  outside = FALSE, drop = TRUE)
+  outside = FALSE, station.id = NULL, drop = TRUE)
 }
 \arguments{
 \item{grid}{The input grid to be subset. This is either a grid, as returned e.g. by \code{loadeR::loadGridData}, a
@@ -32,6 +32,8 @@ longitude coordinate. If \code{NULL} (default), no subsetting is performed on th
 \item{latLim}{Same as \code{lonLim} argument, but for latitude.}
 
 \item{outside}{if TRUE subset coordinates outside the grid extent are allowed. Default is FALSE.}
+
+\item{station.id}{Station ID (check \code{$Metadata$station_id}).}
 
 \item{drop}{Logical (default is TRUE). Drop or keep dimensions of length 1.}
 }
@@ -80,7 +82,7 @@ sub <- subsetGrid(CFS_Iberia_tas,
                   members = c(3,7),
                   lonLim = c(-10,-5),
                   latLim = c(36,43))
-plotClimatology(climatology(sub), tol = 0.005, contour = TRUE, 
+plotClimatology(climatology(sub), tol = 0.005, contour = TRUE,
                 backdrop.theme = "coastline")
 ## Example 2 - Subsetting a multimember multigrid by variables
 # Multimember multigrid creation
@@ -100,7 +102,8 @@ Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetVar}}, \code{\link{subsetYears}}
+  \code{\link{subsetStation}}, \code{\link{subsetVar}},
+  \code{\link{subsetYears}}
 }
 \author{
 J. Bedia, M. Iturbide

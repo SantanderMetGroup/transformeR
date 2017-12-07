@@ -32,6 +32,7 @@
 #'  of the bounding box defining the subset. For single-point subsets, a numeric value with the
 #'  longitude coordinate. If \code{NULL} (default), no subsetting is performed on the longitude dimension
 #' @param outside if TRUE subset coordinates outside the grid extent are allowed. Default is FALSE.
+#' @param station.id Station ID (check \code{$Metadata$station_id}).
 #' @param drop Logical (default is TRUE). Drop or keep dimensions of length 1.
 #' @return A new grid object that is a logical subset of the input grid along the specified dimensions.
 #' @details
@@ -78,7 +79,7 @@
 #'                   members = c(3,7),
 #'                   lonLim = c(-10,-5),
 #'                   latLim = c(36,43))
-#' plotClimatology(climatology(sub), tol = 0.005, contour = TRUE, 
+#' plotClimatology(climatology(sub), tol = 0.005, contour = TRUE,
 #'                 backdrop.theme = "coastline")
 #' ## Example 2 - Subsetting a multimember multigrid by variables
 #' # Multimember multigrid creation
@@ -102,6 +103,7 @@ subsetGrid <- function(grid,
                        lonLim = NULL,
                        latLim = NULL,
                        outside = FALSE,
+                       station.id = NULL,
                        drop = TRUE) {
     if (!is.null(var)) {
         grid <- subsetVar(grid, var)
@@ -120,6 +122,9 @@ subsetGrid <- function(grid,
     }
     if (!is.null(lonLim) | !is.null(latLim)) {
         grid <- subsetSpatial(grid, lonLim, latLim, outside)
+    }
+    if (!is.null(station.id)) {
+        grid <- subsetStation(grid, station.id)
     }
     if (isTRUE(drop)) grid <- redim(grid, drop = TRUE)
     return(grid)
@@ -344,9 +349,14 @@ subsetYears <- function(grid, years) {
 #' 
 subsetSpatial <- function(grid, lonLim, latLim, outside) {
     dimNames <- getDim(grid)
+    londim <- c("loc", "loc")
+    if (isRegular(grid)) londim <- c("lon", "lat")
     if (!is.null(lonLim)) {
         if (!is.vector(lonLim) | length(lonLim) > 2) {
             stop("Invalid longitudinal boundary definition")
+        }
+        if (!isRegular(grid)) {
+              grid <- reorderStation(grid, axis = "x")
         }
         lons <- getCoordinates(grid)$x
         if (lonLim[1] < lons[1] | lonLim[1] > tail(lons, 1)) {
@@ -372,14 +382,27 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
             lon2 <- which.min(abs(lons - lonLim[2]))
             lon.ind <- lon.ind:lon2
         }
-        grid$Data <- asub(grid$Data, idx = lon.ind, dims = grep("lon", dimNames), drop = FALSE)
+        grid$Data <- asub(grid$Data, idx = lon.ind, dims = grep(londim[1], dimNames), drop = FALSE)
         attr(grid$Data, "dimensions") <- dimNames
-        grid$xyCoords$x <- grid$xyCoords$x[lon.ind]
+        if (isRegular(grid)) {
+              grid$xyCoords$x <- grid$xyCoords$x[lon.ind] 
+        } else {
+              grid$xyCoords <- grid$xyCoords[lon.ind,]
+              if ("Metadata" %in% names(grid)) {
+                    if ("station_id" %in% names(grid$Metadata)) grid$Metadata$station_id <- grid$Metadata$station_id[lon.ind]
+                    if ("name" %in% names(grid$Metadata)) grid$Metadata$name <- grid$Metadata$name[lon.ind]
+                    if ("altitude" %in% names(grid$Metadata)) grid$Metadata$altitude <- grid$Metadata$altitude[lon.ind]      
+                    if ("source" %in% names(grid$Metadata)) grid$Metadata$source <- grid$Metadata$source[lon.ind]
+              }
+        }
     }
     if (!is.null(latLim)) {
         if (!is.vector(latLim) | length(latLim) > 2) {
             stop("Invalid latitudinal boundary definition")
         }
+          if (!isRegular(grid)) {
+                reorderStation(grid, axis = "y")
+          }
         lats <- getCoordinates(grid)$y
         if (latLim[1] < lats[1] | latLim[1] > tail(lats, 1)) {
             if (outside == FALSE) {
@@ -404,9 +427,19 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
             lat2 <- which.min(abs(lats - latLim[2]))
             lat.ind <- lat.ind:lat2
         }
-        grid$Data <- asub(grid$Data, lat.ind, grep("lat", dimNames), drop = FALSE)
+        grid$Data <- asub(grid$Data, lat.ind, grep(londim[2], dimNames), drop = FALSE)
         attr(grid$Data, "dimensions") <- dimNames
-        grid$xyCoords$y <- grid$xyCoords$y[lat.ind]
+        if (isRegular(grid)) {
+              grid$xyCoords$y <- grid$xyCoords$y[lat.ind] 
+        } else {
+              grid$xyCoords <- grid$xyCoords[lat.ind,]
+              if ("Metadata" %in% names(grid)) {
+                    if ("station_id" %in% names(grid$Metadata)) grid$Metadata$station_id <- grid$Metadata$station_id[lat.ind]
+                    if ("name" %in% names(grid$Metadata)) grid$Metadata$name <- grid$Metadata$name[lat.ind]
+                    if ("altitude" %in% names(grid$Metadata)) grid$Metadata$altitude <- grid$Metadata$altitude[lat.ind]      
+                    if ("source" %in% names(grid$Metadata)) grid$Metadata$source <- grid$Metadata$source[lat.ind]
+              }
+        }
     }
     attr(grid$xyCoords, "subset") <- "subsetSpatial"
     return(grid)
@@ -421,38 +454,59 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
 #'
 #' @param grid Input grid to be subset (possibly a multimember/multigrid).
 #' @param season An integer vector indicating the months to be subset.
-#' @details An attribute 'subset' with value 'subsetSeason' is added to the Dates slot of the output subset.
+#' @details An attribute 'subset' with value 'time' is added to the Variable slot of the output grid.
 #' @return A grid (or multigrid) that is a logical subset of the input grid along its 'time' dimension.
-#' @importFrom abind asub
+#' @importFrom magrittr %>% %<>% 
 #' @keywords internal
 #' @export
 #' @author J. Bedia 
 #' @family subsetting
 
 subsetSeason <- function(grid, season = NULL) {
-    dimNames <- getDim(grid)
-    season0 <- getSeason(grid)
-    if (!all(season %in% season0)) stop("Month selection outside original season values")      
-    mon <- if (any(grepl("var", dimNames))) {
-        as.integer(substr(grid$Dates[[1]]$start, 6, 7))
-    } else {
-        as.integer(substr(grid$Dates$start, 6, 7))
-    }
+  season0 <- getSeason(grid)
+  if (!all(season %in% season0)) stop("Month selection outside original season values")      
+  if (getTimeResolution(grid) != "YY") {
+    mon <- getRefDates(grid) %>% substr(6,7) %>% as.integer()
     time.ind <- which(mon %in% season)
-    grid$Data <- asub(grid$Data, time.ind, grep("time", dimNames), drop = FALSE)
-    attr(grid$Data, "dimensions") <- dimNames
-    # Verification Date adjustment
-    grid$Dates <- if (any(grepl("var", dimNames))) {
-        lapply(1:length(grid$Dates), function(i) {
-            lapply(grid$Dates[[i]], function(x) x[time.ind])
-        })
-    } else {
-        lapply(grid$Dates, function(x) x[time.ind])
-    }
-    attr(grid$Dates, "subset") <- "subsetSeason"
-    return(grid)
+    grid %<>% subsetDimension(dimension = "time", indices = time.ind)
+  } else {
+    message("NOTE: Can't perform monthly subsetting on annual data. 'season' argument was ignored.")
+  }
+  return(grid)
 }
-# End
+
+
+#' Monthly subset of a grid
+#' 
+#' Retrieves a grid that is a logical subset of the input grid along its 'time' dimension,
+#'  on a monthly basis. Multimember multigrids are supported. Subroutine of \code{\link{subsetGrid}}.
+#'
+#' @param grid Input grid to be subset (possibly a multimember/multigrid).
+#' @param season An integer vector indicating the months to be subset.
+#' @details An attribute 'subset' with value 'time' is added to the Variable slot of the output grid.
+#' @return A grid (or multigrid) that is a logical subset of the input grid along its 'time' dimension.
+#' @importFrom magrittr %>% %<>% 
+#' @keywords internal
+#' @export
+#' @author J. Bedia 
+#' @family subsetting
+
+subsetStation <- function(grid, station.id = NULL) {
+      station0 <- grid$Metadata$station_id
+      if (!all(station.id %in% station0)) stop("Station ID selection does not exist in the data")      
+      id.ind <- which(station.id %in% station0)
+      grid %<>% subsetDimension(dimension = "loc", indices = id.ind)
+      if ("Metadata" %in% names(grid)) {
+            if ("station_id" %in% names(grid$Metadata)) grid$Metadata$station_id <- grid$Metadata$station_id[id.ind]
+            if ("name" %in% names(grid$Metadata)) grid$Metadata$name <- grid$Metadata$name[id.ind]
+            if ("altitude" %in% names(grid$Metadata)) grid$Metadata$altitude <- grid$Metadata$altitude[id.ind]      
+            if ("source" %in% names(grid$Metadata)) grid$Metadata$source <- grid$Metadata$source[id.ind]
+      }      
+      return(grid)
+}
+
+#end
+
 
 
 #' @title Arbitrary grid subsetting along one of its dimensions
@@ -469,6 +523,7 @@ subsetSeason <- function(grid, season = NULL) {
 #' @details
 #' The attribute \code{subset} will be added taking the value of the \code{dimension} parameter.
 #' @importFrom abind asub
+#' @importFrom magrittr %<>% 
 #' @author J. Bedia and S. Herrera
 #' @keywords internal
 #' @export
@@ -487,7 +542,7 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
         message("NOTE: Argument 'indices' is NULL. Nothing was done.")
     } else {
         dimension <- match.arg(dimension,
-                               choices = c("runtime","var","member","time","lat","lon"),
+                               choices = c("runtime","var","member","time","lat","lon","loc"),
                                several.ok = TRUE)
         dimNames <- getDim(grid)
         dims <- match(dimension, dimNames)
@@ -515,6 +570,9 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
         }
         if ("lat" %in% dimension) {
             grid$xyCoords$y <- grid$xyCoords$y[indices]
+        }
+        if ("loc" %in% dimension) {
+              grid$xyCoords <- grid$xyCoords[indices,]  
         }
         if ("member" %in% dimension) {
             grid$Members <- grid$Members[indices]

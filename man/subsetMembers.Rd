@@ -27,8 +27,8 @@ An attribute 'subset' with value 'subsetMembers' is added to the Members slot of
 Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetRuntime}}, \code{\link{subsetSeason}},
-  \code{\link{subsetSpatial}}, \code{\link{subsetVar}},
-  \code{\link{subsetYears}}
+  \code{\link{subsetSpatial}}, \code{\link{subsetStation}},
+  \code{\link{subsetVar}}, \code{\link{subsetYears}}
 }
 \author{
 J. Bedia

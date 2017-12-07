@@ -49,8 +49,8 @@ checkDim(predictor.adj, predictand.adj, dimensions = "time") # perfect
 Other subsetting: \code{\link{subsetDimension}},
   \code{\link{subsetGrid}}, \code{\link{subsetMembers}},
   \code{\link{subsetRuntime}}, \code{\link{subsetSeason}},
-  \code{\link{subsetSpatial}}, \code{\link{subsetVar}},
-  \code{\link{subsetYears}}
+  \code{\link{subsetSpatial}}, \code{\link{subsetStation}},
+  \code{\link{subsetVar}}, \code{\link{subsetYears}}
 }
 \author{
 J Bedia

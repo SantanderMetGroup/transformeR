@@ -25,8 +25,8 @@ An attribute 'subset' with value 'subsetRuntime' is added to the Runtime slot of
 Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetSeason}},
-  \code{\link{subsetSpatial}}, \code{\link{subsetVar}},
-  \code{\link{subsetYears}}
+  \code{\link{subsetSpatial}}, \code{\link{subsetStation}},
+  \code{\link{subsetVar}}, \code{\link{subsetYears}}
 }
 \author{
 M. Iturbide
