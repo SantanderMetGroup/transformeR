@@ -41,6 +41,7 @@ convert2bin <- function(x, threshold = NULL, partial = FALSE, ref.obs = NULL, re
   dimNames <- getDim(x)
   if (is.null(ref.pred)) {ref.pred <- x}
   if (is.null(threshold)) {
+    if (length((dim(ref.obs$Data))) < 2) {ref.obs$Data <- matrix(ref.obs$Data, nrow = length(ref.obs$Data), ncol = 1) }
     frec <- apply(X = ref.obs$Data, MARGIN = 2, function(X){
       return(length(which(X == 0))/length(X))})
     for (i in 1:length(frec)) {
