@@ -1,18 +1,7 @@
-transformeR 1.2.0
+transformeR 1.2.1
 =================
+* Internal minor change in output attributes after subsetting (if resulting 'time' dimension is a singleton the output is considered a climatology)
 
-* New helper functions (mainly for downscaling):
-    * `convert2bin`, for binary grid calculation based on user-defined thresholds
-    * `dataSplit`, for dataset folding along time dimension
-    * `filterNA`, for missing value removal
-* Changed the variable naming convention when multigrids are created. Now the vertical level (when defined) is appended to the name of the variable, following the definition  `"var@@level"`.
-
-Other minor bug fixes and changes:
-
-* Bug fix in `subsetSeason` (exit with message when attempting to aggregate already annual grids)
-* Bug fix in `makeMultigrid` attribute retrieval from input grids
-* Renamed precipitation dataset suffixes (tp --> pr)
-* Several documentation updates
 
 
 

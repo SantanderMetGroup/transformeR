@@ -244,6 +244,7 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
         attr(grid$Data, "dimensions") <- dimNames
         attr(grid$Variable, paste0(type,"_agg_cellfun")) <- arg.list$FUN
         if (aggr.type == "YY") attr(grid$Dates, "season") <- season
+        if (getShape(grid, "time") == 1L) attr(grid$Dates, "climatology:fun") <- aggr.fun[["FUN"]]
     }
     return(grid)
 }
