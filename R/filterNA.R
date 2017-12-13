@@ -21,8 +21,9 @@
 #' @return A new grid object without missing values
 #' @details The function also takes care of adjusting dates and other relevant metadata (via the internal \code{\link{subsetDimension}}).
 #' 
-#' @importFrom magrittr %>% 
-#' @author J. Bano-Medina
+#' @importFrom magrittr %>% extract2
+#' @author J. Bano-Medina, J. Bedia
+#' @family downscaling.helpers
 #' @export
 #' @examples
 #' # Check if the dataset contains missing values (YES):
@@ -34,12 +35,14 @@
 #' getShape(na.filtered)
 
 filterNA <- function(grid) {
-  if (!anyNA(grid$Data)) {
-    message("NOTE: No missing values were found in the input grid")} 
-  else {
-    time.ind <- grep("time", getDim(grid))
-    na.index <- which(!is.finite(grid$Data), arr.ind = TRUE) %>% as.data.frame() %>% extract2(time.ind) %>% unique()
-    na.index <- setdiff(1:getShape(grid, "time"), na.index)
-    grid <- subsetDimension(grid, dimension = "time", indices = na.index)
-    attr(grid$Variable, "subset") <- "filterNA"}
-    return(grid)}
+    if (!anyNA(grid$Data)) {
+        message("NOTE: No missing values were found in the input grid")
+    } else {
+        time.ind <- grep("time", getDim(grid))
+        na.index <- which(!is.finite(grid$Data), arr.ind = TRUE) %>% as.data.frame() %>% extract2(time.ind) %>% unique()
+        na.index <- setdiff(1:getShape(grid, "time"), na.index)
+        grid <- subsetDimension(grid, dimension = "time", indices = na.index)
+        attr(grid$Variable, "subset") <- "filterNA"
+    }
+    return(grid)
+}

@@ -21,8 +21,8 @@ Suggests:
     visualizeR
 Type: Package
 Title: An R package for climate data manipulation and transformation
-Version: 1.1.2
-Date: 2017-11-23
+Version: 1.2.0
+Date: 2017-12-13
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
     "Jorge Bano Medina <bmedina@ifca.unican.es> [ctb]",

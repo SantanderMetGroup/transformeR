@@ -29,7 +29,7 @@
 #' third and fourth would be the train set.
 #' @param scale A logical value. Indicates if the data should be estandardized (i.e., 0 mean and 1 standard deviation).
 #' @return A list containing the grids x and y splitted.
-#' 
+#' @family downscaling.helpers
 #' @author J. Bano-Medina
 #' @export
 #' @examples

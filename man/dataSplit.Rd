@@ -56,6 +56,10 @@ dim(y$Data)
 dim(data.splitted3$yT$Data)
 dim(data.splitted3$yt$Data)
 }
+\seealso{
+Other downscaling.helpers: \code{\link{convert2bin}},
+  \code{\link{filterNA}}, \code{\link{makeMultiGrid}}
+}
 \author{
 J. Bano-Medina
 }

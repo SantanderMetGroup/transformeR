@@ -27,6 +27,7 @@
 #' @author J. Bano-Medina
 #' @importFrom stats quantile
 #' @export
+#' @family downscaling.helpers
 #' @examples
 #' # Take a look at the data:
 #' head(VALUE_Iberia_pr$Data)
