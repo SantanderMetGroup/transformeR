@@ -56,6 +56,9 @@ The function applies the \code{\link[sp]{spplot}} method after conversion of the
  \code{spplot}. Fine control of graphical parameters for the trellis display can
  be also controlled using \code{\link[lattice]{trellis.par.set}}.
 }
+\examples{
+data("CFS_Iberia_tas")
+}
 \references{
 \itemize{
 \item Bivand, R.S., Pebesma, E.J., Gomez-Rubio, V., 2013. Applied Spatial Data Analysis with R, 2nd ed, useR! Springer, NY.

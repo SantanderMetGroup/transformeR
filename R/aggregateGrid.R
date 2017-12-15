@@ -183,6 +183,7 @@ memberAggregation <- function(grid, aggr.mem, parallel, max.ncores, ncores) {
 timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, parallel, max.ncores, ncores) {
     aux.dates <- getRefDates(grid) 
     time.res <- getTimeResolution(grid)
+    cellfun <- aggr.fun$FUN
     if (aggr.type == "DD" & time.res == "DD") {
         message("Data is already daily: 'aggr.d' option was ignored.")
     } else if (aggr.type == "MM" & time.res == 'MM') {
@@ -242,8 +243,9 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
         grid$Data <- aperm(grid$Data, dimInd)
         # Temporal aggregation attributes 
         attr(grid$Data, "dimensions") <- dimNames
-        attr(grid$Variable, paste0(type,"_agg_cellfun")) <- arg.list$FUN
+        attr(grid$Variable, paste0(type,"_agg_cellfun")) <- cellfun
         if (aggr.type == "YY") attr(grid$Dates, "season") <- season
+        if (getShape(grid, "time") == 1L) attr(grid$Data, "climatology:fun") <- cellfun
     }
     return(grid)
 }

@@ -74,7 +74,7 @@
 #'  \code{\link{map.lines}}, to add lines and polygons to climatological maps
 #' Also see \code{\link[sp]{spplot}} in package \pkg{sp} for further information on plotting capabilities and options
 #' @examples
-# data("CFS_Iberia_tas")
+#' data("CFS_Iberia_tas")
 # # Climatology is computed:
 # clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
 # plotClimatology(clim)

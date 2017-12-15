@@ -4,7 +4,7 @@
 \alias{localScaling.type}
 \title{Local scaling type internal}
 \usage{
-localScaling.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun)
+localScaling.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun, base.std)
 }
 \description{
 Internal for additive/ratio local scaling

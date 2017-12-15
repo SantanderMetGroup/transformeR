@@ -5,7 +5,7 @@
 \title{Local scaling internal}
 \usage{
 localScaling.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores,
-  ncores)
+  ncores, scale)
 }
 \description{
 Internal workhorse for local scaling
