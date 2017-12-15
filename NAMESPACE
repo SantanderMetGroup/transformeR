@@ -3,6 +3,7 @@
 export(PC2grid)
 export(aggregateGrid)
 export(array3Dto2Dmat)
+export(bindGrid.lat)
 export(bindGrid.member)
 export(bindGrid.time)
 export(checkDim)

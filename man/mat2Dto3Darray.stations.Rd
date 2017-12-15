@@ -28,11 +28,11 @@ The function is the inverse of \code{\link{array3Dto2Dmat.stations}}
 \code{\link{array3Dto2Dmat}}, which performs the inverse operation.
 
 Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
-  \code{\link{array3Dto2Dmat}},
+  \code{\link{array3Dto2Dmat}}, \code{\link{bindGrid.lat}},
   \code{\link{bindGrid.member}},
   \code{\link{bindGrid.time}},
   \code{\link{grid3Dto2Dmatrix}}, \code{\link{redim}},
-  \code{\link{sortDim.time}}
+  \code{\link{sortDim.lat}}, \code{\link{sortDim.time}}
 }
 \author{
 M. Iturbide
