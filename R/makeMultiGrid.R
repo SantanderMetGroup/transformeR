@@ -15,9 +15,6 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
-
 #' @title Multigrid constructor 
 #' @description Constructs a (possibly multimember) multigrid from different (multimember) grids.
 #' A multigrid can be considered as a \dQuote{stack} of grids with similar spatiotemporal extents,
@@ -62,6 +59,7 @@
 #' multimember grids should be interpolated individually prior to multigrid construction.  
 #' @export
 #' @importFrom abind abind
+#' @family downscaling.helpers
 #' @author J. bedia 
 #' @seealso \code{\link{interpGrid}} for spatial consistency of input grids.
 #' 

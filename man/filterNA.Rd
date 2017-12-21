@@ -27,6 +27,10 @@ na.filtered <- filterNA(VALUE_Iberia_pr)
 anyNA(na.filtered$Data)
 getShape(na.filtered)
 }
+\seealso{
+Other downscaling.helpers: \code{\link{convert2bin}},
+  \code{\link{dataSplit}}, \code{\link{makeMultiGrid}}
+}
 \author{
-J. Bano-Medina
+J. Bano-Medina, J. Bedia
 }

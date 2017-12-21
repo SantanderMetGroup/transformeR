@@ -1,10 +1,7 @@
-transformeR 1.1.2
+transformeR 1.2.1
 =================
+* Internal minor change in output attributes after subsetting (if resulting 'time' dimension is a singleton the output is considered a climatology)
 
-* Bug fix in `subsetSeason` (exit with message when attempting to aggregate already annual grids)
-* Bug fix in `makeMultigrid` attribute retrieval from input grids
-* Changed the variable naming convention when multigrids are created. Now the vertical level (when defined) is appended to the name of the variable, following the definition  `"var@@level"`. 
-* Other minor documentation updates
 
 
 

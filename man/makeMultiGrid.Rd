@@ -83,6 +83,9 @@ mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_hus850, CFS_Iberia_pr)
 }
 \seealso{
 \code{\link{interpGrid}} for spatial consistency of input grids.
+
+Other downscaling.helpers: \code{\link{convert2bin}},
+  \code{\link{dataSplit}}, \code{\link{filterNA}}
 }
 \author{
 J. bedia

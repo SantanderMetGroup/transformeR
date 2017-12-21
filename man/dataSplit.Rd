@@ -57,6 +57,10 @@ str(data.splitted[[2]]$test$y$Dates)  # 1 fold out of 3 for test
 str(data.splitted[[3]]$train$y$Dates) # 2 folds out of 3 for train  
 str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test
 }
+\seealso{
+Other downscaling.helpers: \code{\link{convert2bin}},
+  \code{\link{filterNA}}, \code{\link{makeMultiGrid}}
+}
 \author{
 J. Bano-Medina
 }
