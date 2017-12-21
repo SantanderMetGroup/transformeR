@@ -43,16 +43,12 @@ convert2bin <- function(x, threshold = NULL, partial = FALSE, ref.obs = NULL, re
   if (is.null(threshold)) {
     if (length((dim(ref.obs$Data))) < 2) {ref.obs$Data <- matrix(ref.obs$Data, nrow = length(ref.obs$Data), ncol = 1) }
     frec <- apply(X = ref.obs$Data, MARGIN = 2, function(X){
-      return(length(which(X == 0))/length(X))})
+      return(length(which(X == 0))/length(which(!is.na(X) == TRUE)))})
     for (i in 1:length(frec)) {
       thre <- quantile(ref.pred$Data[,i],frec[i], na.rm = TRUE)
       x$Data[,i] <- convert2bin.(x$Data[,i], threshold = thre, partial = partial)}}
-  if (!is.null(threshold)) {}
-  if (length(threshold) == 1) {
+  else {
     x$Data <- convert2bin.(x$Data, threshold = threshold, partial = partial)}
-  else{
-    for (i in 1:length(threshold)) {
-    x$Data[,i] <- convert2bin.(x$Data[,i], threshold = threshold[i], partial = partial)}}
   attr(x$Data, "dimensions") <- dimNames
   return(x)}
 
