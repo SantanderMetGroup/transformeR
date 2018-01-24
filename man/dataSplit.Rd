@@ -4,8 +4,7 @@
 \alias{dataSplit}
 \title{Split data into two different sets.}
 \usage{
-dataSplit(x, y, f = 3/4, type = "random", test.pos = NULL,
-  scale = FALSE)
+dataSplit(x, y, f = 3/4, type = "random")
 }
 \arguments{
 \item{x}{The input grid object.}
@@ -13,19 +12,13 @@ dataSplit(x, y, f = 3/4, type = "random", test.pos = NULL,
 \item{y}{The observations object.}
 
 \item{f}{Could be a fraction, value between (0,1) indicating the fraction of the data that will define the train set, 
-or an integer indicating the number of folds.}
+or an integer indicating the number of folds. It can also be a list of folds indicating the years of each fold.}
 
 \item{type}{A string, c("random","chronological"), indicating if the splittins should be random or in a choronological order. 
 Default is "random".}
-
-\item{test.pos}{An integer indicating the fold that would be the test posittion. Default is NULL.
-Example: if you divide the data in 4 folds and define test.pos = 2. then the second fold would be the test set and the first, 
-third and fourth would be the train set.}
-
-\item{scale}{A logical value. Indicates if the data should be estandardized (i.e., 0 mean and 1 standard deviation).}
 }
 \value{
-A list containing the grids x and y splitted.
+A list of folds containing the x and y splitted.
 }
 \description{
 Split data into two different sets by a specific fraction. Splitting data is 
@@ -34,27 +27,35 @@ normally used to obtain a train and a validation set.
 \examples{
 x <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 y <- VALUE_Iberia_pr
-# Split the data in 3 folds in chronological order and let the second fold be the test set:
-data.splitted <- dataSplit(x,y,f = 3, test.pos = 2, type = "chronological")
-dim(x$Data)
-dim(y$Data)
-dim(data.splitted$yT$Data)
-dim(data.splitted$yt$Data)
-dim(data.splitted$xT$Data)
-dim(data.splitted$xt$Data)
-# ... and now the same but with the data stanrdized.
-data.splitted2 <- dataSplit(x,y,f = 3, test.pos = 2, type = "chronological", scale = TRUE)
-head(data.splitted$xT$Data[1,,1,1])
-c(mean(data.splitted$xT$Data[1,,1,1]),sd(data.splitted$xT$Data[1,,1,1]))
-head(data.splitted2$xT$Data[1,1,,1,1])
-c(mean(data.splitted2$xT$Data[1,1,,1,1]),sd(data.splitted2$xT$Data[1,1,,1,1]))
-
-# Split the data in a train and test dataset (i.e., 2 folds) 
-# indicating the fraction of the train dataset.
-data.splitted3 <- dataSplit(x,y,f = 0.82, type = "random")
-dim(y$Data)
-dim(data.splitted3$yT$Data)
-dim(data.splitted3$yt$Data)
+### Split the data in train and test (f < 1)###
+data.splitted <- dataSplit(x,y,f = 3/4, type = "chronological")
+str(data.splitted[[1]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[1]]$test$y$Dates)  # 1 fold out of 3 for test
+### Split the data in 3 folds ###
+data.splitted <- dataSplit(x,y,f = 3, type = "chronological")
+str(data.splitted[[1]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[1]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[2]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[2]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[3]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test
+data.splitted <- dataSplit(x,y,f = 3, type = "random")
+str(data.splitted[[1]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[1]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[2]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[2]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[3]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test
+data.splitted <- dataSplit(x,y,type = "chronological", 
+                           f = list(c("1983","1984","1985","1986","1987","1988","1989","1990","1991"),
+                                    c("1992","1993","1994","1995","1996","1997","1998","1999"),
+                                    c("2000","2001","2002")))
+str(data.splitted[[1]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[1]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[2]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[2]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[3]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test
 }
 \seealso{
 Other downscaling.helpers: \code{\link{convert2bin}},
