@@ -22,7 +22,7 @@
 #' @param y The observations object.
 #' @param f Could be a fraction, value between (0,1) indicating the fraction of the data that will define the train set, 
 #' or an integer indicating the number of folds. It can also be a list of folds indicating the years of each fold. 
-#' @param type A string, c("random","chronological"), indicating if the splittins should be random or in a choronological order. 
+#' @param type A string, c("random","chronological"), indicating if the splits should be random or in a chronological order. 
 #' Default is "random".
 #' @return A list of folds containing the x and y splitted.
 #' @author J. Bano-Medina
@@ -51,8 +51,10 @@
 #' str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test
 ### Split the data in 3 folds indicating the years of each fold ###
 #' data.splitted <- dataSplit(x,y,type = "chronological", 
-#'                            f = list(c("1983","1984","1985","1986","1987","1988","1989","1990","1991"),
-#'                                     c("1992","1993","1994","1995","1996","1997","1998","1999"),
+#'                            f = list(c("1983","1984","1985","1986","1987",
+#'                                       "1988","1989","1990","1991"),
+#'                                     c("1992","1993","1994","1995","1996",
+#'                                       "1997","1998","1999"),
 #'                                     c("2000","2001","2002")))
 #' str(data.splitted[[1]]$train$y$Dates) # 2 folds out of 3 for train  
 #' str(data.splitted[[1]]$test$y$Dates)  # 1 fold out of 3 for test
@@ -61,51 +63,62 @@
 #' str(data.splitted[[3]]$train$y$Dates) # 2 folds out of 3 for train  
 #' str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test
 
-dataSplit <- function(x,y, f = 3/4, type = "random") {
-  if (class(f) == "numeric") {
-    if (f < 1) {
-      out <- vector("list",2)
-      if (type == "random") {
-        indT <- sample(1:getShape(y,dimension = "time"),size = floor(f*getShape(y,dimension = "time")),replace = FALSE) %>% sort()
-        indt <- setdiff(1:getShape(y,dimension = "time"),indT)}
-      else if (type == "chronological") {
-        indT <- 1:floor(f*getShape(y,dimension = "time"))
-        indt <- setdiff(1:getShape(y,dimension = "time"),indT)}
-      train <- list("x" = subsetDimension(x,dimension = "time",indices = indT),"y" = subsetDimension(y,dimension = "time",indices = indT))
-      test  <- list("x" = subsetDimension(x,dimension = "time",indices = indt),"y" = subsetDimension(y,dimension = "time",indices = indt))
-      out <- list(list("train" = train, "test" = test))
+dataSplit <- function(x, y, f = 3/4, type = "random") {
+    type <- match.arg(type, choices = c("random", "chronological"))
+    if (is.numeric(f)) {
+        if (f < 1) {
+            out <- vector("list", 2)
+            if (type == "random") {
+                indT <- sample(1:getShape(y, dimension = "time"),
+                               size = floor(f * getShape(y,dimension = "time")),
+                               replace = FALSE) %>% sort()
+                indt <- setdiff(1:getShape(y,dimension = "time"), indT)}
+            else if (type == "chronological") {
+                indT <- 1:floor(f*getShape(y,dimension = "time"))
+                indt <- setdiff(1:getShape(y,dimension = "time"), indT)}
+            train <- list("x" = subsetDimension(x,dimension = "time", indices = indT),
+                          "y" = subsetDimension(y,dimension = "time", indices = indT))
+            test  <- list("x" = subsetDimension(x,dimension = "time", indices = indt),
+                          "y" = subsetDimension(y,dimension = "time", indices = indt))
+            out <- list(list("train" = train, "test" = test))
+        }
+        else if (f >= 1) {
+            size_fold <- floor(getShape(y,dimension = "time") / f)
+            if (type == "random") {
+                inds <- array(data = sample(1:(size_fold*f), size = length(1:(size_fold*f)), replace = FALSE),
+                              dim = c(size_fold, f))
+            } else if (type == "chronological") {
+                inds <- array(data = 1:(size_fold*f), dim = c(size_fold, f))}
+            inds_fold <- lapply(1:f, function(z) inds[,z])
+            if (length(1:getShape(y,dimension = "time")) != length(1:(size_fold * f))) {
+                ind_out <- setdiff(1:getShape(y,dimension = "time"), as.vector(inds))
+                inds_fold[[f]] <- c(inds_fold[[f]], ind_out)
+            }
+            out <- lapply(1:f, function(z) {
+                indT <- setdiff(1:f, z)
+                range <- c()
+                for (i in indT) {
+                    range <- c(range, inds_fold[[i]])
+                }
+                train <- list("x" = subsetDimension(x,dimension = "time", indices = range),
+                              "y" = subsetDimension(y,dimension = "time", indices = range))
+                test  <- list("x" = subsetDimension(x,dimension = "time", indices = inds_fold[[z]]),
+                              "y" = subsetDimension(y,dimension = "time", indices = inds_fold[[z]]))
+                list("train" = train, "test" = test)
+            })
+        }
+    } else {
+        out <- lapply(1:length(f), function(z) {
+            indT <- setdiff(1:length(f), z)
+            range <- c()
+            for (i in indT) range <- c(range, f[[i]])
+            train <- list("x" = subsetGrid(x,years = range),
+                          "y" = subsetGrid(y,years = range))
+            test  <- list("x" = subsetGrid(x,years = f[[z]]),
+                          "y" = subsetGrid(y,years = f[[z]]))
+            return(list("train" = train, "test" = test))
+        })
     }
-    else if (f >= 1) {
-      size_fold <- floor(getShape(y,dimension = "time")/f)
-      if (type == "random") {
-        inds <- array(data = sample(1:(size_fold*f), size = length(1:(size_fold*f)), replace = FALSE), dim = c(size_fold,f))}
-      else if (type == "chronological") {
-        inds <- array(data = 1:(size_fold*f),dim = c(size_fold,f))}
-      inds_fold <- lapply(1:f, function(z) inds[,z])
-      if (length(1:getShape(y,dimension = "time")) != length(1:(size_fold*f))) {
-        ind_out <- setdiff(1:getShape(y,dimension = "time"),as.vector(inds))
-        inds_fold[[f]] <- c(inds_fold[[f]],ind_out)}
-      out <- lapply(1:f, function(z) {
-        indT <- setdiff(1:f,z)
-        range <- c()
-        for (i in indT) {
-          range <- c(range,inds_fold[[i]])}
-        train <- list("x" = subsetDimension(x,dimension = "time",indices = range),"y" = subsetDimension(y,dimension = "time",indices = range))
-        test  <- list("x" = subsetDimension(x,dimension = "time",indices = inds_fold[[z]]),"y" = subsetDimension(y,dimension = "time",indices = inds_fold[[z]]))
-        list("train" = train, "test" = test)
-      })
-    }
-  }
-  
-  else {
-    out <- lapply(1:length(f), function(z) {
-      indT <- setdiff(1:length(f),z)
-      range <- c()
-      for (i in indT) range <- c(range,f[[i]])
-      train <- list("x" = subsetGrid(x,years = range),"y" = subsetGrid(y,years = range))
-      test  <- list("x" = subsetGrid(x,years = f[[z]]),"y" = subsetGrid(y,years = f[[z]]))
-      return(list("train" = train, "test" = test))
-    })
-  }
-  return(out)}
+    return(out)
+}
 

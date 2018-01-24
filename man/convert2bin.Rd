@@ -38,8 +38,8 @@ ybin2 <- convert2bin(VALUE_Iberia_pr,threshold = 1, partial = TRUE)
 head(ybin2$Data)
 }
 \seealso{
-Other downscaling.helpers: \code{\link{dataSplit}},
-  \code{\link{filterNA}}, \code{\link{makeMultiGrid}}
+Other downscaling.helpers: \code{\link{filterNA}},
+  \code{\link{makeMultiGrid}}
 }
 \author{
 J. Bano-Medina

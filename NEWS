@@ -1,6 +1,8 @@
 transformeR 1.2.1
 =================
+
 * Internal minor change in output attributes after subsetting (if resulting 'time' dimension is a singleton the output is considered a climatology)
+* Other minor enhancements and doc updates
 
 
 
