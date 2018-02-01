@@ -382,8 +382,8 @@ getRefDates <- function(obj, which = "start") {
 #' @export
 #' @author J. Bedia
 
-selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sapply")) {
-      .pplyFUN <- match.arg(.pplyFUN, choices = c("apply", "lapply", "sapply"))
+selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sapply", "mapply")) {
+      .pplyFUN <- match.arg(.pplyFUN, choices = c("apply", "lapply", "sapply", "mapply"))
       if (parallel.pars$hasparallel) {
             if (.pplyFUN == "apply") {
                   fun <- function(...) {
@@ -397,12 +397,17 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
                   fun <- function(...) {
                         parallel::parSapply(cl = parallel.pars$cl, ...)
                   }
+            } else if (.pplyFUN == "mapply") {
+                  fun <- function(...) {
+                        parallel::clusterMap(cl = parallel.pars$cl, ..., SIMPLIFY = TRUE)
+                  }
             }
       } else {
             fun <- switch(.pplyFUN,
                           "apply" = apply,
                           "lapply" = lapply,
-                          "sapply" = sapply)
+                          "sapply" = sapply,
+                          "mapply" = mapply)
       }
       return(fun)
 }
