@@ -58,6 +58,62 @@ The function applies the \code{\link[sp]{spplot}} method after conversion of the
 }
 \examples{
 data("CFS_Iberia_tas")
+# Climatology is computed:
+clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
+plotClimatology(clim)
+# Geographical lines can be added using the argument 'backdrop.theme':
+plotClimatology(clim, backdrop.theme = "coastline")
+plotClimatology(clim, backdrop.theme = "coastline", center = 180)
+
+# Further arguments can be passed to 'spplot'...
+
+# ... a subset of members to be displayed, using 'zcol':
+plotClimatology(clim,
+                backdrop.theme = "coastline",
+                zcol = 1:4)
+
+# ... regional focuses (e.g. the Iberian Peninsula).
+plotClimatology(clim,
+                backdrop.theme = "countries",
+                xlim = c(-10,5), ylim = c(35,44),
+                zcol = 1:4,
+                scales = list(draw = TRUE))
+
+# Changing the default color palette and ranges:
+plotClimatology(clim,
+                backdrop.theme = "coastline",
+                zcol = 1:4,
+                col.regions = cm.colors(27), at = seq(10,37,1))
+
+# For ensemble means climatology should be called with 'by.member' set to FALSE:
+clim <- climatology(CFS_Iberia_tas, by.member = FALSE)
+
+# Adding contours to the plot is direct with argument 'contour':
+plotClimatology(clim,
+                scales = list(draw = TRUE),
+                contour = TRUE,
+                main = "tas Predictions July Ensemble Mean")
+
+
+## Example of multigrid plotting
+data("NCEP_Iberia_psl")
+## Winter data are split into monthly climatologies
+monthly.clim.grids <- lapply(getSeason(NCEP_Iberia_psl), function(x) {
+      climatology(subsetGrid(NCEP_Iberia_psl, season = x))
+})
+## Skip the temporal checks, as grids correspond to different time slices
+mg <- do.call("makeMultiGrid",
+              c(monthly.clim.grids, skip.temporal.check = TRUE))
+              ## We change the panel names
+plotClimatology(mg,
+                backdrop.theme = "coastline",
+                names.attr = c("DEC","JAN","FEB"),
+                main = "Mean PSL climatology 1991-2010",
+                scales = list(draw = TRUE))
+
+# Station data:
+data("VALUE_Iberia_pr")
+plotClimatology(climatology(VALUE_Iberia_pr), backdrop.theme = "countries")
 }
 \references{
 \itemize{
