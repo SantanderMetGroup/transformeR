@@ -127,8 +127,10 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
     l <- vector("list", length(all.attrs))
     names(l) <- all.attrs
     for (i in 1:length(field.list)) {
+          attrnames <- names(attributes(field.list[[i]]$Variable))[-1]
         for (j in 1:length(all.attrs)) {
-            atributo <- grep(all.attrs[j], names(attributes(field.list[[i]]$Variable))[-1], value = TRUE)
+            atributo.ind <- unlist(lapply(attrnames, function(x) identical(x, all.attrs[j])))
+            atributo <- attrnames[atributo.ind]
             if (length(atributo) != 0) {
                  expr <- attr(field.list[[i]]$Variable, which = atributo)
                  tryCatch({l[[j]][(length(l[[j]]) + 1):((length(l[[j]])) + length(atributo))] <- 
