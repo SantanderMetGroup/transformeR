@@ -17,7 +17,8 @@
 
 #' @title Select an arbitrary subset from a grid or multigrid along one or more of its dimensions
 #' @description Create a new grid/multigrid that is a subset of the input grid along the selected dimensions
-#' @param grid The input grid to be subset. This is either a grid, as returned e.g. by \code{loadeR::loadGridData}, a
+#' @param grid The input grid or station data to be subset. This is either a grid (or station data), as 
+#' returned e.g. by \code{loadeR::loadGridData} (or \code{loadeR::loadStationData}), a
 #' multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
 #' (possibly multimember grids) as returned e.g. by \code{loadeR.ECOMS::loadECOMS}.
 #' @param var Character vector indicating the variables(s) to be extracted. (Used for multigrid subsetting). See details.
