@@ -63,23 +63,24 @@
 #' @author J. bedia 
 #' @seealso \code{\link{interpGrid}} for spatial consistency of input grids.
 #' 
-#' @examples 
+#' @examples
 #' # Creation of a multigrid from three different grids:
 #' data(NCEP_Iberia_ta850)
 #' data(NCEP_Iberia_hus850)
 #' data(NCEP_Iberia_psl)
-#' # An example of different temporal aggregations, temporally compatible: 
-#' # sea-level pressure is a daily mean, while specific humidity and air temperature 
+#' # An example of different temporal aggregations, temporally compatible:
+#' # sea-level pressure is a daily mean, while specific humidity and air temperature
 #' # (850 mb surface isobaric pressure level) are instantaneous data verifying at 12:00 UTC:
 #' # air temperature
 #' mf <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+#' 
 #' # The new object inherits the global attributes from the first grid, as it is assumed
 #' # that all input grids come from the same data source:
 #' attributes(mf)
 #' # The data structure has now one additional dimension ("var"), along which the data arrays
 #' # have been binded:
 #' str(mf$Data)
-
+#' 
 #' # Example of multimember multigrid creation from several multimember grids:
 #' # Load three different multimember grids with the same spatiotemporal ranges:
 #' data("CFS_Iberia_tas")
@@ -88,11 +89,17 @@
 #' mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_hus850, CFS_Iberia_pr)
 #' # Different fields can not be plotted together in the same plot directly.
 #' # subsetGrid and plotClimatology can be conveniently used to that aim, if needed. For instance:
-# tas <- subsetGrid(mm.mf, var = "tas")
-# plotClimatology(climatology(tas), backdrop.theme = "coastline")
+#' # tas <- subsetGrid(mm.mf, var = "tas")# plotClimatology(climatology(tas), backdrop.theme = "coastline"
 
 makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = FALSE) {
     field.list <- list(...)
+    field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], drop = TRUE))
+    field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], var = TRUE))
+    ### check var dimension position
+    varind <- unique(lapply(1:length(field.list), function(x) which(getDim(field.list[[x]]) == "var")))
+    if (length(varind) > 1) stop("Input grids have different dimensions")#hay que discutir esto
+    varind <- unlist(varind)
+    ###
     stopifnot(is.logical(skip.temporal.check))
     if (length(field.list) == 1) {
         field.list <- unlist(field.list, recursive = FALSE)
@@ -153,12 +160,15 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
     climfun <- attr(field.list[[1]]$Data, "climatology:fun")
     ## $Dates -------------------
     field.list[[1]]$Dates <- lapply(1:length(field.list), function(x) field.list[[x]]$Dates)
-    dimNames <- getDim(field.list[[1]])
+    ## Select larger string of dim names -------------
+    dimNames <- lapply(1:length(field.list), function(x) getDim(field.list[[x]]))
+    dimNames <- dimNames[[which(lengths(dimNames) == max(lengths(dimNames)))[1]]]
+    ## Bind data ----------
     field.list[[1]]$Data <- unname(do.call("abind",
                                            c(lapply(1:length(field.list),
                                                     function(x) field.list[[x]]$Data),
-                                             along = -1))) 
-    attr(field.list[[1]]$Data, "dimensions") <- c("var", dimNames)
+                                             along = varind))) 
+    attr(field.list[[1]]$Data, "dimensions") <- dimNames
     if (!is.null(climfun)) attr(field.list[[1]]$Data, "climatology:fun") <- climfun 
     return(field.list[[1]])
 }
