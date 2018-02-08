@@ -4,7 +4,8 @@
 \alias{selectPar.pplyFun}
 \title{Select an appropriate *pply function}
 \usage{
-selectPar.pplyFun(parallel.pars, .pplyFUN = c("apply", "lapply", "sapply"))
+selectPar.pplyFun(parallel.pars, .pplyFUN = c("apply", "lapply", "sapply",
+  "mapply"))
 }
 \arguments{
 \item{parallel.pars}{The output from \code{\link{parallelCheck}}, passing the parallelization options.}
