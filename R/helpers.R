@@ -850,3 +850,20 @@ reorderStation <- function(grid, axis = c("x", "y")) {
 }
 
 #end
+
+#' Check if object is a grid
+#' 
+#'
+#' @param grid Input object.
+#' @return Logical.
+#' @keywords internal
+#' @export
+#' @author M. Iturbide
+
+isGrid <- function(grid) {
+      if (is.list(grid)) {
+            identical(names(grid), c("Variable", "Data", "xyCoords", "Dates"))
+      } else {
+            FALSE
+      }
+}
