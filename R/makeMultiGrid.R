@@ -1,6 +1,6 @@
 #     makeMultiGrid.R Multigrid constructor
 #
-#     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2018 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -115,14 +115,14 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
         # Spatial test
         if (!all.equal(field.list[[1]]$xyCoords, field.list[[i]]$xyCoords,
                        check.attributes = FALSE, tolerance = tol)) {
-            stop("Input data is not spatially consistent")
+            stop("Input data are not spatially consistent")
         }
         # temporal test
         if (!skip.temporal.check) {
             if (!identical(as.POSIXlt(field.list[[1]]$Dates$start)$yday,
                            as.POSIXlt(field.list[[i]]$Dates$start)$yday) | !identical(as.POSIXlt(field.list[[1]]$Dates$start)$year,
                                                                                       as.POSIXlt(field.list[[i]]$Dates$start)$year)) {
-                stop("Input data is not temporally consistent.\nMaybe the 'skip.temporal.check' argument should be set to TRUE?")
+                stop("Input data are not temporally consistent.\nMaybe the 'skip.temporal.check' argument should be set to TRUE?")
             }
         }
         # data dimensionality
@@ -137,14 +137,14 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
     l <- vector("list", length(all.attrs))
     names(l) <- all.attrs
     for (i in 1:length(field.list)) {
-          attrnames <- names(attributes(field.list[[i]]$Variable))[-1]
+        attrnames <- names(attributes(field.list[[i]]$Variable))[-1]
         for (j in 1:length(all.attrs)) {
             atributo.ind <- unlist(lapply(attrnames, function(x) identical(x, all.attrs[j])))
             atributo <- attrnames[atributo.ind]
             if (length(atributo) != 0) {
-                 expr <- attr(field.list[[i]]$Variable, which = atributo)
-                 tryCatch({l[[j]][(length(l[[j]]) + 1):((length(l[[j]])) + length(atributo))] <- 
-                      deparse(expr)}, error = function(err){deparse(expr)})
+                expr <- attr(field.list[[i]]$Variable, which = atributo)
+                tryCatch({l[[j]][(length(l[[j]]) + 1):((length(l[[j]])) + length(atributo))] <- 
+                    deparse(expr)}, error = function(err){deparse(expr)})
             } else {
                 l[[j]][(length(l[[j]]) + 1):((length(l[[j]])) + length(atributo))] <- NA
             }
