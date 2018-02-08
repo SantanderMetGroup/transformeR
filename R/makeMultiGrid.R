@@ -128,12 +128,8 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
     names(l) <- all.attrs
     for (i in 1:length(field.list)) {
         for (j in 1:length(all.attrs)) {
-            atributo <- grep(all.attrs[j], names(attributes(field.list[[i]]$Variable))[-1], value = TRUE)
-            if (length(atributo) != 0) {
-                l[[j]][(length(l[[j]]) + 1):((length(l[[j]])) + length(atributo))] <- attr(field.list[[i]]$Variable, which = atributo)
-            } else {
-                l[[j]][(length(l[[j]]) + 1):((length(l[[j]])) + length(atributo))] <- NA
-            }
+            atributo <- all.attrs[j]
+            l[[j]][i] <- attr(field.list[[i]]$Variable, which = atributo)
         }
     }
     # varName and levels
