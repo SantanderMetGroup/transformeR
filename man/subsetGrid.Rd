@@ -9,7 +9,8 @@ subsetGrid(grid, var = NULL, runtime = NULL, members = NULL,
   outside = FALSE, station.id = NULL, drop = TRUE)
 }
 \arguments{
-\item{grid}{The input grid to be subset. This is either a grid, as returned e.g. by \code{loadeR::loadGridData}, a
+\item{grid}{The input grid or station data to be subset. This is either a grid (or station data), as 
+returned e.g. by \code{loadeR::loadGridData} (or \code{loadeR::loadStationData}), a
 multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
 (possibly multimember grids) as returned e.g. by \code{loadeR.ECOMS::loadECOMS}.}
 

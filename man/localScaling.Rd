@@ -80,7 +80,7 @@ or the hindcast data for the training period in s2d applications. Note that by d
 data("NCEP_Iberia_psl")
 # Define average aggregation function
 f = list(FUN = "mean", na.rm = TRUE)
-psl <- aggregateGrid(NCEP_Iberia_psl, aggr.y = f) # get interannual DJF series 
+psl <- aggregateGrid(NCEP_Iberia_psl, aggr.y = f) # get interannual DJF series
 
 ## When 'base' and 'ref' are not supplied,
 ## the input grid climatology (by default the mean) is subtracted, thus yielding anomalies:
@@ -93,13 +93,13 @@ plot(getYearsAsINDEX(psl.anom.iberia), psl.anom.iberia$Data, ty = 'b',
 grid()
 abline(h = 0, lty = 2, col = "blue")
 # In the particular case of multimember grids, the anomalies are computed for each member
-# by subtracting either their own mean (by.member = TRUE) or the 
+# by subtracting either their own mean (by.member = TRUE) or the
 # multimember mean climatology (by.member = FALSE)
 data("CFS_Iberia_tas")
 a <- localScaling(CFS_Iberia_tas, by.member = FALSE)
 aa <- aggregateGrid(a, aggr.lat = f, aggr.lon = f, aggr.m = f, aggr.y = f)
 # Example, member 4 time series
-plot(as.Date(getRefDates(aa)), aa$Data[4,], ty = "o", xlab = "Date", 
+plot(as.Date(getRefDates(aa)), aa$Data[4,], ty = "o", xlab = "Date",
      ylab = "Tmean anomaly (degC)", main = "Tmean DJF anomalies, Member 4")
 abline(h = 0, lty = 2, col = "blue")
 grid()
@@ -109,7 +109,8 @@ lines(as.Date(getRefDates(aa)), bb$Data[4,], col = "red", ty = "l")
 legend("bottomright", c("by.member = FALSE", "by.member = TRUE"), lty = 1, col = c(1,2))
 
 # In this example, the anomalies are calculated using a different period specifying a "base".
-data(EOBS_Iberia_tas)
+# Note that "base" could also be a grid of a different dataset, for instance a 
+# reanalysisdata(EOBS_Iberia_tas)
 grid <- subsetGrid(EOBS_Iberia_tas, years = 1999:2000)
 base <- subsetGrid(EOBS_Iberia_tas, years = 1998)
 lc <- localScaling(grid = grid, base = base)
