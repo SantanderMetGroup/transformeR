@@ -7,12 +7,14 @@
 gridArithmetics(..., operator = "*", template = NULL)
 }
 \arguments{
-\item{...}{Input grids or factors (numbers).}
+\item{...}{Input grids or factors (numbers). The first element must be a grid, the rest could
+be either grids or numbers.}
 
-\item{operator}{Character string of arithmetic simbols ("+", "-", "/", "*").  Variable name of the grid}
+\item{operator}{Character string of arithmetic simbols ("+", "-", "/", "*"). The length must 
+be 1 (the same operator is used for all elements in \code{...}) or \code{length(...) - 1} (See Details).}
 
-\item{template}{grid from which the grid structure is keeped for the output data (Default is the first
-grid in "...").}
+\item{template}{grid from which the structure (dates, variable name, etc..) is keeped for 
+the output data (Default is the first grid in \code{...}).}
 }
 \value{
 A grid
@@ -20,16 +22,28 @@ A grid
 \description{
 Perform basic arithmetic operations between two or more grids (or factors).
 }
+\details{
+Lets imagine that elements in \code{...} are A, B and C, where A is a grid and
+B and C are either grids or numbers. If operator is, for example, "+" (or c("+", "+")), 
+then the mathematical expression evaluated by \code{gridArithmetics} is: A + B + C. 
+If operator is, for example, \code{c("+", "/")}, then the expression is (A + B)/C.
+If we would like to evaluate an expression such as A/(B + C), \code{gridArithmetics}
+must be applied two times (see examples).
+}
 \examples{
-#' # Maximum July surface temp forecast climatology
 data("CMIP5_Iberia_pr")
 data("EOBS_Iberia_pr")
 cmip5 <- interpGrid(CMIP5_Iberia_pr, getGrid(EOBS_Iberia_pr))
-relative.delta <- gridArithmetics(cmip5, EOBS_Iberia_pr, 
-                                  EOBS_Iberia_pr, 
-                                  100, 
+A <- cmip5 ; B <- EOBS_Iberia_pr; C <- 100
+
+# To evaluate (A - B) / B * C:
+relative.delta <- gridArithmetics(A, B, B, C, 
                                   operator = c("-", "/", "*"), 
                                   template = NULL)
+                                  
+# More than one step needed to evaluate an expression of the type B/(A - B):
+grid1 <- gridArithmetics(A, B, operator = "-")
+newgrid <- gridArithmetics(B, grid1, operator = "/")
 }
 \author{
 M. Iturbide
