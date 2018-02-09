@@ -13,7 +13,7 @@ be either grids or numbers.}
 \item{operator}{Character string of arithmetic simbols ("+", "-", "/", "*"). The length must 
 be 1 (the same operator is used for all elements in \code{...}) or \code{length(...) - 1} (See Details).}
 
-\item{template}{grid from which the structure (dates, variable name, etc..) is keeped for 
+\item{template}{grid from which the structure (dates, variable name, etc..) is kept for 
 the output data (Default is the first grid in \code{...}).}
 }
 \value{

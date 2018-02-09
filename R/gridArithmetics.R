@@ -4,7 +4,7 @@
 #' be either grids or numbers.
 #' @param operator Character string of arithmetic simbols ("+", "-", "/", "*"). The length must 
 #' be 1 (the same operator is used for all elements in \code{...}) or \code{length(...) - 1} (See Details).
-#' @param template grid from which the structure (dates, variable name, etc..) is keeped for 
+#' @param template grid from which the structure (dates, variable name, etc..) is kept for 
 #' the output data (Default is the first grid in \code{...}).
 #' @details Lets imagine that elements in \code{...} are A, B and C, where A is a grid and
 #' B and C are either grids or numbers. If operator is, for example, "+" (or c("+", "+")), 
