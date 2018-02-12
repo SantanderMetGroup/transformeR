@@ -805,6 +805,7 @@ typeofGrid <- function(grid) {
 #' @return number of nesting lists
 #' @keywords internal
 #' @author M. Iturbide 
+
 listDepth <- function(this){
       that <- this
       i <- 0
@@ -873,6 +874,20 @@ get2DmatCoordinates <- function(grid) {
 }
 
 
+#' Check if object is a grid
+#' 
+#'
+#' @param grid Input object.
+#' @return Logical.
+#' @keywords internal
+#' @export
+#' @author M. Iturbide
 
-
+isGrid <- function(grid) {
+      if (is.list(grid)) {
+            identical(names(grid), c("Variable", "Data", "xyCoords", "Dates"))
+      } else {
+            FALSE
+      }
+}
 

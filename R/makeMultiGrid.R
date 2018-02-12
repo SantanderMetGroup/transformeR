@@ -94,6 +94,8 @@
 
 makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = FALSE) {
     field.list <- list(...)
+    ## Climatologies ----------
+    climfun <- attr(field.list[[1]]$Data, "climatology:fun")
     field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], drop = TRUE))
     field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], var = TRUE))
     ### check var dimension position
@@ -157,8 +159,6 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
     attributes(field.list[[1]]$Variable) <- l
     field.list[[1]]$Variable[["varName"]] <- varnames
     field.list[[1]]$Variable[["level"]] <- levs
-    ## Climatologies ----------
-    climfun <- attr(field.list[[1]]$Data, "climatology:fun")
     ## $Dates -------------------
     field.list[[1]]$Dates <- lapply(1:length(field.list), function(x) field.list[[x]]$Dates)
     ## Select larger string of dim names -------------
