@@ -89,7 +89,8 @@
 #' mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_hus850, CFS_Iberia_pr)
 #' # Different fields can not be plotted together in the same plot directly.
 #' # subsetGrid and plotClimatology can be conveniently used to that aim, if needed. For instance:
-#' # tas <- subsetGrid(mm.mf, var = "tas")# plotClimatology(climatology(tas), backdrop.theme = "coastline"
+#' # tas <- subsetGrid(mm.mf, var = "tas")
+#' # plotClimatology(climatology(tas), backdrop.theme = "coastline"
 
 makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = FALSE) {
     field.list <- list(...)
