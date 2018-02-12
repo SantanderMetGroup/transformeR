@@ -239,7 +239,7 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
             grid$Dates <- list("start" = unname(tapply(grid$Dates$start, INDEX = fac, FUN = min)),
                                "end" = unname(tapply(grid$Dates$end, INDEX = fac, FUN = max)))
         }
-        dimInd <- match(names(getShape(grid)), dimNames)
+        dimInd <- match(dimNames, names(getShape(grid)))
         grid$Data <- aperm(grid$Data, dimInd)
         # Temporal aggregation attributes 
         attr(grid$Data, "dimensions") <- dimNames
