@@ -805,6 +805,7 @@ typeofGrid <- function(grid) {
 #' @return number of nesting lists
 #' @keywords internal
 #' @author M. Iturbide 
+
 listDepth <- function(this){
       that <- this
       i <- 0
@@ -848,8 +849,30 @@ reorderStation <- function(grid, axis = c("x", "y")) {
       }
       return(grid)
 }
-
 #end
+
+
+#' @title Get grid coordinates as 2D matrix
+#' @description Obtain grid coordinates as 2D matrix
+#' @param grid An input grid
+#' @return A 2D matrix of x-y coordinates (in this order)
+#' @keywords internal
+#' @author J. Bedia
+#' @family get.helpers
+#' @export
+
+get2DmatCoordinates <- function(grid) {
+    if (typeofGrid(grid) == "regular_grid") {
+        coords <- getCoordinates(grid) 
+        aux <- expand.grid(coords)
+        aux[order(aux[,1]), ]
+    } else if (typeofGrid(grid) == "station") {
+        getCoordinates(grid)
+    } else if (typeofGrid(grid) == "rotated_grid") {
+        stop("2D coordinates matrix is not yet supported for rotated grids", call. = FALSE)
+    }
+}
+
 
 #' Check if object is a grid
 #' 
@@ -867,3 +890,4 @@ isGrid <- function(grid) {
             FALSE
       }
 }
+
