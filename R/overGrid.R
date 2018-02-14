@@ -7,7 +7,7 @@
 #' @param subset Logical (default is FALSE). If TRUE, spatial subsetting is performed over
 #' the imput grid using the bounding coordinates of argument 'layer'.
 #' 
-#' @importFrom sp over
+#' @importFrom sp over bbox
 #' 
 #' @return A grid
 #' @author M. Iturbide
@@ -25,13 +25,13 @@
 #' allregions <- overGrid(grid, PRUDENCEregions, subset = TRUE)
 #' 
 #' spatialPlot(climatology(grid),
-#'             sp.layout = list(list(PRUDENCEregions, first = F)))
+#'             sp.layout = list(list(PRUDENCEregions, first = FALSE)))
 #' spatialPlot(climatology(iberia),
-#'             sp.layout = list(list(PRUDENCEregions, first = F)))
+#'             sp.layout = list(list(PRUDENCEregions, first = FALSE)))
 #' spatialPlot(climatology(iberia2),
-#'             sp.layout = list(list(PRUDENCEregions, first = F)))
+#'             sp.layout = list(list(PRUDENCEregions, first = FALSE)))
 #' spatialPlot(climatology(allregions),
-#'             sp.layout = list(list(PRUDENCEregions, first = F)))
+#'             sp.layout = list(list(PRUDENCEregions, first = FALSE)))
 
 overGrid <- function(grid, layer, subset = FALSE) {
       redim(grid)
