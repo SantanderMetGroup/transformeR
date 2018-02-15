@@ -7,20 +7,25 @@
 overGrid(grid, layer, subset = FALSE)
 }
 \arguments{
-\item{grid}{Input grid. The first element must be a grid, the rest could
-be either grids or numbers.}
+\item{grid}{Input grid or station data.}
 
-\item{layer}{Spatial* object from which the geometries or attributes are 
+\item{layer}{SpatialPolygons object from which the geometries or attributes are 
 queried (type \code{help(package = "sp")}.}
 
 \item{subset}{Logical (default is FALSE). If TRUE, spatial subsetting is performed over
 the imput grid using the bounding coordinates of argument 'layer'.}
 }
 \value{
+A grid or station data.
+
 A grid
 }
 \description{
-Application of function \code{over} from \pkg{sp} over grids.
+Application of function \code{over} from \pkg{sp} to grids or
+station data.
+}
+\details{
+All grid locations outside layer are filled with NAs.
 }
 \examples{
 library(visualizeR)

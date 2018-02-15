@@ -59,7 +59,9 @@ bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
       if (length(grid.list) < 2) {
             stop("The input must be a list of at least two grids", call. = FALSE)
       }
-      grid.list <- lapply(grid.list, "redim")
+      loc <- unique(unlist(lapply(grid.list, function(x) "loc" %in% getDim(x))))
+      if (length(loc) > 1) stop("grids and stations cannot be combined")
+      grid.list <- lapply(grid.list, "redim", loc = loc)
       # Disaggregation in single members
       mem.index <- sapply(grid.list, "getShape", "member")
       aux.list <- list()
@@ -67,7 +69,7 @@ bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
             subgrid <- grid.list[[h]]
             n.mem <- mem.index[h]
             for (i in 1:n.mem) {
-                  aux.list[[length(aux.list) + 1]] <- redim(subsetGrid(subgrid, members = i, drop = FALSE))
+                  aux.list[[length(aux.list) + 1]] <- redim(subsetGrid(subgrid, members = i, drop = FALSE), loc = loc)
             }
       }
       grid.list <- aux.list
@@ -91,18 +93,26 @@ bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
                   stop("Inconsistent 'dimensions' attribute")
             }
       }
+      mem.metadata <- !is.null(grid.list[[1]][["Members"]])
+      if (mem.metadata) {
       #Backwards compatibility fix
-      if (!is.list(grid.list[[1]][["InitializationDates"]])) {
-            for (i in 1:length(grid.list)) {
-                  grid.list[[i]][["InitializationDates"]] <- list(grid.list[[i]][["InitializationDates"]])
+            if (!is.list(grid.list[[1]][["InitializationDates"]])) {
+                  for (i in 1:length(grid.list)) {
+                        grid.list[[i]][["InitializationDates"]] <- list(grid.list[[i]][["InitializationDates"]])
+                  }
             }
       }
       ref <- grid.list[[1]]
       dimNames <- getDim(ref) 
       dim.bind <- grep("member", dimNames)
       data.list <- lapply(grid.list, FUN = "[[", "Data")
-      inits.list <- vapply(grid.list, FUN.VALUE = list(1L), FUN = "[[", "InitializationDates")
-      member.list <- vapply(grid.list, FUN.VALUE = character(1L), FUN = "[[", "Members")
+      if (mem.metadata) {
+            inits.list <- vapply(grid.list, FUN.VALUE = list(1L), FUN = "[[", "InitializationDates")
+            member.list <- vapply(grid.list, FUN.VALUE = character(1L), FUN = "[[", "Members")
+      } else {
+            inits.list <- rep(NA, length(grid.list))
+            member.list <- paste0("Member_", 1:length(grid.list))
+      }
       grid.list <- NULL
       ref[["Members"]] <- member.list
       ref[["InitializationDates"]] <- inits.list
