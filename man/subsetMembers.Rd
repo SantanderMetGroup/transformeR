@@ -25,6 +25,7 @@ An attribute 'subset' with value 'subsetMembers' is added to the Members slot of
 }
 \seealso{
 Other subsetting: \code{\link{getTemporalIntersection}},
+  \code{\link{intersectGrid.time}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetRuntime}}, \code{\link{subsetSeason}},
   \code{\link{subsetSpatial}}, \code{\link{subsetStation}},

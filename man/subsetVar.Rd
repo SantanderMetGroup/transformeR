@@ -28,6 +28,7 @@ An attribute 'subset' with value 'subsetVar' is added to the Variable slot of th
 }
 \seealso{
 Other subsetting: \code{\link{getTemporalIntersection}},
+  \code{\link{intersectGrid.time}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},

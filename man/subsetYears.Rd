@@ -23,6 +23,7 @@ An attribute 'subset' with value 'subsetYears' is added to the Dates slot of the
 }
 \seealso{
 Other subsetting: \code{\link{getTemporalIntersection}},
+  \code{\link{intersectGrid.time}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
