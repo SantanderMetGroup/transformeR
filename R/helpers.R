@@ -885,9 +885,9 @@ get2DmatCoordinates <- function(grid) {
 
 isGrid <- function(grid) {
       if (is.list(grid)) {
-            identical(names(grid), c("Variable", "Data", "xyCoords", "Dates"))
+        all(c("Variable", "Data", "xyCoords", "Dates") %in% names(grid))
       } else {
-            FALSE
+        FALSE
       }
 }
 
