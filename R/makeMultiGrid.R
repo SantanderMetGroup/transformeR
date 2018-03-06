@@ -94,6 +94,13 @@
 
 makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = FALSE) {
     field.list <- list(...)
+    stopifnot(is.logical(skip.temporal.check))
+    if (length(field.list) == 1) {
+        field.list <- unlist(field.list, recursive = FALSE)
+    }
+    if (length(field.list) < 2) {
+        stop("The input must be a list of at least two grids", call. = FALSE)
+    }
     ## Climatologies ----------
     climfun <- attr(field.list[[1]]$Data, "climatology:fun")
     field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], drop = TRUE))
@@ -103,13 +110,6 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
     if (length(varind) > 1) stop("Input grids have different dimensions")#hay que discutir esto
     varind <- unlist(varind)
     ###
-    stopifnot(is.logical(skip.temporal.check))
-    if (length(field.list) == 1) {
-        field.list <- unlist(field.list, recursive = FALSE)
-    }
-    if (length(field.list) < 2) {
-        stop("The input must be a list of at least two grids", call. = FALSE)
-    }
     tol <- spatial.tolerance
     for (i in 2:length(field.list)) {
         # Spatial test
