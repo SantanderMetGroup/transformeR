@@ -29,7 +29,7 @@ getShape(na.filtered)
 }
 \seealso{
 Other downscaling.helpers: \code{\link{convert2bin}},
-  \code{\link{dataSplit}}, \code{\link{makeMultiGrid}}
+  \code{\link{makeMultiGrid}}
 }
 \author{
 J. Bano-Medina, J. Bedia

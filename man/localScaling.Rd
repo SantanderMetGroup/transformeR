@@ -6,8 +6,8 @@
 \usage{
 localScaling(grid, base = NULL, ref = NULL, clim.fun = list(FUN = "mean",
   na.rm = TRUE), by.member = TRUE, time.frame = c("none", "monthly",
-  "daily"), type = "additive", parallel = FALSE, max.ncores = 16,
-  ncores = NULL, scale = FALSE)
+  "daily"), spatial.frame = c("gridbox", "field"), type = "additive",
+  parallel = FALSE, max.ncores = 16, ncores = NULL, scale = FALSE)
 }
 \arguments{
 \item{grid}{Input grid to be rescaled}
@@ -31,6 +31,9 @@ for each member (\code{by.member=TRUE}), or a single climatology calculated from
 \code{"none"}, which considers the climatological mean of the whole period given in 
 \code{base} and/or \code{ref}, \code{"monthly"}, that performs the calculation on a monthly basis
 and \code{"daily"}, for a julian day-based approach. See details.}
+
+\item{spatial.frame}{Character indicating wether to perform the statistics of the field or per gridbox. 
+Options are c("gridbox","field"), default is "gridbox.}
 
 \item{type}{Character string. Either \code{"additive"} or \code{"ratio"}, depending on wheter the correction factor is added (e.g. temperature...)
 or applied as a ratio (e.g. precipitation, wind speed...). See details}
