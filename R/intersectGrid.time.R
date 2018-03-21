@@ -12,7 +12,7 @@
 
 intersectGrid.time <- function(..., which.return = 1) {
   grid.list <- (...)
-  if(length(grid.list) > max(which.return)) stop("Wrong value for argument which.return")
+  if(length(grid.list) < length(which.return)) stop("Wrong value for argument which.return")
   ref.dates <- lapply(1:length(grid.list), function(x){
     getRefDates(grid.list[[x]]) %>% as.Date(tz = "GMT", format = "%Y-%m-%d")
   }) 

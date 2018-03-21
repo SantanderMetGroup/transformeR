@@ -801,15 +801,15 @@ typeofGrid <- function(grid) {
 #' @description Level depth in a list 
 #' 
 #' @param this list
-#' 
+#' @export
 #' @return number of nesting lists
 #' @keywords internal
 #' @author M. Iturbide 
 
-listDepth <- function(this){
+gridDepth <- function(this) {
       that <- this
       i <- 0
-      while(is.list(that)){
+      while (is.list(that)) {
             i <- i + 1
             that <- that[[1]]
       }

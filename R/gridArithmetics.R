@@ -49,6 +49,7 @@ gridArithmetics <- function(..., operator = "*", template = NULL){
       }
       aux <- field.list[[1]]
       for (k in 1:(length(field.list) - 1)) {
+            if(is.array(field.list[[k + 1]])) dim(field.list[[k + 1]]) <- dim(aux)
             aux <- do.call(operator[k], list(aux, field.list[[k + 1]]))
       }
       dimNames <- getDim(template)
