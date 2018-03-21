@@ -37,8 +37,8 @@ data("VALUE_Iberia_tas")
 getVarNames(VALUE_Iberia_tas, "long")
 }
 \seealso{
-Other get.helpers: \code{\link{getCoordinates}},
-  \code{\link{getDim}},
+Other get.helpers: \code{\link{get2DmatCoordinates}},
+  \code{\link{getCoordinates}}, \code{\link{getDim}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},
   \code{\link{getSeason}}, \code{\link{getShape}},

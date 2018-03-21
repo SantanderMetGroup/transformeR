@@ -45,6 +45,8 @@
 
 
 grid2mopa <- function(grid, crs = NA){
+  grid <- redim(grid, drop = TRUE)
+  grid <- redim(grid, member = FALSE)
   if("runtime" %in% getDim(grid) | "member" %in% getDim(grid)){
         stop("runtime and member dimensions are not allowed at the moment. 
              Use function subsetGrid in advance to apply the function")

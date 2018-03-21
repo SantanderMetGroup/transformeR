@@ -382,8 +382,8 @@ getRefDates <- function(obj, which = "start") {
 #' @export
 #' @author J. Bedia
 
-selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sapply")) {
-      .pplyFUN <- match.arg(.pplyFUN, choices = c("apply", "lapply", "sapply"))
+selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sapply", "mapply")) {
+      .pplyFUN <- match.arg(.pplyFUN, choices = c("apply", "lapply", "sapply", "mapply"))
       if (parallel.pars$hasparallel) {
             if (.pplyFUN == "apply") {
                   fun <- function(...) {
@@ -397,12 +397,17 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
                   fun <- function(...) {
                         parallel::parSapply(cl = parallel.pars$cl, ...)
                   }
+            } else if (.pplyFUN == "mapply") {
+                  fun <- function(...) {
+                        parallel::clusterMap(cl = parallel.pars$cl, ..., SIMPLIFY = TRUE)
+                  }
             }
       } else {
             fun <- switch(.pplyFUN,
                           "apply" = apply,
                           "lapply" = lapply,
-                          "sapply" = sapply)
+                          "sapply" = sapply,
+                          "mapply" = mapply)
       }
       return(fun)
 }
@@ -796,14 +801,15 @@ typeofGrid <- function(grid) {
 #' @description Level depth in a list 
 #' 
 #' @param this list
-#' 
+#' @export
 #' @return number of nesting lists
 #' @keywords internal
 #' @author M. Iturbide 
-listDepth <- function(this){
+
+gridDepth <- function(this) {
       that <- this
       i <- 0
-      while(is.list(that)){
+      while (is.list(that)) {
             i <- i + 1
             that <- that[[1]]
       }
@@ -843,5 +849,45 @@ reorderStation <- function(grid, axis = c("x", "y")) {
       }
       return(grid)
 }
-
 #end
+
+
+#' @title Get grid coordinates as 2D matrix
+#' @description Obtain grid coordinates as 2D matrix
+#' @param grid An input grid
+#' @return A 2D matrix of x-y coordinates (in this order)
+#' @keywords internal
+#' @author J. Bedia
+#' @family get.helpers
+#' @export
+
+get2DmatCoordinates <- function(grid) {
+    if (typeofGrid(grid) == "regular_grid") {
+        coords <- getCoordinates(grid) 
+        aux <- expand.grid(coords)
+        aux[order(aux[,1]), ]
+    } else if (typeofGrid(grid) == "station") {
+        getCoordinates(grid)
+    } else if (typeofGrid(grid) == "rotated_grid") {
+        stop("2D coordinates matrix is not yet supported for rotated grids", call. = FALSE)
+    }
+}
+
+
+#' Check if object is a grid
+#' 
+#'
+#' @param grid Input object.
+#' @return Logical.
+#' @keywords internal
+#' @export
+#' @author M. Iturbide
+
+isGrid <- function(grid) {
+      if (is.list(grid)) {
+        all(c("Variable", "Data", "xyCoords", "Dates") %in% names(grid))
+      } else {
+        FALSE
+      }
+}
+

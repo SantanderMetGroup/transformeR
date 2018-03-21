@@ -23,6 +23,7 @@ An attribute 'subset' with value 'time' is added to the Variable slot of the out
 }
 \seealso{
 Other subsetting: \code{\link{getTemporalIntersection}},
+  \code{\link{intersectGrid.time}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSpatial}}, \code{\link{subsetStation}},

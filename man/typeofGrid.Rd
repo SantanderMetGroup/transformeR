@@ -16,8 +16,8 @@ A character vector decribing the type of spatial reference. Three disjoint value
 Describe the type of grid according to the spatial representation of the data
 }
 \seealso{
-Other get.helpers: \code{\link{getCoordinates}},
-  \code{\link{getDim}},
+Other get.helpers: \code{\link{get2DmatCoordinates}},
+  \code{\link{getCoordinates}}, \code{\link{getDim}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},
   \code{\link{getSeason}}, \code{\link{getShape}},

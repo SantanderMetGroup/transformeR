@@ -21,11 +21,12 @@ Global attributes of the output matrix are provided for metadata description and
 }
 \seealso{
 Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
-  \code{\link{array3Dto2Dmat}},
+  \code{\link{array3Dto2Dmat}}, \code{\link{bindGrid.lat}},
   \code{\link{bindGrid.member}},
   \code{\link{bindGrid.time}},
   \code{\link{mat2Dto3Darray.stations}},
-  \code{\link{redim}}, \code{\link{sortDim.time}}
+  \code{\link{redim}}, \code{\link{sortDim.lat}},
+  \code{\link{sortDim.time}}
 }
 \author{
 J. Bedia

@@ -38,6 +38,7 @@ plotClimatology(climatology(sub), backdrop.theme = "coastline")
 }
 \seealso{
 Other subsetting: \code{\link{getTemporalIntersection}},
+  \code{\link{intersectGrid.time}},
   \code{\link{subsetGrid}}, \code{\link{subsetMembers}},
   \code{\link{subsetRuntime}}, \code{\link{subsetSeason}},
   \code{\link{subsetSpatial}}, \code{\link{subsetStation}},

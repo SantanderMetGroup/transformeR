@@ -14,7 +14,7 @@ dataSplit(x, y, f = 3/4, type = "random")
 \item{f}{Could be a fraction, value between (0,1) indicating the fraction of the data that will define the train set, 
 or an integer indicating the number of folds. It can also be a list of folds indicating the years of each fold.}
 
-\item{type}{A string, c("random","chronological"), indicating if the splittins should be random or in a choronological order. 
+\item{type}{A string, c("random","chronological"), indicating if the splits should be random or in a chronological order. 
 Default is "random".}
 }
 \value{
@@ -47,8 +47,10 @@ str(data.splitted[[2]]$test$y$Dates)  # 1 fold out of 3 for test
 str(data.splitted[[3]]$train$y$Dates) # 2 folds out of 3 for train  
 str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test
 data.splitted <- dataSplit(x,y,type = "chronological", 
-                           f = list(c("1983","1984","1985","1986","1987","1988","1989","1990","1991"),
-                                    c("1992","1993","1994","1995","1996","1997","1998","1999"),
+                           f = list(c("1983","1984","1985","1986","1987",
+                                      "1988","1989","1990","1991"),
+                                    c("1992","1993","1994","1995","1996",
+                                      "1997","1998","1999"),
                                     c("2000","2001","2002")))
 str(data.splitted[[1]]$train$y$Dates) # 2 folds out of 3 for train  
 str(data.splitted[[1]]$test$y$Dates)  # 1 fold out of 3 for test
