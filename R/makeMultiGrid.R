@@ -157,6 +157,7 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
         if (!is.na(levs[i])) varnames[i] <- paste(varnames[i], levs[i], sep = "@")
     }
     attributes(field.list[[1]]$Variable) <- l
+    names(field.list[[1]]$Variable) <- c("varName","level")
     field.list[[1]]$Variable[["varName"]] <- varnames
     field.list[[1]]$Variable[["level"]] <- levs
     ## $Dates -------------------

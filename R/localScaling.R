@@ -168,6 +168,7 @@ localScaling <- function(grid,
                          scale = FALSE) {
     time.frame <- match.arg(time.frame, choices = c("none", "monthly", "daily"))
     type <- match.arg(type, choices = c("additive", "ratio"))
+    spatial.frame <- match.arg(spatial.frame, choices = c("gridbox","field"))
     if (time.frame == "none") {
         message("[", Sys.time(), "] - Scaling ...")
         out <- localScaling.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
