@@ -30,8 +30,8 @@
 #' @param by.member Logical. In case of multimember grids, should the climatology be computed sepparately
 #' for each member (\code{by.member=TRUE}), or a single climatology calculated from the ensemble mean
 #'  (\code{by.member=FALSE})?. Default to \code{TRUE}. Argument passed to \code{\link{climatology}}.
-#' @param spatial.frame Character indicating wether to perform the statistics of the field or per gridbox. 
-#' Options are c("gridbox","field"), default is "gridbox.   
+#' @param spatial.frame Character string indicating whether to perform the local scaling considering the climatolopgical value 
+#' at the field scale (\code{"field"}) or per gridbox (\code{"gridbox"}, the default). 
 #' @param time.frame Character indicating the time frame to perform the scaling. Possible values are
 #'  \code{"none"}, which considers the climatological mean of the whole period given in 
 #'  \code{base} and/or \code{ref}, \code{"monthly"}, that performs the calculation on a monthly basis
@@ -168,7 +168,7 @@ localScaling <- function(grid,
                          scale = FALSE) {
     time.frame <- match.arg(time.frame, choices = c("none", "monthly", "daily"))
     type <- match.arg(type, choices = c("additive", "ratio"))
-    spatial.frame <- match.arg(spatial.frame, choices = c("gridbox","field"))
+    spatial.frame <- match.arg(spatial.frame, choices = c("gridbox", "field"))
     if (time.frame == "none") {
         message("[", Sys.time(), "] - Scaling ...")
         out <- localScaling.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
@@ -190,7 +190,6 @@ localScaling <- function(grid,
             }
             localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
         })
-        grid.list <- aux.list
         out <- do.call("bindGrid.time", aux.list)
         message("[", Sys.time(), "] - Done")
     } else if (time.frame == "daily") {
@@ -270,18 +269,17 @@ localScaling. <- function(grid, base, ref, clim.fun, by.member, type, parallel, 
       }) %>% redim()
       base.std <- base.std$Data}
     if (spatial.frame == "field") {
-      ind.mfield <- c(which(getDim(base.m) == "time"),which(getDim(base.m) == "lat"),which(getDim(base.m) == "lon"))
-      ind.sfield <- c(which(getDim(redim(base)) == "time"),which(getDim(redim(base)) == "lat"),which(getDim(redim(base)) == "lon"))
-      getDim.base <- attr(base.m$Data,"dimensions")
-      mean.field <- apply(base.m$Data,MARGIN = -ind.mfield,mean) 
-      sd.field <- apply(redim(base)$Data,MARGIN = -ind.sfield,sd) 
+      ind.mfield <- c(which(getDim(base.m) == "time"), which(getDim(base.m) == "lat"), which(getDim(base.m) == "lon"))
+      ind.sfield <- c(which(getDim(redim(base)) == "time"), which(getDim(redim(base)) == "lat"), which(getDim(redim(base)) == "lon"))
+      getDim.base <- attr(base.m$Data, "dimensions")
+      mean.field <- apply(base.m$Data, MARGIN = -ind.mfield, mean) 
+      sd.field <- apply(redim(base)$Data, MARGIN = -ind.sfield, sd) 
       base.m$Data <- array(data = mean.field, dim = dim(base.m$Data))
       base.std <- array(data = sd.field, dim = dim(base.m$Data))
       attr(base.m$Data,"dimensions") <- getDim.base
       attr(base.std,"dimensions") <- getDim.base
     }
   }
-
   if (!is.null(ref)) {
     checkDim(grid, ref, dimensions = c("lat", "lon"))
     if (!scale) checkSeason(grid, ref)

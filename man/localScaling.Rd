@@ -32,8 +32,8 @@ for each member (\code{by.member=TRUE}), or a single climatology calculated from
 \code{base} and/or \code{ref}, \code{"monthly"}, that performs the calculation on a monthly basis
 and \code{"daily"}, for a julian day-based approach. See details.}
 
-\item{spatial.frame}{Character indicating wether to perform the statistics of the field or per gridbox. 
-Options are c("gridbox","field"), default is "gridbox.}
+\item{spatial.frame}{Character string indicating whether to perform the local scaling considering the climatolopgical value 
+at the field scale (\code{"field"}) or per gridbox (\code{"gridbox"}, the default).}
 
 \item{type}{Character string. Either \code{"additive"} or \code{"ratio"}, depending on wheter the correction factor is added (e.g. temperature...)
 or applied as a ratio (e.g. precipitation, wind speed...). See details}

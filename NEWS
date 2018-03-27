@@ -1,16 +1,9 @@
-transformeR 1.3.0
+transformeR 1.3.1
 =================
 
-* Deprecated `plotClimatology` --> replaced by `visualizeR::spatialPlot`
-* Minor internal change in output attributes after subsetting (if resulting 'time' dimension is a singleton the output is considered a climatology)
-* Enhanced functionality of interpGrid to allow for transparent interpolation of rotated coordinates 
-* New functions: 
-   * `gridArithmetics` to perform basic arithmetical operations between multiple grids and/or numbers
-   * `bindGrid.lat` to bind grids along the latitude dimension.
-   * `overGrid` for spatial overlay operations between climate4R grids and SpatialPolygon* objects
-   * `intersectGrid.time` to subset the time dimension of multiple grids by their common dates
-   * New internal helper `isGrid` 
-* Other minor enhancements and doc updates
+* Bug fix in the definition of Variable attributes by `makeMultiGrid`
+* Added `spatial.frame` option in `localScaling`
+* Other minor doc updates and internal changes
 
 
 
