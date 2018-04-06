@@ -32,7 +32,7 @@ library(visualizeR)
 data("PRUDENCEregions")
 library(loadeR)
 grid <- loadGridData(
-      "http://opendap.knmi.nl/knmi/thredds/dodsC/e-obs_0.25regular/tx_0.25deg_reg_v16.0.nc",
+      "http://opendap.knmi.nl/knmi/thredds/dodsC/e-obs_0.25regular/tx_0.25deg_reg_v17.0.nc",
       var = "tx", years = 1983, season = 12)
 
 iberia <- overGrid(grid, PRUDENCEregions[2, ])
