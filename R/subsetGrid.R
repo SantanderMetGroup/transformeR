@@ -402,7 +402,7 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
             stop("Invalid latitudinal boundary definition")
         }
           if (!isRegular(grid)) {
-                reorderStation(grid, axis = "y")
+               grid <- reorderStation(grid, axis = "y")
           }
         lats <- getCoordinates(grid)$y
         if (latLim[1] < lats[1] | latLim[1] > tail(lats, 1)) {
