@@ -234,12 +234,13 @@ interpGrid <- function(grid,
                   }else{
                         distK <- sqrt((x - new.coordinates$x[k]) ^ 2 + (y - new.coordinates$y[k]) ^ 2)
                         aux.ind <- which(distK == min(distK), arr.ind = TRUE)
+                        if(nrow(aux.ind))
                         if(!is.matrix(coords)){
-                              ind.NN.x[k,k] <- aux.ind[2]
-                              ind.NN.y[k,k] <- aux.ind[1] 
+                              ind.NN.x[k,k] <- aux.ind[1,2]
+                              ind.NN.y[k,k] <- aux.ind[1,1] 
                         }else{
                               ind.NN.x[k,k] <- 1
-                              ind.NN.y[k,k] <- aux.ind
+                              ind.NN.y[k,k] <- aux.ind[1,]
                         }
                   }
             }
