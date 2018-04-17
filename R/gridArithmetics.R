@@ -40,8 +40,12 @@ gridArithmetics <- function(..., operator = "*", template = NULL){
       if (length(operator) != (length(field.list) - 1)) stop("Incorrect number of operators")
       indgrid <- which(unlist(lapply(field.list, "isGrid")))
       # indnum <- which(unlist(lapply(field.list, "is.numeric")))
+      loc <- FALSE
+      if(!isRegular(field.list[[1]])) loc <- TRUE
       for (i in 1:length(indgrid)) {
-            field.list[[indgrid[i]]] <- redim(field.list[[indgrid[i]]], runtime = TRUE, var = TRUE)
+            field.list[[indgrid[i]]] <- redim(field.list[[indgrid[i]]], 
+                                              runtime = TRUE, var = TRUE,
+                                              loc = loc)
       }
       if (is.null(template)) template <- field.list[[1]]
       for (i in 1:length(indgrid)) {
@@ -56,6 +60,7 @@ gridArithmetics <- function(..., operator = "*", template = NULL){
       template$Data <- aux
       attr(template$Data, "dimensions") <- dimNames
       template <- redim(template, drop = TRUE) 
-      template <- redim(template, member = FALSE)
+      template <- redim(template,  member = FALSE, loc = loc)
+      redim(template, )
       return(template)
 }
