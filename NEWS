@@ -1,8 +1,7 @@
-transformeR 1.3.1
+transformeR 1.3.2
 =================
 
-* Bug fix in the definition of Variable attributes by `makeMultiGrid`
-* Added `spatial.frame` option in `localScaling`
+* New built-in datasets of CMIP5 RCP8.5 projections
 * Other minor doc updates and internal changes
 
 
