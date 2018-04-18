@@ -36,4 +36,4 @@ plotClimatology(climatology(CMIP5_Iberia_psl),
 \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
 }
 \keyword{Gridded}
-\keyword{observations}
+\keyword{projections}

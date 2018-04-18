@@ -342,7 +342,7 @@ NULL
 NULL
 
 
-################psl--------------
+
 
 #' @title Grid containing CMIP5 data (CNRM) of daily sea level pressure for the Iberian Peninsula (DJF, 2081-2100).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
@@ -375,7 +375,7 @@ NULL
 NULL
 
 
-################ta--------------
+
 
 
 #' @title Grid containing CMIP5 data (CNRM) of daily air temperature at 850mb for the Iberian Peninsula (DJF, 2081-2100).
@@ -408,7 +408,7 @@ NULL
 #'                 backdrop.theme = "countries", scales = list(draw = TRUE))
 NULL
 
-################hus--------------
+
 
 #' @title Grid containing CMIP5 data (CNRM) of daily specific humidity at 850mb for the Iberian Peninsula (DJF, 2081-2100).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
@@ -441,7 +441,7 @@ NULL
 NULL
 
 
-################pr--------------
+
 
 #' @title Grid containing CMIP5 data (CNRM) of daily precipitation for the Iberian Peninsula (DJF, 2081-2100).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
@@ -477,7 +477,7 @@ NULL
 NULL
 
 
-################tas--------------
+
 
 #' @title Grid containing CMIP5 data (CNRM) of daily mean temperature for the Iberian Peninsula (DJF, 2081-2100).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 

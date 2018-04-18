@@ -23,7 +23,7 @@ see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loa
 
 \code{loginUDG("username", "pasword")}\cr 
  
-\code{CORDEX_Iberia_tas <- loadGridData(dataset = "http://www.meteo.unican.es/tds5/dodsC/cordex/EUR-11/KNMI/ECMWF-ERAINT_evaluation_r1i1p1_RACMO22E_v1_day.ncml",
+\code{CORDEX_Iberia_tas <- loadGridData(dataset = "http://www.meteo.unican.es/tds5/dodsC/cordex/EUR-44/KNMI/ICHEC-EC-EARTH_historical_r1i1p1_RACMO22E_v1_day.ncml",
 var = "tas", years = years, lonLim = lonLim, latLim = latLim, season = season)}\cr
 \code{CORDEX_Iberia_tas$Data <- CORDEX_Iberia_tas$Data - 273.15}\cr 
 \code{attr(CORDEX_Iberia_tas$Variable, "units") <- "Celsius"}\cr
