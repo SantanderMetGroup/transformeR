@@ -1,3 +1,70 @@
+#' @title Grid containing CORDEX data (KNMI) of daily temperature for the Iberian Peninsula (DJF, 2081-2100).
+#' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
+#' log in is requiered, 
+#' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
+#' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
+#' 
+#' 
+#' \code{years <- 2081:2100}\cr 
+#' \code{season <- c(12,1,2)}\cr 
+#' \code{lonLim <- c(-10, 4)}\cr 
+#' \code{latLim <- c(35, 44)}\cr 
+#' 
+#' 
+#' \code{loginUDG("username", "pasword")}\cr 
+#'  
+#' \code{CORDEX_Iberia_tas.rcp85 <- loadGridData(dataset = "http://www.meteo.unican.es/tds5/dodsC/cordex/EUR-44/KNMI/ICHEC-EC-EARTH_rcp85_r1i1p1_RACMO22E_v1_day.ncml",
+#' var = "tas", years = years, lonLim = lonLim, latLim = latLim, season = season)}\cr
+#' \code{CORDEX_Iberia_tas.rcp85$Data <- CORDEX_Iberia_tas.rcp85$Data - 273.15}\cr 
+#' \code{attr(CORDEX_Iberia_tas.rcp85$Variable, "units") <- "Celsius"}\cr
+#'  
+#' @format A grid
+#' @name CORDEX_Iberia_tas.rcp85
+#' @docType data
+#' @keywords Gridded observations
+#' @source  \url{http://www.meteo.unican.es/udg-tap}
+#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
+#' @examples 
+#' data("CORDEX_Iberia_tas.rcp85")
+#' plotClimatology(climatology(CORDEX_Iberia_tas.rcp85),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
+NULL
+
+
+#' @title Grid containing CORDEX data (KNMI) of daily precipitation for the Iberian Peninsula (DJF, 2081-2100).
+#' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
+#' log in is requiered, 
+#' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
+#' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
+#' 
+#' 
+#' \code{years <- 2081:2100}\cr 
+#' \code{season <- c(12,1,2)}\cr 
+#' \code{lonLim <- c(-10, 4)}\cr 
+#' \code{latLim <- c(35, 44)}\cr 
+#' 
+#' 
+#' \code{loginUDG("username", "pasword")}\cr 
+#'  
+#' \code{CORDEX_Iberia_pr.rcp85 <- loadGridData(dataset = "http://www.meteo.unican.es/tds5/dodsC/cordex/EUR-44/KNMI/ICHEC-EC-EARTH_rcp85_r1i1p1_RACMO22E_v1_day.ncml",
+#' var = "pr", years = years, lonLim = lonLim, latLim = latLim, season = season)}\cr
+#' \code{CORDEX_Iberia_pr.rcp85$Data <- CORDEX_Iberia_pr.rcp85$Data * 86400}\cr 
+#' \code{attr(CORDEX_Iberia_pr.rcp85$Variable, "units") <- "mm"}\cr
+#'  
+#' @format A grid
+#' @name CORDEX_Iberia_pr.rcp85
+#' @docType data
+#' @keywords Gridded observations
+#' @source  \url{http://www.meteo.unican.es/udg-tap}
+#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
+#' @examples 
+#' data("CORDEX_Iberia_pr.rcp85")
+#' plotClimatology(climatology(CORDEX_Iberia_pr.rcp85),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
+NULL
+
+
+
 #' @title Grid containing CORDEX data (KNMI) of daily precipitation for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
@@ -13,7 +80,7 @@
 #' 
 #' \code{loginUDG("username", "pasword")}\cr 
 #'  
-#' \code{CORDEX_Iberia_pr <- loadGridData(dataset = "http://www.meteo.unican.es/tds5/dodsC/cordex/EUR-11/KNMI/ECMWF-ERAINT_evaluation_r1i1p1_RACMO22E_v1_day.ncml",
+#' \code{CORDEX_Iberia_pr <- loadGridData(dataset = "http://www.meteo.unican.es/tds5/dodsC/cordex/EUR-44/KNMI/ICHEC-EC-EARTH_historical_r1i1p1_RACMO22E_v1_day.ncml",
 #' var = "pr", years = years, lonLim = lonLim, latLim = latLim, season = season)}\cr
 #' \code{CORDEX_Iberia_pr$Data <- CORDEX_Iberia_pr$Data * 86400}\cr 
 #' \code{attr(CORDEX_Iberia_pr$Variable, "units") <- "mm"}\cr
@@ -45,7 +112,7 @@ NULL
 #' 
 #' \code{loginUDG("username", "pasword")}\cr 
 #'  
-#' \code{CORDEX_Iberia_tas <- loadGridData(dataset = "http://www.meteo.unican.es/tds5/dodsC/cordex/EUR-11/KNMI/ECMWF-ERAINT_evaluation_r1i1p1_RACMO22E_v1_day.ncml",
+#' \code{CORDEX_Iberia_tas <- loadGridData(dataset = "http://www.meteo.unican.es/tds5/dodsC/cordex/EUR-44/KNMI/ICHEC-EC-EARTH_historical_r1i1p1_RACMO22E_v1_day.ncml",
 #' var = "tas", years = years, lonLim = lonLim, latLim = latLim, season = season)}\cr
 #' \code{CORDEX_Iberia_tas$Data <- CORDEX_Iberia_tas$Data - 273.15}\cr 
 #' \code{attr(CORDEX_Iberia_tas$Variable, "units") <- "Celsius"}\cr
@@ -135,7 +202,7 @@ NULL
 #' @format A grid
 #' @name CMIP5_Iberia_psl
 #' @docType data
-#' @keywords Gridded observations
+#' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
 #' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
 #' @examples 
@@ -165,7 +232,7 @@ NULL
 #' @format A grid
 #' @name CMIP5_Iberia_ta850
 #' @docType data
-#' @keywords Gridded observations
+#' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
 #' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
 #' @examples 
@@ -197,7 +264,7 @@ NULL
 #' @format A grid
 #' @name CMIP5_Iberia_hus850
 #' @docType data
-#' @keywords Gridded observations
+#' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
 #' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
 #' @examples 
@@ -232,7 +299,7 @@ NULL
 #' @format A grid
 #' @name CMIP5_Iberia_pr
 #' @docType data
-#' @keywords Gridded observations
+#' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
 #' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
 #' @examples 
@@ -265,7 +332,7 @@ NULL
 #' @format A grid
 #' @name CMIP5_Iberia_tas
 #' @docType data
-#' @keywords Gridded observations
+#' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
 #' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
 #' @examples 
@@ -273,6 +340,180 @@ NULL
 #' plotClimatology(climatology(CMIP5_Iberia_tas),
 #'                 backdrop.theme = "countries", scales = list(draw = TRUE))
 NULL
+
+
+################psl--------------
+
+#' @title Grid containing CMIP5 data (CNRM) of daily sea level pressure for the Iberian Peninsula (DJF, 2081-2100).
+#' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
+#' log in is requiered, 
+#' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
+#' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
+#' 
+#' 
+#' \code{years <- 2081:2100}\cr 
+#' \code{season <- c(12,1,2)}\cr 
+#' \code{lonLim <- c(-10, 4)}\cr 
+#' \code{latLim <- c(35, 44)}\cr 
+#' 
+#' 
+#' \code{loginUDG("username", "pasword")}\cr 
+#'  
+#' \code{CMIP5_Iberia_psl.rcp85 <- loadGridData(dataset = "http://meteo.unican.es/tds5/dodsC/cmip5/CNRM-CERFACS/CNRM-CM5/rcp85/day/cnrm-cerfacs_cnrm-cm5_rcp85_r1i1p1.ncml",
+#'                     var = "psl", years = years, lonLim = lonLim, latLim = latLim, season = season,
+#'                      time = "DD", aggr.d = "mean")}\cr 
+#' @format A grid
+#' @name CMIP5_Iberia_psl.rcp85
+#' @docType data
+#' @keywords Gridded projections
+#' @source  \url{http://www.meteo.unican.es/udg-tap}
+#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
+#' @examples 
+#' data("CMIP5_Iberia_psl.rcp85")
+#' plotClimatology(climatology(CMIP5_Iberia_psl.rcp85),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
+NULL
+
+
+################ta--------------
+
+
+#' @title Grid containing CMIP5 data (CNRM) of daily air temperature at 850mb for the Iberian Peninsula (DJF, 2081-2100).
+#' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
+#' log in is requiered, 
+#' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
+#' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
+#' 
+#' 
+#' \code{years <- 2081:2100}\cr 
+#' \code{season <- c(12,1,2)}\cr 
+#' \code{lonLim <- c(-10, 4)}\cr 
+#' \code{latLim <- c(35, 44)}\cr 
+#' 
+#' 
+#' \code{loginUDG("username", "pasword")}\cr 
+#'  
+#' \code{CMIP5_Iberia_ta850.rcp85 <- loadGridData(dataset = "http://meteo.unican.es/tds5/dodsC/cmip5/CNRM-CERFACS/CNRM-CM5/rcp85/day/cnrm-cerfacs_cnrm-cm5_rcp85_r1i1p1.ncml",
+#'                     var = "ta@85000", years = years, lonLim = lonLim, latLim = latLim, season = season,
+#'                      time = "DD", aggr.d = "mean")}\cr 
+#' @format A grid
+#' @name CMIP5_Iberia_ta850.rcp85
+#' @docType data
+#' @keywords Gridded projections
+#' @source  \url{http://www.meteo.unican.es/udg-tap}
+#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
+#' @examples 
+#' data("CMIP5_Iberia_ta850.rcp85")
+#' plotClimatology(climatology(CMIP5_Iberia_ta850.rcp85),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
+NULL
+
+################hus--------------
+
+#' @title Grid containing CMIP5 data (CNRM) of daily specific humidity at 850mb for the Iberian Peninsula (DJF, 2081-2100).
+#' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
+#' log in is requiered, 
+#' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
+#' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
+#' 
+#' 
+#' \code{years <- 2081:2100}\cr 
+#' \code{season <- c(12,1,2)}\cr 
+#' \code{lonLim <- c(-10, 4)}\cr 
+#' \code{latLim <- c(35, 44)}\cr 
+#' 
+#' 
+#' \code{loginUDG("username", "pasword")}\cr 
+#'  
+#' \code{CMIP5_Iberia_hus850.rcp85 <- loadGridData(dataset = "http://meteo.unican.es/tds5/dodsC/cmip5/CNRM-CERFACS/CNRM-CM5/rcp85/day/cnrm-cerfacs_cnrm-cm5_rcp85_r1i1p1.ncml",
+#'                     var = "hus@85000", years = years, lonLim = lonLim, latLim = latLim, season = season,
+#'                      time = "DD", aggr.d = "mean")}\cr 
+#' @format A grid
+#' @name CMIP5_Iberia_hus850.rcp85
+#' @docType data
+#' @keywords Gridded projections
+#' @source  \url{http://www.meteo.unican.es/udg-tap}
+#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
+#' @examples 
+#' data("CMIP5_Iberia_hus850.rcp85")
+#' plotClimatology(climatology(CMIP5_Iberia_hus850.rcp85),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
+NULL
+
+
+################pr--------------
+
+#' @title Grid containing CMIP5 data (CNRM) of daily precipitation for the Iberian Peninsula (DJF, 2081-2100).
+#' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
+#' log in is requiered, 
+#' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
+#' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
+#' 
+#' 
+#' \code{years <- 2081:2100}\cr 
+#' \code{season <- c(12,1,2)}\cr 
+#' \code{lonLim <- c(-10, 4)}\cr 
+#' \code{latLim <- c(35, 44)}\cr 
+#' 
+#' 
+#' \code{loginUDG("username", "pasword")}\cr 
+#'  
+#' \code{CMIP5_Iberia_pr.rcp85 <- loadGridData(dataset = "http://meteo.unican.es/tds5/dodsC/cmip5/CNRM-CERFACS/CNRM-CM5/rcp85/day/cnrm-cerfacs_cnrm-cm5_rcp85_r1i1p1.ncml", 
+#'                                       var = "pr", 
+#'                                       years = years, 
+#'                                       lonLim = lonLim, 
+#'                                       latLim = latLim, 
+#'                                       season = season)}\cr 
+#' @format A grid
+#' @name CMIP5_Iberia_pr.rcp85
+#' @docType data
+#' @keywords Gridded projections
+#' @source  \url{http://www.meteo.unican.es/udg-tap}
+#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
+#' @examples 
+#' data("CMIP5_Iberia_pr.rcp85")
+#' plotClimatology(climatology(CMIP5_Iberia_pr.rcp85),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
+NULL
+
+
+################tas--------------
+
+#' @title Grid containing CMIP5 data (CNRM) of daily mean temperature for the Iberian Peninsula (DJF, 2081-2100).
+#' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
+#' log in is requiered, 
+#' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
+#' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
+#' 
+#' 
+#' \code{years <- 2081:2100}\cr 
+#' \code{season <- c(12,1,2)}\cr 
+#' \code{lonLim <- c(-10, 4)}\cr 
+#' \code{latLim <- c(35, 44)}\cr 
+#' 
+#' 
+#' \code{loginUDG("username", "pasword")}\cr 
+#'  
+#' \code{CMIP5_Iberia_tas.rcp85 <- loadGridData(dataset = "http://meteo.unican.es/tds5/dodsC/cmip5/CNRM-CERFACS/CNRM-CM5/rcp85/day/cnrm-cerfacs_cnrm-cm5_rcp85_r1i1p1.ncml", 
+#'                                       var = "tas", 
+#'                                       years = years, 
+#'                                       lonLim = lonLim, 
+#'                                       latLim = latLim, 
+#'                                       season = season)}\cr 
+#' @format A grid
+#' @name CMIP5_Iberia_tas.rcp85
+#' @docType data
+#' @keywords Gridded projections
+#' @source  \url{http://www.meteo.unican.es/udg-tap}
+#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
+#' @examples 
+#' data("CMIP5_Iberia_tas.rcp85")
+#' plotClimatology(climatology(CMIP5_Iberia_tas.rcp85),
+#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
+NULL
+
+
+
 
 
 #' @title Multimember grid containing CFSv2 seasonal forecast data of daily sea level pressure for
