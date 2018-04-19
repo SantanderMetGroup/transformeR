@@ -45,7 +45,7 @@ multigrid <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_ta850, NCEP_Iberia_ps
 pca2 <- prinComp(multigrid, n.eofs = 9)
 names(pca2)
 # EOFs for temperature 850mb
-plotEOF(pca2, "air@850", backdrop.theme = "coastline")
+plotEOF(pca2, "ta@850", backdrop.theme = "coastline")
 }
 \seealso{
 Other pca: \code{\link{PC2grid}}, \code{\link{grid2PCs}},

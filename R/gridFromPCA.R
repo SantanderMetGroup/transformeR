@@ -18,7 +18,7 @@
 #' pca <- prinComp(multigrid, n.eofs = 10)
 #' # We recover the sea-level pressure grid from the its PCs:
 #' names(pca)
-#' psl2 <- gridFromPCA(pca, "slp")
+#' psl2 <- gridFromPCA(pca, "psl")
 #' str(psl2)
 #' # The attributes of psl2 indicate that this is a reconstructed grid from 10 PCs, 
 #' # explaining 99\% of the variance:
