@@ -1,4 +1,4 @@
-#' @title Grid containing CORDEX data (KNMI) of daily temperature for the Iberian Peninsula (DJF, 2081-2100).
+#' @title Grid containing CORDEX data (model KNMI-RACMO22E) of daily temperature for the RCP8.5 scenario and for the Iberian Peninsula (DJF, 2081-2100).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -31,7 +31,7 @@
 NULL
 
 
-#' @title Grid containing CORDEX data (KNMI) of daily precipitation for the Iberian Peninsula (DJF, 2081-2100).
+#' @title Grid containing CORDEX data (model KNMI-RACMO22E) of daily precipitation for the RCP8.5 scenario and for the Iberian Peninsula (DJF, 2081-2100).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -65,7 +65,7 @@ NULL
 
 
 
-#' @title Grid containing CORDEX data (KNMI) of daily precipitation for the Iberian Peninsula (DJF, 1983-2002).
+#' @title Grid containing historical CORDEX data (model KNMI-RACMO22E) of daily precipitation for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -97,7 +97,7 @@ NULL
 #'                 backdrop.theme = "countries", scales = list(draw = TRUE))
 NULL
 
-#' @title Grid containing CORDEX data (KNMI) of daily mean temperature for the Iberian Peninsula (DJF, 1983-2002).
+#' @title Grid containing historical CORDEX data (model KNMI-RACMO22E) of daily mean temperature for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -130,7 +130,7 @@ NULL
 NULL
 
 
-#' @title Station data containing VALUE daily data of precipitation for the Iberian Peninsula (DJF, 1983-2002).
+#' @title Station data containing VALUE (ECA-D) daily data of precipitation for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained by means of function \code{\link[loadeR]{loadStationData}} 
 #' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
 #' 
@@ -157,7 +157,7 @@ NULL
 
 
 
-#' @title Station data containing VALUE daily data of mean temperature for the Iberian Peninsula (DJF, 1983-2002).
+#' @title Station data containing VALUE (ECA-D) daily data of mean temperature for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained by means of function \code{\link[loadeR]{loadStationData}} 
 #' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
 #' 
@@ -181,7 +181,7 @@ NULL
 #'                 backdrop.theme = "countries", scales = list(draw = TRUE))
 NULL
 
-#' @title Grid containing CMIP5 data (CNRM) of daily sea level pressure for the Iberian Peninsula (DJF, 1983-2002).
+#' @title Grid containing historical CMIP5 data (model CNRM-CM5) of daily sea level pressure for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -211,7 +211,7 @@ NULL
 #'                 backdrop.theme = "countries", scales = list(draw = TRUE))
 NULL
 
-#' @title Grid containing CMIP5 data (CNRM) of daily air temperature at 850mb for the Iberian Peninsula (DJF, 1983-2002).
+#' @title Grid containing historical CMIP5 data (model CNRM-CM5) of daily air temperature at 850mb for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -243,7 +243,7 @@ NULL
 
 
 
-#' @title Grid containing CMIP5 data (CNRM) of daily specific humidity at 850mb for the Iberian Peninsula (DJF, 1983-2002).
+#' @title Grid containing historical CMIP5 data (model CNRM-CM5) of daily specific humidity at 850mb for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -275,7 +275,7 @@ NULL
 
 
 
-#' @title Grid containing CMIP5 data (CNRM) of daily precipitation for the Iberian Peninsula (DJF, 1983-2002).
+#' @title Grid containing historical CMIP5 data (model CNRM-CM5) of daily precipitation for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -308,7 +308,7 @@ NULL
 #'                 backdrop.theme = "countries", scales = list(draw = TRUE))
 NULL
 
-#' @title Grid containing CMIP5 data (CNRM) of daily mean temperature for the Iberian Peninsula (DJF, 1983-2002).
+#' @title Grid containing historical CMIP5 data (model CNRM-CM5) of daily mean temperature for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -344,7 +344,7 @@ NULL
 
 
 
-#' @title Grid containing CMIP5 data (CNRM) of daily sea level pressure for the Iberian Peninsula (DJF, 2081-2100).
+#' @title Grid containing CMIP5 data (model CNRM-CM5) of daily sea level pressure for the RCP8.5 scenario and for the Iberian Peninsula (DJF, 2081-2100).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -378,7 +378,7 @@ NULL
 
 
 
-#' @title Grid containing CMIP5 data (CNRM) of daily air temperature at 850mb for the Iberian Peninsula (DJF, 2081-2100).
+#' @title Grid containing CMIP5 data (model CNRM-CM5) of daily air temperature at 850mb for the RCP8.5 scenario and for the Iberian Peninsula (DJF, 2081-2100).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -410,7 +410,7 @@ NULL
 
 
 
-#' @title Grid containing CMIP5 data (CNRM) of daily specific humidity at 850mb for the Iberian Peninsula (DJF, 2081-2100).
+#' @title Grid containing CMIP5 data (model CNRM-CM5) of daily specific humidity at 850mb for the RCP8.5 scenario and for the Iberian Peninsula (DJF, 2081-2100).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -443,7 +443,7 @@ NULL
 
 
 
-#' @title Grid containing CMIP5 data (CNRM) of daily precipitation for the Iberian Peninsula (DJF, 2081-2100).
+#' @title Grid containing CMIP5 data (model CNRM-CM5) of daily precipitation for the RCP8.5 scenario and for the Iberian Peninsula (DJF, 2081-2100).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -479,7 +479,7 @@ NULL
 
 
 
-#' @title Grid containing CMIP5 data (CNRM) of daily mean temperature for the Iberian Peninsula (DJF, 2081-2100).
+#' @title Grid containing CMIP5 data (model CNRM-CM5) of daily mean temperature for the RCP8.5 scenario and for the Iberian Peninsula (DJF, 2081-2100).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
@@ -517,7 +517,7 @@ NULL
 
 
 #' @title Multimember grid containing CFSv2 seasonal forecast data of daily sea level pressure for
-#' the Iberian Peninsula (DFJ, 1983-2002).
+#' the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the ECOMS-UDG server 
 #' (\url{http://www.meteo.unican.es/ecoms-udg}, 
 #' log in is requiered, see \code{\link[loadeR]{loginUDG}}) 
@@ -552,7 +552,7 @@ NULL
 
 
 #' @title Multimember grid containing CFSv2 seasonal forecast data of daily specific humidity at 850mb for
-#' the Iberian Peninsula (DFJ, 1983-2002).
+#' the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the ECOMS-UDG server 
 #' (\url{http://www.meteo.unican.es/ecoms-udg}, 
 #' log in is requiered, see \code{\link[loadeR]{loginUDG}}) 
@@ -584,7 +584,7 @@ NULL
 NULL
 
 #' @title Multimember grid containing CFSv2 seasonal forecast data of daily precipitation for
-#' the Iberian Peninsula (DFJ, 1983-2002).
+#' the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the ECOMS-UDG server 
 #' (\url{http://www.meteo.unican.es/ecoms-udg}, 
 #' log in is requiered, see \code{\link[loadeR]{loginUDG}}) 
@@ -616,7 +616,7 @@ NULL
 NULL
 
 #' @title Multimember grid containing CFSv2 seasonal forecast data of daily mean temperature for
-#' the Iberian Peninsula (DFJ, 1983-2002).
+#' the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the ECOMS-UDG server 
 #' (\url{http://www.meteo.unican.es/ecoms-udg}, 
 #' log in is requiered, see \code{\link[loadeR]{loginUDG}}) 
@@ -648,7 +648,7 @@ NULL
 NULL
 
 
-#' @title Grid containing NCEP reanalysis data of daily air temperature at 850mb for the 
+#' @title Grid containing NCEP-ENCAR reanalysis1 data of daily air temperature at 850mb for the 
 #' Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
@@ -680,7 +680,7 @@ NULL
 NULL
 
 
-#' @title Grid containing NCEP reanalysis data of daily specific humidity at 850mb for the 
+#' @title Grid containing NCEP-ENCAR reanalysis1 data of daily specific humidity at 850mb for the 
 #' Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
@@ -713,7 +713,7 @@ NULL
 
 
 
-#' @title Grid containing NCEP reanalysis data of daily sea level pressure for the 
+#' @title Grid containing NCEP-ENCAR reanalysis1 data of daily sea level pressure for the 
 #' Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
@@ -746,7 +746,7 @@ NULL
 
 
 
-#' @title Grid containing NCEP reanalysis data of daily mean temperature for the 
+#' @title Grid containing NCEP-ENCAR reanalysis1 data of daily mean temperature for the 
 #' Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
@@ -777,7 +777,7 @@ NULL
 #'                 backdrop.theme = "countries", scales = list(draw = TRUE))
 NULL
 
-#' @title Grid containing NCEP reanalysis data of daily precipitation for the 
+#' @title Grid containing NCEP-ENCAR reanalysis1 data of daily precipitation for the 
 #' Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 #' log in is requiered, 
@@ -898,11 +898,11 @@ NULL
 
 
 #' @title Station daily precipitation dataset in Iberia
-#' @description Station data from the VALUE_ECA_86_v2 dataset containing daily precipitation for stations in the Iberian Peninsula.
+#' @description Station data from the VALUE (ECA-D) dataset containing daily precipitation for stations in the Iberian Peninsula.
 #' @format Station data
 #' @name VALUE_Iberia_pr
 #' @docType data
-#' @source  Subset of VALUE station data. Full dataset is accessible 
+#' @source  Subset of VALUE (ECA-D) station data. Full dataset is accessible 
 #' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
 NULL
 
@@ -911,7 +911,7 @@ NULL
 #' @format Station data
 #' @name VALUE_Iberia_tas
 #' @docType data
-#' @source  Subset of VALUE station data. Full dataset is accessible 
+#' @source  Subset of VALUE (ECA-D) station data. Full dataset is accessible 
 #' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
 NULL
 
