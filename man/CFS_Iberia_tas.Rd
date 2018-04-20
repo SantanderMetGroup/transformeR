@@ -3,7 +3,7 @@
 \name{CFS_Iberia_tas}
 \alias{CFS_Iberia_tas}
 \title{Multimember grid containing CFSv2 seasonal forecast data of daily mean temperature for
-the Iberian Peninsula (DFJ, 1983-2002).}
+the Iberian Peninsula (DJF, 1983-2002).}
 \format{A multimember grid}
 \source{
 \url{http://www.meteo.unican.es/ecoms-udg}

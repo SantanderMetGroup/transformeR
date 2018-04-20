@@ -4,10 +4,10 @@
 \name{VALUE_Iberia_tas}
 \alias{VALUE_Iberia_tas}
 \alias{VALUE_Iberia_tas}
-\title{Station data containing VALUE daily data of mean temperature for the Iberian Peninsula (DJF, 1983-2002).}
+\title{Station data containing VALUE (ECA-D) daily data of mean temperature for the Iberian Peninsula (DJF, 1983-2002).}
 \format{Station data}
 \source{
-Subset of VALUE station data. Full dataset is accessible 
+Subset of VALUE (ECA-D) station data. Full dataset is accessible 
 for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
 }
 \description{

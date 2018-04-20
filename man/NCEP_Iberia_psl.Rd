@@ -2,7 +2,7 @@
 % Please edit documentation in R/rdas.R
 \name{NCEP_Iberia_psl}
 \alias{NCEP_Iberia_psl}
-\title{Grid containing NCEP reanalysis data of daily sea level pressure for the 
+\title{Grid containing NCEP-ENCAR reanalysis1 data of daily sea level pressure for the 
 Iberian Peninsula (DJF, 1983-2002).}
 \format{A grid}
 \source{
