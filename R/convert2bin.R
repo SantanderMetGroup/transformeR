@@ -59,4 +59,4 @@ convert2bin. <- function(x,threshold, partial) {
     x[x < threshold] <- 0}
   else {
     x[x < threshold] <- 0}
-return(x)}
+  return(x)}

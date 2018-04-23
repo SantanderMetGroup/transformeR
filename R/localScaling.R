@@ -166,62 +166,62 @@ localScaling <- function(grid,
                          max.ncores = 16,
                          ncores = NULL,
                          scale = FALSE) {
-    time.frame <- match.arg(time.frame, choices = c("none", "monthly", "daily"))
-    type <- match.arg(type, choices = c("additive", "ratio"))
-    spatial.frame <- match.arg(spatial.frame, choices = c("gridbox", "field"))
-    if (time.frame == "none") {
-        message("[", Sys.time(), "] - Scaling ...")
-        out <- localScaling.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
-        message("[", Sys.time(), "] - Done")
-    } else if (time.frame == "monthly") {
-        message("[", Sys.time(), "] - Scaling by months ...")
-        months <- getSeason(grid)
-        aux.list <- lapply(1:length(months), function(x) {
-            grid1 <- subsetGrid(grid, season = months[x])
-            base1 <- if (!is.null(base)) {
-                subsetGrid(base, season = months[x])
-            } else {
-                NULL
-            }
-            ref1 <- if (!is.null(ref)) {
-                subsetGrid(ref, season = months[x])
-            } else {
-                NULL
-            }
-            localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
-        })
-        out <- do.call("bindGrid.time", aux.list)
-        message("[", Sys.time(), "] - Done")
-    } else if (time.frame == "daily") {
-        doys.grid <- grid %>% getRefDates() %>% substr(6,10) 
-        doys.grid <- gsub("02-29", "02-28", doys.grid)
-        if (!is.null(base)) {
-            doys.base <- base %>% getRefDates() %>% substr(6, 10)
-            doys.base <- gsub("02-29", "02-28", doys.base)
-        }
-        if (!is.null(ref)) {
-            doys.ref <- ref %>% getRefDates() %>% substr(6, 10)
-            doys.ref <- gsub("02-29", "02-28", doys.ref)
-        }
-        message("[", Sys.time(), "] - Scaling by julian days ...")
-        aux.list <- lapply(unique(doys.grid), function(x) {
-            grid1 <- subsetDimension(grid, dimension = "time", indices = which(doys.grid == x))
-            if (!is.null(base)) {
-                base1 <- subsetDimension(base, dimension = "time", indices = which(doys.base == x))
-            } else {
-                base1 <- base
-            }
-            if (!is.null(ref)) {
-                ref1 <- subsetDimension(ref, dimension = "time", indices = which(doys.ref == x))
-            } else {
-                ref1 <- ref
-            }
-            localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
-        })
-        out <- do.call("bindGrid.time", aux.list)
-        message("[", Sys.time(), "] - Done")
+  time.frame <- match.arg(time.frame, choices = c("none", "monthly", "daily"))
+  type <- match.arg(type, choices = c("additive", "ratio"))
+  spatial.frame <- match.arg(spatial.frame, choices = c("gridbox", "field"))
+  if (time.frame == "none") {
+    message("[", Sys.time(), "] - Scaling ...")
+    out <- localScaling.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
+    message("[", Sys.time(), "] - Done")
+  } else if (time.frame == "monthly") {
+    message("[", Sys.time(), "] - Scaling by months ...")
+    months <- getSeason(grid)
+    aux.list <- lapply(1:length(months), function(x) {
+      grid1 <- subsetGrid(grid, season = months[x])
+      base1 <- if (!is.null(base)) {
+        subsetGrid(base, season = months[x])
+      } else {
+        NULL
+      }
+      ref1 <- if (!is.null(ref)) {
+        subsetGrid(ref, season = months[x])
+      } else {
+        NULL
+      }
+      localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
+    })
+    out <- do.call("bindGrid.time", aux.list)
+    message("[", Sys.time(), "] - Done")
+  } else if (time.frame == "daily") {
+    doys.grid <- grid %>% getRefDates() %>% substr(6,10) 
+    doys.grid <- gsub("02-29", "02-28", doys.grid)
+    if (!is.null(base)) {
+      doys.base <- base %>% getRefDates() %>% substr(6, 10)
+      doys.base <- gsub("02-29", "02-28", doys.base)
     }
-    invisible(out)
+    if (!is.null(ref)) {
+      doys.ref <- ref %>% getRefDates() %>% substr(6, 10)
+      doys.ref <- gsub("02-29", "02-28", doys.ref)
+    }
+    message("[", Sys.time(), "] - Scaling by julian days ...")
+    aux.list <- lapply(unique(doys.grid), function(x) {
+      grid1 <- subsetDimension(grid, dimension = "time", indices = which(doys.grid == x))
+      if (!is.null(base)) {
+        base1 <- subsetDimension(base, dimension = "time", indices = which(doys.base == x))
+      } else {
+        base1 <- base
+      }
+      if (!is.null(ref)) {
+        ref1 <- subsetDimension(ref, dimension = "time", indices = which(doys.ref == x))
+      } else {
+        ref1 <- ref
+      }
+      localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
+    })
+    out <- do.call("bindGrid.time", aux.list)
+    message("[", Sys.time(), "] - Done")
+  }
+  invisible(out)
 }
 
 
@@ -339,7 +339,4 @@ localScaling.type <- function(clim, n.times, ind.time, Xc, Xref, type, lapply_fu
     })
   }
 }
-
-
-
 
