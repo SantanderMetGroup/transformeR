@@ -747,7 +747,7 @@ getVarNames <- function(grid, type = c("short", "long")) {
 #' getGridVerticalLevels(mg)
 #' # Use of var.index to select some variables:
 #' # either by their shortname...
-#' getGridVerticalLevels(mg, var.index = c("shum@@850","air@@850"))
+#' getGridVerticalLevels(mg, var.index = c("hus@@850","ta@@850"))
 #' # ... or by index position in the multigrid
 #' getGridVerticalLevels(mg, var.index = c(1,3))
 

@@ -115,7 +115,7 @@
 #' # it also returns, in the last element of the output list,
 #' # the results of a PC analysis of the combined variables when 'which.combine' is activated:
 #' pca <- prinComp(multigrid, v.exp = c(.99,.95,.90,.95),
-#'                 which.combine = c("air@@850", "slp"), keep.orig = FALSE)
+#'                 which.combine = c("ta@@850", "psl"), keep.orig = FALSE)
 #'                 
 #' str(pca)
 #' # A special attribute indicates the variables used for combination
@@ -126,10 +126,10 @@
 #' # In addition, for each variable (and their combination), the scaling and centering parameters 
 #' # are also returned. There is one value of each parameter per grid point. For instance, 
 #' # the parameters for the specific humidity field are:
-#' attributes(pca$shum850[[1]]$orig)$`scaled:center`
-#' attributes(pca$shum850[[1]]$orig)$`scaled:scale`
+#' attributes(pca$hus850[[1]]$orig)$`scaled:center`
+#' attributes(pca$hus850[[1]]$orig)$`scaled:scale`
 #' # In addition, the (cumulative) explained variance of each PC is also returned:
-#' vexp <- attributes(pca$"shum@@850"[[1]])$explained_variance
+#' vexp <- attributes(pca$"hus@@850"[[1]])$explained_variance
 #' # The classical "scree plot":
 #' barplot(1-vexp, names.arg = paste("PC",1:length(vexp)), las = 2, 
 #'         ylab = "Fraction of unexplained variance")

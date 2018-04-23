@@ -3,7 +3,7 @@
 \docType{data}
 \name{CMIP5_Iberia_tas}
 \alias{CMIP5_Iberia_tas}
-\title{Grid containing CMIP5 data (CNRM) of daily mean temperature for the Iberian Peninsula (DJF, 1983-2002).}
+\title{Grid containing historical CMIP5 data (model CNRM-CM5) of daily mean temperature for the Iberian Peninsula (DJF, 1983-2002).}
 \format{A grid}
 \source{
 \url{http://www.meteo.unican.es/udg-tap}

@@ -3,7 +3,7 @@
 \docType{data}
 \name{CORDEX_Iberia_tas}
 \alias{CORDEX_Iberia_tas}
-\title{Grid containing CORDEX data (KNMI) of daily mean temperature for the Iberian Peninsula (DJF, 1983-2002).}
+\title{Grid containing historical CORDEX data (model KNMI-RACMO22E) of daily mean temperature for the Iberian Peninsula (DJF, 1983-2002).}
 \format{A grid}
 \source{
 \url{http://www.meteo.unican.es/udg-tap}

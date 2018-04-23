@@ -4,12 +4,12 @@
 \name{VALUE_Iberia_pr}
 \alias{VALUE_Iberia_pr}
 \alias{VALUE_Iberia_pr}
-\title{Station data containing VALUE daily data of precipitation for the Iberian Peninsula (DJF, 1983-2002).}
+\title{Station data containing VALUE (ECA-D) daily data of precipitation for the Iberian Peninsula (DJF, 1983-2002).}
 \format{Station data}
 \source{
 \url{http://www.meteo.unican.es/udg-tap}
 
-Subset of VALUE station data. Full dataset is accessible 
+Subset of VALUE (ECA-D) station data. Full dataset is accessible 
 for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
 }
 \description{
@@ -25,7 +25,7 @@ This R data object was obtained by means of function \code{\link[loadeR]{loadSta
 \code{VALUE_Iberia_pr <- loadStationData(dataset = "data/VALUE_ECA_86_v2.zip",
 var = "precip", years = years, lonLim = lonLim, latLim = latLim, season = season)}\cr
 
-Station data from the VALUE_ECA_86_v2 dataset containing daily precipitation for stations in the Iberian Peninsula.
+Station data from the VALUE (ECA-D) dataset containing daily precipitation for stations in the Iberian Peninsula.
 }
 \examples{
 data("VALUE_Iberia_pr")

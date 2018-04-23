@@ -2,7 +2,7 @@
 % Please edit documentation in R/rdas.R
 \name{NCEP_Iberia_tas}
 \alias{NCEP_Iberia_tas}
-\title{Grid containing NCEP reanalysis data of daily mean temperature for the 
+\title{Grid containing NCEP-ENCAR reanalysis1 data of daily mean temperature for the 
 Iberian Peninsula (DJF, 1983-2002).}
 \format{A grid}
 \source{
