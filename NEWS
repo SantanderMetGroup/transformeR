@@ -1,7 +1,8 @@
-transformeR 1.3.2
+transformeR 1.3.3
 =================
 
-* New built-in datasets of CMIP5 RCP8.5 projections
+* Renamed `localScaling` to `scaleGrid`
+* Update variable names/levels in built-in datasets for consistency (NCEP, CMIP5)
 * Other minor doc updates and internal changes
 
 
