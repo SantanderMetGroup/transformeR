@@ -166,62 +166,64 @@ localScaling <- function(grid,
                          max.ncores = 16,
                          ncores = NULL,
                          scale = FALSE) {
-  time.frame <- match.arg(time.frame, choices = c("none", "monthly", "daily"))
-  type <- match.arg(type, choices = c("additive", "ratio"))
-  spatial.frame <- match.arg(spatial.frame, choices = c("gridbox", "field"))
-  if (time.frame == "none") {
-    message("[", Sys.time(), "] - Scaling ...")
-    out <- localScaling.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
-    message("[", Sys.time(), "] - Done")
-  } else if (time.frame == "monthly") {
-    message("[", Sys.time(), "] - Scaling by months ...")
-    months <- getSeason(grid)
-    aux.list <- lapply(1:length(months), function(x) {
-      grid1 <- subsetGrid(grid, season = months[x])
-      base1 <- if (!is.null(base)) {
-        subsetGrid(base, season = months[x])
-      } else {
-        NULL
-      }
-      ref1 <- if (!is.null(ref)) {
-        subsetGrid(ref, season = months[x])
-      } else {
-        NULL
-      }
-      localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
-    })
-    out <- do.call("bindGrid.time", aux.list)
-    message("[", Sys.time(), "] - Done")
-  } else if (time.frame == "daily") {
-    doys.grid <- grid %>% getRefDates() %>% substr(6,10) 
-    doys.grid <- gsub("02-29", "02-28", doys.grid)
-    if (!is.null(base)) {
-      doys.base <- base %>% getRefDates() %>% substr(6, 10)
-      doys.base <- gsub("02-29", "02-28", doys.base)
+    .Deprecated("scaleGrid", package = "transformeR",
+                msg = "'localScaling' is deprecated and will be removed from transformeR in future releases.\nUse 'scaleGrid' instead.") 
+    time.frame <- match.arg(time.frame, choices = c("none", "monthly", "daily"))
+    type <- match.arg(type, choices = c("additive", "ratio"))
+    spatial.frame <- match.arg(spatial.frame, choices = c("gridbox", "field"))
+    if (time.frame == "none") {
+        message("[", Sys.time(), "] - Scaling ...")
+        out <- localScaling.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
+        message("[", Sys.time(), "] - Done")
+    } else if (time.frame == "monthly") {
+        message("[", Sys.time(), "] - Scaling by months ...")
+        months <- getSeason(grid)
+        aux.list <- lapply(1:length(months), function(x) {
+            grid1 <- subsetGrid(grid, season = months[x])
+            base1 <- if (!is.null(base)) {
+                subsetGrid(base, season = months[x])
+            } else {
+                NULL
+            }
+            ref1 <- if (!is.null(ref)) {
+                subsetGrid(ref, season = months[x])
+            } else {
+                NULL
+            }
+            localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
+        })
+        out <- do.call("bindGrid.time", aux.list)
+        message("[", Sys.time(), "] - Done")
+    } else if (time.frame == "daily") {
+        doys.grid <- grid %>% getRefDates() %>% substr(6,10) 
+        doys.grid <- gsub("02-29", "02-28", doys.grid)
+        if (!is.null(base)) {
+            doys.base <- base %>% getRefDates() %>% substr(6, 10)
+            doys.base <- gsub("02-29", "02-28", doys.base)
+        }
+        if (!is.null(ref)) {
+            doys.ref <- ref %>% getRefDates() %>% substr(6, 10)
+            doys.ref <- gsub("02-29", "02-28", doys.ref)
+        }
+        message("[", Sys.time(), "] - Scaling by julian days ...")
+        aux.list <- lapply(unique(doys.grid), function(x) {
+            grid1 <- subsetDimension(grid, dimension = "time", indices = which(doys.grid == x))
+            if (!is.null(base)) {
+                base1 <- subsetDimension(base, dimension = "time", indices = which(doys.base == x))
+            } else {
+                base1 <- base
+            }
+            if (!is.null(ref)) {
+                ref1 <- subsetDimension(ref, dimension = "time", indices = which(doys.ref == x))
+            } else {
+                ref1 <- ref
+            }
+            localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
+        })
+        out <- do.call("bindGrid.time", aux.list)
+        message("[", Sys.time(), "] - Done")
     }
-    if (!is.null(ref)) {
-      doys.ref <- ref %>% getRefDates() %>% substr(6, 10)
-      doys.ref <- gsub("02-29", "02-28", doys.ref)
-    }
-    message("[", Sys.time(), "] - Scaling by julian days ...")
-    aux.list <- lapply(unique(doys.grid), function(x) {
-      grid1 <- subsetDimension(grid, dimension = "time", indices = which(doys.grid == x))
-      if (!is.null(base)) {
-        base1 <- subsetDimension(base, dimension = "time", indices = which(doys.base == x))
-      } else {
-        base1 <- base
-      }
-      if (!is.null(ref)) {
-        ref1 <- subsetDimension(ref, dimension = "time", indices = which(doys.ref == x))
-      } else {
-        ref1 <- ref
-      }
-      localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
-    })
-    out <- do.call("bindGrid.time", aux.list)
-    message("[", Sys.time(), "] - Done")
-  }
-  invisible(out)
+    invisible(out)
 }
 
 
@@ -234,78 +236,78 @@ localScaling <- function(grid,
 #' @author J Bedia
 
 localScaling. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame) {
-  grid <- redim(grid)
-  if (is.null(base)) {
-    base.m <- suppressMessages({
-      climatology(grid, clim.fun, by.member, parallel, max.ncores, ncores)
-    }) %>% redim()
-    base.std <- 1
-    if (isTRUE(scale)) {
-      base.std <- suppressMessages({
-        climatology(grid, clim.fun = list(FUN = "sd", na.rm = TRUE), by.member, parallel, max.ncores, ncores)
-      }) %>% redim()
-      base.std <- base.std$Data}
-    if (spatial.frame == "field") {
-      ind.field <- c(which(getDim(base.m) == "time"),which(getDim(base.m) == "lat"),which(getDim(base.m) == "lon"))
-      getDim.base <- attr(base.m$Data,"dimensions")
-      mean.field <- apply(base.m$Data,MARGIN = -ind.field,mean) 
-      sd.field <- apply(grid$Data,MARGIN = -ind.field,sd) 
-      base.m$Data <- array(data = mean.field, dim = dim(base.m$Data))
-      base.std <- array(data = sd.field, dim = dim(base.m$Data))
-      attr(base.m$Data,"dimensions") <- getDim.base
-      attr(base.std,"dimensions") <- getDim.base
+    grid <- redim(grid)
+    if (is.null(base)) {
+        base.m <- suppressMessages({
+            climatology(grid, clim.fun, by.member, parallel, max.ncores, ncores)
+        }) %>% redim()
+        base.std <- 1
+        if (isTRUE(scale)) {
+            base.std <- suppressMessages({
+                climatology(grid, clim.fun = list(FUN = "sd", na.rm = TRUE), by.member, parallel, max.ncores, ncores)
+            }) %>% redim()
+            base.std <- base.std$Data}
+        if (spatial.frame == "field") {
+            ind.field <- c(which(getDim(base.m) == "time"),which(getDim(base.m) == "lat"),which(getDim(base.m) == "lon"))
+            getDim.base <- attr(base.m$Data,"dimensions")
+            mean.field <- apply(base.m$Data,MARGIN = -ind.field,mean) 
+            sd.field <- apply(grid$Data,MARGIN = -ind.field,sd) 
+            base.m$Data <- array(data = mean.field, dim = dim(base.m$Data))
+            base.std <- array(data = sd.field, dim = dim(base.m$Data))
+            attr(base.m$Data,"dimensions") <- getDim.base
+            attr(base.std,"dimensions") <- getDim.base
+        }
+        
+    } else {
+        if (!scale) checkSeason(grid, base)
+        checkDim(grid, base, dimensions = c("lat", "lon"))
+        base.m <- suppressMessages({
+            climatology(base, clim.fun, by.member, parallel, max.ncores, ncores)
+        }) %>% redim()
+        base.std <- 1
+        if (isTRUE(scale)) {
+            base.std <- suppressMessages({
+                climatology(base, clim.fun = list(FUN = "sd", na.rm = TRUE), by.member, parallel, max.ncores, ncores)
+            }) %>% redim()
+            base.std <- base.std$Data}
+        if (spatial.frame == "field") {
+            ind.mfield <- c(which(getDim(base.m) == "time"), which(getDim(base.m) == "lat"), which(getDim(base.m) == "lon"))
+            ind.sfield <- c(which(getDim(redim(base)) == "time"), which(getDim(redim(base)) == "lat"), which(getDim(redim(base)) == "lon"))
+            getDim.base <- attr(base.m$Data, "dimensions")
+            mean.field <- apply(base.m$Data, MARGIN = -ind.mfield, mean) 
+            sd.field <- apply(redim(base)$Data, MARGIN = -ind.sfield, sd) 
+            base.m$Data <- array(data = mean.field, dim = dim(base.m$Data))
+            base.std <- array(data = sd.field, dim = dim(base.m$Data))
+            attr(base.m$Data,"dimensions") <- getDim.base
+            attr(base.std,"dimensions") <- getDim.base
+        }
     }
-    
-  } else {
-    if (!scale) checkSeason(grid, base)
-    checkDim(grid, base, dimensions = c("lat", "lon"))
-    base.m <- suppressMessages({
-      climatology(base, clim.fun, by.member, parallel, max.ncores, ncores)
-    }) %>% redim()
-    base.std <- 1
-    if (isTRUE(scale)) {
-      base.std <- suppressMessages({
-        climatology(base, clim.fun = list(FUN = "sd", na.rm = TRUE), by.member, parallel, max.ncores, ncores)
-      }) %>% redim()
-      base.std <- base.std$Data}
-    if (spatial.frame == "field") {
-      ind.mfield <- c(which(getDim(base.m) == "time"), which(getDim(base.m) == "lat"), which(getDim(base.m) == "lon"))
-      ind.sfield <- c(which(getDim(redim(base)) == "time"), which(getDim(redim(base)) == "lat"), which(getDim(redim(base)) == "lon"))
-      getDim.base <- attr(base.m$Data, "dimensions")
-      mean.field <- apply(base.m$Data, MARGIN = -ind.mfield, mean) 
-      sd.field <- apply(redim(base)$Data, MARGIN = -ind.sfield, sd) 
-      base.m$Data <- array(data = mean.field, dim = dim(base.m$Data))
-      base.std <- array(data = sd.field, dim = dim(base.m$Data))
-      attr(base.m$Data,"dimensions") <- getDim.base
-      attr(base.std,"dimensions") <- getDim.base
-    }
-  }
-  if (!is.null(ref)) {
-    checkDim(grid, ref, dimensions = c("lat", "lon"))
-    if (!scale) checkSeason(grid, ref)
-    ref <- suppressMessages({
-      climatology(ref, clim.fun, by.member, parallel, max.ncores,ncores)
-    }) %>% redim()
-  } else {
-    ref <- list()
-    ref[["Data"]] <- array(0, getShape(base.m))
-    attr(ref[["Data"]], "dimensions") <- getDim(base.m)
-  }    
-  parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-  lapply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "lapply")
-  if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
-  clim <- grid[["Data"]]
-  dimNames <- getDim(grid)
-  ind.time <- grep("^time", dimNames)
-  n.times <- getShape(grid, "time")
-  Xc <- base.m[["Data"]]
-  Xref <- ref[["Data"]]
-  aux.list <- localScaling.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun, base.std)
-  Xc <- Xref <- base <- base.m <- base.std <- ref <- NULL
-  grid[["Data"]] <- do.call("abind", c(aux.list, along = ind.time)) %>% unname()
-  aux.list <- NULL
-  attr(grid[["Data"]], "dimensions") <- dimNames
-  return(grid)
+    if (!is.null(ref)) {
+        checkDim(grid, ref, dimensions = c("lat", "lon"))
+        if (!scale) checkSeason(grid, ref)
+        ref <- suppressMessages({
+            climatology(ref, clim.fun, by.member, parallel, max.ncores,ncores)
+        }) %>% redim()
+    } else {
+        ref <- list()
+        ref[["Data"]] <- array(0, getShape(base.m))
+        attr(ref[["Data"]], "dimensions") <- getDim(base.m)
+    }    
+    parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
+    lapply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "lapply")
+    if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
+    clim <- grid[["Data"]]
+    dimNames <- getDim(grid)
+    ind.time <- grep("^time", dimNames)
+    n.times <- getShape(grid, "time")
+    Xc <- base.m[["Data"]]
+    Xref <- ref[["Data"]]
+    aux.list <- localScaling.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun, base.std)
+    Xc <- Xref <- base <- base.m <- base.std <- ref <- NULL
+    grid[["Data"]] <- do.call("abind", c(aux.list, along = ind.time)) %>% unname()
+    aux.list <- NULL
+    attr(grid[["Data"]], "dimensions") <- dimNames
+    return(grid)
 }
 
 #' @title Local scaling type internal    
@@ -317,26 +319,26 @@ localScaling. <- function(grid, base, ref, clim.fun, by.member, type, parallel, 
 #' @author J Bedia
 
 localScaling.type <- function(clim, n.times, ind.time, Xc, Xref, type, lapply_fun, base.std) {
-  if (type == "additive") {
-    lapply_fun(1:n.times, function(x) {
-      X <- asub(clim, idx = x, dims = ind.time, drop = FALSE)
-      if (dim(X)[1] != dim(Xc)[1]) {
-        aux <- lapply(1:dim(X)[1], function(i) {(X[i, , , , drop = FALSE] - Xc) / base.std + Xref})
-        do.call("abind", c(aux, along = 1)) %>% unname()
-      } else {
-        (X - Xc) / base.std + Xref
-      }
-    })
-  } else {
-    lapply_fun(1:n.times, function(x) {
-      X <- asub(clim, idx = x, dims = ind.time, drop = FALSE)
-      if (dim(X)[1] != dim(Xc)[1]) {
-        aux <- lapply(1:dim(X)[1], function(i) (X[i, , , , drop = FALSE] / Xc) * Xref)
-        do.call("abind", c(aux, along = 1)) %>% unname()
-      } else {
-        (X / Xc) * Xref
-      }
-    })
-  }
+    if (type == "additive") {
+        lapply_fun(1:n.times, function(x) {
+            X <- asub(clim, idx = x, dims = ind.time, drop = FALSE)
+            if (dim(X)[1] != dim(Xc)[1]) {
+                aux <- lapply(1:dim(X)[1], function(i) {(X[i, , , , drop = FALSE] - Xc) / base.std + Xref})
+                do.call("abind", c(aux, along = 1)) %>% unname()
+            } else {
+                (X - Xc) / base.std + Xref
+            }
+        })
+    } else {
+        lapply_fun(1:n.times, function(x) {
+            X <- asub(clim, idx = x, dims = ind.time, drop = FALSE)
+            if (dim(X)[1] != dim(Xc)[1]) {
+                aux <- lapply(1:dim(X)[1], function(i) (X[i, , , , drop = FALSE] / Xc) * Xref)
+                do.call("abind", c(aux, along = 1)) %>% unname()
+            } else {
+                (X / Xc) * Xref
+            }
+        })
+    }
 }
 
