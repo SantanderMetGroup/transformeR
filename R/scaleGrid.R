@@ -264,7 +264,7 @@ gridScale. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max
       base.m$Data <- array(data = apply(base.m$Data, MARGIN = -ind, FUN = function(Z) {mean(Z,na.rm = TRUE)}),dim = dim(base.m$Data))
       attr(base.m$Data,"dimensions") <- getDim.base
       if ((type == "standardize")) {
-        base.std <- array(data = apply(grid$Data, MARGIN = -ind, FUN = function(Z) {mean(sd,na.rm = TRUE)}),dim = dim(base.m$Data))
+        base.std <- array(data = apply(grid$Data, MARGIN = -ind, FUN = function(Z) {sd(Z,na.rm = TRUE)}),dim = dim(base.m$Data))
       }
     }
     
