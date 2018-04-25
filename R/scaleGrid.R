@@ -269,7 +269,7 @@ gridScale. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max
     }
     
   } else {
-    checkSeason(grid, base)
+    # checkSeason(grid, base)
     checkDim(grid, base, dimensions = c("lat", "lon"))
     base.m <- suppressMessages({
       climatology(base, clim.fun, by.member, parallel, max.ncores, ncores)
@@ -293,7 +293,7 @@ gridScale. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max
   }
   if (!is.null(ref)) {
     checkDim(grid, ref, dimensions = c("lat", "lon"))
-    checkSeason(grid, ref)
+    # checkSeason(grid, ref)
     ref.m <- suppressMessages({
       climatology(ref, clim.fun, by.member, parallel, max.ncores,ncores)
     }) %>% redim()
