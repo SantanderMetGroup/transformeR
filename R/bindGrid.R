@@ -59,8 +59,8 @@ bindGrid <- function(..., dimension = c("member", "time", "lat", "lon"),
             bindGrid.member(..., spatial.tolerance = spatial.tolerance)
       } else if (dimension == "time") {
             bindGrid.time(..., spatial.tolerance = spatial.tolerance)
-      } else if (dimension == "lat") {
-            bindGrid.spatial(..., dimesnion = dimension, spatial.tolerance = spatial.tolerance)
+      } else if (dimension == "lat" | dimension == "lon") {
+            bindGrid.spatial(..., dimension = dimension, spatial.tolerance = spatial.tolerance)
       }
 }
 #end
@@ -232,12 +232,13 @@ bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
 #' @importFrom abind abind
 #' @family internal.helpers
 #' @author M Iturbide
+#' @export
 
 
 bindGrid.spatial <- function(...,  dimension = c("lat", "lon"), spatial.tolerance = 1e-3) {
       dimension <- match.arg(dimension, choices = c("lat", "lon"))
       dimsort <- "y"
-      if(dimension == "lon") dimsort <- "x"
+      if (dimension == "lon") dimsort <- "x"
       grid.list <- list(...)
       if (length(grid.list) == 1) {
             grid.list <- unlist(grid.list, recursive = FALSE)
