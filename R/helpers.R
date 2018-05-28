@@ -565,24 +565,30 @@ isRegular <- function(grid) {
     gr <- tryCatch({getGrid(grid)}, error = function(err) {grid})
     x <- sort(gr$x)
     y <- sort(gr$y)
-    if (length(x) == 1 && length(y) == 1) {
-        FALSE
-    } else if (attr(gr, "resX") == 0 && attr(gr, "resY") == 0) {
-        FALSE
+    if (!is.null(attr(gr, "resX")) && !is.null(attr(gr, "resY"))) {
+          if (attr(gr, "resX") == 0 && attr(gr, "resY") == 0) {
+                FALSE 
+          } else {
+                TRUE
+          }
     } else {
-        xdists <- lapply(1:(length(x) - 1), function(l) {
-            x[l + 1] - x[l]
-        })
-        ydists <- lapply(1:(length(y) - 1), function(l) {
-            y[l + 1] - y[l]
-        })
-        xa <- sum(unlist(xdists) - unlist(xdists)[1])
-        ya <- sum(unlist(ydists) - unlist(ydists)[1])
-        if (any(abs(c(xa, ya)) > 1e-05)) {
-            FALSE
+        if (length(x) == 1 && length(y) == 1) {
+              FALSE
         } else {
-            TRUE
-        }
+            xdists <- lapply(1:(length(x) - 1), function(l) {
+                  x[l + 1] - x[l]
+            })
+            ydists <- lapply(1:(length(y) - 1), function(l) {
+                  y[l + 1] - y[l]
+            })
+            xa <- sum(unlist(xdists) - unlist(xdists)[1])
+            ya <- sum(unlist(ydists) - unlist(ydists)[1])
+            if (any(abs(c(xa, ya)) > 1e-05)) {
+                  FALSE
+            } else {
+                  TRUE
+            }
+      }
     }
 }
 
