@@ -567,6 +567,8 @@ isRegular <- function(grid) {
     y <- sort(gr$y)
     if (length(x) == 1 && length(y) == 1) {
         FALSE
+    } else if (attr(gr, "resX") == 0 && attr(gr, "resY") == 0) {
+        FALSE
     } else {
         xdists <- lapply(1:(length(x) - 1), function(l) {
             x[l + 1] - x[l]
