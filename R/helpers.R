@@ -899,3 +899,24 @@ isGrid <- function(grid) {
       }
 }
 
+
+#' Check if object is a multigrid
+#' 
+#'
+#' @param grid Input object.
+#' @return Logical.
+#' @keywords internal
+#' @export
+#' @author M. Iturbide
+
+isMultigrid <- function(grid) {
+      if (is.list(grid)) {
+            if (all(c("Variable", "Data", "xyCoords", "Dates") %in% names(grid))) {
+                  gridDepth(grid$Dates) > 1
+            } else {
+                  FALSE
+            }
+      } else {
+            FALSE
+      }
+}
