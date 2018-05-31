@@ -23,7 +23,9 @@ An attribute 'subset' with value 'subsetRuntime' is added to the Runtime slot of
 }
 \seealso{
 Other subsetting: \code{\link{getTemporalIntersection}},
+  \code{\link{intersectGrid.spatial}},
   \code{\link{intersectGrid.time}},
+  \code{\link{intersectGrid}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetSeason}},
   \code{\link{subsetSpatial}}, \code{\link{subsetStation}},

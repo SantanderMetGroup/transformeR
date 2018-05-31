@@ -1,5 +1,5 @@
 #' @title Intersection of multiple grids
-#' @description Takes multiple input grids and crops the overlapping part along time dimension
+#' @description Takes multiple input grids and crops the overlapping part 
 #' @param ... Input grids
 #' @param type Character. Options are "temporal" (default) or "spatial".
 #' @param which.return Integer of the index to specify which grids in "..." are to be returned.
