@@ -58,7 +58,7 @@ redim <- function(grid,
                   dimNames <- c("loc", dimNames)
                   grid$Data <- unname(abind(grid$Data, NULL, along = 0))
                   attr(grid$Data, "dimensions") <- dimNames
-            } esle if (!"loc" %in% dimNames & getShape(grid)["lon"] == 1) {
+            } else if (!"loc" %in% dimNames & getShape(grid)["lon"] == 1) {
                   # recover loc dimension  
                   ind <- match("lat", dimNames)
                   dimNames <- c(dimNames[-c(ind,ind + 1)], "loc")
