@@ -129,7 +129,7 @@ getCoordinates <- function(obj) {
     } else {
         x <- obj$xyCoords$x
         y <- obj$xyCoords$y
-        if (!is.data.frame(obj$xyCoords) && exists("lon", obj$xyCoords) && exists("lat", obj$xyCoords)) {
+        if (!is.data.frame(obj$xyCoords) && exists("lon", where = obj$xyCoords) && exists("lat", where = obj$xyCoords)) {
             lon <- obj$xyCoords$lon 
             lat <- obj$xyCoords$lat
             return(list("x" = x, "y" = y, "lon" = lon, "lat" = lat))
