@@ -1,9 +1,8 @@
-transformeR 1.3.3
+transformeR 1.4.0
 =================
 
-* Renamed `localScaling` to `scaleGrid`
-* Update variable names/levels in built-in datasets for consistency (NCEP, CMIP5)
-* Other minor doc updates and internal changes
+* New function `intersectGrid`, for calculating spatiotemporal intersections among grids
+* Optional flag to skip seasonal check in `scaleGrid`
 
 
 

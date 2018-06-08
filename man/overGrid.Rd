@@ -27,26 +27,16 @@ station data.
 \details{
 All grid locations outside layer are filled with NAs.
 }
-\examples{
-library(visualizeR)
-data("PRUDENCEregions")
-library(loadeR)
-grid <- loadGridData(
-      "http://opendap.knmi.nl/knmi/thredds/dodsC/e-obs_0.25regular/tx_0.25deg_reg_v17.0.nc",
-      var = "tx", years = 1983, season = 12)
-
-iberia <- overGrid(grid, PRUDENCEregions[2, ])
-iberia2 <- overGrid(grid, PRUDENCEregions[2,], subset = TRUE)
-allregions <- overGrid(grid, PRUDENCEregions, subset = TRUE)
-
-spatialPlot(climatology(grid),
-            sp.layout = list(list(PRUDENCEregions, first = FALSE)))
-spatialPlot(climatology(iberia),
-            sp.layout = list(list(PRUDENCEregions, first = FALSE)))
-spatialPlot(climatology(iberia2),
-            sp.layout = list(list(PRUDENCEregions, first = FALSE)))
-spatialPlot(climatology(allregions),
-            sp.layout = list(list(PRUDENCEregions, first = FALSE)))
+\seealso{
+Other subsetting: \code{\link{getTemporalIntersection}},
+  \code{\link{intersectGrid.spatial}},
+  \code{\link{intersectGrid.time}},
+  \code{\link{intersectGrid}},
+  \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
+  \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
+  \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
+  \code{\link{subsetStation}}, \code{\link{subsetVar}},
+  \code{\link{subsetYears}}
 }
 \author{
 M. Iturbide

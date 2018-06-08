@@ -15,27 +15,8 @@
 #' 
 #' @return A grid
 #' @author M. Iturbide
+#' @family subsetting
 #' @export
-#' @examples
-#' library(visualizeR)
-#' data("PRUDENCEregions")
-#' library(loadeR)
-#' grid <- loadGridData(
-#'       "http://opendap.knmi.nl/knmi/thredds/dodsC/e-obs_0.25regular/tx_0.25deg_reg_v17.0.nc",
-#'       var = "tx", years = 1983, season = 12)
-#' 
-#' iberia <- overGrid(grid, PRUDENCEregions[2, ])
-#' iberia2 <- overGrid(grid, PRUDENCEregions[2,], subset = TRUE)
-#' allregions <- overGrid(grid, PRUDENCEregions, subset = TRUE)
-#' 
-#' spatialPlot(climatology(grid),
-#'             sp.layout = list(list(PRUDENCEregions, first = FALSE)))
-#' spatialPlot(climatology(iberia),
-#'             sp.layout = list(list(PRUDENCEregions, first = FALSE)))
-#' spatialPlot(climatology(iberia2),
-#'             sp.layout = list(list(PRUDENCEregions, first = FALSE)))
-#' spatialPlot(climatology(allregions),
-#'             sp.layout = list(list(PRUDENCEregions, first = FALSE)))
 
 
 overGrid <- function(grid, layer, subset = FALSE) {
@@ -44,7 +25,6 @@ overGrid <- function(grid, layer, subset = FALSE) {
       # grid <- redim(grid, runtime = TRUE)
       loc <- "loc" %in% getDim(grid)
       grid <- redim(grid, loc = loc)
-      dimNames <- getDim(grid)
       # n.run <- getShape(grid)["runtime"]
       n.mem <- getShape(grid)["member"]
       if (loc) {
