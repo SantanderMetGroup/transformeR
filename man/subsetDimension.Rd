@@ -38,11 +38,13 @@ plotClimatology(climatology(sub), backdrop.theme = "coastline")
 }
 \seealso{
 Other subsetting: \code{\link{getTemporalIntersection}},
+  \code{\link{intersectGrid.spatial}},
   \code{\link{intersectGrid.time}},
-  \code{\link{subsetGrid}}, \code{\link{subsetMembers}},
-  \code{\link{subsetRuntime}}, \code{\link{subsetSeason}},
-  \code{\link{subsetSpatial}}, \code{\link{subsetStation}},
-  \code{\link{subsetVar}}, \code{\link{subsetYears}}
+  \code{\link{intersectGrid}}, \code{\link{subsetGrid}},
+  \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
+  \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
+  \code{\link{subsetStation}}, \code{\link{subsetVar}},
+  \code{\link{subsetYears}}
 }
 \author{
 J. Bedia and S. Herrera

@@ -4,7 +4,7 @@
 \alias{binaryGrid}
 \title{Convert grid values to a binary variable}
 \usage{
-binaryGrid(x, condition = "GE", threshold = 1, partial = FALSE,
+binaryGrid(x, condition = "GE", threshold = NULL, partial = FALSE,
   ref.obs = NULL, ref.pred = NULL)
 }
 \arguments{

@@ -46,7 +46,9 @@ checkDim(predictor.adj, predictand.adj, dimensions = "time") # perfect
 \seealso{
 \code{\link{checkDim}}, \code{\link{checkSeason}}, \code{\link{getYearsAsINDEX}}, \code{\link{getSeason}}, for other time dimension helpers
 
-Other subsetting: \code{\link{intersectGrid.time}},
+Other subsetting: \code{\link{intersectGrid.spatial}},
+  \code{\link{intersectGrid.time}},
+  \code{\link{intersectGrid}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},

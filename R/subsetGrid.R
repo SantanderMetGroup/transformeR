@@ -495,7 +495,7 @@ subsetSeason <- function(grid, season = NULL) {
 subsetStation <- function(grid, station.id = NULL) {
       station0 <- grid$Metadata$station_id
       if (!all(station.id %in% station0)) stop("Station ID selection does not exist in the data")      
-      id.ind <- which(station0 == station.id)
+      id.ind <- sapply(1:length(station.id),FUN = function(z) {which(station0 == station.id[z])})
       grid %<>% subsetDimension(dimension = "loc", indices = id.ind)
       if ("Metadata" %in% names(grid)) {
             if ("station_id" %in% names(grid$Metadata)) grid$Metadata$station_id <- grid$Metadata$station_id[id.ind]

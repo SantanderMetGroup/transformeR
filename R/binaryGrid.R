@@ -41,7 +41,7 @@
 #' ybin2 <- binaryGrid(VALUE_Iberia_pr,threshold = 1, partial = TRUE)
 #' head(ybin2$Data)
 
-binaryGrid <- function(x, condition = "GE", threshold = 1, partial = FALSE, ref.obs = NULL, ref.pred = NULL) {
+binaryGrid <- function(x, condition = "GE", threshold = NULL, partial = FALSE, ref.obs = NULL, ref.pred = NULL) {
   condition <- match.arg(condition, choices = c("GT", "GE", "LT", "LE"))
   dimNames <- getDim(x)
   loc <- FALSE
@@ -49,14 +49,15 @@ binaryGrid <- function(x, condition = "GE", threshold = 1, partial = FALSE, ref.
   x <- redim(x, loc = loc)
   for (j in 1:dim(x$Data)[which(getDim(x) == "member")]) {
     if (is.null(threshold)) {
+      ref.obs <- redim(ref.obs, loc = loc)
       if (isRegular(x)) {
-        xx <- suppressWarnings(array3Dto2Dmat(subsetGrid(x,members = 1)$Data))
+        xx <- suppressWarnings(array3Dto2Dmat(subsetGrid(x,members = j)$Data))
         xx.obs <- suppressWarnings(array3Dto2Dmat(subsetGrid(ref.obs,members = 1)$Data))
         if (is.null(ref.pred)) {xx.pred <- xx} else {xx.pred <- suppressWarnings(array3Dto2Dmat(subsetGrid(ref.pred,members = 1)$Data))}
       } else {
-        xx <- x$Data[1,,]
+        xx <- x$Data[j,,]
         xx.obs <- ref.obs$Data[1,,]
-        if (is.null(ref.pred)) {xx.pred <- xx} else {xx.pred <- ref.pred$Data[1,,]}
+        if (is.null(ref.pred)) {xx.pred <- xx} else {xx.pred <- redim(ref.pred, loc = loc)$Data[1,,]}
       }
       
       frec <- apply(X = xx.obs, MARGIN = 2, function(X) {
@@ -71,9 +72,9 @@ binaryGrid <- function(x, condition = "GE", threshold = 1, partial = FALSE, ref.
       
     } else {
       if (isRegular(x)) {
-        xx <- suppressWarnings(array3Dto2Dmat(subsetGrid(x,members = 1)$Data))
+        xx <- suppressWarnings(array3Dto2Dmat(subsetGrid(x,members = j)$Data))
       } else {
-        xx <- subsetGrid(x,members = 1)$Data
+        xx <- subsetGrid(x,members = j)$Data
       }
       xbin <- binaryGrid.(xx, condition = condition, threshold = threshold, partial = partial)
     }

@@ -246,92 +246,92 @@ scaleGrid <- function(grid,
 #' @author J Bedia
 
 gridScale. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, spatial.frame) {
-    grid <- redim(grid)
-    if (is.null(base)) {
-        base.m <- suppressMessages({
-            climatology(grid, clim.fun, by.member, parallel, max.ncores, ncores)
-        }) %>% redim()
-        base.std <- 1
-        ref.std <- 1
-        if (type == "standardize") {
-            base.std <- suppressMessages({
-                climatology(grid, clim.fun = list(FUN = "sd", na.rm = TRUE), by.member, parallel, max.ncores, ncores)
-            }) %>% redim()
-            base.std <- base.std$Data}
-        if (spatial.frame == "field") {
-            getDim.base <- attr(base.m$Data, "dimensions")
-            ind <- c(which(getDim(base.m) == "time"), which(getDim(base.m) == "lat"), which(getDim(base.m) == "lon"))
-            base.m$Data <- array(data = apply(base.m$Data, MARGIN = -ind, FUN = function(Z) {mean(Z,na.rm = TRUE)}),dim = dim(base.m$Data))
-            attr(base.m$Data,"dimensions") <- getDim.base
-            if ((type == "standardize")) {
-                base.std <- array(data = apply(grid$Data, MARGIN = -ind, FUN = function(Z) {mean(sd,na.rm = TRUE)}),dim = dim(base.m$Data))
-            }
-        }
-        
-    } else {
-        checkSeason(grid, base)
-        checkDim(grid, base, dimensions = c("lat", "lon"))
-        base.m <- suppressMessages({
-            climatology(base, clim.fun, by.member, parallel, max.ncores, ncores)
-        }) %>% redim()
-        base.std <- 1
-        ref.std <- 1
-        if ((type == "standardize")) {
-            base.std <- suppressMessages({
-                climatology(base, clim.fun = list(FUN = "sd", na.rm = TRUE), by.member, parallel, max.ncores, ncores)
-            }) %>% redim()
-            base.std <- base.std$Data}
-        if (spatial.frame == "field") {
-            getDim.base <- attr(base.m$Data, "dimensions")
-            ind <- c(which(getDim(base.m) == "time"), which(getDim(base.m) == "lat"), which(getDim(base.m) == "lon"))
-            base.m$Data <- array(data = apply(base.m$Data, MARGIN = -ind, FUN = function(Z) {mean(Z,na.rm = TRUE)}),dim = dim(base.m$Data))
-            attr(base.m$Data,"dimensions") <- getDim.base
-            if (type == "standardize") {
-                base.std <- array(data = apply(redim(base)$Data, MARGIN = -ind, FUN = function(Z) {sd(Z,na.rm = TRUE)}),dim = dim(base.m$Data))
-            }
-        }
+  grid <- redim(grid)
+  if (is.null(base)) {
+    base.m <- suppressMessages({
+      climatology(grid, clim.fun, by.member, parallel, max.ncores, ncores)
+    }) %>% redim()
+    base.std <- 1
+    ref.std <- 1
+    if (type == "standardize") {
+      base.std <- suppressMessages({
+        climatology(grid, clim.fun = list(FUN = "sd", na.rm = TRUE), by.member, parallel, max.ncores, ncores)
+      }) %>% redim()
+      base.std <- base.std$Data}
+    if (spatial.frame == "field") {
+      getDim.base <- attr(base.m$Data, "dimensions")
+      ind <- c(which(getDim(base.m) == "time"), which(getDim(base.m) == "lat"), which(getDim(base.m) == "lon"))
+      base.m$Data <- array(data = apply(base.m$Data, MARGIN = -ind, FUN = function(Z) {mean(Z,na.rm = TRUE)}),dim = dim(base.m$Data))
+      attr(base.m$Data,"dimensions") <- getDim.base
+      if ((type == "standardize")) {
+        base.std <- array(data = apply(grid$Data, MARGIN = -ind, FUN = function(Z) {sd(Z,na.rm = TRUE)}),dim = dim(base.m$Data))
+      }
     }
-    if (!is.null(ref)) {
-        checkDim(grid, ref, dimensions = c("lat", "lon"))
-        checkSeason(grid, ref)
-        ref.m <- suppressMessages({
-            climatology(ref, clim.fun, by.member, parallel, max.ncores,ncores)
-        }) %>% redim()
-        if (type == "standardize") {
-            ref.std <- suppressMessages({
-                climatology(ref, clim.fun = list(FUN = "sd", na.rm = TRUE), by.member, parallel, max.ncores, ncores)
-            }) %>% redim()
-            ref.std <- ref.std$Data}
-        if (spatial.frame == "field") {
-            getDim.ref <- attr(ref.m$Data, "dimensions")
-            ind <- c(which(getDim(ref.m) == "time"), which(getDim(ref.m) == "lat"), which(getDim(ref.m) == "lon"))
-            ref.m$Data <- array(data = apply(ref.m$Data, MARGIN = -ind, FUN = function(Z) {mean(Z,na.rm = TRUE)}),dim = dim(ref.m$Data))
-            attr(ref.m$Data,"dimensions") <- getDim.ref
-            if (type == "standardize") {
-                ref.std <- array(data = apply(redim(ref)$Data, MARGIN = -ind, FUN = function(Z) {sd(Z,na.rm = TRUE)}),dim = dim(ref.m$Data))
-            }
-        }
-        ref <- ref.m
-    } else {
-        ref <- list()
-        ref[["Data"]] <- array(0, getShape(base.m))
-        attr(ref[["Data"]], "dimensions") <- getDim(base.m)
-    }    
-    parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
-    lapply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "lapply")
-    if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
-    clim <- grid[["Data"]]
-    dimNames <- getDim(grid)
-    ind.time <- grep("^time", dimNames)
-    n.times <- getShape(grid, "time")
-    Xc <- base.m[["Data"]]
-    Xref <- ref[["Data"]]
-    aux.list <- gridScale.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun, base.std, ref.std)
-    Xc <- Xref <- base <- base.m <- base.std <- ref <- ref.std <- NULL
-    grid[["Data"]] <- do.call("abind", c(aux.list, along = ind.time)) %>% unname()
-    aux.list <- NULL
-    attr(grid[["Data"]], "dimensions") <- dimNames
-    return(grid)
+    
+  } else {
+    # checkSeason(grid, base)
+    checkDim(grid, base, dimensions = c("lat", "lon"))
+    base.m <- suppressMessages({
+      climatology(base, clim.fun, by.member, parallel, max.ncores, ncores)
+    }) %>% redim()
+    base.std <- 1
+    ref.std <- 1
+    if ((type == "standardize")) {
+      base.std <- suppressMessages({
+        climatology(base, clim.fun = list(FUN = "sd", na.rm = TRUE), by.member, parallel, max.ncores, ncores)
+      }) %>% redim()
+      base.std <- base.std$Data}
+    if (spatial.frame == "field") {
+      getDim.base <- attr(base.m$Data, "dimensions")
+      ind <- c(which(getDim(base.m) == "time"), which(getDim(base.m) == "lat"), which(getDim(base.m) == "lon"))
+      base.m$Data <- array(data = apply(base.m$Data, MARGIN = -ind, FUN = function(Z) {mean(Z,na.rm = TRUE)}),dim = dim(base.m$Data))
+      attr(base.m$Data,"dimensions") <- getDim.base
+      if (type == "standardize") {
+        base.std <- array(data = apply(redim(base)$Data, MARGIN = -ind, FUN = function(Z) {sd(Z,na.rm = TRUE)}),dim = dim(base.m$Data))
+      }
+    }
+  }
+  if (!is.null(ref)) {
+    checkDim(grid, ref, dimensions = c("lat", "lon"))
+    # checkSeason(grid, ref)
+    ref.m <- suppressMessages({
+      climatology(ref, clim.fun, by.member, parallel, max.ncores,ncores)
+    }) %>% redim()
+    if (type == "standardize") {
+      ref.std <- suppressMessages({
+        climatology(ref, clim.fun = list(FUN = "sd", na.rm = TRUE), by.member, parallel, max.ncores, ncores)
+      }) %>% redim()
+      ref.std <- ref.std$Data}
+    if (spatial.frame == "field") {
+      getDim.ref <- attr(ref.m$Data, "dimensions")
+      ind <- c(which(getDim(ref.m) == "time"), which(getDim(ref.m) == "lat"), which(getDim(ref.m) == "lon"))
+      ref.m$Data <- array(data = apply(ref.m$Data, MARGIN = -ind, FUN = function(Z) {mean(Z,na.rm = TRUE)}),dim = dim(ref.m$Data))
+      attr(ref.m$Data,"dimensions") <- getDim.ref
+      if (type == "standardize") {
+        ref.std <- array(data = apply(redim(ref)$Data, MARGIN = -ind, FUN = function(Z) {sd(Z,na.rm = TRUE)}),dim = dim(ref.m$Data))
+      }
+    }
+    ref <- ref.m
+  } else {
+    ref <- list()
+    ref[["Data"]] <- array(0, getShape(base.m))
+    attr(ref[["Data"]], "dimensions") <- getDim(base.m)
+  }    
+  parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
+  lapply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "lapply")
+  if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
+  clim <- grid[["Data"]]
+  dimNames <- getDim(grid)
+  ind.time <- grep("^time", dimNames)
+  n.times <- getShape(grid, "time")
+  Xc <- base.m[["Data"]]
+  Xref <- ref[["Data"]]
+  aux.list <- gridScale.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun, base.std, ref.std)
+  Xc <- Xref <- base <- base.m <- base.std <- ref <- ref.std <- NULL
+  grid[["Data"]] <- do.call("abind", c(aux.list, along = ind.time)) %>% unname()
+  aux.list <- NULL
+  attr(grid[["Data"]], "dimensions") <- dimNames
+  return(grid)
 }
 
 #' @title Local scaling type internal    
