@@ -1,8 +1,8 @@
-transformeR 1.4.0
+transformeR 1.4.1
 =================
 
-* New function `intersectGrid`, for calculating spatiotemporal intersections among grids
-* Optional flag to skip seasonal check in `scaleGrid`
+* Update built-in data units attribute (for compatibility with udunits parseable strings)
+* New helper `getGridUnits` and `setGridUnits`, to handle grid units
 
 
 
