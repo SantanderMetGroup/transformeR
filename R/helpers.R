@@ -566,29 +566,29 @@ isRegular <- function(grid) {
     x <- sort(gr$x)
     y <- sort(gr$y)
     if (!is.null(attr(gr, "resX")) && !is.null(attr(gr, "resY"))) {
-          if (attr(gr, "resX") == 0 && attr(gr, "resY") == 0) {
-                FALSE 
-          } else {
-                TRUE
-          }
+        if (attr(gr, "resX") == 0 && attr(gr, "resY") == 0) {
+            FALSE 
+        } else {
+            TRUE
+        }
     } else {
         if (length(x) == 1 && length(y) == 1) {
-              FALSE
+            FALSE
         } else {
             xdists <- lapply(1:(length(x) - 1), function(l) {
-                  x[l + 1] - x[l]
+                x[l + 1] - x[l]
             })
             ydists <- lapply(1:(length(y) - 1), function(l) {
-                  y[l + 1] - y[l]
+                y[l + 1] - y[l]
             })
             xa <- sum(unlist(xdists) - unlist(xdists)[1])
             ya <- sum(unlist(ydists) - unlist(ydists)[1])
             if (any(abs(c(xa, ya)) > 1e-05)) {
-                  FALSE
+                FALSE
             } else {
-                  TRUE
+                TRUE
             }
-      }
+        }
     }
 }
 
@@ -920,3 +920,103 @@ isMultigrid <- function(grid) {
             FALSE
       }
 }
+
+
+
+#' @title Get grid units
+#' @description Get the \code{"units"} attribute of a grid
+#' @param grid An input grid
+#' @param var Character vector of variable length. Variable short name(s) whose units are returned.
+#'  Only makes sense in the case of multigrids storing several variables.
+#'   Otherwise ignored.
+#' @return Returns the \code{"units"} attribute 
+#' @keywords internal
+#' @export
+#' @author J Bedia
+#' @family get.helpers unit.helpers
+#' @examples 
+#' data(NCEP_Iberia_ta850)
+#' getGridUnits(NCEP_Iberia_ta850)
+#' data(NCEP_Iberia_hus850)
+#' getGridUnits(NCEP_Iberia_hus850)
+#' data(NCEP_Iberia_psl)
+#' getGridUnits(NCEP_Iberia_psl)
+#' mf <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+#' getGridUnits(mf)
+#' getVarNames(mf)
+#' getGridUnits(mf, "hus@850")
+#' getGridUnits(mf, var = c("hus@850", "ta@850"))
+
+getGridUnits <- function(grid, var = NULL) {
+    uds <- attr(grid$Variable, "units") %>% gsub(pattern = "\\\"", replacement = "")
+    if (isMultigrid(grid)) {
+        if (is.null(var)) {
+            message("NOTE: The input is a multigrid: Units of all variables are shown.\nUse argument 'var' for displaying the units of a particular variable")
+        } else {
+            vn <- getVarNames(grid)
+            if (!all(var %in% vn)) stop("At least one variable in \'var\' was not found. Use \'getVarNames\' for help")
+            uds <- uds[match(var, vn)]
+        }
+    } else {
+        if (!is.null(var)) warning("The input \'grid\' is not a multigrid: argument \'var\' was ignored")
+    }
+    return(uds)
+}
+
+
+#' @title Set grid units
+#' @description Set the \code{"units"} attribute of a grid
+#' @param grid An input grid
+#' @param unit.string Character string: a udunits-parseable character string vector.
+#'  See details.
+#' @param var In case of multigrids, the names of the variables whose units attribute is
+#'   to be updated (see examples).
+#' @return Retunrs (invisible) the same input grid with the new \code{"units"} 
+#' attribute in \code{"$Variable"} list element.
+#' @details 
+#' The length of the \code{unit.string} vector should match the number of variables
+#'  within the grid (in case of \code{multiGrids}), i.e., that of 
+#'  getVarNames(grid) or the length of \code{var}, in case the latter is used.
+#' @export
+#' @author J Bedia
+#' @family get.helpers unit.helpers
+#' @examples 
+#' data(NCEP_Iberia_hus850)
+#' getGridUnits(NCEP_Iberia_hus850)
+#' data(NCEP_Iberia_psl)
+#' getGridUnits(NCEP_Iberia_psl)
+#' mf <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+#' getGridUnits(mf)
+#' mf2 <- setGridUnits(mf, unit.string = c("1", "Pa", "Kelvin"))
+#' getGridUnits(mf2)
+#' # Arbitrary subsets of variables within the multigrid can be updated:
+#' getVarNames(mf)
+#' mf3 <- setGridUnits(mf, unit.string = c("1", "Pa"), var = c("hus@850", "psl"))
+#' getGridUnits(mf3)
+
+setGridUnits <- function(grid, unit.string, var = NULL) {
+    stopifnot(isGrid(grid))
+    vn <- getVarNames(grid)
+    if (isMultigrid(grid)) {
+        if (is.null(var)) {
+            if (length(vn) != length(unit.string)) {
+                stop("The length of the \'unit.string\' vector does not match the number of variables in the grid")
+            }
+            ind <- 1:length(vn)
+        } else {
+            if (!all(var %in% vn)) stop("At least one variable in \'var\' was not found. Use \'getVarNames\' for help")
+            if (length(unit.string) != length(var)) stop("Inconsistent \'unit.string\' and \'var\' vector lengths")
+            ind <- match(var, vn)
+        }
+    } else {
+        if (length(unit.string) > 1) stop("\'unit.string\' vector should have length 1")
+        ind <- 1L
+    }
+    attr(grid$Variable, "units")[ind] <- unit.string
+    invisible(grid)
+}
+
+
+
+
+
