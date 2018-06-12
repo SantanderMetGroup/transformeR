@@ -87,110 +87,102 @@
 #' data("CFS_Iberia_hus850")
 #' data("CFS_Iberia_pr")
 #' mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_hus850, CFS_Iberia_pr)
-#' # Different fields can not be plotted together in the same plot directly.
-#' # subsetGrid and plotClimatology can be conveniently used to that aim, if needed. For instance:
+#' # Different fields should not be plotted together in the same plot directly, unless 
+#' # their units are compatble.
+#' # subsetGrid and visualizeR::spatialPlot can be used to this aim, if needed.
+#' # For instance:
 #' # tas <- subsetGrid(mm.mf, var = "tas")
-#' # plotClimatology(climatology(tas), backdrop.theme = "coastline"
+#' # require(visualizeR)
+#' # spatialPlot(climatology(tas), backdrop.theme = "coastline", rev.colors = TRUE)
 
 makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = FALSE) {
-      field.list <- list(...)
-      stopifnot(is.logical(skip.temporal.check))
-      checkgrid <- unlist(lapply(field.list, function(x) isGrid(x)))
-      if (any(!checkgrid)) {
-            field.list <- unlist(field.list, recursive = FALSE)
-            checkgrid <- unlist(lapply(field.list, function(x) isGrid(x)))   
-      }
-      if (any(!checkgrid)) {
-            stop("Input data is not valid in '...'")
-      } else { 
-            climfun <- attr(field.list[[1]]$Data, "climatology:fun")
-            if (length(checkgrid) == 1) {
-                  warning("The input is a single grid")  
-                  field.list[[1]]$Dates <- list(field.list[[1]]$Dates)
-            } else {
-                  # 
-                  # if (length(field.list) == 1) {
-                  #     field.list <- unlist(field.list, recursive = FALSE)
-                  # }
-                  # if (length(field.list) < 2) {
-                  #     stop("The input must be a list of at least two grids", call. = FALSE)
-                  # }
-                  ## Climatologies ----------
-                  field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], drop = TRUE))
-                  field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], var = TRUE))
-                  ### check var dimension position
-                  varind <- unique(lapply(1:length(field.list), function(x) which(getDim(field.list[[x]]) == "var")))
-                  if (length(varind) > 1) stop("Input grids have different dimensions")#hay que discutir esto
-                  varind <- unlist(varind)
-                  ###
-                  tol <- spatial.tolerance
-                  for (i in 2:length(field.list)) {
-                        # Spatial test
-                        
-                        
-                        
-                        if (!all.equal(field.list[[1]]$xyCoords, field.list[[i]]$xyCoords,
-                                       check.attributes = FALSE, tolerance = tol)) {
-                              stop("Input data are not spatially consistent")
-                        }
-                        # temporal test
-                        if (!skip.temporal.check) {
-                              if (!identical(as.POSIXlt(field.list[[1]]$Dates$start)$yday,
-                                             as.POSIXlt(field.list[[i]]$Dates$start)$yday) | !identical(as.POSIXlt(field.list[[1]]$Dates$start)$year,
-                                                                                                        as.POSIXlt(field.list[[i]]$Dates$start)$year)) {
-                                    stop("Input data are not temporally consistent.\nMaybe the 'skip.temporal.check' argument should be set to TRUE?")
-                              }
-                        }
-                        # data dimensionality
-                        suppressMessages(checkDim(field.list[[1]], field.list[[i]]))
-                  }
-                  # Atributos de la variable ----------------
-                  # Lista de todos los atributos de todos los grids, menos el primero ('names')
-                  aux.attr.list <- lapply(1:length(field.list), function(x) attributes(field.list[[x]]$Variable))
-                  auxl <- lapply(1:length(aux.attr.list), function(x) names(aux.attr.list[[x]]))
-                  all.attrs <- Reduce(union, auxl)[-1]
-                  aux.attr.list <- NULL
-                  l <- vector("list", length(all.attrs))
-                  names(l) <- all.attrs
-                  for (i in 1:length(field.list)) {
-                        attrnames <- names(attributes(field.list[[i]]$Variable))[-1]
-                        for (j in 1:length(all.attrs)) {
-                              atributo.ind <- unlist(lapply(attrnames, function(x) identical(x, all.attrs[j])))
-                              atributo <- attrnames[atributo.ind]
-                              if (length(atributo) != 0) {
-                                    expr <- attr(field.list[[i]]$Variable, which = atributo)
-                                    tryCatch({l[[j]][(length(l[[j]]) + 1):((length(l[[j]])) + length(atributo))] <- 
-                                          deparse(expr)}, error = function(err){deparse(expr)})
-                              } else {
-                                    l[[j]][(length(l[[j]]) + 1):((length(l[[j]])) + length(atributo))] <- NA
-                              }
-                        }
-                  }
-                  # varName and levels
-                  levs <- unname(sapply(field.list, "getGridVerticalLevels"))                                 
-                  varnames <- sapply(field.list, "getVarNames")
-                  for (i in 1:length(varnames)) {
-                        if (!is.na(levs[i])) varnames[i] <- paste(varnames[i], levs[i], sep = "@")
-                  }
-                  attributes(field.list[[1]]$Variable) <- l
-                  names(field.list[[1]]$Variable) <- c("varName","level")
-                  field.list[[1]]$Variable[["varName"]] <- varnames
-                  field.list[[1]]$Variable[["level"]] <- levs
-                  ## $Dates -------------------
-                  field.list[[1]]$Dates <- lapply(1:length(field.list), function(x) field.list[[x]]$Dates)
-                  ## Select larger string of dim names -------------
-                  dimNames <- lapply(1:length(field.list), function(x) getDim(field.list[[x]]))
-                  dimNames <- dimNames[[which(lengths(dimNames) == max(lengths(dimNames)))[1]]]
-                  ## Bind data ----------
-                  field.list[[1]]$Data <- unname(do.call("abind",
-                                                         c(lapply(1:length(field.list),
-                                                                  function(x) field.list[[x]]$Data),
-                                                           along = varind))) 
-                  attr(field.list[[1]]$Data, "dimensions") <- dimNames
+    field.list <- list(...)
+    stopifnot(is.logical(skip.temporal.check))
+    checkgrid <- unlist(lapply(field.list, function(x) isGrid(x)))
+    if (any(!checkgrid)) {
+        field.list <- unlist(field.list, recursive = FALSE)
+        checkgrid <- unlist(lapply(field.list, function(x) isGrid(x)))   
+    }
+    if (any(!checkgrid)) {
+        stop("Invalid input data")
+    } else { 
+        climfun <- attr(field.list[[1]]$Data, "climatology:fun")
+        if (length(checkgrid) == 1) {
+            warning("One single grid was provided as input")  
+            # field.list[[1]]$Dates <- list(field.list[[1]]$Dates)
+        } else {
+            ## Climatologies ----------
+            field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], drop = TRUE))
+            field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], var = TRUE))
+            ### check var dimension position
+            varind <- unique(lapply(1:length(field.list), function(x) which(getDim(field.list[[x]]) == "var")))
+            if (length(varind) > 1) stop("Input grids have different dimensions")#hay que discutir esto
+            varind <- unlist(varind)
+            tol <- spatial.tolerance
+            for (i in 2:length(field.list)) {
+                # Spatial test
+                if (!all.equal(field.list[[1]]$xyCoords, field.list[[i]]$xyCoords,
+                               check.attributes = FALSE, tolerance = tol)) {
+                    stop("Input data are not spatially consistent")
+                }
+                # temporal test
+                if (!skip.temporal.check) {
+                    if (!identical(as.POSIXlt(field.list[[1]]$Dates$start)$yday,
+                                   as.POSIXlt(field.list[[i]]$Dates$start)$yday) | !identical(as.POSIXlt(field.list[[1]]$Dates$start)$year,
+                                                                                              as.POSIXlt(field.list[[i]]$Dates$start)$year)) {
+                        stop("Input data are not temporally consistent.\nMaybe the 'skip.temporal.check' argument should be set to TRUE?")
+                    }
+                }
+                # data dimensionality
+                suppressMessages(checkDim(field.list[[1]], field.list[[i]]))
             }
-            if (!is.null(climfun)) attr(field.list[[1]]$Data, "climatology:fun") <- climfun 
-            return(field.list[[1]])
-      }
+            # Atributos de la variable ----------------
+            # Lista de todos los atributos de todos los grids, menos el primero ('names')
+            aux.attr.list <- lapply(1:length(field.list), function(x) attributes(field.list[[x]]$Variable))
+            auxl <- lapply(1:length(aux.attr.list), function(x) names(aux.attr.list[[x]]))
+            all.attrs <- Reduce(union, auxl)[-1]
+            aux.attr.list <- NULL
+            l <- vector("list", length(all.attrs))
+            names(l) <- all.attrs
+            for (i in 1:length(field.list)) {
+                attrnames <- names(attributes(field.list[[i]]$Variable))[-1]
+                for (j in 1:length(all.attrs)) {
+                    atributo.ind <- unlist(lapply(attrnames, function(x) identical(x, all.attrs[j])))
+                    atributo <- attrnames[atributo.ind]
+                    if (length(atributo) != 0) {
+                        expr <- attr(field.list[[i]]$Variable, which = atributo)
+                        tryCatch({l[[j]][(length(l[[j]]) + 1):((length(l[[j]])) + length(atributo))] <- 
+                            deparse(expr)}, error = function(err){deparse(expr)})
+                    } else {
+                        l[[j]][(length(l[[j]]) + 1):((length(l[[j]])) + length(atributo))] <- NA
+                    }
+                }
+            }
+            # varName and levels
+            levs <- unname(sapply(field.list, "getGridVerticalLevels"))                                 
+            varnames <- sapply(field.list, "getVarNames")
+            for (i in 1:length(varnames)) {
+                if (!is.na(levs[i])) varnames[i] <- paste(varnames[i], levs[i], sep = "@")
+            }
+            attributes(field.list[[1]]$Variable) <- l
+            names(field.list[[1]]$Variable) <- c("varName","level")
+            field.list[[1]]$Variable[["varName"]] <- varnames
+            field.list[[1]]$Variable[["level"]] <- levs
+            ## $Dates -------------------
+            field.list[[1]]$Dates <- lapply(1:length(field.list), function(x) field.list[[x]]$Dates)
+            ## Select larger string of dim names -------------
+            dimNames <- lapply(1:length(field.list), function(x) getDim(field.list[[x]]))
+            dimNames <- dimNames[[which(lengths(dimNames) == max(lengths(dimNames)))[1]]]
+            ## Bind data ----------
+            field.list[[1]]$Data <- unname(do.call("abind",
+                                                   c(lapply(1:length(field.list),
+                                                            function(x) field.list[[x]]$Data),
+                                                     along = varind))) 
+            attr(field.list[[1]]$Data, "dimensions") <- dimNames
+        }
+        if (!is.null(climfun)) attr(field.list[[1]]$Data, "climatology:fun") <- climfun 
+        invisible(field.list[[1]])
+    }
 }
-      # End
-      
+# End
+
