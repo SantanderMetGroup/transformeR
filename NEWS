@@ -1,8 +1,9 @@
-transformeR 1.4.1
+transformeR 1.4.2
 =================
 
-* Update built-in data units attribute (for compatibility with udunits parseable strings)
-* New helper `getGridUnits` and `setGridUnits`, to handle grid units
+* Minor changes in `makeMultiGrid` (preserves the original input structure when one single grid is given as input, for internal programming convenience)
+* Modified behaviour of `getVarNames` to append vertical level in short name definition
+* Other minor changes and documentation example updates
 
 
 

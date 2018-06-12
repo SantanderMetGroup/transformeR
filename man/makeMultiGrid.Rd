@@ -80,10 +80,13 @@ data("CFS_Iberia_tas")
 data("CFS_Iberia_hus850")
 data("CFS_Iberia_pr")
 mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_hus850, CFS_Iberia_pr)
-# Different fields can not be plotted together in the same plot directly.
-# subsetGrid and plotClimatology can be conveniently used to that aim, if needed. For instance:
+# Different fields should not be plotted together in the same plot directly, unless 
+# their units are compatble.
+# subsetGrid and visualizeR::spatialPlot can be used to this aim, if needed.
+# For instance:
 # tas <- subsetGrid(mm.mf, var = "tas")
-# plotClimatology(climatology(tas), backdrop.theme = "coastline"
+# require(visualizeR)
+# spatialPlot(climatology(tas), backdrop.theme = "coastline", rev.colors = TRUE)
 }
 \seealso{
 \code{\link{interpGrid}} for spatial consistency of input grids.
