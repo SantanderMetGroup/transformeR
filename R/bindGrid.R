@@ -119,75 +119,77 @@ bindGrid <- function(..., dimension = c("member", "time", "lat", "lon"),
 #' @export
 
 bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
-      grid.list <- list(...)
-      if (length(grid.list) == 1) {
-          grid.list <- unlist(grid.list, recursive = FALSE)
-      }
-      if (length(grid.list) < 2) {
-            stop("The input must be a list of at least two grids", call. = FALSE)
-      }
-      loc <- unique(unlist(lapply(grid.list, function(x) "loc" %in% getDim(x))))
-      if (length(loc) > 1) stop("grids and stations cannot be combined")
-      grid.list <- lapply(grid.list, "redim", loc = loc)
-      # Disaggregation in single members
-      mem.index <- sapply(grid.list, "getShape", "member")
-      aux.list <- list()
-      for (h in 1:length(grid.list)) {
+    grid.list <- list(...)
+    if (length(grid.list) == 1) {
+        grid.list <- unlist(grid.list, recursive = FALSE)
+    }
+    if (length(grid.list) < 2) {
+        ref <- grid.list[[1]]
+        warning("Only one grid passed as input. Nothing was done", call. = FALSE)
+    } else {
+        loc <- unique(unlist(lapply(grid.list, function(x) "loc" %in% getDim(x))))
+        if (length(loc) > 1) stop("grids and stations cannot be combined")
+        grid.list <- lapply(grid.list, "redim", loc = loc)
+        # Disaggregation in single members
+        mem.index <- sapply(grid.list, "getShape", "member")
+        aux.list <- list()
+        for (h in 1:length(grid.list)) {
             subgrid <- grid.list[[h]]
             n.mem <- mem.index[h]
             for (i in 1:n.mem) {
-                  aux.list[[length(aux.list) + 1]] <- redim(subsetGrid(subgrid, members = i, drop = FALSE), loc = loc)
+                aux.list[[length(aux.list) + 1]] <- redim(subsetGrid(subgrid, members = i, drop = FALSE), loc = loc)
             }
-      }
-      grid.list <- aux.list
-      aux.list <- NULL
-      tol <- spatial.tolerance
-      for (i in 2:length(grid.list)) {
+        }
+        grid.list <- aux.list
+        aux.list <- NULL
+        tol <- spatial.tolerance
+        for (i in 2:length(grid.list)) {
             # Spatial test
             if (!isTRUE(all.equal(grid.list[[1]]$xyCoords, grid.list[[i]]$xyCoords, check.attributes = FALSE, tolerance = tol))) {
-                  stop("Input data is not spatially consistent")
+                stop("Input data is not spatially consistent")
             }
             # temporal test
             if (!identical(as.POSIXlt(grid.list[[1]]$Dates$start)$yday, as.POSIXlt(grid.list[[i]]$Dates$start)$yday) 
                 | !identical(as.POSIXlt(grid.list[[1]]$Dates$start)$year, as.POSIXlt(grid.list[[i]]$Dates$start)$year)) {
-                        stop("Input data is not temporally consistent")
+                stop("Input data is not temporally consistent")
             }
             # data dimensionality test
             if (!identical(getShape(grid.list[[1]]), getShape(grid.list[[i]]))) {
-                  stop("Incompatible data array dimensions")
+                stop("Incompatible data array dimensions")
             }
             if (!identical(getDim(grid.list[[1]]), getDim(grid.list[[i]]))) {
-                  stop("Inconsistent 'dimensions' attribute")
+                stop("Inconsistent 'dimensions' attribute")
             }
-      }
-      mem.metadata <- !is.null(grid.list[[1]][["Members"]])
-      if (mem.metadata) {
-      #Backwards compatibility fix
+        }
+        mem.metadata <- !is.null(grid.list[[1]][["Members"]])
+        if (mem.metadata) {
+            #Backwards compatibility fix
             if (!is.list(grid.list[[1]][["InitializationDates"]])) {
-                  for (i in 1:length(grid.list)) {
-                        grid.list[[i]][["InitializationDates"]] <- list(grid.list[[i]][["InitializationDates"]])
-                  }
+                for (i in 1:length(grid.list)) {
+                    grid.list[[i]][["InitializationDates"]] <- list(grid.list[[i]][["InitializationDates"]])
+                }
             }
-      }
-      ref <- grid.list[[1]]
-      dimNames <- getDim(ref) 
-      dim.bind <- grep("member", dimNames)
-      data.list <- lapply(grid.list, FUN = "[[", "Data")
-      if (mem.metadata) {
+        }
+        ref <- grid.list[[1]]
+        dimNames <- getDim(ref) 
+        dim.bind <- grep("member", dimNames)
+        data.list <- lapply(grid.list, FUN = "[[", "Data")
+        if (mem.metadata) {
             inits.list <- vapply(grid.list, FUN.VALUE = list(1L), FUN = "[[", "InitializationDates")
             member.list <- vapply(grid.list, FUN.VALUE = character(1L), FUN = "[[", "Members")
-      } else {
+        } else {
             inits.list <- rep(NA, length(grid.list))
             member.list <- paste0("Member_", 1:length(grid.list))
-      }
-      grid.list <- NULL
-      ref[["Members"]] <- member.list
-      ref[["InitializationDates"]] <- inits.list
-      names(ref[["InitializationDates"]]) <- member.list
-      ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
-      inits.list <- member.list <- data.list <- NULL
-      attr(ref[["Data"]], "dimensions") <- dimNames
-      return(ref)
+        }
+        grid.list <- NULL
+        ref[["Members"]] <- member.list
+        ref[["InitializationDates"]] <- inits.list
+        names(ref[["InitializationDates"]]) <- member.list
+        ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
+        inits.list <- member.list <- data.list <- NULL
+        attr(ref[["Data"]], "dimensions") <- dimNames
+    }
+    return(ref)
 }
 #end
 
