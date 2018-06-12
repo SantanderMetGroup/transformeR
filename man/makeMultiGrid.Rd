@@ -81,7 +81,7 @@ data("CFS_Iberia_hus850")
 data("CFS_Iberia_pr")
 mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_hus850, CFS_Iberia_pr)
 # Different fields should not be plotted together in the same plot directly, unless 
-# their units are compatble.
+# their units are compatible.
 # subsetGrid and visualizeR::spatialPlot can be used to this aim, if needed.
 # For instance:
 # tas <- subsetGrid(mm.mf, var = "tas")
@@ -95,5 +95,5 @@ Other downscaling.helpers: \code{\link{convert2bin}},
   \code{\link{filterNA}}
 }
 \author{
-J. bedia
+J. Bedia
 }
