@@ -60,7 +60,7 @@
 #' @export
 #' @importFrom abind abind
 #' @family downscaling.helpers
-#' @author J. bedia 
+#' @author J. Bedia 
 #' @seealso \code{\link{interpGrid}} for spatial consistency of input grids.
 #' 
 #' @examples
@@ -88,7 +88,7 @@
 #' data("CFS_Iberia_pr")
 #' mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_hus850, CFS_Iberia_pr)
 #' # Different fields should not be plotted together in the same plot directly, unless 
-#' # their units are compatble.
+#' # their units are compatible.
 #' # subsetGrid and visualizeR::spatialPlot can be used to this aim, if needed.
 #' # For instance:
 #' # tas <- subsetGrid(mm.mf, var = "tas")
@@ -115,9 +115,8 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
             field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], drop = TRUE))
             field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], var = TRUE))
             ### check var dimension position
-            varind <- unique(lapply(1:length(field.list), function(x) which(getDim(field.list[[x]]) == "var")))
+            varind <- unique(vapply(1:length(field.list), FUN.VALUE = integer(1), function(x) which(getDim(field.list[[x]]) == "var")))
             if (length(varind) > 1) stop("Input grids have different dimensions")#hay que discutir esto
-            varind <- unlist(varind)
             tol <- spatial.tolerance
             for (i in 2:length(field.list)) {
                 # Spatial test
@@ -152,12 +151,13 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
                     if (length(atributo) != 0) {
                         expr <- attr(field.list[[i]]$Variable, which = atributo)
                         tryCatch({l[[j]][(length(l[[j]]) + 1):((length(l[[j]])) + length(atributo))] <- 
-                            deparse(expr)}, error = function(err){deparse(expr)})
+                            deparse(expr)}, error = function(err) { deparse(expr) })
                     } else {
                         l[[j]][(length(l[[j]]) + 1):((length(l[[j]])) + length(atributo))] <- NA
                     }
                 }
             }
+            l <- lapply(l, "gsub", pattern = "\\\"", replacement = "")
             # varName and levels
             levs <- unname(sapply(field.list, "getGridVerticalLevels"))                                 
             varnames <- sapply(field.list, FUN = "getVarNames")
@@ -178,8 +178,8 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
             attr(field.list[[1]]$Data, "dimensions") <- dimNames
         }
         if (!is.null(climfun)) attr(field.list[[1]]$Data, "climatology:fun") <- climfun 
-        invisible(field.list[[1]])
     }
+    invisible(field.list[[1]])
 }
 # End
 
