@@ -1,6 +1,6 @@
 ##     helpers.R Helper functions of the climate4R bundle
 ##
-##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
+##     Copyright (C) 2018 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
 ##     This program is free software: you can redistribute it and/or modify
 ##     it under the terms of the GNU General Public License as published by
@@ -157,7 +157,6 @@ getSeason <- function(obj) {
       if ("season" %in% names(attributes(obj$Dates))) {
             attr(obj$Dates, "season")
       } else {
-            dimNames <- getDim(obj)
             aux <- if (is.null(names(obj$Dates))) {
                   as.integer(substr(obj$Dates[[1]]$start, 6,7))      
             } else {
@@ -701,7 +700,22 @@ array3Dto2Dmat.stations <- function(array3D) {
 #' @param grid A grid or station data
 #' @param type Character. Should either the \code{"short"} (default) or the \code{"long"} variable name(s) be returned?.
 #' See Details.
-#' @details The long name is an optional attribute of a grid (not so the short name), and it is sometimes undefined (particularly in station datasets).
+#' @param append.level Append the vertical level to the short name string?. Default to \code{TRUE}, ignored when \code{type = "long"}).
+#'  See details.
+#' @details 
+#' 
+#' \strong{About short names}
+#' 
+#' Note that for variables with vertical levels, if the option \code{append.level} is set to \code{TRUE} (the default),
+#'  the function will "construct" the shortname following the climate4R convention,
+#' that defines the code of the variable plus its vertical level, separated by a \dQuote{@@} symbol. 
+#' This way, when querying grid variable names, the behaviour of \code{getVarNames} is different than directly accessing
+#' the \code{varName} element of the grid structure as in, e.g.: \code{grid$Variable$varName}. Using \code{getVarNames} 
+#' with \code{append.level = TRUE} is recommended in most applications when the variable string is needed.
+#' 
+#' \strong{About long names}
+#' 
+#' The long name is an optional attribute of a grid (not so the short name), and it is sometimes undefined (particularly in station datasets).
 #' In this case, the function returns \code{NULL}.
 #' @return A character vector with the variable name(s) in the indicated \code{type} format.
 #' @author J Bedia
@@ -711,24 +725,43 @@ array3Dto2Dmat.stations <- function(array3D) {
 #' @examples 
 #' data("CFS_Iberia_pr")
 #' getVarNames(CFS_Iberia_pr)
+#' grid <- CFS_Iberia_pr
 #' getVarNames(CFS_Iberia_pr, "long")
 #' ## Example with a multigrid
-#' data("CFS_Iberia_tas")
+#' data(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+#' mg <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+#' getVarNames(mg)
+#' # The level can be removed id needed:
+#' getVarNames(mg, append.level = FALSE)
 #' mg <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
 #' getVarNames(mg)
 #' getVarNames(mg, "long")
 #' ## Example with station data
 #' data("VALUE_Iberia_tas")
-#' ## The long name is an optional attribute, and may be undefined:
+#' ## The long name is an optional attribute, and might be undefined:
 #' getVarNames(VALUE_Iberia_tas, "long")
 
-getVarNames <- function(grid, type = c("short", "long")) {
+getVarNames <- function(grid, type = c("short", "long"), append.level = TRUE) {
+    stopifnot(is.logical(append.level))
     type <- match.arg(type, c("short", "long"))
-    switch(type,
-           "short" = grid$Variable$varName,
-           "long" = attr(grid$Variable, "longname"))
+    if (type == "short") {
+        vnames <- grid$Variable$varName
+        if (append.level) {
+            if (!any(grepl(pattern = "@", vnames))) {
+                lev <- grid$Variable$level
+                ind <- suppressWarnings(which(!is.na(lev) & !is.null(lev)))
+                if (length(ind) > 0) {
+                    vnames[ind] <- vapply(ind, FUN.VALUE = character(1L), FUN = function(x) paste(vnames[x], lev[x], sep = "@"))    
+                }
+            }
+        } else {
+            vnames <- gsub("@.*$", "", vnames)    
+        }
+    } else {
+        vnames <- gsub("\\\"","", attr(grid$Variable, "longname"))
+    }
+    return(vnames)
 }
-    
 
 #' @title Get grid vertical levels
 #' @description A helper function that returns a vector of the variable(s) vertical levels
