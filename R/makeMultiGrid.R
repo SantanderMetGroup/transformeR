@@ -160,10 +160,7 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
             }
             # varName and levels
             levs <- unname(sapply(field.list, "getGridVerticalLevels"))                                 
-            varnames <- sapply(field.list, "getVarNames")
-            for (i in 1:length(varnames)) {
-                if (!is.na(levs[i])) varnames[i] <- paste(varnames[i], levs[i], sep = "@")
-            }
+            varnames <- sapply(field.list, FUN = "getVarNames")
             attributes(field.list[[1]]$Variable) <- l
             names(field.list[[1]]$Variable) <- c("varName","level")
             field.list[[1]]$Variable[["varName"]] <- varnames
