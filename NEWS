@@ -4,6 +4,7 @@ transformeR 1.4.2
 * Minor changes in `makeMultiGrid` (preserves the original input structure when one single grid is given as input, for internal programming convenience). Improved attribute definition.
 * Modified behaviour of `getVarNames` to append vertical level in short name definition
 * Do nothing (but a warning) when attempting to bind one single grid along member dimension
+* Bug fix in `grid2PCs`
 * Other minor changes and documentation example updates
 
 
