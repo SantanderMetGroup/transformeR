@@ -233,7 +233,7 @@ scaleGrid <- function(grid,
             } else {
                 ref1 <- ref
             }
-            gridScale.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, spatial.frame)
+            gridScale.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, spatial.frame, skip.season.check)
         })
         out <- do.call("bindGrid.time", aux.list)
         message("[", Sys.time(), "] - Done")

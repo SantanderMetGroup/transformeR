@@ -74,7 +74,7 @@ grid2PCs <- function(prinCompObj, grid, n.pcs = NULL) {
     n.mem <- getShape(grid, "member")
     PC.list <- lapply(1:n.mem, function(i) {
         X <- subsetGrid(grid, members = i, drop = TRUE) %>% extract2("Data") %>% array3Dto2Dmat()
-        X  <-  (X - mu) / sigma 
+        X <- scale(X,center = mu, scale = sigma) 
         PCs <- X %*% EOF
         PCs[, 1:n.pcs, drop = FALSE]
     })
