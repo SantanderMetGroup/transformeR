@@ -193,7 +193,7 @@ bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
 }
 #end
 
-##     bindGrid.time.R Grid binding by member dimension
+##     bindGrid.spatial.R Grid binding by member dimension
 ##
 ##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
@@ -407,7 +407,7 @@ bindGrid.time <- function(..., spatial.tolerance = 1e-3) {
       }
       ref <- grid.list[[1]]
       dimNames <- getDim(ref) 
-      dim.bind <- grep("time", dimNames)
+      dim.bind <- grep("time", dimNames, fixed = TRUE)
       data.list <- lapply(grid.list, FUN = "[[", "Data")
       ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
       data.list <- NULL
@@ -452,7 +452,7 @@ sortDim.time <- function(grid) {
       grid$Dates <- refdates
       attributes(grid$Dates) <- attrs
       dimNames <- getDim(grid)
-      time.ind <- grep("^time", dimNames)
+      time.ind <- grep("time", dimNames, fixed = TRUE)
       grid$Data %<>% asub(idx = ind, dims = time.ind, drop = FALSE)
       attr(grid$Data, "dimensions") <- dimNames
       return(grid)
