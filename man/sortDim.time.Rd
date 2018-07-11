@@ -10,7 +10,7 @@ sortDim.time(grid)
 \item{grid}{Input grid}
 }
 \value{
-A grid fo similar characteristics, but with time dimension re-arranged in ascending ordered if needed.
+A grid of similar characteristics, but with time dimension re-arranged in ascending ordered if needed.
 }
 \description{
 Returns a grid with time sorted in ascending order. For internal use mainly, 

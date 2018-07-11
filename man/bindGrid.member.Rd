@@ -4,7 +4,7 @@
 \alias{bindGrid.member}
 \title{Grid binding by member dimension}
 \usage{
-bindGrid.member(..., spatial.tolerance = 0.001)
+bindGrid.member(..., spatial.tolerance, dataset.attr)
 }
 \arguments{
 \item{...}{Input grids to bind by their member dimension. These must be compatible in time and space (see details).
@@ -13,6 +13,13 @@ For flexibility, they can be introduced as a list or directly as consecutive arg
 \item{spatial.tolerance}{numeric. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
 coordinates. Default to 0.001 --assuming that degrees are being used it seems a reasonable rounding error after interpolation--.
 This value is passed to the \code{\link{identical}} function to check for spatial consistency of the input grids.}
+
+\item{dataset.attr}{Character string used to update the \code{"dataset"} attribute of the output grid. This
+is used only when binding grids along the \code{"member"} dimension, in case multi-model combination is being undertaken,
+(i.e., different models are being joined as members of a single multimodel dataset)
+so the new dataset attribute reflects this. Note that the default behaviour is retaining the \code{"dataset"} 
+attribute of the first grid given, resulting in a misleading metadata information if this is the case. Default to \code{NULL},
+and ignored.}
 }
 \description{
 Flexible binding of (spatiotemporally consistent) grids by their member dimension

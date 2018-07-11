@@ -365,9 +365,9 @@ getRefDates <- function(obj, which = "start") {
 #' @title Select an appropriate *pply function
 #' @description Selects an appropriate *pply function depending on the parallel choice
 #' @param parallel.pars The output from \code{\link{parallelCheck}}, passing the parallelization options.
-#' @param .pplyFUN *pply function to be used. Current options are \code{"apply"}, \code{"lapply"} and \code{"sapply"}.
+#' @param .pplyFUN *pply function to be used. Current options are \code{"apply"}, \code{"lapply"}, \code{"sapply"} and \code{"mapply"}.
 #' @details The output function will be either \code{parallel::parLapply} or \code{lapply} for \code{.pplyFUN = "lapply"},
-#' depending of whether parallelization is enabled or not. Same for \code{apply} and \code{parallel::parApply}.
+#' depending of whether parallelization is enabled or not. Same for \code{apply} and \code{parallel::parApply} and so on.
 #' @section Warning:
 #' 
 #' From the \code{\link[parallel]{makeCluster}} help: 
@@ -382,33 +382,33 @@ getRefDates <- function(obj, which = "start") {
 #' @author J. Bedia
 
 selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sapply", "mapply")) {
-      .pplyFUN <- match.arg(.pplyFUN, choices = c("apply", "lapply", "sapply", "mapply"))
-      if (parallel.pars$hasparallel) {
-            if (.pplyFUN == "apply") {
-                  fun <- function(...) {
-                        parallel::parApply(cl = parallel.pars$cl, ...)
-                  }
-            } else if (.pplyFUN == "lapply") {
-                  fun <- function(...) {
-                        parallel::parLapply(cl = parallel.pars$cl, ...)
-                  }
-            } else if (.pplyFUN == "sapply") {
-                  fun <- function(...) {
-                        parallel::parSapply(cl = parallel.pars$cl, ...)
-                  }
-            } else if (.pplyFUN == "mapply") {
-                  fun <- function(...) {
-                        parallel::clusterMap(cl = parallel.pars$cl, ..., SIMPLIFY = TRUE)
-                  }
+    .pplyFUN <- match.arg(.pplyFUN, choices = c("apply", "lapply", "sapply", "mapply"))
+    if (parallel.pars$hasparallel) {
+        if (.pplyFUN == "apply") {
+            fun <- function(...) {
+                parallel::parApply(cl = parallel.pars$cl, ...)
             }
-      } else {
-            fun <- switch(.pplyFUN,
-                          "apply" = apply,
-                          "lapply" = lapply,
-                          "sapply" = sapply,
-                          "mapply" = mapply)
-      }
-      return(fun)
+        } else if (.pplyFUN == "lapply") {
+            fun <- function(...) {
+                parallel::parLapply(cl = parallel.pars$cl, ...)
+            }
+        } else if (.pplyFUN == "sapply") {
+            fun <- function(...) {
+                parallel::parSapply(cl = parallel.pars$cl, ...)
+            }
+        } else if (.pplyFUN == "mapply") {
+            fun <- function(...) {
+                parallel::clusterMap(cl = parallel.pars$cl, ..., SIMPLIFY = TRUE)
+            }
+        }
+    } else {
+        fun <- switch(.pplyFUN,
+                      "apply" = apply,
+                      "lapply" = lapply,
+                      "sapply" = sapply,
+                      "mapply" = mapply)
+    }
+    return(fun)
 }
 
 
@@ -442,14 +442,14 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
 
 
 checkDim <- function(..., dimensions = c("var", "member", "time", "lat", "lon")) {
-      grid.list <- list(...)
-      grid.list <- lapply(grid.list, "redim")
-      dimensions <- match.arg(dimensions, choices = c("var", "member", "time", "lat", "lon"), several.ok = TRUE)
-      dimlist <- lapply(dimensions, function(x) vapply(grid.list, "getShape", integer(1), x))
-      oops <- dimensions[which(!sapply(dimlist, function(x) all(x == x[1])))]
-      if (length(oops) > 0) {
-            stop("Inconsistent sizes found for dimensions: ", paste(oops, collapse = ", "), call. = FALSE)
-      }
+    grid.list <- list(...)
+    grid.list <- lapply(grid.list, "redim")
+    dimensions <- match.arg(dimensions, choices = c("var", "member", "time", "lat", "lon"), several.ok = TRUE)
+    dimlist <- lapply(dimensions, function(x) vapply(grid.list, "getShape", integer(1), x))
+    oops <- dimensions[which(!sapply(dimlist, function(x) all(x == x[1])))]
+    if (length(oops) > 0) {
+        stop("Inconsistent sizes found for dimensions: ", paste(oops, collapse = ", "), call. = FALSE)
+    }
 }
 
 
@@ -484,10 +484,10 @@ checkDim <- function(..., dimensions = c("var", "member", "time", "lat", "lon"))
 
 
 checkSeason <- function(...) {
-      grid.list <- list(...)
-      sealist <- lapply(grid.list, "getSeason")
-      oops <- sapply(sealist, function(x) all(x == sealist[[1]]))
-      if (!all(oops)) stop("Inconsistent seasons among input grids")
+    grid.list <- list(...)
+    sealist <- lapply(grid.list, "getSeason")
+    oops <- sapply(sealist, function(x) all(x == sealist[[1]]))
+    if (!all(oops)) stop("Inconsistent seasons among input grids")
 }    
 
 
@@ -529,7 +529,7 @@ checkVarNames <- function(..., check.order = TRUE) {
         out <- lapply(grid.list, FUN = "getVarNames")
         lengths <- sapply(out, "length")
         if (!all(lengths == lengths[[1]])) {
-          stop("The number of variables stored in the input grids differ")
+            stop("The number of variables stored in the input grids differ")
         }
         if (!all(sapply(2:length(out), function(x) all(out[[x]] %in% out[[1]])))) {
             stop("Variable names of the input grids differ")
@@ -654,16 +654,16 @@ getTimeResolution <- function(grid) {
 #' @seealso \code{\link{array3Dto2Dmat}}, which performs the inverse operation.
 
 mat2Dto3Darray.stations <- function(mat2D, x, y) {
-      mat <- matrix(NA, ncol = length(x), nrow = length(y))
-      aux.list <- lapply(1:nrow(mat2D), function(i) {
-            diag(mat) <- mat2D[i, ]
-            mat
-      })
-      arr <- unname(do.call("abind", c(aux.list, along = -1)))
-      aux.list <- NULL
-      arr <- aperm(arr, perm = c(1,3,2))
-      attr(arr, "dimensions") <- c("time", "lat", "lon")
-      return(arr)
+    mat <- matrix(NA, ncol = length(x), nrow = length(y))
+    aux.list <- lapply(1:nrow(mat2D), function(i) {
+        diag(mat) <- mat2D[i, ]
+        mat
+    })
+    arr <- unname(do.call("abind", c(aux.list, along = -1)))
+    aux.list <- NULL
+    arr <- aperm(arr, perm = c(1,3,2))
+    attr(arr, "dimensions") <- c("time", "lat", "lon")
+    return(arr)
 }
 #End
 
@@ -678,18 +678,18 @@ mat2Dto3Darray.stations <- function(mat2D, x, y) {
 #' @seealso \code{\link{mat2Dto3Darray}}, which performs the inverse operation
 #' 
 array3Dto2Dmat.stations <- function(array3D) {
-      dims <- dim(array3D)
-      aux.list <- lapply(1:dims[1], function(i) {
-            if (!is.matrix(array3D[i, ,])) {
-                  array3D[i, ,]
-            } else{
-                  diag(array3D[i, ,])      
-            }
-      })
-      mat <- unname(do.call("abind", c(aux.list, along = -1)))
-      aux.list <- NULL
-      attr(mat, "dimensions") <- c("time", "loc")
-      return(mat)
+    dims <- dim(array3D)
+    aux.list <- lapply(1:dims[1], function(i) {
+        if (!is.matrix(array3D[i, ,])) {
+            array3D[i, ,]
+        } else{
+            diag(array3D[i, ,])      
+        }
+    })
+    mat <- unname(do.call("abind", c(aux.list, along = -1)))
+    aux.list <- NULL
+    attr(mat, "dimensions") <- c("time", "loc")
+    return(mat)
 }
 
 #End
@@ -848,13 +848,13 @@ typeofGrid <- function(grid) {
 #' @author M. Iturbide 
 
 gridDepth <- function(this) {
-      that <- this
-      i <- 0
-      while (is.list(that)) {
-            i <- i + 1
-            that <- that[[1]]
-      }
-      return(i)
+    that <- this
+    i <- 0
+    while (is.list(that)) {
+        i <- i + 1
+        that <- that[[1]]
+    }
+    return(i)
 }
 #end
 
@@ -875,20 +875,20 @@ gridDepth <- function(this) {
 #' @author M. Iturbide
 
 reorderStation <- function(grid, axis = c("x", "y")) {
-      dimNames <- getDim(grid)
-      axis <- match.arg(axis, choices = c("x", "y"))
-      if (isRegular(grid)) stop("This function is applied only to irregular grids")
-      indloc <- order(getCoordinates(grid)[[axis]])
-      grid$Data <- asub(grid$Data, idx = indloc, dims = grep("loc", dimNames), drop = FALSE)
-      attr(grid$Data, "dimensions") <- dimNames
-      grid$xyCoords <- grid$xyCoords[indloc,]
-      if ("Metadata" %in% names(grid)) {
-            if ("station_id" %in% names(grid$Metadata)) grid$Metadata$station_id <- grid$Metadata$station_id[indloc]
-            if ("name" %in% names(grid$Metadata)) grid$Metadata$name <- grid$Metadata$name[indloc]
-            if ("altitude" %in% names(grid$Metadata)) grid$Metadata$altitude <- grid$Metadata$altitude[indloc]      
-            if ("source" %in% names(grid$Metadata)) grid$Metadata$source <- grid$Metadata$source[indloc]
-      }
-      return(grid)
+    dimNames <- getDim(grid)
+    axis <- match.arg(axis, choices = c("x", "y"))
+    if (isRegular(grid)) stop("This function is applied only to irregular grids")
+    indloc <- order(getCoordinates(grid)[[axis]])
+    grid$Data <- asub(grid$Data, idx = indloc, dims = grep("loc", dimNames), drop = FALSE)
+    attr(grid$Data, "dimensions") <- dimNames
+    grid$xyCoords <- grid$xyCoords[indloc,]
+    if ("Metadata" %in% names(grid)) {
+        if ("station_id" %in% names(grid$Metadata)) grid$Metadata$station_id <- grid$Metadata$station_id[indloc]
+        if ("name" %in% names(grid$Metadata)) grid$Metadata$name <- grid$Metadata$name[indloc]
+        if ("altitude" %in% names(grid$Metadata)) grid$Metadata$altitude <- grid$Metadata$altitude[indloc]      
+        if ("source" %in% names(grid$Metadata)) grid$Metadata$source <- grid$Metadata$source[indloc]
+    }
+    return(grid)
 }
 #end
 
@@ -925,11 +925,11 @@ get2DmatCoordinates <- function(grid) {
 #' @author M. Iturbide
 
 isGrid <- function(grid) {
-      if (is.list(grid)) {
+    if (is.list(grid)) {
         all(c("Variable", "Data", "xyCoords", "Dates") %in% names(grid))
-      } else {
+    } else {
         FALSE
-      }
+    }
 }
 
 
@@ -943,15 +943,15 @@ isGrid <- function(grid) {
 #' @author M. Iturbide
 
 isMultigrid <- function(grid) {
-      if (is.list(grid)) {
-            if (all(c("Variable", "Data", "xyCoords", "Dates") %in% names(grid))) {
-                  gridDepth(grid$Dates) > 1
-            } else {
-                  FALSE
-            }
-      } else {
+    if (is.list(grid)) {
+        if (all(c("Variable", "Data", "xyCoords", "Dates") %in% names(grid))) {
+            gridDepth(grid$Dates) > 1
+        } else {
             FALSE
-      }
+        }
+    } else {
+        FALSE
+    }
 }
 
 
