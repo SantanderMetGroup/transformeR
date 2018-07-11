@@ -25,6 +25,12 @@
 #' @param spatial.tolerance numeric. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
 #' coordinates. Default to 0.001 --assuming that degrees are being used it seems a reasonable rounding error after interpolation--.
 #' This value is passed to the \code{\link{identical}} function to check for spatial consistency of the input grids.
+#' @param dataset.attr Character string used to update the \code{"dataset"} attribute of the output grid. This
+#' is used only when binding grids along the \code{"member"} dimension, in case multi-model combination is being undertaken,
+#' (i.e., different models are being joined as members of a single multimodel dataset)
+#' so the new dataset attribute reflects this. Note that the default behaviour is retaining the \code{"dataset"} 
+#' attribute of the first grid given, resulting in a misleading metadata information if this is the case. Default to \code{NULL},
+#' and ignored.
 #' @details 
 #' 
 #' The function can be useful for handling loading large domains and multimembers, that are difficult or impossible to load
@@ -53,10 +59,10 @@
 #' @export
 
 bindGrid <- function(..., dimension = c("member", "time", "lat", "lon"), 
-                     spatial.tolerance = 1e-3) {
+                     spatial.tolerance = 1e-3, dataset.attr = NULL) {
       dimension <- match.arg(dimension, choices = c("member", "time", "lat", "lon"))
       if (dimension == "member") {
-            bindGrid.member(..., spatial.tolerance = spatial.tolerance)
+            bindGrid.member(..., spatial.tolerance = spatial.tolerance, dataset.attr = dataset.attr)
       } else if (dimension == "time") {
             bindGrid.time(..., spatial.tolerance = spatial.tolerance)
       } else if (dimension == "lat" | dimension == "lon") {
@@ -90,6 +96,12 @@ bindGrid <- function(..., dimension = c("member", "time", "lat", "lon"),
 #' @param spatial.tolerance numeric. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
 #' coordinates. Default to 0.001 --assuming that degrees are being used it seems a reasonable rounding error after interpolation--.
 #' This value is passed to the \code{\link{identical}} function to check for spatial consistency of the input grids.
+#' @param dataset.attr Character string used to update the \code{"dataset"} attribute of the output grid. This
+#' is used only when binding grids along the \code{"member"} dimension, in case multi-model combination is being undertaken,
+#' (i.e., different models are being joined as members of a single multimodel dataset)
+#' so the new dataset attribute reflects this. Note that the default behaviour is retaining the \code{"dataset"} 
+#' attribute of the first grid given, resulting in a misleading metadata information if this is the case. Default to \code{NULL},
+#' and ignored.
 #' @details 
 #' 
 #' The function can be useful for handling loading large domains and multimembers, that are difficult or impossible to load
@@ -118,8 +130,12 @@ bindGrid <- function(..., dimension = c("member", "time", "lat", "lon"),
 #' @author J Bedia
 #' @export
 
-bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
+bindGrid.member <- function(..., spatial.tolerance, dataset.attr) {
     grid.list <- list(...)
+    if (!is.null(dataset.attr)) {
+        stopifnot(is.character(dataset.attr))
+        if (length(dataset.attr) != 1L) stop("Invalid \'dataset.attr\' value: The dataset attribute must have length 1")    
+    }
     if (length(grid.list) == 1) {
         grid.list <- unlist(grid.list, recursive = FALSE)
     }
@@ -188,6 +204,9 @@ bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
         ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
         inits.list <- member.list <- data.list <- NULL
         attr(ref[["Data"]], "dimensions") <- dimNames
+        if (!is.null(dataset.attr)) {
+            attr(ref, "dataset") <- dataset.attr
+        }
     }
     return(ref)
 }
@@ -237,7 +256,7 @@ bindGrid.member <- function(..., spatial.tolerance = 1e-3) {
 #' @export
 
 
-bindGrid.spatial <- function(...,  dimension = c("lat", "lon"), spatial.tolerance = 1e-3) {
+bindGrid.spatial <- function(...,  dimension = c("lat", "lon"), spatial.tolerance) {
       dimension <- match.arg(dimension, choices = c("lat", "lon"))
       dimsort <- "y"
       if (dimension == "lon") dimsort <- "x"
@@ -385,7 +404,7 @@ sortDim.spatial <- function(grid, dimension = c("y", "x")) {
 #' plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline", at = seq(0,17,1))
 #' plotClimatology(climatology(CFS_Iberia_tas), backdrop.theme = "coastline", at = seq(0,17,1))
 
-bindGrid.time <- function(..., spatial.tolerance = 1e-3) {
+bindGrid.time <- function(..., spatial.tolerance) {
       grid.list <- list(...)
       if (length(grid.list) == 1) {
             grid.list <- unlist(grid.list, recursive = FALSE)
@@ -434,7 +453,7 @@ bindGrid.time <- function(..., spatial.tolerance = 1e-3) {
 #' the function is useful for instance when subsetting along time and binding with \code{\link{bindGrid.time}}, 
 #' so the user does not need to worry about the ordering of the input.
 #' @param grid Input grid
-#' @return A grid fo similar characteristics, but with time dimension re-arranged in ascending ordered if needed.
+#' @return A grid of similar characteristics, but with time dimension re-arranged in ascending ordered if needed.
 #' @keywords internal
 #' @family internal.helpers
 #' @importFrom magrittr %<>%
