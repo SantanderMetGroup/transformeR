@@ -4,17 +4,17 @@
 \alias{bindGrid.member}
 \title{Grid binding by member dimension}
 \usage{
-bindGrid.member(..., spatial.tolerance = spatial.tolerance, dataset.attr)
+bindGrid.member(..., tol, attr.)
 }
 \arguments{
 \item{...}{Input grids to bind by their member dimension. These must be compatible in time and space (see details).
 For flexibility, they can be introduced as a list or directly as consecutive arguments.}
 
-\item{spatial.tolerance}{numeric. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
+\item{tol}{numeric. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
 coordinates. Default to 0.001 --assuming that degrees are being used it seems a reasonable rounding error after interpolation--.
 This value is passed to the \code{\link{identical}} function to check for spatial consistency of the input grids.}
 
-\item{dataset.attr}{Character string used to update the \code{"dataset"} attribute of the output grid. This
+\item{attr.}{Character string used to update the \code{"dataset"} attribute of the output grid. This
 is used only when binding grids along the \code{"member"} dimension, in case multi-model combination is being undertaken,
 (i.e., different models are being joined as members of a single multimodel dataset)
 so the new dataset attribute reflects this. Note that the default behaviour is retaining the \code{"dataset"} 
@@ -24,18 +24,6 @@ and ignored.}
 \description{
 Flexible binding of (spatiotemporally consistent) grids by their member dimension
  useful to handle sets of predictors as a single block.
-}
-\details{
-The function can be useful for handling loading large domains and multimembers, that are difficult or impossible to load
- at once with the loading functions. The task of loading can be efficiently parallelized by splitting the request by
- ensemble member subsets, and then binded with this function. 
-
-The function makes a number of checks in order to test the spatiotemporal compatibility of the input multi-member grids.
- The spatial consistency of the input grids is also checked. In order to avoid possible errors from the user, the spatial
-  consistency (i.e., equal XY coordinates) of the input grids must be ensured before attempting the creation of the multigrid,
-  otherwise giving an error. This can be achieved either through the specification of the same 'lonLim' and 'latLim' argument
-  values when loading the grids, or using the \code{\link{interpGrid}} interpolator in conjuntion with the \code{\link{getGrid}}
-  method.
 }
 \examples{
 data("CFS_Iberia_tas")
@@ -52,7 +40,7 @@ plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline")
 Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
   \code{\link{array3Dto2Dmat}},
   \code{\link{bindGrid.spatial}},
-  \code{\link{bindGrid.time}}, \code{\link{bindGrid}},
+  \code{\link{bindGrid.time}},
   \code{\link{grid3Dto2Dmatrix}},
   \code{\link{mat2Dto3Darray.stations}},
   \code{\link{redim}}, \code{\link{sortDim.spatial}},

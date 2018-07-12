@@ -2,7 +2,7 @@
 % Please edit documentation in R/upscaleGrid.R
 \name{upscaleGrid}
 \alias{upscaleGrid}
-\title{Flexible grid aggregation along selected dimensions}
+\title{Horizontal grid upscaling}
 \usage{
 upscaleGrid(grid, times = 2, aggr.fun = list(FUN = max, na.rm = TRUE))
 }
@@ -25,6 +25,7 @@ Aggregates a grid along the target dimensions using user-defined functions.
 The development of a more eficient and fast version of the function is planned.
 }
 \examples{
+\dontrun{
 data("EOBS_Iberia_pr")
 library(visualizeR)
 spatialPlot(climatology(EOBS_Iberia_pr))
@@ -32,6 +33,7 @@ newgrid <- upscaleGrid(redim(EOBS_Iberia_pr),
                        times = 2,
                        aggr.fun = list(FUN = "min", na.rm = TRUE))
 spatialPlot(climatology(newgrid))
+}
 }
 \author{
 M. Iturbide

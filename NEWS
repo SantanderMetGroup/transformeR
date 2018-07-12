@@ -21,6 +21,7 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
 * Other minor changes and documentation example updates
 
 ## v1.4.3 (in devel)
+
  * Allow for updating the dataset attribute when constructing multimodels via `bindGrid` (enhancement [#18](https://github.com/SantanderMetGroup/transformeR/issues/18))
  * Other minor changes and documentation updates
 
