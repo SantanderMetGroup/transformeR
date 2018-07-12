@@ -4,7 +4,8 @@
 \alias{bindGrid.spatial}
 \title{Grid binding by spatial dimension}
 \usage{
-bindGrid.spatial(..., dimension = c("lat", "lon"), spatial.tolerance)
+bindGrid.spatial(..., dimension = c("lat", "lon"),
+  spatial.tolerance = spatial.tolerance)
 }
 \arguments{
 \item{...}{Input grids to bind by their time dimension. These must be compatible in members and space (see details).

@@ -4,7 +4,7 @@
 \alias{bindGrid.time}
 \title{Grid binding by time dimension}
 \usage{
-bindGrid.time(..., spatial.tolerance)
+bindGrid.time(..., spatial.tolerance = spatial.tolerance)
 }
 \arguments{
 \item{...}{Input grids to bind by their time dimension. These must be compatible in members and space (see details).

@@ -4,7 +4,7 @@
 \alias{bindGrid.member}
 \title{Grid binding by member dimension}
 \usage{
-bindGrid.member(..., spatial.tolerance, dataset.attr)
+bindGrid.member(..., spatial.tolerance = spatial.tolerance, dataset.attr)
 }
 \arguments{
 \item{...}{Input grids to bind by their member dimension. These must be compatible in time and space (see details).
