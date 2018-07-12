@@ -1,6 +1,6 @@
-#     bindGrid.R Grid binding by member dimension
+#     bindGrid.R Grid binding along user-defined dimension
 #
-#     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2018 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -130,7 +130,7 @@ bindGrid <- function(..., dimension = c("member", "time", "lat", "lon"),
 #' @author J Bedia
 #' @export
 
-bindGrid.member <- function(..., spatial.tolerance, dataset.attr) {
+bindGrid.member <- function(..., spatial.tolerance = spatial.tolerance, dataset.attr) {
     grid.list <- list(...)
     if (!is.null(dataset.attr)) {
         stopifnot(is.character(dataset.attr))
@@ -256,7 +256,7 @@ bindGrid.member <- function(..., spatial.tolerance, dataset.attr) {
 #' @export
 
 
-bindGrid.spatial <- function(...,  dimension = c("lat", "lon"), spatial.tolerance) {
+bindGrid.spatial <- function(...,  dimension = c("lat", "lon"), spatial.tolerance = spatial.tolerance) {
       dimension <- match.arg(dimension, choices = c("lat", "lon"))
       dimsort <- "y"
       if (dimension == "lon") dimsort <- "x"
@@ -404,7 +404,7 @@ sortDim.spatial <- function(grid, dimension = c("y", "x")) {
 #' plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline", at = seq(0,17,1))
 #' plotClimatology(climatology(CFS_Iberia_tas), backdrop.theme = "coastline", at = seq(0,17,1))
 
-bindGrid.time <- function(..., spatial.tolerance) {
+bindGrid.time <- function(..., spatial.tolerance = spatial.tolerance) {
       grid.list <- list(...)
       if (length(grid.list) == 1) {
             grid.list <- unlist(grid.list, recursive = FALSE)
