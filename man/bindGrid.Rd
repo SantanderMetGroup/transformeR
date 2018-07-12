@@ -88,7 +88,7 @@ identical(eobs1, eobs3)
 \seealso{
 \code{\link{subsetGrid}}, for the reverse operation. \code{\link{makeMultiGrid}} is somehow related, although 
 envisaged to bind grids of different variables along a new dimension \code{"var"} (variable), mainly for the construction of predictor sets in
-downscaling applications.
+downscaling applications. \code{\link{intersectGrid}}, for temporal or spatial intersection of two or more grids.
 }
 \author{
 J Bedia and M Iturbide
