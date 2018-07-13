@@ -154,7 +154,7 @@ bindGrid.member <- function(..., tol, attr.) {
         }
         grid.list <- aux.list
         aux.list <- NULL
-        temporalCheck(grid.list)
+        checkTemporalConsistency(grid.list)
         for (i in 2:length(grid.list)) {
             # Spatial test
             if (!isTRUE(all.equal(grid.list[[1]]$xyCoords, grid.list[[i]]$xyCoords, check.attributes = FALSE, tolerance = tol))) {

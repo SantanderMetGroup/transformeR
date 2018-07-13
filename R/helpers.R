@@ -559,7 +559,7 @@ checkVarNames <- function(..., check.order = TRUE) {
 #' @family check.helpers
 #' @export
 
-temporalCheck <- function(...) {
+checkTemporalConsistency <- function(...) {
     grid.list <- list(...)
     if (length(grid.list) == 1) grid.list %<>% unlist(recursive = FALSE)
     if (length(grid.list) < 2) stop("Only one grid passed as input. Nothing was done", call. = FALSE)

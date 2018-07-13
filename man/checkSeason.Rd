@@ -39,7 +39,8 @@ checkSeason(VALUE_Iberia_tas, VALUE_Iberia_pr)
 \code{\link{getSeason}}
 
 Other check.helpers: \code{\link{checkDim}},
-  \code{\link{checkVarNames}}, \code{\link{temporalCheck}}
+  \code{\link{checkTemporalConsistency}},
+  \code{\link{checkVarNames}}
 }
 \author{
 J Bedia
