@@ -561,7 +561,7 @@ checkVarNames <- function(..., check.order = TRUE) {
 
 temporalCheck <- function(...) {
     grid.list <- list(...)
-    if (length(grid.list) == 1) grid.list %<>%  unlist(recursive = FALSE)
+    if (length(grid.list) == 1) grid.list %<>% unlist(recursive = FALSE)
     if (length(grid.list) < 2) stop("Only one grid passed as input. Nothing was done", call. = FALSE)
     timeres <- sapply(grid.list, "getTimeResolution") %>% unique() 
     if (length(timeres) > 1) stop("Different time resolution grids can't be binded")
