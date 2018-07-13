@@ -28,6 +28,7 @@ Other get.helpers: \code{\link{get2DmatCoordinates}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},
   \code{\link{getSeason}}, \code{\link{getShape}},
+  \code{\link{getStationID}},
   \code{\link{getTimeResolution}},
   \code{\link{getVarNames}}, \code{\link{getYearsAsINDEX}},
   \code{\link{typeofGrid}}

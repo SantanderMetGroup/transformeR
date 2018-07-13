@@ -19,6 +19,12 @@ The grids indicated in \code{which.return}, encompassing the overlapping time pe
 \description{
 Takes multiple input grids and crops the overlapping part
 }
+\examples{
+data("EOBS_Iberia_tas")
+a <- subsetGrid(EOBS_Iberia_tas, lonLim = c(-8,-1), latLim = c(37, 40))
+b <- subsetGrid(EOBS_Iberia_tas, lonLim = c(-4,3), latLim = c(39, 43))
+z <- intersectGrid(a, b, type = "spatial", which.return = 1)
+}
 \seealso{
 \code{\link{subsetGrid}}
 

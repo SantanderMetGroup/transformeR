@@ -42,6 +42,7 @@ Other get.helpers: \code{\link{get2DmatCoordinates}},
   \code{\link{getCoordinates}}, \code{\link{getDim}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},
   \code{\link{getSeason}}, \code{\link{getShape}},
+  \code{\link{getStationID}},
   \code{\link{getTimeResolution}},
   \code{\link{getVarNames}}, \code{\link{getYearsAsINDEX}},
   \code{\link{typeofGrid}}, \code{\link{which.leap}}

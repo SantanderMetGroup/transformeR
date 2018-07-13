@@ -877,7 +877,7 @@ get2DmatCoordinates <- function(grid) {
     } else if (typeofGrid(grid) == "station") {
         getCoordinates(grid)
     } else if (typeofGrid(grid) == "rotated_grid") {
-        stop("2D coordinates matrix is not yet supported for rotated grids", call. = FALSE)
+        cbind(as.vector(getCoordinates(grid)$lon), as.vector(getCoordinates(grid)$lat))
     }
 }
 
@@ -920,3 +920,21 @@ isMultigrid <- function(grid) {
             FALSE
       }
 }
+
+#' @title Obtain station names and IDs
+#' @description Obtain station names and IDs
+#' @param grid An input station data grid
+#' @return A 2D matrix of name-ID (in this order)
+#' @author M. Iturbide
+#' @family get.helpers
+#' @export
+
+getStationID <- function(grid) {
+      if (typeofGrid(grid) != "station") stop("This is not station data")
+      if (!is.null(grid$Metadata$name) & !is.null(grid$Metadata$station_id)) {
+            cbind(grid$Metadata$name, grid$Metadata$station_id)      
+      } else {
+            stop("Incomplete metadata")
+      }
+}
+
