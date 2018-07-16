@@ -7,12 +7,12 @@
 projectGrid(grid, original.CRS = "", new.CRS = "")
 }
 \arguments{
-\item{grid}{a grid or multigrid or station data.}
+\item{grid}{a grid or multigrid (including station data).}
 
-\item{original.CRS}{character as passed to function \code{\link{CRS}}. It defines the original projection. Ignored if already exists in the data,
-in which case, a warning is returned with the original datum.}
+\item{original.CRS}{character as passed to function \code{\link{CRS}}. It defines the original projection. If the data contains the 
+projection information, a warning is returned and the projection in redefined.}
 
-\item{new.CRS}{character as passed to function \code{\link{CRS}} for project.}
+\item{new.CRS}{character as passed to function \code{\link{CRS}}.}
 }
 \description{
 Defines and/or transforms the projection of a grid (or station data) by means of a \code{\link[sp]{CRS}} object.
