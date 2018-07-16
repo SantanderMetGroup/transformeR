@@ -14,7 +14,6 @@
 #' b <- subsetGrid(EOBS_Iberia_tas, lonLim = c(-4,3), latLim = c(39, 43))
 #' z <- intersectGrid(a, b, type = "spatial", which.return = 1)
 
-
 intersectGrid <- function(..., type = c("temporal", "spatial"), which.return = 1) {
       type <- match.arg(type, choices = c("temporal", "spatial"))
       if (type == "temporal") {

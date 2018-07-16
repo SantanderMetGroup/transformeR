@@ -4,37 +4,26 @@
 \alias{bindGrid.spatial}
 \title{Grid binding by spatial dimension}
 \usage{
-bindGrid.spatial(..., dimension = c("lat", "lon"),
-  spatial.tolerance = 0.001)
+bindGrid.spatial(..., dimn, tol)
 }
 \arguments{
 \item{...}{Input grids to bind by their time dimension. These must be compatible in members and space (see details).
 For flexibility, they can be introduced as a list or directly as consecutive arguments.}
 
-\item{dimension}{latitude ("lat") or longitude ("lon")}
+\item{dimn}{latitude ("lat") or longitude ("lon")}
 
-\item{spatial.tolerance}{numeric. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
+\item{tol}{numeric. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
 coordinates. Default to 0.001 --assuming that degrees are being used it seems a reasonable rounding error after interpolation--.
 This value is passed to the \code{\link{identical}} function to check for spatial consistency of the input grids.}
 }
 \description{
 Flexible binding of (spatially/member consistent) grids by their longitude or latitude dimension
 }
-\details{
-\strong{Input grids consistency checks}
-
-The function makes a number of checks in order to test the spatiotemporal compatibility of the input multi-member grids.
- The spatial consistency of the input grids is also checked. In order to avoid possible errors from the user, the spatial
-  consistency (i.e., equal XY coordinates) of the input grids must be ensured before attempting the creation of the multigrid,
-  otherwise giving an error. This can be achieved either through the specification of the same 'lonLim' and 'latLim' argument
-  values when loading the grids, or using the \code{\link{interpGrid}} interpolator in conjuntion with the \code{\link{getGrid}}
-  method, for instance
-}
 \seealso{
 Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
   \code{\link{array3Dto2Dmat}},
   \code{\link{bindGrid.member}},
-  \code{\link{bindGrid.time}}, \code{\link{bindGrid}},
+  \code{\link{bindGrid.time}},
   \code{\link{grid3Dto2Dmatrix}},
   \code{\link{mat2Dto3Darray.stations}},
   \code{\link{redim}}, \code{\link{sortDim.spatial}},

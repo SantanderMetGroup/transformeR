@@ -1,6 +1,6 @@
 ##     helpers.R Helper functions of the climate4R bundle
 ##
-##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
+##     Copyright (C) 2018 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
 ##     This program is free software: you can redistribute it and/or modify
 ##     it under the terms of the GNU General Public License as published by
@@ -129,7 +129,7 @@ getCoordinates <- function(obj) {
     } else {
         x <- obj$xyCoords$x
         y <- obj$xyCoords$y
-        if (!is.data.frame(obj$xyCoords) && exists("lon", obj$xyCoords) && exists("lat", obj$xyCoords)) {
+        if (!is.data.frame(obj$xyCoords) && exists("lon", where = obj$xyCoords) && exists("lat", where = obj$xyCoords)) {
             lon <- obj$xyCoords$lon 
             lat <- obj$xyCoords$lat
             return(list("x" = x, "y" = y, "lon" = lon, "lat" = lat))
@@ -157,7 +157,6 @@ getSeason <- function(obj) {
       if ("season" %in% names(attributes(obj$Dates))) {
             attr(obj$Dates, "season")
       } else {
-            dimNames <- getDim(obj)
             aux <- if (is.null(names(obj$Dates))) {
                   as.integer(substr(obj$Dates[[1]]$start, 6,7))      
             } else {
@@ -366,9 +365,9 @@ getRefDates <- function(obj, which = "start") {
 #' @title Select an appropriate *pply function
 #' @description Selects an appropriate *pply function depending on the parallel choice
 #' @param parallel.pars The output from \code{\link{parallelCheck}}, passing the parallelization options.
-#' @param .pplyFUN *pply function to be used. Current options are \code{"apply"}, \code{"lapply"} and \code{"sapply"}.
+#' @param .pplyFUN *pply function to be used. Current options are \code{"apply"}, \code{"lapply"}, \code{"sapply"} and \code{"mapply"}.
 #' @details The output function will be either \code{parallel::parLapply} or \code{lapply} for \code{.pplyFUN = "lapply"},
-#' depending of whether parallelization is enabled or not. Same for \code{apply} and \code{parallel::parApply}.
+#' depending of whether parallelization is enabled or not. Same for \code{apply} and \code{parallel::parApply} and so on.
 #' @section Warning:
 #' 
 #' From the \code{\link[parallel]{makeCluster}} help: 
@@ -383,33 +382,33 @@ getRefDates <- function(obj, which = "start") {
 #' @author J. Bedia
 
 selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sapply", "mapply")) {
-      .pplyFUN <- match.arg(.pplyFUN, choices = c("apply", "lapply", "sapply", "mapply"))
-      if (parallel.pars$hasparallel) {
-            if (.pplyFUN == "apply") {
-                  fun <- function(...) {
-                        parallel::parApply(cl = parallel.pars$cl, ...)
-                  }
-            } else if (.pplyFUN == "lapply") {
-                  fun <- function(...) {
-                        parallel::parLapply(cl = parallel.pars$cl, ...)
-                  }
-            } else if (.pplyFUN == "sapply") {
-                  fun <- function(...) {
-                        parallel::parSapply(cl = parallel.pars$cl, ...)
-                  }
-            } else if (.pplyFUN == "mapply") {
-                  fun <- function(...) {
-                        parallel::clusterMap(cl = parallel.pars$cl, ..., SIMPLIFY = TRUE)
-                  }
+    .pplyFUN <- match.arg(.pplyFUN, choices = c("apply", "lapply", "sapply", "mapply"))
+    if (parallel.pars$hasparallel) {
+        if (.pplyFUN == "apply") {
+            fun <- function(...) {
+                parallel::parApply(cl = parallel.pars$cl, ...)
             }
-      } else {
-            fun <- switch(.pplyFUN,
-                          "apply" = apply,
-                          "lapply" = lapply,
-                          "sapply" = sapply,
-                          "mapply" = mapply)
-      }
-      return(fun)
+        } else if (.pplyFUN == "lapply") {
+            fun <- function(...) {
+                parallel::parLapply(cl = parallel.pars$cl, ...)
+            }
+        } else if (.pplyFUN == "sapply") {
+            fun <- function(...) {
+                parallel::parSapply(cl = parallel.pars$cl, ...)
+            }
+        } else if (.pplyFUN == "mapply") {
+            fun <- function(...) {
+                parallel::clusterMap(cl = parallel.pars$cl, ..., SIMPLIFY = TRUE)
+            }
+        }
+    } else {
+        fun <- switch(.pplyFUN,
+                      "apply" = apply,
+                      "lapply" = lapply,
+                      "sapply" = sapply,
+                      "mapply" = mapply)
+    }
+    return(fun)
 }
 
 
@@ -443,14 +442,14 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
 
 
 checkDim <- function(..., dimensions = c("var", "member", "time", "lat", "lon")) {
-      grid.list <- list(...)
-      grid.list <- lapply(grid.list, "redim")
-      dimensions <- match.arg(dimensions, choices = c("var", "member", "time", "lat", "lon"), several.ok = TRUE)
-      dimlist <- lapply(dimensions, function(x) vapply(grid.list, "getShape", integer(1), x))
-      oops <- dimensions[which(!sapply(dimlist, function(x) all(x == x[1])))]
-      if (length(oops) > 0) {
-            stop("Inconsistent sizes found for dimensions: ", paste(oops, collapse = ", "), call. = FALSE)
-      }
+    grid.list <- list(...)
+    grid.list <- lapply(grid.list, "redim")
+    dimensions <- match.arg(dimensions, choices = c("var", "member", "time", "lat", "lon"), several.ok = TRUE)
+    dimlist <- lapply(dimensions, function(x) vapply(grid.list, "getShape", integer(1), x))
+    oops <- dimensions[which(!sapply(dimlist, function(x) all(x == x[1])))]
+    if (length(oops) > 0) {
+        stop("Inconsistent sizes found for dimensions: ", paste(oops, collapse = ", "), call. = FALSE)
+    }
 }
 
 
@@ -485,10 +484,10 @@ checkDim <- function(..., dimensions = c("var", "member", "time", "lat", "lon"))
 
 
 checkSeason <- function(...) {
-      grid.list <- list(...)
-      sealist <- lapply(grid.list, "getSeason")
-      oops <- sapply(sealist, function(x) all(x == sealist[[1]]))
-      if (!all(oops)) stop("Inconsistent seasons among input grids")
+    grid.list <- list(...)
+    sealist <- lapply(grid.list, "getSeason")
+    oops <- sapply(sealist, function(x) all(x == sealist[[1]]))
+    if (!all(oops)) stop("Inconsistent seasons among input grids")
 }    
 
 
@@ -530,7 +529,7 @@ checkVarNames <- function(..., check.order = TRUE) {
         out <- lapply(grid.list, FUN = "getVarNames")
         lengths <- sapply(out, "length")
         if (!all(lengths == lengths[[1]])) {
-          stop("The number of variables stored in the input grids differ")
+            stop("The number of variables stored in the input grids differ")
         }
         if (!all(sapply(2:length(out), function(x) all(out[[x]] %in% out[[1]])))) {
             stop("Variable names of the input grids differ")
@@ -566,29 +565,29 @@ isRegular <- function(grid) {
     x <- sort(gr$x)
     y <- sort(gr$y)
     if (!is.null(attr(gr, "resX")) && !is.null(attr(gr, "resY"))) {
-          if (attr(gr, "resX") == 0 && attr(gr, "resY") == 0) {
-                FALSE 
-          } else {
-                TRUE
-          }
+        if (attr(gr, "resX") == 0 && attr(gr, "resY") == 0) {
+            FALSE 
+        } else {
+            TRUE
+        }
     } else {
         if (length(x) == 1 && length(y) == 1) {
-              FALSE
+            FALSE
         } else {
             xdists <- lapply(1:(length(x) - 1), function(l) {
-                  x[l + 1] - x[l]
+                x[l + 1] - x[l]
             })
             ydists <- lapply(1:(length(y) - 1), function(l) {
-                  y[l + 1] - y[l]
+                y[l + 1] - y[l]
             })
             xa <- sum(unlist(xdists) - unlist(xdists)[1])
             ya <- sum(unlist(ydists) - unlist(ydists)[1])
             if (any(abs(c(xa, ya)) > 1e-05)) {
-                  FALSE
+                FALSE
             } else {
-                  TRUE
+                TRUE
             }
-      }
+        }
     }
 }
 
@@ -655,16 +654,16 @@ getTimeResolution <- function(grid) {
 #' @seealso \code{\link{array3Dto2Dmat}}, which performs the inverse operation.
 
 mat2Dto3Darray.stations <- function(mat2D, x, y) {
-      mat <- matrix(NA, ncol = length(x), nrow = length(y))
-      aux.list <- lapply(1:nrow(mat2D), function(i) {
-            diag(mat) <- mat2D[i, ]
-            mat
-      })
-      arr <- unname(do.call("abind", c(aux.list, along = -1)))
-      aux.list <- NULL
-      arr <- aperm(arr, perm = c(1,3,2))
-      attr(arr, "dimensions") <- c("time", "lat", "lon")
-      return(arr)
+    mat <- matrix(NA, ncol = length(x), nrow = length(y))
+    aux.list <- lapply(1:nrow(mat2D), function(i) {
+        diag(mat) <- mat2D[i, ]
+        mat
+    })
+    arr <- unname(do.call("abind", c(aux.list, along = -1)))
+    aux.list <- NULL
+    arr <- aperm(arr, perm = c(1,3,2))
+    attr(arr, "dimensions") <- c("time", "lat", "lon")
+    return(arr)
 }
 #End
 
@@ -679,18 +678,18 @@ mat2Dto3Darray.stations <- function(mat2D, x, y) {
 #' @seealso \code{\link{mat2Dto3Darray}}, which performs the inverse operation
 #' 
 array3Dto2Dmat.stations <- function(array3D) {
-      dims <- dim(array3D)
-      aux.list <- lapply(1:dims[1], function(i) {
-            if (!is.matrix(array3D[i, ,])) {
-                  array3D[i, ,]
-            } else{
-                  diag(array3D[i, ,])      
-            }
-      })
-      mat <- unname(do.call("abind", c(aux.list, along = -1)))
-      aux.list <- NULL
-      attr(mat, "dimensions") <- c("time", "loc")
-      return(mat)
+    dims <- dim(array3D)
+    aux.list <- lapply(1:dims[1], function(i) {
+        if (!is.matrix(array3D[i, ,])) {
+            array3D[i, ,]
+        } else{
+            diag(array3D[i, ,])      
+        }
+    })
+    mat <- unname(do.call("abind", c(aux.list, along = -1)))
+    aux.list <- NULL
+    attr(mat, "dimensions") <- c("time", "loc")
+    return(mat)
 }
 
 #End
@@ -701,7 +700,22 @@ array3Dto2Dmat.stations <- function(array3D) {
 #' @param grid A grid or station data
 #' @param type Character. Should either the \code{"short"} (default) or the \code{"long"} variable name(s) be returned?.
 #' See Details.
-#' @details The long name is an optional attribute of a grid (not so the short name), and it is sometimes undefined (particularly in station datasets).
+#' @param append.level Append the vertical level to the short name string?. Default to \code{TRUE}, ignored when \code{type = "long"}).
+#'  See details.
+#' @details 
+#' 
+#' \strong{About short names}
+#' 
+#' Note that for variables with vertical levels, if the option \code{append.level} is set to \code{TRUE} (the default),
+#'  the function will "construct" the shortname following the climate4R convention,
+#' that defines the code of the variable plus its vertical level, separated by a \dQuote{@@} symbol. 
+#' This way, when querying grid variable names, the behaviour of \code{getVarNames} is different than directly accessing
+#' the \code{varName} element of the grid structure as in, e.g.: \code{grid$Variable$varName}. Using \code{getVarNames} 
+#' with \code{append.level = TRUE} is recommended in most applications when the variable string is needed.
+#' 
+#' \strong{About long names}
+#' 
+#' The long name is an optional attribute of a grid (not so the short name), and it is sometimes undefined (particularly in station datasets).
 #' In this case, the function returns \code{NULL}.
 #' @return A character vector with the variable name(s) in the indicated \code{type} format.
 #' @author J Bedia
@@ -711,24 +725,43 @@ array3Dto2Dmat.stations <- function(array3D) {
 #' @examples 
 #' data("CFS_Iberia_pr")
 #' getVarNames(CFS_Iberia_pr)
+#' grid <- CFS_Iberia_pr
 #' getVarNames(CFS_Iberia_pr, "long")
 #' ## Example with a multigrid
-#' data("CFS_Iberia_tas")
+#' data(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+#' mg <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+#' getVarNames(mg)
+#' # The level can be removed id needed:
+#' getVarNames(mg, append.level = FALSE)
 #' mg <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
 #' getVarNames(mg)
 #' getVarNames(mg, "long")
 #' ## Example with station data
 #' data("VALUE_Iberia_tas")
-#' ## The long name is an optional attribute, and may be undefined:
+#' ## The long name is an optional attribute, and might be undefined:
 #' getVarNames(VALUE_Iberia_tas, "long")
 
-getVarNames <- function(grid, type = c("short", "long")) {
+getVarNames <- function(grid, type = c("short", "long"), append.level = TRUE) {
+    stopifnot(is.logical(append.level))
     type <- match.arg(type, c("short", "long"))
-    switch(type,
-           "short" = grid$Variable$varName,
-           "long" = attr(grid$Variable, "longname"))
+    if (type == "short") {
+        vnames <- grid$Variable$varName
+        if (append.level) {
+            if (!any(grepl(pattern = "@", vnames))) {
+                lev <- grid$Variable$level
+                ind <- suppressWarnings(which(!is.na(lev) & !is.null(lev)))
+                if (length(ind) > 0) {
+                    vnames[ind] <- vapply(ind, FUN.VALUE = character(1L), FUN = function(x) paste(vnames[x], lev[x], sep = "@"))    
+                }
+            }
+        } else {
+            vnames <- gsub("@.*$", "", vnames)    
+        }
+    } else {
+        vnames <- gsub("\\\"","", attr(grid$Variable, "longname"))
+    }
+    return(vnames)
 }
-    
 
 #' @title Get grid vertical levels
 #' @description A helper function that returns a vector of the variable(s) vertical levels
@@ -815,13 +848,13 @@ typeofGrid <- function(grid) {
 #' @author M. Iturbide 
 
 gridDepth <- function(this) {
-      that <- this
-      i <- 0
-      while (is.list(that)) {
-            i <- i + 1
-            that <- that[[1]]
-      }
-      return(i)
+    that <- this
+    i <- 0
+    while (is.list(that)) {
+        i <- i + 1
+        that <- that[[1]]
+    }
+    return(i)
 }
 #end
 
@@ -842,20 +875,20 @@ gridDepth <- function(this) {
 #' @author M. Iturbide
 
 reorderStation <- function(grid, axis = c("x", "y")) {
-      dimNames <- getDim(grid)
-      axis <- match.arg(axis, choices = c("x", "y"))
-      if (isRegular(grid)) stop("This function is applied only to irregular grids")
-      indloc <- order(getCoordinates(grid)[[axis]])
-      grid$Data <- asub(grid$Data, idx = indloc, dims = grep("loc", dimNames), drop = FALSE)
-      attr(grid$Data, "dimensions") <- dimNames
-      grid$xyCoords <- grid$xyCoords[indloc,]
-      if ("Metadata" %in% names(grid)) {
-            if ("station_id" %in% names(grid$Metadata)) grid$Metadata$station_id <- grid$Metadata$station_id[indloc]
-            if ("name" %in% names(grid$Metadata)) grid$Metadata$name <- grid$Metadata$name[indloc]
-            if ("altitude" %in% names(grid$Metadata)) grid$Metadata$altitude <- grid$Metadata$altitude[indloc]      
-            if ("source" %in% names(grid$Metadata)) grid$Metadata$source <- grid$Metadata$source[indloc]
-      }
-      return(grid)
+    dimNames <- getDim(grid)
+    axis <- match.arg(axis, choices = c("x", "y"))
+    if (isRegular(grid)) stop("This function is applied only to irregular grids")
+    indloc <- order(getCoordinates(grid)[[axis]])
+    grid$Data <- asub(grid$Data, idx = indloc, dims = grep("loc", dimNames), drop = FALSE)
+    attr(grid$Data, "dimensions") <- dimNames
+    grid$xyCoords <- grid$xyCoords[indloc,]
+    if ("Metadata" %in% names(grid)) {
+        if ("station_id" %in% names(grid$Metadata)) grid$Metadata$station_id <- grid$Metadata$station_id[indloc]
+        if ("name" %in% names(grid$Metadata)) grid$Metadata$name <- grid$Metadata$name[indloc]
+        if ("altitude" %in% names(grid$Metadata)) grid$Metadata$altitude <- grid$Metadata$altitude[indloc]      
+        if ("source" %in% names(grid$Metadata)) grid$Metadata$source <- grid$Metadata$source[indloc]
+    }
+    return(grid)
 }
 #end
 
@@ -892,11 +925,11 @@ get2DmatCoordinates <- function(grid) {
 #' @author M. Iturbide
 
 isGrid <- function(grid) {
-      if (is.list(grid)) {
+    if (is.list(grid)) {
         all(c("Variable", "Data", "xyCoords", "Dates") %in% names(grid))
-      } else {
+    } else {
         FALSE
-      }
+    }
 }
 
 
@@ -910,16 +943,112 @@ isGrid <- function(grid) {
 #' @author M. Iturbide
 
 isMultigrid <- function(grid) {
-      if (is.list(grid)) {
-            if (all(c("Variable", "Data", "xyCoords", "Dates") %in% names(grid))) {
-                  gridDepth(grid$Dates) > 1
-            } else {
-                  FALSE
-            }
-      } else {
+    if (is.list(grid)) {
+        if (all(c("Variable", "Data", "xyCoords", "Dates") %in% names(grid))) {
+            gridDepth(grid$Dates) > 1
+        } else {
             FALSE
-      }
+        }
+    } else {
+        FALSE
+    }
 }
+
+
+
+#' @title Get grid units
+#' @description Get the \code{"units"} attribute of a grid
+#' @param grid An input grid
+#' @param var Character vector of variable length. Variable short name(s) whose units are returned.
+#'  Only makes sense in the case of multigrids storing several variables.
+#'   Otherwise ignored.
+#' @return Returns the \code{"units"} attribute 
+#' @keywords internal
+#' @export
+#' @author J Bedia
+#' @family get.helpers unit.helpers
+#' @examples 
+#' data(NCEP_Iberia_ta850)
+#' getGridUnits(NCEP_Iberia_ta850)
+#' data(NCEP_Iberia_hus850)
+#' getGridUnits(NCEP_Iberia_hus850)
+#' data(NCEP_Iberia_psl)
+#' getGridUnits(NCEP_Iberia_psl)
+#' mf <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+#' getGridUnits(mf)
+#' getVarNames(mf)
+#' getGridUnits(mf, "hus@850")
+#' getGridUnits(mf, var = c("hus@850", "ta@850"))
+
+getGridUnits <- function(grid, var = NULL) {
+    uds <- attr(grid$Variable, "units") %>% gsub(pattern = "\\\"", replacement = "")
+    if (isMultigrid(grid)) {
+        if (is.null(var)) {
+            message("NOTE: The input is a multigrid: Units of all variables are shown.\nUse argument 'var' for displaying the units of a particular variable")
+        } else {
+            vn <- getVarNames(grid)
+            if (!all(var %in% vn)) stop("At least one variable in \'var\' was not found. Use \'getVarNames\' for help")
+            uds <- uds[match(var, vn)]
+        }
+    } else {
+        if (!is.null(var)) warning("The input \'grid\' is not a multigrid: argument \'var\' was ignored")
+    }
+    return(uds)
+}
+
+
+#' @title Set grid units
+#' @description Set the \code{"units"} attribute of a grid
+#' @param grid An input grid
+#' @param unit.string Character string: a udunits-parseable character string vector.
+#'  See details.
+#' @param var In case of multigrids, the names of the variables whose units attribute is
+#'   to be updated (see examples).
+#' @return Retunrs (invisible) the same input grid with the new \code{"units"} 
+#' attribute in \code{"$Variable"} list element.
+#' @details 
+#' The length of the \code{unit.string} vector should match the number of variables
+#'  within the grid (in case of \code{multiGrids}), i.e., that of 
+#'  getVarNames(grid) or the length of \code{var}, in case the latter is used.
+#' @export
+#' @author J Bedia
+#' @family get.helpers unit.helpers
+#' @examples 
+#' data(NCEP_Iberia_hus850)
+#' getGridUnits(NCEP_Iberia_hus850)
+#' data(NCEP_Iberia_psl)
+#' getGridUnits(NCEP_Iberia_psl)
+#' mf <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+#' getGridUnits(mf)
+#' mf2 <- setGridUnits(mf, unit.string = c("1", "Pa", "Kelvin"))
+#' getGridUnits(mf2)
+#' # Arbitrary subsets of variables within the multigrid can be updated:
+#' getVarNames(mf)
+#' mf3 <- setGridUnits(mf, unit.string = c("1", "Pa"), var = c("hus@850", "psl"))
+#' getGridUnits(mf3)
+
+setGridUnits <- function(grid, unit.string, var = NULL) {
+    stopifnot(isGrid(grid))
+    vn <- getVarNames(grid)
+    if (isMultigrid(grid)) {
+        if (is.null(var)) {
+            if (length(vn) != length(unit.string)) {
+                stop("The length of the \'unit.string\' vector does not match the number of variables in the grid")
+            }
+            ind <- 1:length(vn)
+        } else {
+            if (!all(var %in% vn)) stop("At least one variable in \'var\' was not found. Use \'getVarNames\' for help")
+            if (length(unit.string) != length(var)) stop("Inconsistent \'unit.string\' and \'var\' vector lengths")
+            ind <- match(var, vn)
+        }
+    } else {
+        if (length(unit.string) > 1) stop("\'unit.string\' vector should have length 1")
+        ind <- 1L
+    }
+    attr(grid$Variable, "units")[ind] <- unit.string
+    invisible(grid)
+}
+
 
 #' @title Obtain station names and IDs
 #' @description Obtain station names and IDs
@@ -937,4 +1066,5 @@ getStationID <- function(grid) {
             stop("Incomplete metadata")
       }
 }
+
 

@@ -5,17 +5,25 @@
 \title{Grid binding by the specified dimension}
 \usage{
 bindGrid(..., dimension = c("member", "time", "lat", "lon"),
-  spatial.tolerance = 0.001)
+  spatial.tolerance = 0.001, dataset.attr = NULL)
 }
 \arguments{
 \item{...}{Input grids to bind by their member dimension. These must be compatible in time and space (see details).
 For flexibility, they can be introduced as a list or directly as consecutive arguments.}
 
-\item{dimension}{Dimension along which the binding is performed. Choices are "member", "time", "lat" or "lon".}
+\item{dimension}{Dimension along which the binding is performed. Choices are \code{"member"} (the default),
+\code{"time"}, \code{"lat"} or \code{"lon"}.}
 
-\item{spatial.tolerance}{numeric. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
+\item{spatial.tolerance}{Numeric of length one. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
 coordinates. Default to 0.001 --assuming that degrees are being used it seems a reasonable rounding error after interpolation--.
 This value is passed to the \code{\link{identical}} function to check for spatial consistency of the input grids.}
+
+\item{dataset.attr}{Character string used to update the \code{"dataset"} attribute of the output grid. This
+is used only when binding grids along the \code{"member"} dimension, in case multi-model combination is being undertaken,
+(i.e., different models are being joined as members of a single multimodel dataset)
+so the new dataset attribute reflects this. Note that the default behaviour is retaining the \code{"dataset"} 
+attribute of the first grid given, resulting in a misleading metadata information if this is the case. Default to \code{NULL},
+and ignored.}
 }
 \description{
 Flexible binding of grids by the specified dimension. The grids must be consistent 
@@ -23,9 +31,14 @@ regarding the dimensions that are no subject of binding.
 Useful to handle sets of predictors as a single block.
 }
 \details{
-The function can be useful for handling loading large domains and multimembers, that are difficult or impossible to load
+\strong{Application}
+
+One usual application of this function is the construction of multimodel ensembles, by binding different grids from
+ different models along their \code{"member"} dimension. The function can be also useful for handling loading large domains and multimembers, that are difficult or impossible to load
  at once with the loading functions. The task of loading can be efficiently parallelized by splitting the request by
  ensemble member subsets, and then binded with this function. 
+
+\strong{Input grids consistency checks}
 
 The function makes a number of checks in order to test the spatiotemporal compatibility of the input multi-member grids.
  The spatial consistency of the input grids is also checked. In order to avoid possible errors from the user, the spatial
@@ -33,8 +46,14 @@ The function makes a number of checks in order to test the spatiotemporal compat
   otherwise giving an error. This can be achieved either through the specification of the same 'lonLim' and 'latLim' argument
   values when loading the grids, or using the \code{\link{interpGrid}} interpolator in conjuntion with the \code{\link{getGrid}}
   method.
+  
+\strong{Binding along the time dimension}  
+
+The \code{"time"} dimension will be always returned in ascending order, regardless of the ordering of the input grids.
+The internal helper \code{\link{sortDim.time}} is applied to this aim.
 }
 \examples{
+## Binding along the member dimension:
 data("CFS_Iberia_tas")
 # We first diaggregate in various grids with different members
 members1_2 <- subsetGrid(CFS_Iberia_tas, members = 1:2)
@@ -43,18 +62,33 @@ member7 <- subsetGrid(CFS_Iberia_tas, members = 7)
 member8 <- subsetGrid(CFS_Iberia_tas, members = 8)
 # The function is insensitive to the number of members per input grid
 bindedGrid <- bindGrid(members1_2, members3_4, member7, member8, dimension = "member")
-plotClimatology(climatology(bindedGrid), backdrop.theme = "coastline")
+getShape(bindedGrid, "member")
+\dontrun{
+require(visualizeR)
+spatialPlot(climatology(bindedGrid), backdrop.theme = "coastline", rev.colors = TRUE)
+}
+## Binding along time:
+data("EOBS_Iberia_tas")
+eobs.1998 <- subsetGrid(EOBS_Iberia_tas, years = 1998)
+eobs.1999_2000 <- subsetGrid(EOBS_Iberia_tas, years = 1999:2000)
+eobs1 <- bindGrid(eobs.1998, eobs.1999_2000, dimension = "time")
+eobs2 <- bindGrid(eobs.1999_2000, eobs.1998, dimension = "time")
+# Note that the output is always adequately ordered along time:
+identical(eobs1, eobs2)
+
+# For convenience while programming, it also accepts a list as input:
+year.list <- list(1998, 1999:2000)
+grid.list <- lapply(year.list, function(x) {
+    subsetGrid(EOBS_Iberia_tas, years = x)
+    # perform any other tasks with the subsets...
+}) 
+eobs3 <- do.call("bindGrid", c(grid.list, dimension = "time"))
+identical(eobs1, eobs3)
 }
 \seealso{
-Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
-  \code{\link{array3Dto2Dmat}},
-  \code{\link{bindGrid.member}},
-  \code{\link{bindGrid.spatial}},
-  \code{\link{bindGrid.time}},
-  \code{\link{grid3Dto2Dmatrix}},
-  \code{\link{mat2Dto3Darray.stations}},
-  \code{\link{redim}}, \code{\link{sortDim.spatial}},
-  \code{\link{sortDim.time}}
+\code{\link{subsetGrid}}, for the reverse operation. \code{\link{makeMultiGrid}} is somehow related, although 
+envisaged to bind grids of different variables along a new dimension \code{"var"} (variable), mainly for the construction of predictor sets in
+downscaling applications. \code{\link{intersectGrid}}, for temporal or spatial intersection of two or more grids.
 }
 \author{
 J Bedia and M Iturbide

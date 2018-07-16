@@ -24,7 +24,7 @@ Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
   \code{\link{array3Dto2Dmat}},
   \code{\link{bindGrid.member}},
   \code{\link{bindGrid.spatial}},
-  \code{\link{bindGrid.time}}, \code{\link{bindGrid}},
+  \code{\link{bindGrid.time}},
   \code{\link{mat2Dto3Darray.stations}},
   \code{\link{redim}}, \code{\link{sortDim.spatial}},
   \code{\link{sortDim.time}}

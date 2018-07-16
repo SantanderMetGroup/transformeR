@@ -72,7 +72,7 @@
 #' @author J. Bedia, M. Iturbide
 #' @export
 #' @family subsetting
-#' @examples
+#' @examples \dontrun{
 #' # Example 1 - Spatial / member subset
 #' data("CFS_Iberia_tas")
 #' # Selection of a smaller domain over the Iberian Peninsula and members 3 and 7
@@ -80,20 +80,23 @@
 #'                   members = c(3,7),
 #'                   lonLim = c(-10,-5),
 #'                   latLim = c(36,43))
-#' plotClimatology(climatology(sub), tol = 0.005, contour = TRUE,
-#'                 backdrop.theme = "coastline")
+#' require(visualizeR)                  
+#' spatialPlot(climatology(sub), tol = 0.005, contour = TRUE,
+#'                 backdrop.theme = "coastline", rev.colors = TRUE)
 #' ## Example 2 - Subsetting a multimember multigrid by variables
 #' # Multimember multigrid creation
 #' data("CFS_Iberia_pr", "CFS_Iberia_hus850")
 #' mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr, CFS_Iberia_hus850)
 #' # Extracting just minimum temperature
 #' sub1 <- subsetGrid(mm.mf, var = "tas", members = 1:4)
-#' plotClimatology(climatology(sub1, by.member = TRUE), backdrop.theme = "coastline")
+#' spatialPlot(climatology(sub1, by.member = TRUE), backdrop.theme = "coastline",
+#'      rev.colors = TRUE)
 #' # Extracting precipitation and maximum temperature
 #' # (Note that the grid variables are NOT re-ordered)
 #' sub2 <- subsetGrid(mm.mf, var = c("pr", "tas"))
 #' getShape(sub2)
 #' getVarNames(sub2)
+#' }
 
 subsetGrid <- function(grid,
                        var = NULL,

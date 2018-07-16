@@ -7,7 +7,8 @@
 scaleGrid(grid, base = NULL, ref = NULL, clim.fun = list(FUN = "mean",
   na.rm = TRUE), by.member = TRUE, time.frame = c("none", "monthly",
   "daily"), spatial.frame = c("gridbox", "field"), type = "center",
-  parallel = FALSE, max.ncores = 16, ncores = NULL)
+  parallel = FALSE, max.ncores = 16, ncores = NULL,
+  skip.season.check = FALSE)
 }
 \arguments{
 \item{grid}{Input grid to be rescaled}
@@ -44,6 +45,10 @@ estandardized anomalies or applied as a ratio (e.g. precipitation, wind speed...
 
 \item{ncores}{Integer number of cores used in parallel computation. Self-selected number of
 cores is used when \code{ncpus = NULL} (the default), or when \code{maxcores} exceeds the default \code{ncores} value.}
+
+\item{skip.season.check}{Logical flag. Should the internal checker \code{\link{checkSeason}} be skipped?. By
+default, the function undertakes an automatic seasonal check. This can be skipped if needed, mainly for internal use
+(e.g. in cross-validation setups)}
 }
 \value{
 A locally scaled grid

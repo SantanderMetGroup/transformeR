@@ -115,8 +115,7 @@
 #' # it also returns, in the last element of the output list,
 #' # the results of a PC analysis of the combined variables when 'which.combine' is activated:
 #' pca <- prinComp(multigrid, v.exp = c(.99,.95,.90,.95),
-#'                 which.combine = c("ta@@850", "psl"), keep.orig = FALSE)
-#'                 
+#'                 which.combine = c("ta@850", "psl"), keep.orig = FALSE)
 #' str(pca)
 #' # A special attribute indicates the variables used for combination
 #' attributes(pca$COMBINED)
@@ -126,14 +125,13 @@
 #' # In addition, for each variable (and their combination), the scaling and centering parameters 
 #' # are also returned. There is one value of each parameter per grid point. For instance, 
 #' # the parameters for the specific humidity field are:
-#' attributes(pca$hus850[[1]]$orig)$`scaled:center`
-#' attributes(pca$hus850[[1]]$orig)$`scaled:scale`
+#' attributes(pca[["hus@850"]][[1]]$orig)$`scaled:center`
+#' attributes(pca[["hus@850"]][[1]]$orig)$`scaled:scale`
 #' # In addition, the (cumulative) explained variance of each PC is also returned:
-#' vexp <- attributes(pca$"hus@@850"[[1]])$explained_variance
+#' vexp <- attributes(pca$"hus@850"[[1]])$explained_variance
 #' # The classical "scree plot":
 #' barplot(1-vexp, names.arg = paste("PC",1:length(vexp)), las = 2, 
 #'         ylab = "Fraction of unexplained variance")
-#' 
 #' # This is an example using a multimember object:
 #' data("CFS_Iberia_hus850")
 #' # In this case we retain the first 5 EOFs:
@@ -141,7 +139,6 @@
 #' # Note that now the results of the PCA for the variable are a named list, with the results 
 #' # for each member sepparately considered
 #' str(pca.mm)
-#' 
 #' # The most complex situation comes from multimember multigrids:
 #' data("CFS_Iberia_pr", "CFS_Iberia_tas")
 #' # Now the multimember multigrid is constructed

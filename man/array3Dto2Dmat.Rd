@@ -30,7 +30,7 @@ The function is insensitive to the dimension ordering of the input data array
 Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
   \code{\link{bindGrid.member}},
   \code{\link{bindGrid.spatial}},
-  \code{\link{bindGrid.time}}, \code{\link{bindGrid}},
+  \code{\link{bindGrid.time}},
   \code{\link{grid3Dto2Dmatrix}},
   \code{\link{mat2Dto3Darray.stations}},
   \code{\link{redim}}, \code{\link{sortDim.spatial}},

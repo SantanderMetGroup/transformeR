@@ -1,6 +1,6 @@
-#     aggregateGrid.R Flexible grid aggregation along selected dimensions
+#     upscaleGrid.R Horizontal resolution upscaling
 #
-#     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2018 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#' @title Flexible grid aggregation along selected dimensions
+#' @title Horizontal grid upscaling
 #' @description Aggregates a grid along the target dimensions using user-defined functions.
 #' @param grid a grid or multigrid to be aggregated.
 #' @param times Degradation times. For instance, if the resolution of \code{grid}
@@ -29,7 +29,7 @@
 #' 
 #' @author M. Iturbide 
 #' @export
-#' @examples
+#' @examples \dontrun{
 #' data("EOBS_Iberia_pr")
 #' library(visualizeR)
 #' spatialPlot(climatology(EOBS_Iberia_pr))
@@ -37,6 +37,7 @@
 #'                        times = 2,
 #'                        aggr.fun = list(FUN = "min", na.rm = TRUE))
 #' spatialPlot(climatology(newgrid))
+#' }
 
 
 upscaleGrid <- function(grid, times = 2,
@@ -51,7 +52,7 @@ upscaleGrid <- function(grid, times = 2,
       suppressMessages(suppressWarnings(
             grid.list.lon <- lapply(grid.list, function(k) aggregateGrid(k, aggr.lon = aggr.fun))
       ))
-      grid <- bindGrid.spatial(grid.list.lon, dimension = "lon")
+      grid <- bindGrid(grid.list.lon, dimension = "lon")
       grid$xyCoords$x <- newcoords
       y <- grid$xyCoords$y
       fac <- rep(1:floor(length(y)/times), each = times)
@@ -63,7 +64,7 @@ upscaleGrid <- function(grid, times = 2,
       suppressMessages(suppressWarnings(
             grid.list.lat <- lapply(grid.list, function(k) aggregateGrid(k, aggr.lat = aggr.fun, weight.by.lat = FALSE))
       ))
-      grid <- bindGrid.spatial(grid.list.lat, dimension = "lat")
+      grid <- bindGrid(grid.list.lat, dimension = "lat")
       grid$xyCoords$y <- newcoords
       return(grid)
 }

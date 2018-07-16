@@ -38,6 +38,9 @@
 #'  and \code{"daily"}, for a julian day-based approach. See details.
 #' @param type Character string. Either \code{"center"}, \code{"standardize"} or \code{"ratio"}, depending on wheter the correction factor are anomalies (e.g. temperature...),
 #' estandardized anomalies or applied as a ratio (e.g. precipitation, wind speed...). See details
+#' @param skip.season.check Logical flag. Should the internal checker \code{\link{checkSeason}} be skipped?. By
+#' default, the function undertakes an automatic seasonal check. This can be skipped if needed, mainly for internal use
+#' (e.g. in cross-validation setups)
 #'   
 #' @template templateParallelParams
 #' @details In the \code{type = "center"} set up the reference grid (\code{ref}) is used to correct the input grid, as follows:
@@ -177,13 +180,15 @@ scaleGrid <- function(grid,
                       type = "center",
                       parallel = FALSE,
                       max.ncores = 16,
-                      ncores = NULL) {
+                      ncores = NULL,
+                      skip.season.check = FALSE) {
     time.frame <- match.arg(time.frame, choices = c("none", "monthly", "daily"))
     type <- match.arg(type, choices = c("center", "standardize", "ratio"))
     spatial.frame <- match.arg(spatial.frame, choices = c("gridbox", "field"))
+    stopifnot(is.logical(skip.season.check))
     if (time.frame == "none") {
         message("[", Sys.time(), "] - Scaling ...")
-        out <- gridScale.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, spatial.frame)
+        out <- gridScale.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, spatial.frame, skip.season.check)
         message("[", Sys.time(), "] - Done")
     } else if (time.frame == "monthly") {
         message("[", Sys.time(), "] - Scaling by months ...")
@@ -200,9 +205,9 @@ scaleGrid <- function(grid,
             } else {
                 NULL
             }
-            gridScale.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, spatial.frame)
+            gridScale.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, spatial.frame, skip.season.check)
         })
-        out <- do.call("bindGrid.time", aux.list)
+        out <- do.call("bindGrid", c(aux.list, dimension = "time"))
         message("[", Sys.time(), "] - Done")
     } else if (time.frame == "daily") {
         doys.grid <- grid %>% getRefDates() %>% substr(6,10) 
@@ -228,9 +233,9 @@ scaleGrid <- function(grid,
             } else {
                 ref1 <- ref
             }
-            gridScale.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, spatial.frame)
+            gridScale.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, spatial.frame, skip.season.check)
         })
-        out <- do.call("bindGrid.time", aux.list)
+        out <- do.call("bindGrid", c(aux.list, dimension = "time"))
         message("[", Sys.time(), "] - Done")
     }
     invisible(out)
@@ -245,7 +250,8 @@ scaleGrid <- function(grid,
 #' @importFrom parallel stopCluster
 #' @author J Bedia
 
-gridScale. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores, spatial.frame) {
+gridScale. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores,
+                       spatial.frame, skip.season.check) {
   grid <- redim(grid)
   if (is.null(base)) {
     base.m <- suppressMessages({
@@ -269,7 +275,7 @@ gridScale. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max
     }
     
   } else {
-    # checkSeason(grid, base)
+    if (!skip.season.check) checkSeason(grid, base)
     checkDim(grid, base, dimensions = c("lat", "lon"))
     base.m <- suppressMessages({
       climatology(base, clim.fun, by.member, parallel, max.ncores, ncores)
@@ -293,7 +299,7 @@ gridScale. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max
   }
   if (!is.null(ref)) {
     checkDim(grid, ref, dimensions = c("lat", "lon"))
-    # checkSeason(grid, ref)
+    if (!skip.season.check) checkSeason(grid, ref)
     ref.m <- suppressMessages({
       climatology(ref, clim.fun, by.member, parallel, max.ncores,ncores)
     }) %>% redim()

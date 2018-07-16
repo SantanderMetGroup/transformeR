@@ -1,12 +1,29 @@
-transformeR 1.3.3
-=================
+# transformeR changelog
 
-* Renamed `localScaling` to `scaleGrid`
-* Update variable names/levels in built-in datasets for consistency (NCEP, CMIP5)
-* Other minor doc updates and internal changes
+See the [Releases section](https://github.com/SantanderMetGroup/transformeR/releases) for older version changes
 
+## v1.4.0 (8 Jun 2018)
 
+* New function `intersectGrid`, for calculating spatiotemporal intersections among grids
+* Optional flag to skip seasonal check in `scaleGrid`
 
+## v1.4.1 (11 Jun 2018)
+
+* Update built-in data units attribute (for compatibility with udunits parseable strings)
+* New helper `getGridUnits` and `setGridUnits`, to handle grid units
+
+## v1.4.2 (21 Jun 2018)
+
+* Minor changes in `makeMultiGrid` (preserves the original input structure when one single grid is given as input, for internal programming convenience). Improved attribute definition.
+* Modified behaviour of `getVarNames` to append vertical level in short name definition
+* Do nothing (but a warning) when attempting to bind one single grid along member dimension
+* Bug fix in `grid2PCs`
+* Other minor changes and documentation example updates
+
+## v1.4.3 (in devel)
+
+ * Allow for updating the dataset attribute when constructing multimodels via `bindGrid` (enhancement [#18](https://github.com/SantanderMetGroup/transformeR/issues/18))
+ * Other minor changes and documentation updates
 
 
 

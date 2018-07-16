@@ -192,7 +192,7 @@ localScaling <- function(grid,
             }
             localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
         })
-        out <- do.call("bindGrid.time", aux.list)
+        out <- do.call("bindGrid", c(aux.list, dimension = "time"))
         message("[", Sys.time(), "] - Done")
     } else if (time.frame == "daily") {
         doys.grid <- grid %>% getRefDates() %>% substr(6,10) 
@@ -220,7 +220,7 @@ localScaling <- function(grid,
             }
             localScaling.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, scale, spatial.frame)
         })
-        out <- do.call("bindGrid.time", aux.list)
+        out <- do.call("bindGrid", c(aux.list, dimension = "time"))
         message("[", Sys.time(), "] - Done")
     }
     invisible(out)

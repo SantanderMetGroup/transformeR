@@ -4,13 +4,16 @@
 \alias{getVarNames}
 \title{Get grid variable names}
 \usage{
-getVarNames(grid, type = c("short", "long"))
+getVarNames(grid, type = c("short", "long"), append.level = TRUE)
 }
 \arguments{
 \item{grid}{A grid or station data}
 
 \item{type}{Character. Should either the \code{"short"} (default) or the \code{"long"} variable name(s) be returned?.
 See Details.}
+
+\item{append.level}{Append the vertical level to the short name string?. Default to \code{TRUE}, ignored when \code{type = "long"}).
+See details.}
 }
 \value{
 A character vector with the variable name(s) in the indicated \code{type} format.
@@ -19,21 +22,37 @@ A character vector with the variable name(s) in the indicated \code{type} format
 Get the names of the variables of a (multi)grid
 }
 \details{
+\strong{About short names}
+
+Note that for variables with vertical levels, if the option \code{append.level} is set to \code{TRUE} (the default),
+ the function will "construct" the shortname following the climate4R convention,
+that defines the code of the variable plus its vertical level, separated by a \dQuote{@} symbol. 
+This way, when querying grid variable names, the behaviour of \code{getVarNames} is different than directly accessing
+the \code{varName} element of the grid structure as in, e.g.: \code{grid$Variable$varName}. Using \code{getVarNames} 
+with \code{append.level = TRUE} is recommended in most applications when the variable string is needed.
+
+\strong{About long names}
+
 The long name is an optional attribute of a grid (not so the short name), and it is sometimes undefined (particularly in station datasets).
 In this case, the function returns \code{NULL}.
 }
 \examples{
 data("CFS_Iberia_pr")
 getVarNames(CFS_Iberia_pr)
+grid <- CFS_Iberia_pr
 getVarNames(CFS_Iberia_pr, "long")
 ## Example with a multigrid
-data("CFS_Iberia_tas")
+data(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+mg <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+getVarNames(mg)
+# The level can be removed id needed:
+getVarNames(mg, append.level = FALSE)
 mg <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
 getVarNames(mg)
 getVarNames(mg, "long")
 ## Example with station data
 data("VALUE_Iberia_tas")
-## The long name is an optional attribute, and may be undefined:
+## The long name is an optional attribute, and might be undefined:
 getVarNames(VALUE_Iberia_tas, "long")
 }
 \seealso{
