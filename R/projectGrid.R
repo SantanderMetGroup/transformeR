@@ -18,10 +18,10 @@
 
 #' @title grid datum definition and transformation
 #' @description Defines and/or transforms the projection of a grid (or station data) by means of a \code{\link[sp]{CRS}} object. 
-#' @param grid a grid or multigrid or station data.
-#' @param original.CRS character as passed to function \code{\link{CRS}}. It defines the original projection. Ignored if already exists in the data,
-#' in which case, a warning is returned with the original datum.
-#' @param new.CRS character as passed to function \code{\link{CRS}} for project.
+#' @param grid a grid or multigrid (including station data).
+#' @param original.CRS character as passed to function \code{\link{CRS}}. It defines the original projection. If the data contains the 
+#' projection information, a warning is returned and the projection in redefined.
+#' @param new.CRS character as passed to function \code{\link{CRS}}.
 #' @details This function uses \code{\link{spTransform}},  \code{\link{CRS}} and \code{\link{proj4string}} from package \pkg{sp}
 #' @seealso \code{\link{spTransform}}, \code{\link{proj4string}}.
 #' 
@@ -75,7 +75,7 @@ projectGrid <- function(grid,
             new.coords <- coordinates(sppoints.new)
             x <- unique(new.coords[,1])
             y <- unique(new.coords[,2])
-            if (length(x) > 1 & length(y) > 1) {
+            if (length(x) > 1 & length(y) > 1) { # a single location?
                   xdists <- lapply(1:(length(x) - 1), function(l) {
                         x[l + 1] - x[l]
                   })
@@ -84,12 +84,12 @@ projectGrid <- function(grid,
                   })
                   xa <- sum(unlist(xdists) - unlist(xdists)[1])
                   ya <- sum(unlist(ydists) - unlist(ydists)[1])
-                  cond <- any(abs(c(xa, ya)) > 1e-05)
+                  cond <- any(abs(c(xa, ya)) > 1e-05) # regular coordinates?
             } else {
-                  cond <- TRUE
+                  cond <- TRUE # a single location considered as irregular
             }
             if (cond) {
-                  if (isRegular(grid)) {
+                  if (isRegular(grid)) { 
                         grid <- redim(grid, member = TRUE, runtime = TRUE)
                         data.aux1 <- lapply(1:getShape(grid)["runtime"], function(r) {
                               data.aux0 <- lapply(1:getShape(grid)["member"], function(m) {
