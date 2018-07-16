@@ -57,7 +57,7 @@ overGrid <- function(grid, layer, subset = FALSE) {
                   grl
             })
             if (n.mem > 1) {
-                  newgrid <- do.call("bindGrid.member", grm)
+                  newgrid <- do.call("bindGrid", c(grm, dimension = "member"))
             } else {
                   newgrid <- grm[[1]]
             }

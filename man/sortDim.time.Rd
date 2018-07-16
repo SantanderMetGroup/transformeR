@@ -10,7 +10,7 @@ sortDim.time(grid)
 \item{grid}{Input grid}
 }
 \value{
-A grid fo similar characteristics, but with time dimension re-arranged in ascending ordered if needed.
+A grid of similar characteristics, but with time dimension re-arranged in ascending ordered if needed.
 }
 \description{
 Returns a grid with time sorted in ascending order. For internal use mainly, 
@@ -22,7 +22,7 @@ Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
   \code{\link{array3Dto2Dmat}},
   \code{\link{bindGrid.member}},
   \code{\link{bindGrid.spatial}},
-  \code{\link{bindGrid.time}}, \code{\link{bindGrid}},
+  \code{\link{bindGrid.time}},
   \code{\link{grid3Dto2Dmatrix}},
   \code{\link{mat2Dto3Darray.stations}},
   \code{\link{redim}}, \code{\link{sortDim.spatial}}

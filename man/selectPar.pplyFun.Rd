@@ -10,7 +10,7 @@ selectPar.pplyFun(parallel.pars, .pplyFUN = c("apply", "lapply", "sapply",
 \arguments{
 \item{parallel.pars}{The output from \code{\link{parallelCheck}}, passing the parallelization options.}
 
-\item{.pplyFUN}{*pply function to be used. Current options are \code{"apply"}, \code{"lapply"} and \code{"sapply"}.}
+\item{.pplyFUN}{*pply function to be used. Current options are \code{"apply"}, \code{"lapply"}, \code{"sapply"} and \code{"mapply"}.}
 }
 \value{
 A function
@@ -20,7 +20,7 @@ Selects an appropriate *pply function depending on the parallel choice
 }
 \details{
 The output function will be either \code{parallel::parLapply} or \code{lapply} for \code{.pplyFUN = "lapply"},
-depending of whether parallelization is enabled or not. Same for \code{apply} and \code{parallel::parApply}.
+depending of whether parallelization is enabled or not. Same for \code{apply} and \code{parallel::parApply} and so on.
 }
 \section{Warning}{
 
