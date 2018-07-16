@@ -23,6 +23,7 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
 ## v1.4.3 (in devel)
 
  * Allow for updating the dataset attribute when constructing multimodels via `bindGrid` (enhancement [#18](https://github.com/SantanderMetGroup/transformeR/issues/18))
+ * New helper for checking temporal consistency among grids (`temporalCheck`)
  * Other minor changes and documentation updates
 
 

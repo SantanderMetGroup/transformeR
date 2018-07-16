@@ -122,7 +122,6 @@ bindGrid <- function(..., dimension = c("member", "time", "lat", "lon"),
 #' so the new dataset attribute reflects this. Note that the default behaviour is retaining the \code{"dataset"} 
 #' attribute of the first grid given, resulting in a misleading metadata information if this is the case. Default to \code{NULL},
 #' and ignored.
-#' 
 #' @importFrom abind abind
 #' @family internal.helpers
 #' @author J Bedia
@@ -155,23 +154,25 @@ bindGrid.member <- function(..., tol, attr.) {
         }
         grid.list <- aux.list
         aux.list <- NULL
+        checkTemporalConsistency(grid.list)
         for (i in 2:length(grid.list)) {
             # Spatial test
             if (!isTRUE(all.equal(grid.list[[1]]$xyCoords, grid.list[[i]]$xyCoords, check.attributes = FALSE, tolerance = tol))) {
                 stop("Input data is not spatially consistent")
             }
-            # temporal test
-            if (!identical(as.POSIXlt(grid.list[[1]]$Dates$start)$yday, as.POSIXlt(grid.list[[i]]$Dates$start)$yday) 
-                | !identical(as.POSIXlt(grid.list[[1]]$Dates$start)$year, as.POSIXlt(grid.list[[i]]$Dates$start)$year)) {
-                stop("Input data is not temporally consistent")
-            }
+            # # temporal test
+            # if (!identical(as.POSIXlt(grid.list[[1]]$Dates$start)$yday, as.POSIXlt(grid.list[[i]]$Dates$start)$yday) 
+            #     | !identical(as.POSIXlt(grid.list[[1]]$Dates$start)$year, as.POSIXlt(grid.list[[i]]$Dates$start)$year)) {
+            #     stop("Input data is not temporally consistent")
+            # }
             # data dimensionality test
             if (!identical(getShape(grid.list[[1]]), getShape(grid.list[[i]]))) {
                 stop("Incompatible data array dimensions")
             }
-            if (!identical(getDim(grid.list[[1]]), getDim(grid.list[[i]]))) {
-                stop("Inconsistent 'dimensions' attribute")
-            }
+            checkDim(grid.list[[1]], grid.list[[i]], dimensions = c("time", "lat", "lon"))
+            # if (!identical(getDim(grid.list[[1]]), getDim(grid.list[[i]]))) {
+            #     stop("Inconsistent 'dimensions' attribute")
+            # }
         }
         mem.metadata <- !is.null(grid.list[[1]][["Members"]])
         if (mem.metadata) {

@@ -542,6 +542,60 @@ checkVarNames <- function(..., check.order = TRUE) {
     }
 }
 
+#' @title Temporal consistency check across input grids
+#' @description Check the consistency of temporal aspects acroos input climate4R objects
+#' @param ... Input grids to be compared. Either as a list, or comma sepparated
+#' @return In case of inconsistency of any of the inputs grids, the function stops the execution 
+#' of the current expression, with an error message.
+#' @seealso \code{\link{checkSeason}}, for a more specific -less strict- type of check
+#' @details The function takes into account the temporal resolution of the input grids via 
+#' the \code{\link{getTimeResolution}} helper, and ensures its consistency. Then, it makes the 
+#' comparison among inputs at that temporal level of resolution. For instance, if the input grids are all 
+#' monthly, the function will intercompare only the consistency of years AND months, but will disregard
+#' lower temporal units (days, hours). 
+#' @author J Bedia
+#' @keywords internal
+#' @importFrom magrittr %>% %<>% 
+#' @family check.helpers
+#' @export
+
+checkTemporalConsistency <- function(...) {
+    grid.list <- list(...)
+    if (length(grid.list) == 1) grid.list %<>% unlist(recursive = FALSE)
+    if (length(grid.list) < 2) stop("Only one grid passed as input. Nothing was done", call. = FALSE)
+    timeres <- sapply(grid.list, "getTimeResolution") %>% unique() 
+    if (length(timeres) > 1) stop("Different time resolution grids can't be binded")
+    refdates <- getRefDates(grid.list[[1]])
+    refmon <- substr(refdates, 6, 7)
+    refyr <- substr(refdates, 1, 4)
+    refday <- substr(refdates, 9, 10)
+    mssg <- "Input data are not temporally consistent"
+    if (timeres == "MM") {
+        for (i in 2:length(grid.list)) {
+            testmon <- substr(getRefDates(grid.list[[i]]), 6, 7)
+            testyr <- substr(getRefDates(grid.list[[i]]), 1, 4)
+            if (!identical(refmon, testmon) | !identical(refyr, testyr)) stop(mssg)
+        }
+    } else if (timeres == "YY") {
+        for (i in 2:length(grid.list)) {
+            testyr <- substr(getRefDates(grid.list[[i]]), 1, 4)
+            if (!identical(refyr, testyr)) stop(mssg)
+        }
+    } else if (timeres == "DD") {
+        for (i in 2:length(grid.list)) {
+            testmon <- substr(getRefDates(grid.list[[i]]), 6, 7)
+            testyr <- substr(getRefDates(grid.list[[i]]), 1, 4)
+            testday <- substr(getRefDates(grid.list[[i]]), 9, 10)
+            if (!identical(refday, testday) | !identical(refyr, testyr) | !identical(refmon, testmon)) stop(mssg)
+        }
+    } else {
+        if (!identical(as.POSIXlt(refdates), as.POSIXlt(getRefDates(grid.list[[i]])))) stop(mssg)
+    }   
+}
+
+
+
+
 
 #' @title Check if the input grid is regular
 #' @description Check if the coordinates in the data are regular or irregular
