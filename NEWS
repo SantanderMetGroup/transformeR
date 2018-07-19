@@ -20,11 +20,11 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
 * Bug fix in `grid2PCs`
 * Other minor changes and documentation example updates
 
-## v1.4.3 (in devel)
+## v1.4.3 (19 Jul 2018)
 
  * Allow for updating the dataset attribute when constructing multimodels via `bindGrid` (enhancement [#18](https://github.com/SantanderMetGroup/transformeR/issues/18))
  * New helper for checking temporal consistency among grids (`checkTemporalConsistency`)
- * Allow missing data in PCA analysis (proposed enhancement (#13)[https://github.com/SantanderMetGroup/transformeR/issues/13])
+ * Allow missing data in PCA analysis (enhancement (#13)[https://github.com/SantanderMetGroup/transformeR/issues/13])
  * Other minor changes and documentation updates
 
 
