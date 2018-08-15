@@ -4,7 +4,7 @@
 \alias{bindGrid}
 \title{Grid binding by the specified dimension}
 \usage{
-bindGrid(..., dimension = c("member", "time", "lat", "lon"),
+bindGrid(..., dimension = c("member", "time", "lat", "lon", "loc"),
   spatial.tolerance = 0.001, dataset.attr = NULL)
 }
 \arguments{
@@ -12,7 +12,7 @@ bindGrid(..., dimension = c("member", "time", "lat", "lon"),
 For flexibility, they can be introduced as a list or directly as consecutive arguments.}
 
 \item{dimension}{Dimension along which the binding is performed. Choices are \code{"member"} (the default),
-\code{"time"}, \code{"lat"} or \code{"lon"}.}
+\code{"time"}, \code{"lat"}, \code{"lon"} or \code{"loc"} (for point data) .}
 
 \item{spatial.tolerance}{Numeric of length one. Coordinate differences smaller than \code{spatial.tolerance} will be considered equal 
 coordinates. Default to 0.001 --assuming that degrees are being used it seems a reasonable rounding error after interpolation--.
@@ -63,6 +63,14 @@ member8 <- subsetGrid(CFS_Iberia_tas, members = 8)
 # The function is insensitive to the number of members per input grid
 bindedGrid <- bindGrid(members1_2, members3_4, member7, member8, dimension = "member")
 getShape(bindedGrid, "member")
+## Also works for point data
+data("VALUE_Iberia_tas")
+CFS_points <- interpGrid(CFS_Iberia_tas, getGrid(VALUE_Iberia_tas))
+getShape(CFS_points)
+mem1 <- subsetGrid(CFS_points, members = 1)
+mem5 <- subsetGrid(CFS_points, members = 5)
+CFS_points_2mem <- bindGrid(mem1, mem5, dimension = "member")
+getShape(CFS_points_2mem)
 \dontrun{
 require(visualizeR)
 spatialPlot(climatology(bindedGrid), backdrop.theme = "coastline", rev.colors = TRUE)

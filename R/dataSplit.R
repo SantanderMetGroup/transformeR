@@ -119,6 +119,7 @@ dataSplit <- function(x, y, f = 3/4, type = "random") {
             return(list("train" = train, "test" = test))
         })
     }
+    names(out) <- paste0("f", 1:length(f))
     return(out)
 }
 
