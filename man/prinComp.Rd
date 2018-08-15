@@ -5,7 +5,8 @@
 \title{Principal Component Analysis of Grids}
 \usage{
 prinComp(grid, n.eofs = NULL, v.exp = NULL, which.combine = NULL,
-  scaling = "gridbox", keep.orig = FALSE, quiet = FALSE)
+  scaling = "gridbox", keep.orig = FALSE, quiet = FALSE,
+  imputation = "mean")
 }
 \arguments{
 \item{grid}{A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object}
@@ -27,6 +28,9 @@ Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}
 used to perform the PCA (\code{keep.orig = TRUE}) or not (\code{FALSE}). Default to \code{FALSE}.}
 
 \item{quiet}{True to silence all the messages (but not the warnings)}
+
+\item{imputation}{A string value: c("mean","median"). Replaces missing data with the mean or the median when calculating 
+the PCs. This approach is based on the literature.}
 }
 \value{
 A list of \emph{N} elements for multigrids, where \emph{N} is the number of input variables used, and 

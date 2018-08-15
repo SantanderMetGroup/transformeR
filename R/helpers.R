@@ -565,27 +565,27 @@ checkTemporalConsistency <- function(...) {
     if (length(grid.list) < 2) stop("Only one grid passed as input. Nothing was done", call. = FALSE)
     timeres <- sapply(grid.list, "getTimeResolution") %>% unique() 
     if (length(timeres) > 1) stop("Different time resolution grids can't be binded")
-    refdates <- getRefDates(grid.list[[1]])
+    refdates <- getRefDates(grid.list[[1]]) %>% as.character()
     refmon <- substr(refdates, 6, 7)
     refyr <- substr(refdates, 1, 4)
     refday <- substr(refdates, 9, 10)
     mssg <- "Input data are not temporally consistent"
     if (timeres == "MM") {
         for (i in 2:length(grid.list)) {
-            testmon <- substr(getRefDates(grid.list[[i]]), 6, 7)
-            testyr <- substr(getRefDates(grid.list[[i]]), 1, 4)
+            testmon <- getRefDates(grid.list[[i]]) %>% as.character() %>% substr(start = 6, stop = 7)
+            testyr <- getRefDates(grid.list[[i]]) %>% as.character() %>% substr(start = 1, stop = 4)
             if (!identical(refmon, testmon) | !identical(refyr, testyr)) stop(mssg)
         }
     } else if (timeres == "YY") {
         for (i in 2:length(grid.list)) {
-            testyr <- substr(getRefDates(grid.list[[i]]), 1, 4)
+            testyr <- getRefDates(grid.list[[i]]) %>% as.character() %>% substr(start = 1, stop = 4)
             if (!identical(refyr, testyr)) stop(mssg)
         }
     } else if (timeres == "DD") {
         for (i in 2:length(grid.list)) {
-            testmon <- substr(getRefDates(grid.list[[i]]), 6, 7)
-            testyr <- substr(getRefDates(grid.list[[i]]), 1, 4)
-            testday <- substr(getRefDates(grid.list[[i]]), 9, 10)
+            testmon <- getRefDates(grid.list[[i]]) %>% as.character() %>% substr(start = 6, stop = 7)
+            testyr <- getRefDates(grid.list[[i]]) %>% as.character() %>% substr(start = 1, stop = 4)
+            testday <- getRefDates(grid.list[[i]]) %>% as.character() %>% substr(start = 9, stop = 10)
             if (!identical(refday, testday) | !identical(refyr, testyr) | !identical(refmon, testmon)) stop(mssg)
         }
     } else {

@@ -31,6 +31,8 @@
 #' @param keep.orig Logical flag indicating wheter to return the input data -the standardized input data matrices-
 #'  used to perform the PCA (\code{keep.orig = TRUE}) or not (\code{FALSE}). Default to \code{FALSE}.
 #' @param quiet True to silence all the messages (but not the warnings)
+#' @param imputation A string value: c("mean","median"). Replaces missing data with the mean or the median when calculating 
+#' the PCs. This approach is based on the literature.
 
 #' @return A list of \emph{N} elements for multigrids, where \emph{N} is the number of input variables used, and 
 #' \emph{N+1} if combined PCs are calculated, placed in the last place under the \code{"COMBINED"} name.
@@ -152,7 +154,8 @@ prinComp <- function(grid,
                      which.combine = NULL,
                      scaling = "gridbox",
                      keep.orig = FALSE,
-                     quiet = FALSE) {
+                     quiet = FALSE,
+                     imputation = "mean") {
     if (!is.null(n.eofs) & !is.null(v.exp)) {
         message("NOTE: The 'v.exp' argument was ignored as 'n.eofs' has been indicated")
     }
@@ -186,7 +189,22 @@ prinComp <- function(grid,
         if (length(v.exp) != n.vars) stop("The length of 'v.exp' and the number of variables of the input grid differ\nForgot to include the combined PC?", call. = FALSE)
     }
     if (anyNA(grid$Data)) {
-        stop("There are missing values in the input data array", call. = FALSE)
+      ind.time <- which(getDim(grid) == "time")
+      ind.NaN  <- which(is.na(grid$Data),arr.ind = TRUE)
+      
+      if (imputation == "mean") impute <- apply(grid$Data,MARGIN = (1:length(getShape(grid)))[-ind.time], FUN = function(x){mean(x,na.rm = TRUE)})
+      if (imputation == "median") impute <- apply(grid$Data,MARGIN = (1:length(getShape(grid)))[-ind.time], FUN = function(x){median(x,na.rm = TRUE)})
+    
+      dimNames <- attr(grid$Data,"dimensions")
+      for (z in 1:nrow(ind.NaN)) {
+        grid$Data[ind.NaN[z,1],ind.NaN[z,2],ind.NaN[z,3],ind.NaN[z,4],ind.NaN[z,5]] <- impute[ind.NaN[z,1],ind.NaN[z,2],ind.NaN[z,4],ind.NaN[z,5]]
+      }
+      attr(grid$Data,"dimensions") <- dimNames
+      
+      warning("Missing data found. Replacing NaN values with the mean value. If you are worried
+              about outliers consider replacing the missing data with the median value instead.
+              This can be done by setting the parameter imputation = 'median' ")
+        # stop("There are missing values in the input data array", call. = FALSE)
     }
     # Spatial check # doesn't work with stations - to be fixed with isMultiPoint helper
     if (length(grid$xyCoords$x) < 2 | length(grid$xyCoords$y) < 2) {
