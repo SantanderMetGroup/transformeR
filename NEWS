@@ -27,5 +27,10 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * Allow missing data in PCA analysis (enhancement (#13)[https://github.com/SantanderMetGroup/transformeR/issues/13])
  * Other minor changes and documentation updates
 
+## v1.4.4 (15 Aug 2018)
+
+ * Allow for binding the loc dimension in `bindGrid` (for point data)
+ * Bug fix in interpGrid when interpolating from and to point data
+ * Other minor changes and documentation updates
 
 
