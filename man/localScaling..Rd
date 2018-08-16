@@ -4,8 +4,8 @@
 \alias{localScaling.}
 \title{Local scaling internal}
 \usage{
-localScaling.(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores,
-  ncores, scale, spatial.frame)
+localScaling.(grid, base, ref, clim.fun, by.member, type, parallel,
+  max.ncores, ncores, scale, spatial.frame)
 }
 \description{
 Internal workhorse for local scaling

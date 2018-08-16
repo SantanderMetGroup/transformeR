@@ -32,3 +32,4 @@ Other subsetting: \code{\link{getTemporalIntersection}},
 \author{
 M Iturbide
 }
+\concept{subsetting}

@@ -30,3 +30,4 @@ Other easyVerification.bridges: \code{\link{easyVeri.signif}}
 \author{
 J. Bedia
 }
+\concept{easyVerification.bridges}

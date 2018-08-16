@@ -4,10 +4,11 @@
 \alias{localScaling}
 \title{Grid local scaling}
 \usage{
-localScaling(grid, base = NULL, ref = NULL, clim.fun = list(FUN = "mean",
-  na.rm = TRUE), by.member = TRUE, time.frame = c("none", "monthly",
-  "daily"), spatial.frame = c("gridbox", "field"), type = "additive",
-  parallel = FALSE, max.ncores = 16, ncores = NULL, scale = FALSE)
+localScaling(grid, base = NULL, ref = NULL, clim.fun = list(FUN =
+  "mean", na.rm = TRUE), by.member = TRUE, time.frame = c("none",
+  "monthly", "daily"), spatial.frame = c("gridbox", "field"),
+  type = "additive", parallel = FALSE, max.ncores = 16,
+  ncores = NULL, scale = FALSE)
 }
 \arguments{
 \item{grid}{Input grid to be rescaled}

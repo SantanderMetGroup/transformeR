@@ -38,4 +38,5 @@ Other get.helpers unit.helpers: \code{\link{setGridUnits}}
 \author{
 J Bedia
 }
+\concept{get.helpers unit.helpers}
 \keyword{internal}

@@ -32,3 +32,4 @@ Other easyVerification.bridges: \code{\link{easyVeri2grid}}
 \author{
 J Bedia
 }
+\concept{easyVerification.bridges}

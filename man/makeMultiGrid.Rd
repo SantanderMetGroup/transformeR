@@ -4,7 +4,8 @@
 \alias{makeMultiGrid}
 \title{Multigrid constructor}
 \usage{
-makeMultiGrid(..., spatial.tolerance = 0.001, skip.temporal.check = FALSE)
+makeMultiGrid(..., spatial.tolerance = 0.001,
+  skip.temporal.check = FALSE)
 }
 \arguments{
 \item{...}{Input grids to form the multigrid. These must be compatible in time and space (see details). 
@@ -97,3 +98,4 @@ Other downscaling.helpers: \code{\link{convert2bin}},
 \author{
 J. Bedia
 }
+\concept{downscaling.helpers}
