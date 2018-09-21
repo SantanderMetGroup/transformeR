@@ -667,7 +667,7 @@ isRegular <- function(grid) {
 getTimeResolution <- function(grid) {
     aux <- getRefDates(grid) 
     if (length(aux) == 1) {
-        message("The input grid is a climatology: tenporal resolution set to \'unknown\'")
+        message("The input grid is a climatology: temporal resolution set to \'unknown\'")
         out <- "unknown"
     } else {
         dft <- difftime(aux[2], aux[1], units = "hours") %>% as.numeric()

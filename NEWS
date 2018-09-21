@@ -36,3 +36,6 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
 ## v1.4.5 (21 Sep 2018)
  * Bug fix in temporal consistency check among climatologies
  * Replaced warning by message in `getTemporalResolution`
+ 
+## v1.4.6 (in devel)
+ * Fix typo in on-screen message
