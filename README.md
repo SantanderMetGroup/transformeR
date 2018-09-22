@@ -2,9 +2,7 @@
 
 transformeR is an R package for climate data manipulation and transformation including subsetting, regridding, and data conversion. Find out more about this package at the [transformeR wiki](https://github.com/SantanderMetGroup/transformeR/wiki). 
 
-This package is part of the [climate4R bundle](http://www.meteo.unican.es/climate4r), formed by `loadeR`, `transformeR`, `downscaleR` and `visualizeR`.
-
-The recommended installation procedure is to use the `install_github` command from the devtools R package (see the [installation info](https://github.com/SantanderMetGroup/visualizeR/wiki/installation) in the wiki):
+This package is part of the [climate4R bundle](http://www.meteo.unican.es/climate4r), formed by `loadeR`, `transformeR`, `downscaleR` and `visualizeR`. The recommended installation procedure is to use the `install_github` command from the devtools R package:
 
 ```r
 devtools::install_github("SantanderMetGroup/transformeR")
