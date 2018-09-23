@@ -27,6 +27,7 @@
             packageStartupMessage(ver.mess)
         }
     }
+    packageStartupMessage("Please use 'citation(\"transformeR\")' to cite this package.")
 }
 # End
 
