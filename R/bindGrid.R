@@ -142,6 +142,10 @@ bindGrid.member <- function(..., tol, attr.) {
     }
     if (length(grid.list) == 1) {
         grid.list <- unlist(grid.list, recursive = FALSE)
+        if (isGrid(grid.list)) {
+            message("NOTE: One single grid passed to the function: nothing to bind, so the original grid was returned")
+            return(grid.list)
+        }
     }
     if (length(grid.list) < 2) {
         ref <- grid.list[[1]]
