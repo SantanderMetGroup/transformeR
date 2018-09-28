@@ -41,3 +41,8 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * Add new CITATION
  * Edited startup package message
  * Fix typo in on-screen message
+
+## v1.4.7 (in devel)
+ * Allow calls to bindGrid.member for just one grid without error (a message is given instead)
+ * Allow attempts of temporal consistency check with just one grid (with message)
+ 
