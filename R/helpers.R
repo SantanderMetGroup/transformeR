@@ -562,9 +562,9 @@ checkVarNames <- function(..., check.order = TRUE) {
 checkTemporalConsistency <- function(...) {
     grid.list <- list(...)
     if (length(grid.list) == 1) grid.list %<>% unlist(recursive = FALSE)
-    if (length(grid.list) < 2) stop("Only one grid passed as input. Nothing was done", call. = FALSE)
+    if (length(grid.list) < 2) message("NOTE: Only one grid passed as input. Nothing was done")
     timeres <- sapply(grid.list, "getTimeResolution") %>% unique() 
-    if (length(timeres) > 1) stop("Different time resolution grids can't be binded")
+    if (length(timeres) > 1) stop("Binding grids of different temporal resolutions is not allowed\nDid you mean \'makeMultiGrid\'?")
     refdates <- getRefDates(grid.list[[1]]) %>% as.character()
     refmon <- substr(refdates, 6, 7)
     refyr <- substr(refdates, 1, 4)
