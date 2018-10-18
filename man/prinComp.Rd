@@ -153,3 +153,4 @@ Other pca: \code{\link{PC2grid}}, \code{\link{grid2PCs}},
 \author{
 J. Bedia, M. de Felice
 }
+\concept{pca}

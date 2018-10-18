@@ -4,8 +4,8 @@
 \alias{timeAggregation}
 \title{Time aggregation}
 \usage{
-timeAggregation(grid, aggr.type = c("DD", "MM", "YY"), aggr.fun, parallel,
-  max.ncores, ncores)
+timeAggregation(grid, aggr.type = c("DD", "MM", "YY"), aggr.fun,
+  parallel, max.ncores, ncores)
 }
 \arguments{
 \item{grid}{A multimember grid to apply the aggregation}

@@ -38,3 +38,4 @@ Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
 \author{
 J Bedia
 }
+\concept{internal.helpers}

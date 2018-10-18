@@ -30,7 +30,19 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
 ## v1.4.4 (15 Aug 2018)
 
  * Allow for binding the loc dimension in `bindGrid` (for point data)
- * Bug fix in interpGrid when interpolating from and to point data
+ * Bug fix in `interpGrid` when interpolating from and to point data
  * Other minor changes and documentation updates
 
+## v1.4.5 (21 Sep 2018)
+ * Bug fix in temporal consistency check among climatologies
+ * Replaced warning by message in `getTemporalResolution`
+ 
+## v1.4.6 (23 Sep 2018)
+ * Add new CITATION
+ * Edited startup package message
+ * Fix typo in on-screen message
 
+## v1.4.7 (in devel)
+ * Allow calls to bindGrid.member for just one grid without error (a message is given instead)
+ * Allow attempts of temporal consistency check with just one grid (with message)
+ 
