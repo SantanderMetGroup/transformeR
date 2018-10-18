@@ -135,33 +135,34 @@ bindGrid <- function(..., dimension = c("member", "time", "lat", "lon", "loc"),
 #' @author J Bedia
 
 bindGrid.member <- function(..., tol, attr.) {
-    grid.list <- list(...)
-    if (!is.null(attr.)) {
-        stopifnot(is.character(attr.))
-        if (length(attr.) != 1L) stop("Invalid \'dataset.attr\' value: The dataset attribute must have length 1")    
-    }
-    if (length(grid.list) == 1) {
-        grid.list <- unlist(grid.list, recursive = FALSE)
-        if (isGrid(grid.list)) {
-            message("NOTE: One single grid passed to the function: nothing to bind, so the original grid was returned")
-            return(grid.list)
-        }
-    }
-    if (length(grid.list) < 2) {
-        ref <- grid.list[[1]]
-        warning("Only one grid passed as input. Nothing was done", call. = FALSE)
-    } else {
-        loc <- unique(unlist(lapply(grid.list, function(x) "loc" %in% getDim(x))))
-        if (length(loc) > 1) stop("grids and stations cannot be combined")
-        grid.list <- lapply(grid.list, "redim", loc = loc)
-        # Disaggregation in single members
-        mem.index <- sapply(grid.list, "getShape", "member")
-        aux.list <- list()
-        for (h in 1:length(grid.list)) {
-            subgrid <- grid.list[[h]]
-            n.mem <- mem.index[h]
-            for (i in 1:n.mem) {
-                aux.list[[length(aux.list) + 1]] <- redim(subsetGrid(subgrid, members = i, drop = FALSE), loc = loc)
+      grid.list <- list(...)
+      if (!is.null(attr.)) {
+            stopifnot(is.character(attr.))
+            if (length(attr.) != 1L) stop("Invalid \'dataset.attr\' value: The dataset attribute must have length 1")    
+      }
+      if (length(grid.list) == 1) {
+            grid.list <- unlist(grid.list, recursive = FALSE)
+            if (isGrid(grid.list)) {
+                  message("NOTE: One single grid passed to the function: nothing to bind, so the original grid was returned")
+                  return(grid.list)
+            }
+      }
+      if (length(grid.list) < 2) {
+            ref <- grid.list[[1]]
+            warning("Only one grid passed as input. Nothing was done", call. = FALSE)
+      } else {
+            loc <- unique(unlist(lapply(grid.list, function(x) "loc" %in% getDim(x))))
+            if (length(loc) > 1) stop("grids and stations cannot be combined")
+            grid.list <- lapply(grid.list, "redim", loc = loc)
+            # Disaggregation in single members
+            mem.index <- sapply(grid.list, "getShape", "member")
+            aux.list <- list()
+            for (h in 1:length(grid.list)) {
+                  subgrid <- grid.list[[h]]
+                  n.mem <- mem.index[h]
+                  for (i in 1:n.mem) {
+                        aux.list[[length(aux.list) + 1]] <- redim(subsetGrid(subgrid, members = i, drop = FALSE), loc = loc)
+                  }
             }
             grid.list <- aux.list
             aux.list <- NULL
@@ -246,7 +247,6 @@ bindGrid.spatial <- function(..., dimn, tol) {
       dimsort <- "y"
       loc <- FALSE
       coordfun <- c
-      if (!dimn %in% getDim(grid.list[[1]])) warning("Selected dimension does not exist in the input data. Please, consider using getDim() to select an appropriate dimension.")
       if (dimn == "lon") {
             dimsort <- "x"
       } else if (dimn == "loc") {
@@ -345,9 +345,7 @@ bindGrid.time <- function(..., tol) {
       if (length(grid.list) < 2) {
             stop("The input must be a list of at least two grids")
       }
-      station <- FALSE
-      if("loc" %in% getDim(grid.list[[1]])) station <- TRUE
-      grid.list <- lapply(grid.list, "redim", var = TRUE, loc = station)
+      grid.list <- lapply(grid.list, "redim", var = TRUE)
       for (i in 2:length(grid.list)) {
             # Spatial test
             if (!isTRUE(all.equal(grid.list[[1]]$xyCoords, grid.list[[i]]$xyCoords, check.attributes = FALSE, tolerance = tol))) {
