@@ -562,9 +562,9 @@ checkVarNames <- function(..., check.order = TRUE) {
 checkTemporalConsistency <- function(...) {
     grid.list <- list(...)
     if (length(grid.list) == 1) grid.list %<>% unlist(recursive = FALSE)
-    if (length(grid.list) < 2) stop("Only one grid passed as input. Nothing was done", call. = FALSE)
+    if (length(grid.list) < 2) message("NOTE: Only one grid passed as input. Nothing was done")
     timeres <- sapply(grid.list, "getTimeResolution") %>% unique() 
-    if (length(timeres) > 1) stop("Different time resolution grids can't be binded")
+    if (length(timeres) > 1) stop("Binding grids of different temporal resolutions is not allowed\nDid you mean \'makeMultiGrid\'?")
     refdates <- getRefDates(grid.list[[1]]) %>% as.character()
     refmon <- substr(refdates, 6, 7)
     refyr <- substr(refdates, 1, 4)
@@ -589,11 +589,11 @@ checkTemporalConsistency <- function(...) {
             if (!identical(refday, testday) | !identical(refyr, testyr) | !identical(refmon, testmon)) stop(mssg)
         }
     } else {
-        if (!identical(as.POSIXlt(refdates), as.POSIXlt(getRefDates(grid.list[[i]])))) stop(mssg)
+        for (i in 2:length(grid.list)) {
+            if (!identical(as.POSIXlt(refdates), as.POSIXlt(getRefDates(grid.list[[i]])))) stop(mssg)
+        }
     }   
 }
-
-
 
 
 
@@ -667,7 +667,7 @@ isRegular <- function(grid) {
 getTimeResolution <- function(grid) {
     aux <- getRefDates(grid) 
     if (length(aux) == 1) {
-        warning("The input grid is a climatology")
+        message("The input grid is a climatology: temporal resolution set to \'unknown\'")
         out <- "unknown"
     } else {
         dft <- difftime(aux[2], aux[1], units = "hours") %>% as.numeric()
@@ -873,9 +873,9 @@ getGridVerticalLevels <- function(grid, var.index = NULL) {
 #' @param grid An input grid
 #' @return A character vector decribing the type of spatial reference. Three disjoint values possible: \code{"station"}, \code{"rotated_grid"} and \code{"regular_grid"}
 #' @keywords internal
-#' @export
 #' @author J Bedia
 #' @family get.helpers
+#' @export
 
 typeofGrid <- function(grid) {
     ref.grid <- getGrid(grid)
@@ -894,7 +894,6 @@ typeofGrid <- function(grid) {
 
 #' @title Level depth in a list
 #' @description Level depth in a list 
-#' 
 #' @param this list
 #' @export
 #' @return number of nesting lists
