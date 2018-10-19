@@ -32,5 +32,4 @@ Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
 \author{
 M Iturbide
 }
-\concept{internal.helpers}
 \keyword{internal}

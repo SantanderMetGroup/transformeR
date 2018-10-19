@@ -46,5 +46,4 @@ Other get.helpers: \code{\link{get2DmatCoordinates}},
 \author{
 J. Bedia
 }
-\concept{get.helpers}
 \keyword{internal}

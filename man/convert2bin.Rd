@@ -44,4 +44,3 @@ Other downscaling.helpers: \code{\link{filterNA}},
 \author{
 J. Bano-Medina
 }
-\concept{downscaling.helpers}

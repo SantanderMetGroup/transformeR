@@ -57,4 +57,3 @@ Other pca: \code{\link{grid2PCs}},
 \author{
 J. Bedia
 }
-\concept{pca}

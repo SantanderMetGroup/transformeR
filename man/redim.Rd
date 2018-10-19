@@ -4,8 +4,8 @@
 \alias{redim}
 \title{Complete missing dimensions of Grid objects}
 \usage{
-redim(grid, member = TRUE, runtime = FALSE, var = FALSE,
-  loc = FALSE, drop = FALSE)
+redim(grid, member = TRUE, runtime = FALSE, var = FALSE, loc = FALSE,
+  drop = FALSE)
 }
 \arguments{
 \item{member}{logical. Add 'member' dimension (default = TRUE)}
@@ -67,5 +67,4 @@ Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
 \author{
 M. Iturbide, J. Bedia
 }
-\concept{internal.helpers}
 \keyword{internal}

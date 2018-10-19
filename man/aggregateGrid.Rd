@@ -4,11 +4,10 @@
 \alias{aggregateGrid}
 \title{Flexible grid aggregation along selected dimensions}
 \usage{
-aggregateGrid(grid, aggr.mem = list(FUN = NULL), aggr.d = list(FUN =
-  NULL), aggr.m = list(FUN = NULL), aggr.y = list(FUN = NULL),
-  aggr.lat = list(FUN = NULL), weight.by.lat = TRUE,
-  aggr.lon = list(FUN = NULL), parallel = FALSE, max.ncores = 16,
-  ncores = NULL)
+aggregateGrid(grid, aggr.mem = list(FUN = NULL), aggr.d = list(FUN = NULL),
+  aggr.m = list(FUN = NULL), aggr.y = list(FUN = NULL),
+  aggr.lat = list(FUN = NULL), weight.by.lat = TRUE, aggr.lon = list(FUN =
+  NULL), parallel = FALSE, max.ncores = 16, ncores = NULL)
 }
 \arguments{
 \item{grid}{a grid or multigrid to be aggregated.}

@@ -46,5 +46,4 @@ Other check.helpers: \code{\link{checkSeason}},
 \author{
 J Bedia
 }
-\concept{check.helpers}
 \keyword{internal}
