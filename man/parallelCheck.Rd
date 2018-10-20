@@ -34,4 +34,5 @@ Other parallel.helpers: \code{\link{selectPar.pplyFun}}
 \author{
 J. Bedia, with contributions by J. Bhend and M. de Felice
 }
+\concept{parallel.helpers}
 \keyword{internal}

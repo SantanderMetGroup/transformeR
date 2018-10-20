@@ -32,4 +32,5 @@ Other check.helpers: \code{\link{checkDim}},
 \author{
 J Bedia
 }
+\concept{check.helpers}
 \keyword{internal}

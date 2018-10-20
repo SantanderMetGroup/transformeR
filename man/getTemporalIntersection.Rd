@@ -58,3 +58,4 @@ Other subsetting: \code{\link{intersectGrid.spatial}},
 \author{
 J Bedia
 }
+\concept{subsetting}
