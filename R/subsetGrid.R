@@ -373,6 +373,7 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
             }
         }
         lon.ind <- which.min(abs(lons - lonLim[1]))
+        if (!isRegular(grid)) lon.ind <- min(which(lons >= lonLim[1]))
         if (length(lonLim) > 1) {
             if (lonLim[2] < lons[1] | lonLim[2] > tail(lons, 1)) {
                 if (outside == FALSE) {
@@ -384,6 +385,7 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
                 }
             }
             lon2 <- which.min(abs(lons - lonLim[2]))
+            if (!isRegular(grid)) lon2 <- max(which(lons <= lonLim[2]))            
             lon.ind <- lon.ind:lon2
         }
         grid$Data <- asub(grid$Data, idx = lon.ind, dims = grep(londim[1], dimNames), drop = FALSE)
@@ -418,6 +420,7 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
             }
         }
         lat.ind <- which.min(abs(lats - latLim[1]))
+        if (!isRegular(grid)) lat.ind <- min(which(lats >= latLim[1]))            
         if (length(latLim) > 1) {
             if (latLim[2] < lats[1] | latLim[2] > tail(lats, 1)) {
                 if (outside == FALSE) {
@@ -429,6 +432,7 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
                 }
             }
             lat2 <- which.min(abs(lats - latLim[2]))
+            if (!isRegular(grid)) lat2 <- max(which(lats <= latLim[2]))            
             lat.ind <- lat.ind:lat2
         }
         grid$Data <- asub(grid$Data, lat.ind, grep(londim[2], dimNames), drop = FALSE)

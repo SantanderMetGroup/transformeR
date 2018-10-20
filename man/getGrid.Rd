@@ -61,4 +61,3 @@ Other get.helpers: \code{\link{get2DmatCoordinates}},
 \author{
 S. Herrera and J. Bedia
 }
-\concept{get.helpers}

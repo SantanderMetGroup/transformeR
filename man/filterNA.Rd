@@ -34,4 +34,3 @@ Other downscaling.helpers: \code{\link{convert2bin}},
 \author{
 J. Bano-Medina, J. Bedia
 }
-\concept{downscaling.helpers}

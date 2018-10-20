@@ -116,4 +116,3 @@ Other subsetting: \code{\link{getTemporalIntersection}},
 \author{
 J. Bedia, M. Iturbide
 }
-\concept{subsetting}

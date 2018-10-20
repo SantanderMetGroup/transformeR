@@ -30,5 +30,4 @@ typeofGrid, for a character representation of the type of grid
 \author{
 M Iturbide
 }
-\concept{is.helpers}
 \keyword{internal}

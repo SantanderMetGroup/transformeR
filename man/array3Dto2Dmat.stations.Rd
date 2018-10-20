@@ -31,5 +31,4 @@ Other internal.helpers: \code{\link{array3Dto2Dmat}},
 \author{
 M. Iturbide
 }
-\concept{internal.helpers}
 \keyword{internal}

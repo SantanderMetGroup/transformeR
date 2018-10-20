@@ -49,5 +49,4 @@ Other subsetting: \code{\link{getTemporalIntersection}},
 \author{
 J. Bedia and S. Herrera
 }
-\concept{subsetting}
 \keyword{internal}

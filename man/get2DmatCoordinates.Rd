@@ -29,5 +29,4 @@ Other get.helpers: \code{\link{getCoordinates}},
 \author{
 J. Bedia
 }
-\concept{get.helpers}
 \keyword{internal}
