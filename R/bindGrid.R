@@ -279,6 +279,7 @@ bindGrid.spatial <- function(..., dimn, tol) {
       lat <- unname(lat)
       grid.list <- NULL
       lats <- do.call(coordfun, lat)
+      if (is.list(lats)) lats <- unlist(lats)
       attr(ref[["Data"]], "dimensions") <- dimNames
       # n.vars <- getShape(ref, "var")
       #if (n.vars > 1) lats <- rep(list(lats), n.vars)
@@ -287,7 +288,7 @@ bindGrid.spatial <- function(..., dimn, tol) {
             ref[["Metadata"]][["station_id"]] <- station_id
             ref[["Metadata"]][["name"]] <- station_name
       } else {
-            ref[["xyCoords"]][dimsort] <- lats
+            ref[["xyCoords"]][[dimsort]] <- lats
       }
       # ref %<>% sortDim.spatial()
       redim(ref, drop = TRUE)
