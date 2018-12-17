@@ -95,9 +95,6 @@ aggregateGrid <- function(grid,
                           max.ncores = 16,
                           ncores = NULL) {
     grid$Data[is.infinite(grid$Data)] <- NA
-    if (!is.null(aggr.mem$FUN)) {
-        grid <- memberAggregation(grid, aggr.mem, parallel, max.ncores, ncores)
-    }
     if (!is.null(aggr.d$FUN)) {
         grid <- timeAggregation(grid, "DD", aggr.d, parallel, max.ncores, ncores)
     }
@@ -112,6 +109,9 @@ aggregateGrid <- function(grid,
     }
     if (!is.null(aggr.lon$FUN)) {
         grid <- lonAggregation(grid, aggr.lon, parallel, max.ncores, ncores)
+    }
+    if (!is.null(aggr.mem$FUN)) {
+        grid <- memberAggregation(grid, aggr.mem, parallel, max.ncores, ncores)
     }
     if (!is.array(grid$Data)) grid$Data %<>% as.array()
     return(grid)
