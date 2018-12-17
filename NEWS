@@ -42,7 +42,8 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * Edited startup package message
  * Fix typo in on-screen message
 
-## v1.4.7 (in devel)
+## v1.4.7 (17 Dic 2018)
  * Allow calls to bindGrid.member for just one grid without error (a message is given instead)
  * Allow attempts of temporal consistency check with just one grid (with message)
- 
+ * Change the order of priority of the dimensions in aggregateGrid for efficiency.
+ * Bug fix in bindGrid.spatial for the correct heritage of the latitude values in $xyCoords 
