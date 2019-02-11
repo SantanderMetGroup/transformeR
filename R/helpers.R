@@ -1120,4 +1120,42 @@ getStationID <- function(grid) {
       }
 }
 
+#' @title Check the structure of the grid
+#' @description Check the structure of the grid
+#' @param grid An input grid (including station data)
+#' @return Diagnostic message
+#' @author M. Iturbide
+#' @family get.helpers
+#' @export
 
+
+checkGrid <- function(..., redim = TRUE) {
+      grid.list <- list(...)
+      if (is.null(names(grid.list))) names(grid.list) <- paste0("grid", 1:length(grid.list))
+      x <- grid.list[[1]]
+      df <- list(data.frame("Dates.order" = "Err",
+                            "Dates.length" = "Err",
+                            "Member" = "Err"))
+      message.list <- rep(df, length(grid.list))
+      message.list.check <- lapply(1:length(grid.list), function(x) {
+      message.list[[x]][ , "Dates.order"] <- identical(1:length(grid.list[[x]]$Dates$start), order(grid.list[[x]]$Dates$start)) & identical(1:length(grid.list[[x]]$Dates$end), order(grid.list[[x]]$Dates$end))
+      message.list[[x]][ , "Dates.length"] <- length(grid.list[[x]]$Dates$end) == length(grid.list[[x]]$Dates$start)
+      message.list[[x]][ , "Dates.length"] <- length(grid.list[[x]]$Dates$end) == length(grid.list[[x]]$Dates$start)
+      
+            return(message.list)
+      })
+
+      end.dates.order <- lapply(grid.list, function(x) 
+            if (identical(1:length(x$Dates$end), order(x$Dates$end))) {
+                  "OK"
+           })
+      end.start.dates.length <- lapply(grid.list, function(x) 
+            if (length(x$Dates$end) == length(x$Dates$start)) {
+                  "OK"
+             })
+      member.info <- lapply(grid.list, function(x) 
+            if (length(x$Dates$end) == length(x$Dates$start)) {
+                  "OK"
+            })
+}
+      

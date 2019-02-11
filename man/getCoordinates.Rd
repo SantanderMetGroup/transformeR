@@ -28,8 +28,8 @@ data("VALUE_Iberia_tas")
 str(getCoordinates(VALUE_Iberia_tas))
 }
 \seealso{
-Other get.helpers: \code{\link{get2DmatCoordinates}},
-  \code{\link{getDim}},
+Other get.helpers: \code{\link{checkGrid}},
+  \code{\link{get2DmatCoordinates}}, \code{\link{getDim}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},
   \code{\link{getSeason}}, \code{\link{getShape}},

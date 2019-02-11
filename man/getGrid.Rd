@@ -49,7 +49,8 @@ plotClimatology(climatology(CFS_interpolated), backdrop.theme = "countries")
 # In this case, the mismatch in domain extent occurs in the longitudes and latitudes
 }
 \seealso{
-Other get.helpers: \code{\link{get2DmatCoordinates}},
+Other get.helpers: \code{\link{checkGrid}},
+  \code{\link{get2DmatCoordinates}},
   \code{\link{getCoordinates}}, \code{\link{getDim}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getRefDates}}, \code{\link{getSeason}},

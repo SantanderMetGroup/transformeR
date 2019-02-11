@@ -16,8 +16,8 @@ A 2D matrix of x-y coordinates (in this order)
 Obtain grid coordinates as 2D matrix
 }
 \seealso{
-Other get.helpers: \code{\link{getCoordinates}},
-  \code{\link{getDim}},
+Other get.helpers: \code{\link{checkGrid}},
+  \code{\link{getCoordinates}}, \code{\link{getDim}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},
   \code{\link{getSeason}}, \code{\link{getShape}},
