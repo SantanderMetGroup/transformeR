@@ -4,10 +4,10 @@
 \alias{checkGrid}
 \title{Check the structure of the grid}
 \usage{
-checkGrid(..., redim = TRUE)
+checkGrid(...)
 }
 \arguments{
-\item{grid}{An input grid (including station data)}
+\item{...}{Input grids (including station data)}
 }
 \value{
 Diagnostic message
@@ -16,17 +16,12 @@ Diagnostic message
 Check the structure of the grid
 }
 \seealso{
-Other get.helpers: \code{\link{get2DmatCoordinates}},
-  \code{\link{getCoordinates}}, \code{\link{getDim}},
-  \code{\link{getGridVerticalLevels}},
-  \code{\link{getGrid}}, \code{\link{getRefDates}},
-  \code{\link{getSeason}}, \code{\link{getShape}},
-  \code{\link{getStationID}},
-  \code{\link{getTimeResolution}},
-  \code{\link{getVarNames}}, \code{\link{getYearsAsINDEX}},
-  \code{\link{typeofGrid}}, \code{\link{which.leap}}
+Other check.helpers: \code{\link{checkDim}},
+  \code{\link{checkSeason}},
+  \code{\link{checkTemporalConsistency}},
+  \code{\link{checkVarNames}}
 }
 \author{
 M. Iturbide
 }
-\concept{get.helpers}
+\concept{check.helpers}

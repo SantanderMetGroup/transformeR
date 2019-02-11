@@ -56,8 +56,7 @@ data("VALUE_Iberia_tas")
 getYearsAsINDEX(VALUE_Iberia_tas)
 }
 \seealso{
-Other get.helpers: \code{\link{checkGrid}},
-  \code{\link{get2DmatCoordinates}},
+Other get.helpers: \code{\link{get2DmatCoordinates}},
   \code{\link{getCoordinates}}, \code{\link{getDim}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},

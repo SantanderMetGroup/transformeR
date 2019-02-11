@@ -23,8 +23,7 @@ leap.years <- which.leap(1885:1937)
 \url{https://en.wikipedia.org/wiki/Leap_year#Algorithm}
 }
 \seealso{
-Other get.helpers: \code{\link{checkGrid}},
-  \code{\link{get2DmatCoordinates}},
+Other get.helpers: \code{\link{get2DmatCoordinates}},
   \code{\link{getCoordinates}}, \code{\link{getDim}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},

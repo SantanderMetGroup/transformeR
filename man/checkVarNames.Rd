@@ -41,7 +41,7 @@ try(checkVarNames(mg, mg1, mg2, check.order = TRUE)) # Error
 \code{\link{getVarNames}}
 
 Other check.helpers: \code{\link{checkDim}},
-  \code{\link{checkSeason}},
+  \code{\link{checkGrid}}, \code{\link{checkSeason}},
   \code{\link{checkTemporalConsistency}}
 }
 \author{

@@ -25,8 +25,7 @@ annual.grid <- aggregateGrid(monthly.grid, aggr.y = list(FUN = "mean", na.rm = T
 stopifnot(identical(getTimeResolution(annual.grid), "YY"))
 }
 \seealso{
-Other get.helpers: \code{\link{checkGrid}},
-  \code{\link{get2DmatCoordinates}},
+Other get.helpers: \code{\link{get2DmatCoordinates}},
   \code{\link{getCoordinates}}, \code{\link{getDim}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},

@@ -20,8 +20,7 @@ data("NCEP_Iberia_hus850")
 getSeason(NCEP_Iberia_hus850) # Boreal winter (DJF)
 }
 \seealso{
-Other get.helpers: \code{\link{checkGrid}},
-  \code{\link{get2DmatCoordinates}},
+Other get.helpers: \code{\link{get2DmatCoordinates}},
   \code{\link{getCoordinates}}, \code{\link{getDim}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},

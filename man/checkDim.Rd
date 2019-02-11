@@ -39,7 +39,8 @@ checkDim(VALUE_Iberia_tas, VALUE_Iberia_pr) # ok, go on
 \seealso{
 \code{\link{getShape}}
 
-Other check.helpers: \code{\link{checkSeason}},
+Other check.helpers: \code{\link{checkGrid}},
+  \code{\link{checkSeason}},
   \code{\link{checkTemporalConsistency}},
   \code{\link{checkVarNames}}
 }
