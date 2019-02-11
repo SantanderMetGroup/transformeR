@@ -30,8 +30,8 @@ data("CFS_Iberia_tas")
 t.clim <- climatology(CFS_Iberia_tas, by.member = FALSE)
 plotClimatology(t.clim)
 t.ras <- grid2mopa0(t.clim)
-require(sp)
-spplot(t.ras)
+# require(sp)
+# spplot(t.ras)
 }
 \seealso{
 \code{\link[transformeR]{climatology}}; \code{\link[loadeR]{loadGridData}}
