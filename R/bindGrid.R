@@ -377,6 +377,7 @@ bindGrid.time <- function(..., tol) {
       if (n.vars > 1) refdates <- rep(list(refdates), n.vars)
       ref[["Dates"]] <- refdates
       ref %<>% sortDim.time()
+      ref <- redim(ref, drop = TRUE)
       return(ref)
 }
 #end
