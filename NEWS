@@ -47,3 +47,7 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * Allow attempts of temporal consistency check with just one grid (with message)
  * Change the order of priority of the dimensions in aggregateGrid for efficiency.
  * Bug fix in bindGrid.spatial for the correct heritage of the latitude values in $xyCoords 
+## v1.4.8 (16 Apr 2019)
+* New helper function checkGrid to check if date and member information is correct.
+* Bug fix in bindGrid related to the "loc" dimension in irregular grids
+* Other minor changes and documentation updates
