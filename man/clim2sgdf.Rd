@@ -29,7 +29,7 @@ However, it may be useful for advanced \pkg{sp} users in different contexts
 data("CFS_Iberia_tas")
 # Climatology is computed:
 clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
-sgdf <- clim2sgdf(clim, NULL, NULL)
+sgdf <- transformeR:::clim2sgdf(clim, NULL, NULL)
 class(sgdf)
 }
 \seealso{

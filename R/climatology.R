@@ -148,7 +148,7 @@ climatology <- function(grid,
 #'                                              dates = dates,
 #'                                              method = "kendall",
 #'                                              return.pvalue = TRUE))
-#' sig.points <- map.stippling(clim = pval.estimate, threshold = 0.05, condition = "LT", 
+#' sig.points <- transformeR:::map.stippling(clim = pval.estimate, threshold = 0.05, condition = "LT", 
 #'                             pch = 19, cex = .25, col = "purple")
 #' plotClimatology(tau.estimate, sp.layout = list(sig.points))
 

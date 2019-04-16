@@ -958,6 +958,8 @@ reorderStation <- function(grid, axis = c("x", "y")) {
 get2DmatCoordinates <- function(grid) {
     if (typeofGrid(grid) == "regular_grid") {
         coords <- getCoordinates(grid) 
+        coords$lon <- NULL
+        coords$lat <- NULL
         aux <- expand.grid(coords)
         aux[order(aux[,1]), ]
     } else if (typeofGrid(grid) == "station") {
