@@ -4,7 +4,7 @@
 \alias{prinComp.}
 \title{Principal Component Analysis}
 \usage{
-prinComp.(Xsc.list, n.eofs, v.exp, keep.orig)
+prinComp.(Xsc.list, n.eofs, v.exp, keep.orig, rot)
 }
 \arguments{
 \item{Xsc.list}{A nested list of (scaled and centered) input variables (as returned by \code{\link{prinComp.scale}})}
@@ -12,6 +12,8 @@ prinComp.(Xsc.list, n.eofs, v.exp, keep.orig)
 \item{n.eofs}{n.eofs vector or NULL}
 
 \item{v.exp}{explained variance vector or NULL}
+
+\item{rot}{logical value indicating whether VARIMAX-Rotation should be performed.}
 }
 \value{
 A list
@@ -20,6 +22,6 @@ A list
 Internal of prinComp, performing the PCA
 }
 \author{
-J Bedia, M de Felice
+J Bedia, M de Felice, A Casanueva
 }
 \keyword{internal}
