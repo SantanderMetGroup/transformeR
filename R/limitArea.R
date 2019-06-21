@@ -26,6 +26,7 @@ limitArea <- function(coordinates, lonLim, latLim) {
       })
       coordinates[["x"]] <- c(mincoor[[1]], maxcoor[[1]])
       coordinates[["y"]] <- c(mincoor[[2]], maxcoor[[2]])
+      return(coordinates)
 }
 
 #end
