@@ -335,6 +335,7 @@ combine.PCs <- function(Xsc.list) {
 #' @param n.eofs n.eofs vector or NULL
 #' @param v.exp explained variance vector or NULL
 #' @param rot logical value indicating whether VARIMAX-Rotation should be performed.
+#' @importFrom stats varimax
 #' @return A list
 #' @keywords internal
 #' @author J Bedia, M de Felice, A Casanueva
