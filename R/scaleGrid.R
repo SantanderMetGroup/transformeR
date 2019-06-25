@@ -36,8 +36,10 @@
 #'  \code{"none"}, which considers the climatological mean of the whole period given in 
 #'  \code{base} and/or \code{ref}, \code{"monthly"}, that performs the calculation on a monthly basis
 #'  and \code{"daily"}, for a julian day-based approach. See details.
+#' @param window.width Default to NULL. Only applied if time.frame = "daily". In that case the daily mean is removed with a 
+#' moving average whose size is defined by the window.width parameter.  
 #' @param type Character string. Either \code{"center"}, \code{"standardize"} or \code{"ratio"}, depending on wheter the correction factor are anomalies (e.g. temperature...),
-#' estandardized anomalies or applied as a ratio (e.g. precipitation, wind speed...). See details
+#' standardized anomalies or applied as a ratio (e.g. precipitation, wind speed...). See details
 #' @param skip.season.check Logical flag. Should the internal checker \code{\link{checkSeason}} be skipped?. By
 #' default, the function undertakes an automatic seasonal check. This can be skipped if needed, mainly for internal use
 #' (e.g. in cross-validation setups)
@@ -178,6 +180,7 @@ scaleGrid <- function(grid,
                       time.frame = c("none", "monthly", "daily"),
                       spatial.frame = c("gridbox","field"),
                       type = "center",
+                      window.width = NULL,
                       parallel = FALSE,
                       max.ncores = 16,
                       ncores = NULL,
@@ -210,33 +213,48 @@ scaleGrid <- function(grid,
         out <- do.call("bindGrid", c(aux.list, dimension = "time"))
         message("[", Sys.time(), "] - Done")
     } else if (time.frame == "daily") {
-        doys.grid <- grid %>% getRefDates() %>% substr(6,10) 
-        doys.grid <- gsub("02-29", "02-28", doys.grid)
+      doys.grid <- grid %>% getRefDates() %>% toJulian()
+      if (!is.null(base)) {
+        doys.base <- base %>% getRefDates() %>% toJulian()
+      }
+      if (!is.null(ref)) {
+        doys.ref <- ref %>% getRefDates() %>% toJulian()
+      }
+      
+      juliancalendary <- c(1:366,1:366,1:366)
+      if (is.null(window.width)) {
+        window.width <- 0
+      }
+      message("[", Sys.time(), "] - Scaling by julian days ...")
+      aux.list <- lapply(unique(doys.grid), function(x) {
+        window <- juliancalendary[(x+366-floor(window.width/2)):(x+366+floor(window.width/2))]
+        index_grid <- lapply(1:length(window), FUN = function(z) which(doys.grid == window[z])) %>% unlist() %>% sort()
+        targets <- which(doys.grid == juliancalendary[x+366])
+        targets <- lapply(1:length(targets),FUN = function(z) which(index_grid == targets[z])) %>% unlist()
+        
+        grid1 <- subsetDimension(grid, dimension = "time", indices = index_grid)
         if (!is.null(base)) {
-            doys.base <- base %>% getRefDates() %>% substr(6, 10)
-            doys.base <- gsub("02-29", "02-28", doys.base)
+          doys.base <- toJulian(doys.base)
+          window <- juliancalendary[(x+366-floor(window.width/2)):(x+366+floor(window.width/2))]
+          index_base <- lapply(1:length(window), FUN = function(z) which(doys.base == window[z])) %>% unlist() %>% sort()
+          
+          base1 <- subsetDimension(base, dimension = "time", indices = index_base)
+        } else {
+          base1 <- base
         }
         if (!is.null(ref)) {
-            doys.ref <- ref %>% getRefDates() %>% substr(6, 10)
-            doys.ref <- gsub("02-29", "02-28", doys.ref)
+          doys.ref <- toJulian(doys.ref)
+          window <- juliancalendary[(x+366-floor(window.width/2)):(x+366+floor(window.width/2))]
+          index_ref <- lapply(1:length(window), FUN = function(z) which(doys.ref == window[z])) %>% unlist() %>% sort()
+          
+          ref1 <- subsetDimension(ref, dimension = "time", indices = index_ref)
+        } else {
+          ref1 <- ref
         }
-        message("[", Sys.time(), "] - Scaling by julian days ...")
-        aux.list <- lapply(unique(doys.grid), function(x) {
-            grid1 <- subsetDimension(grid, dimension = "time", indices = which(doys.grid == x))
-            if (!is.null(base)) {
-                base1 <- subsetDimension(base, dimension = "time", indices = which(doys.base == x))
-            } else {
-                base1 <- base
-            }
-            if (!is.null(ref)) {
-                ref1 <- subsetDimension(ref, dimension = "time", indices = which(doys.ref == x))
-            } else {
-                ref1 <- ref
-            }
-            gridScale.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, spatial.frame, skip.season.check)
-        })
-        out <- do.call("bindGrid", c(aux.list, dimension = "time"))
-        message("[", Sys.time(), "] - Done")
+        gridScale.(grid1, base1, ref1, clim.fun, by.member, type, parallel, max.ncores, ncores, spatial.frame, skip.season.check, targets = targets) 
+      })
+      out <- do.call("bindGrid", c(aux.list, dimension = "time"))
+      message("[", Sys.time(), "] - Done")
     }
     invisible(out)
 }
@@ -251,7 +269,7 @@ scaleGrid <- function(grid,
 #' @author J Bedia
 
 gridScale. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max.ncores, ncores,
-                       spatial.frame, skip.season.check) {
+                       spatial.frame, skip.season.check,targets = NULL) {
   grid <- redim(grid)
   if (is.null(base)) {
     base.m <- suppressMessages({
@@ -332,11 +350,19 @@ gridScale. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max
   n.times <- getShape(grid, "time")
   Xc <- base.m[["Data"]]
   Xref <- ref[["Data"]]
+  
+  if (!is.null(targets)) {
+    clim <- asub(clim, idx = targets, dims = ind.time, drop = FALSE) 
+    attr(clim,"dimensions") <- dimNames
+    n.times <- dim(clim)[ind.time]
+  }
   aux.list <- gridScale.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun, base.std, ref.std)
   Xc <- Xref <- base <- base.m <- base.std <- ref <- ref.std <- NULL
   grid[["Data"]] <- do.call("abind", c(aux.list, along = ind.time)) %>% unname()
   aux.list <- NULL
   attr(grid[["Data"]], "dimensions") <- dimNames
+  grid[["Dates"]]$start <- grid[["Dates"]]$start[targets]
+  grid[["Dates"]]$end <- grid[["Dates"]]$end[targets]
   return(grid)
 }
 
@@ -370,4 +396,16 @@ gridScale.type <- function(clim, n.times, ind.time, Xc, Xref, type, lapply_fun, 
             }
         })
     }
+}
+
+
+#' @title Convert to julian    
+#' @description Internal for converting date to julian day
+#' @keywords internal
+#' @author J Baño-Medina
+toJulian <- function(dates) {
+  dates <- as.Date(dates)
+  # f<-as.Date("1976-02-29")
+  p<-c(31,29,31,30,31,30,31,31,30,31,30,31,30,31)
+  sapply(1:length(dates),FUN = function(z) {sum(p[1:as.numeric(format(dates[z],"%m"))-1])+as.numeric(format(dates[z],"%d"))})
 }
