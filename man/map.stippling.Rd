@@ -43,13 +43,13 @@ plotClimatology(p90clim, backdrop.theme = "coastline",
 
 # We want to highlight the grid points with a 90th percentile > 25.5 degrees, 
 # on top of the Tmean model climatology:
-pts <- map.stippling(p90clim, threshold = 15.5, condition = "GT")
+pts <- transformeR:::map.stippling(p90clim, threshold = 15.5, condition = "GT")
 plotClimatology(climatology(CFS_Iberia_tas),
                 backdrop.theme = "coastline",
                 sp.layout = list(pts))
 
 # Some useful parameters that can be passed to the layout list:
-pts <- map.stippling(p90clim, threshold = 15.5, condition = "GT",
+pts <- transformeR:::map.stippling(p90clim, threshold = 15.5, condition = "GT",
                      pch = 19, # dots instead of default crosses
                      col = "black", # black dots
                      cex = .1) # point expansion factor (to make them very small)
@@ -58,7 +58,7 @@ plotClimatology(climatology(CFS_Iberia_tas),
                 sp.layout = list(pts))
 
 # Suppose we want the stippling just in the first and fifth panels, for instance:
-pts <- map.stippling(p90clim, threshold = 15.5, condition = "GT",
+pts <- transformeR:::map.stippling(p90clim, threshold = 15.5, condition = "GT",
                      pch = 19, col = "black", cex = .1,
                      which = c(1, 5)) # which controls in which panel(s) the points are displayed
 plotClimatology(climatology(CFS_Iberia_tas),

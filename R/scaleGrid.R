@@ -114,7 +114,7 @@
 #' legend("bottomright", c("by.member = FALSE", "by.member = TRUE"), lty = 1, col = c(1,2))
 #' 
 #' # In this example, the anomalies are calculated using a different period specifying a "base".
-#' # Note that "base" could also be a grid of a different dataset, for instance a 
+#' # Note that "base" could also be a grid of a different dataset, for instance a
 #' # reanalysisdata(EOBS_Iberia_tas)
 #' grid <- subsetGrid(EOBS_Iberia_tas, years = 1999:2000)
 #' base <- subsetGrid(EOBS_Iberia_tas, years = 1998)
@@ -126,9 +126,9 @@
 #' str(lc)
 #' # The anomalies are calculated on a monthly basis using the 'time.frame' argument:
 #' lc.m <- scaleGrid(grid = grid, base = base, time.frame = "monthly")
-#' lines(lc.m$Data[,,,15,15], col = "red")
+#' lines(lc.m$Data[,15,15], col = "red")
 #' lc.d <- scaleGrid(grid = grid, base = base, time.frame = "daily")
-#' lines(lc.d$Data[,,,15,15], col = "blue")
+#' lines(lc.d$Data[,15,15], col = "blue")
 #' legend("topleft", c("none", "monthly","daily"), title = "'time.frame'",
 #'        lty = 1, col = c(1,2,4), bty = "n")
 #' 
@@ -141,7 +141,7 @@
 #' lc.ref.m <- scaleGrid(grid = grid, base = base, ref = ref, time.frame = "monthly")
 #' plot(grid$Data[,15,15], ty = "l", ylim = c(-7.5,10))
 #' lines(lc.ref$Data[,,15,15], col = "blue")
-#' lines(lc.ref.m$Data[,,,15,15], col = "red")
+#' lines(lc.ref.m$Data[,15,15], col = "red")
 #' 
 #' # An example using the "ratio" type:
 #' data("EOBS_Iberia_pr")
@@ -169,7 +169,7 @@
 #'                        type = "standardize")
 #' head(apply(grid.corr$Data,MARGIN = c(3,4),mean))
 #' head(apply(grid.corr$Data,MARGIN = c(3,4),sd))
-#'                        
+                     
 
 
 scaleGrid <- function(grid,

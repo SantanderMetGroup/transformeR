@@ -279,7 +279,7 @@ bindGrid.spatial <- function(..., dimn, tol) {
       lat <- unname(lat)
       grid.list <- NULL
       lats <- do.call(coordfun, lat)
-      if (is.list(lats)) lats <- unlist(lats)
+      if (class(lats) == "list") lats <- unlist(lats)
       attr(ref[["Data"]], "dimensions") <- dimNames
       # n.vars <- getShape(ref, "var")
       #if (n.vars > 1) lats <- rep(list(lats), n.vars)
@@ -377,6 +377,7 @@ bindGrid.time <- function(..., tol) {
       if (n.vars > 1) refdates <- rep(list(refdates), n.vars)
       ref[["Dates"]] <- refdates
       ref %<>% sortDim.time()
+      ref <- redim(ref, drop = TRUE)
       return(ref)
 }
 #end

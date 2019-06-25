@@ -42,7 +42,17 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * Edited startup package message
  * Fix typo in on-screen message
 
-## v1.4.7 (in devel)
+## v1.4.7 (17 Dic 2018)
  * Allow calls to bindGrid.member for just one grid without error (a message is given instead)
  * Allow attempts of temporal consistency check with just one grid (with message)
+ * Change the order of priority of the dimensions in aggregateGrid for efficiency.
+ * Bug fix in bindGrid.spatial for the correct heritage of the latitude values in $xyCoords 
  
+## v1.4.8 (16 Apr 2019)
+ * New helper function checkGrid to check if date and member information is correct.
+ * Bug fix in bindGrid related to the "loc" dimension in irregular grids
+ * Other minor changes and documentation updates
+
+## v1.5.0 (24 Jun 2019)
+ * New addition to PCA, allowing for rotated EOF analysis
+ * New helper function `limitArea` to get grid bounding box

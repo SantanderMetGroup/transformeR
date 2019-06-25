@@ -5,8 +5,8 @@
 \title{Principal Component Analysis of Grids}
 \usage{
 prinComp(grid, n.eofs = NULL, v.exp = NULL, which.combine = NULL,
-  scaling = "gridbox", keep.orig = FALSE, quiet = FALSE,
-  imputation = "mean")
+  scaling = "gridbox", keep.orig = FALSE, rot = FALSE,
+  quiet = FALSE, imputation = "mean")
 }
 \arguments{
 \item{grid}{A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object}
@@ -26,6 +26,8 @@ Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}
 
 \item{keep.orig}{Logical flag indicating wheter to return the input data -the standardized input data matrices-
 used to perform the PCA (\code{keep.orig = TRUE}) or not (\code{FALSE}). Default to \code{FALSE}.}
+
+\item{rot}{logical value indicating whether VARIMAX-Rotation should be performed. Default: FALSE.}
 
 \item{quiet}{True to silence all the messages (but not the warnings)}
 

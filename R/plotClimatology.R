@@ -195,13 +195,12 @@ plotClimatology <- function(grid, backdrop.theme = "none", set.min = NULL, set.m
 #' (e.g. for reprojecting via \code{\link[sp]{spTransform}} etc.)
 #'@keywords internal
 #'@author J. Bedia
-#'@export
 #'@importFrom sp GridTopology SpatialGridDataFrame
 #'@examples 
 #' data("CFS_Iberia_tas")
 #' # Climatology is computed:
 #' clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
-#' sgdf <- clim2sgdf(clim, NULL, NULL)
+#' sgdf <- transformeR:::clim2sgdf(clim, NULL, NULL)
 #' class(sgdf)
 
 
@@ -301,7 +300,6 @@ clim2sgdf <- function(clim, set.min, set.max) {
 #' @return A list with a \code{SpatialPoints} object, 
 #' along with optional style arguments like \code{col}, \code{pch}, \code{cex} etc., 
 #' to be passed to the \code{sp.layout} argument in \code{plotClimatology}.
-#' @export
 #' @importFrom sp SpatialPoints
 #' @details The function generates a \code{"sp.points"} layout list. Further formatting arguments can be passed here.
 #'  For further details and examples see the help of \code{\link[sp]{spplot}}.
@@ -318,13 +316,13 @@ clim2sgdf <- function(clim, set.min, set.max) {
 #' 
 #' # We want to highlight the grid points with a 90th percentile > 25.5 degrees, 
 #' # on top of the Tmean model climatology:
-#' pts <- map.stippling(p90clim, threshold = 15.5, condition = "GT")
+#' pts <- transformeR:::map.stippling(p90clim, threshold = 15.5, condition = "GT")
 #' plotClimatology(climatology(CFS_Iberia_tas),
 #'                 backdrop.theme = "coastline",
 #'                 sp.layout = list(pts))
 #' 
 #' # Some useful parameters that can be passed to the layout list:
-#' pts <- map.stippling(p90clim, threshold = 15.5, condition = "GT",
+#' pts <- transformeR:::map.stippling(p90clim, threshold = 15.5, condition = "GT",
 #'                      pch = 19, # dots instead of default crosses
 #'                      col = "black", # black dots
 #'                      cex = .1) # point expansion factor (to make them very small)
@@ -333,7 +331,7 @@ clim2sgdf <- function(clim, set.min, set.max) {
 #'                 sp.layout = list(pts))
 #' 
 #' # Suppose we want the stippling just in the first and fifth panels, for instance:
-#' pts <- map.stippling(p90clim, threshold = 15.5, condition = "GT",
+#' pts <- transformeR:::map.stippling(p90clim, threshold = 15.5, condition = "GT",
 #'                      pch = 19, col = "black", cex = .1,
 #'                      which = c(1, 5)) # which controls in which panel(s) the points are displayed
 #' plotClimatology(climatology(CFS_Iberia_tas),
@@ -379,18 +377,17 @@ map.stippling <- function(clim, threshold = 0.05, condition = "LT", ...) {
 #' @author J Bedia
 #' @importFrom magrittr %>%
 #' @importFrom sp Line Lines SpatialLines
-#' @export
 #' @seealso \code{\link{plotClimatology}}, to which its output is passed.
 #'  \code{\link{map.stippling}}, for further map customizations.
 #' @examples 
 #' data("CFS_Iberia_tas")
 #' # Define a rectangular window centered on the Iberian Peninsula
-#' iberia <- map.lines(lonLim = c(-10,3.5), latLim = c(36,43))
+#' iberia <- transformeR:::map.lines(lonLim = c(-10,3.5), latLim = c(36,43))
 #' plotClimatology(climatology(CFS_Iberia_tas), backdrop.theme = "coastline",
 #'                 sp.layout = list(iberia))
 #' 
 #' # Some customization options (awful, yes, but just for illustration):
-#' iberia <- map.lines(lonLim = c(-10,3.5), latLim = c(36,44),
+#' iberia <- transformeR:::map.lines(lonLim = c(-10,3.5), latLim = c(36,44),
 #'                     lwd = 3, # line width
 #'                     col = "purple", # line color
 #'                     lty = 2) # line type
@@ -398,7 +395,7 @@ map.stippling <- function(clim, threshold = 0.05, condition = "LT", ...) {
 #'                 sp.layout = list(iberia))
 #' 
 #' # Another window over the Alps
-#' alps <- map.lines(lonLim = c(4,16), latLim = c(45,49),
+#' alps <- transformeR:::map.lines(lonLim = c(4,16), latLim = c(45,49),
 #'                   lwd = 3,
 #'                   col = "red") 
 #' plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme = "coastline",
@@ -411,7 +408,7 @@ map.stippling <- function(clim, threshold = 0.05, condition = "LT", ...) {
 #' # Requires the target server to be operative...
 #' dat <- url("http://www.europeanwindstorms.org/repository/Jeanette/Jeanette_track.csv")
 #' custom.coords <- read.csv(dat, header = FALSE)[ ,5:4]
-#' storm <- map.lines(coords = custom.coords,
+#' storm <- transformeR:::map.lines(coords = custom.coords,
 #'                    lwd = 3,
 #'                    col = "red") 
 #' plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme = "coastline",

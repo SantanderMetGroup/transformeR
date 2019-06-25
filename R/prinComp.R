@@ -30,6 +30,7 @@
 #' Currently accepted choices are \code{"field"} (the default) and \code{"gridbox"}. See details.
 #' @param keep.orig Logical flag indicating wheter to return the input data -the standardized input data matrices-
 #'  used to perform the PCA (\code{keep.orig = TRUE}) or not (\code{FALSE}). Default to \code{FALSE}.
+#' @param rot logical value indicating whether VARIMAX-Rotation should be performed. Default: FALSE.
 #' @param quiet True to silence all the messages (but not the warnings)
 #' @param imputation A string value: c("mean","median"). Replaces missing data with the mean or the median when calculating 
 #' the PCs. This approach is based on the literature.
@@ -154,6 +155,7 @@ prinComp <- function(grid,
                      which.combine = NULL,
                      scaling = "gridbox",
                      keep.orig = FALSE,
+                     rot=FALSE,
                      quiet = FALSE,
                      imputation = "mean") {
     if (!is.null(n.eofs) & !is.null(v.exp)) {
@@ -246,7 +248,7 @@ prinComp <- function(grid,
         }
     }
     # PCA
-    pca.list <- prinComp.(Xsc.list, n.eofs, v.exp, keep.orig) 
+    pca.list <- prinComp.(Xsc.list, n.eofs, v.exp, keep.orig, rot) 
     Xsc.list <- NULL
     # Attributes
     names(pca.list) <- var.names
@@ -332,11 +334,13 @@ combine.PCs <- function(Xsc.list) {
 #' @param Xsc.list A nested list of (scaled and centered) input variables (as returned by \code{\link{prinComp.scale}})
 #' @param n.eofs n.eofs vector or NULL
 #' @param v.exp explained variance vector or NULL
+#' @param rot logical value indicating whether VARIMAX-Rotation should be performed.
+#' @importFrom stats varimax
 #' @return A list
 #' @keywords internal
-#' @author J Bedia, M de Felice
+#' @author J Bedia, M de Felice, A Casanueva
 
-prinComp. <- function(Xsc.list, n.eofs, v.exp, keep.orig) {
+prinComp. <- function(Xsc.list, n.eofs, v.exp, keep.orig, rot) {
     pca.list <- vector("list", length(Xsc.list))
     for (i in 1:length(pca.list)) {
         pca.list[[i]] <- lapply(1:length(Xsc.list[[i]]), function(x) {
@@ -356,10 +360,46 @@ prinComp. <- function(Xsc.list, n.eofs, v.exp, keep.orig) {
                     length(explvar)
                 }
             }
-            EOFs <- pr$rotation[ , 1:n, drop = FALSE]
-            explvar <- explvar[1:n]
-            PCs <- pr$x[ , 1:n, drop = FALSE]
-            out <- if (is.combined) {
+           
+            if(rot){
+
+              message("NOTE: Varimax-rotated PCA is performed")
+              if(n<=1) stop("Error: More than one PC is needed for rotation")
+              
+              # rotated PC loadings
+              loadings <- pr$rotation %*% base::diag(pr$sdev) # loadings of original (non-rotated) PCs
+              vm <- varimax(loadings[,1:n, drop = FALSE]) # VARIMAX-Rotation. Is is calculated over the number of desired EOFs.
+              rloadings <- loadings[,1:n, drop = FALSE] %*% vm$rotmat # Loadings of rotated PCs, rotated EOFs.
+              # rotated PC scores
+              rPCs <- scale(pr$x[,1:n, drop = FALSE]) %*% vm$rotmat 
+              # explained variance in rotated singular values
+              rvalues <- colSums(rloadings^2) # singular values of the rotated PCs
+              vmt <- varimax(loadings)
+              vmtloadings <- loadings %*% vmt$rotmat
+              allrvalues <- colSums(vmtloadings^2)
+              rexplvar <- cumsum(rvalues / sum(allrvalues))
+              
+              # save PCs, EOFs with same notation and attributes
+              EOFs <- rloadings
+              attrs <- attributes(pr$rotation)
+              attrs$dim <- dim(EOFs)
+              attrs$dimnames[[2]] <- attrs$dimnames[[2]][1:n]
+              mostattributes(EOFs) <- attrs; rm(attrs)
+              PCs <- rPCs
+              attrs <- attributes(pr$x)
+              attrs$dim <- dim(PCs)
+              attrs$dimnames[[2]] <- attrs$dimnames[[2]][1:n]
+              mostattributes(PCs) <- attrs; rm(attrs)
+              explvar <- rexplvar
+
+            } else{
+
+              EOFs <- pr$rotation[ , 1:n, drop = FALSE]
+              explvar <- explvar[1:n]
+              PCs <- pr$x[ , 1:n, drop = FALSE]
+              
+            }
+             out <- if (is.combined) {
                 list("PCs" = PCs, "EOFs" = EOFs, "orig" = NULL)
             } else {
                 attrs <- attributes(aux)
@@ -368,8 +408,9 @@ prinComp. <- function(Xsc.list, n.eofs, v.exp, keep.orig) {
                 list("PCs" = PCs, "EOFs" = EOFs, "orig" = aux)
             }
             attr(out, "explained_variance") <- explvar
+            if(rot) {attr(out, "rotation") <- "Varimax-rotated PCA"} else{attr(out, "rotation") <- "none"}
             return(out)
-        })
+            })
     }
     return(pca.list)
 } 

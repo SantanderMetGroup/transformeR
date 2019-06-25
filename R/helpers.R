@@ -958,6 +958,8 @@ reorderStation <- function(grid, axis = c("x", "y")) {
 get2DmatCoordinates <- function(grid) {
     if (typeofGrid(grid) == "regular_grid") {
         coords <- getCoordinates(grid) 
+        coords$lon <- NULL
+        coords$lat <- NULL
         aux <- expand.grid(coords)
         aux[order(aux[,1]), ]
     } else if (typeofGrid(grid) == "station") {
@@ -1120,4 +1122,56 @@ getStationID <- function(grid) {
       }
 }
 
+#' @title Check the structure of the grid
+#' @description Check the structure of the grid
+#' @param ... Input grids (including station data)
+#' @return Diagnostic message
+#' @author M. Iturbide
+#' @family check.helpers
+#' @export
 
+
+checkGrid <- function(...) {
+      grid.list <- list(...)
+      if (is.null(names(grid.list))) {
+            nmes <- as.character(as.list(substitute(list(...)))[-1L])
+            if (length(nmes) < length(grid.list)) nmes <- paste0(nmes, 1:length(grid.list))
+            names(grid.list) <- nmes
+      }
+      end.dates.order <- lapply(grid.list, function(x) 
+            identical(1:length(x$Dates$end), order(x$Dates$end))
+      )
+      start.dates.order <- lapply(grid.list, function(x) 
+            identical(1:length(x$Dates$start), order(x$Dates$start))
+      )
+      start.end.dates.length <- lapply(grid.list, function(x) 
+            length(x$Dates$end) == length(x$Dates$start) & length(x$Dates$end) == getShape(redim(x))[["time"]]
+      )
+      member.info <- lapply(grid.list, function(x) 
+            if (getShape(redim(x))[["member"]] > 1) {
+                  if ("Members" %in% names(x)) {
+                        mem <- length(x[["Members"]]) == getShape(redim(x))[["member"]]
+                        if (!mem) warning("Length of member dimension in '$Data' and length of '$Members' do not match.") 
+                  } else {
+                        mem <- FALSE
+                        warning("There is no '$Members' in grid.") 
+                  }
+                  if ("InitializationDates" %in% names(x) & mem) {
+                        length(x[["InitializationDates"]]) == getShape(redim(x))[["member"]]
+                  } else if (mem) {
+                        warning("There is no '$InitializationDates' in grid.")
+                        "WARNING"
+                  } else {
+                        FALSE
+                  }
+            } else {
+                  TRUE
+            }
+      )
+      message.df <- rbind(start.dates.order, start.dates.order, start.end.dates.length, member.info)
+      if (any(message.df == FALSE, na.rm = TRUE)) warning("Errors found in grid structure.")
+      if (any(message.df == "WARNING", na.rm = TRUE)) warning("WARNING: There is no element 'InitializationDates in grid'.")
+      message.df[which(message.df == TRUE)] <- "OK"
+      message.df[which(message.df == FALSE)] <- "ERROR"
+      message.df
+}

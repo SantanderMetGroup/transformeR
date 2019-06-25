@@ -106,7 +106,7 @@ getVarNames(sub2)
 Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{intersectGrid.spatial}},
   \code{\link{intersectGrid.time}},
-  \code{\link{intersectGrid}},
+  \code{\link{intersectGrid}}, \code{\link{limitArea}},
   \code{\link{subsetDimension}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},

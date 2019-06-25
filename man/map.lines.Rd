@@ -35,12 +35,12 @@ The function internally transforms the inputs into \code{\link[sp]{Line}} class 
 \examples{
 data("CFS_Iberia_tas")
 # Define a rectangular window centered on the Iberian Peninsula
-iberia <- map.lines(lonLim = c(-10,3.5), latLim = c(36,43))
+iberia <- transformeR:::map.lines(lonLim = c(-10,3.5), latLim = c(36,43))
 plotClimatology(climatology(CFS_Iberia_tas), backdrop.theme = "coastline",
                 sp.layout = list(iberia))
 
 # Some customization options (awful, yes, but just for illustration):
-iberia <- map.lines(lonLim = c(-10,3.5), latLim = c(36,44),
+iberia <- transformeR:::map.lines(lonLim = c(-10,3.5), latLim = c(36,44),
                     lwd = 3, # line width
                     col = "purple", # line color
                     lty = 2) # line type
@@ -48,7 +48,7 @@ plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme =
                 sp.layout = list(iberia))
 
 # Another window over the Alps
-alps <- map.lines(lonLim = c(4,16), latLim = c(45,49),
+alps <- transformeR:::map.lines(lonLim = c(4,16), latLim = c(45,49),
                   lwd = 3,
                   col = "red") 
 plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme = "coastline",
@@ -61,7 +61,7 @@ plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme =
 # Requires the target server to be operative...
 dat <- url("http://www.europeanwindstorms.org/repository/Jeanette/Jeanette_track.csv")
 custom.coords <- read.csv(dat, header = FALSE)[ ,5:4]
-storm <- map.lines(coords = custom.coords,
+storm <- transformeR:::map.lines(coords = custom.coords,
                    lwd = 3,
                    col = "red") 
 plotClimatology(climatology(CFS_Iberia_tas, by.member = FALSE), backdrop.theme = "coastline",
