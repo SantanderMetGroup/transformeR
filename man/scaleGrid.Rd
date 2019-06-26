@@ -7,8 +7,8 @@
 scaleGrid(grid, base = NULL, ref = NULL, clim.fun = list(FUN =
   "mean", na.rm = TRUE), by.member = TRUE, time.frame = c("none",
   "monthly", "daily"), spatial.frame = c("gridbox", "field"),
-  type = "center", parallel = FALSE, max.ncores = 16,
-  ncores = NULL, skip.season.check = FALSE)
+  type = "center", window.width = NULL, parallel = FALSE,
+  max.ncores = 16, ncores = NULL, skip.season.check = FALSE)
 }
 \arguments{
 \item{grid}{Input grid to be rescaled}
@@ -37,7 +37,10 @@ and \code{"daily"}, for a julian day-based approach. See details.}
 at the field scale (\code{"field"}) or per gridbox (\code{"gridbox"}, the default).}
 
 \item{type}{Character string. Either \code{"center"}, \code{"standardize"} or \code{"ratio"}, depending on wheter the correction factor are anomalies (e.g. temperature...),
-estandardized anomalies or applied as a ratio (e.g. precipitation, wind speed...). See details}
+standardized anomalies or applied as a ratio (e.g. precipitation, wind speed...). See details}
+
+\item{window.width}{Default to NULL. Only applied if time.frame = "daily". In that case the daily mean is removed with a 
+moving average whose size is defined by the window.width parameter.}
 
 \item{parallel}{Logical. Should parallel execution be used?}
 
