@@ -8,7 +8,7 @@
 #' target days (days that are being corrected). If the window length = 1 the window width is no larger than the 
 #' target days. The window is centered on the target day/s (window width >= target days). 
 #' @param delta.method Logical (default is FALSE).
-#' @export
+#' @keywords internal
 #' @author M. Iturbide
 
 getWindowIndex <- function(y, x, newdata, window, delta.method = FALSE){
