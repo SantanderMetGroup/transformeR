@@ -231,22 +231,17 @@ scaleGrid <- function(grid,
         index_grid <- lapply(1:length(window), FUN = function(z) which(doys.grid == window[z])) %>% unlist() %>% sort()
         targets <- which(doys.grid == juliancalendary[x+366])
         targets <- lapply(1:length(targets),FUN = function(z) which(index_grid == targets[z])) %>% unlist()
-        
         grid1 <- subsetDimension(grid, dimension = "time", indices = index_grid)
         if (!is.null(base)) {
-          doys.base <- toJulian(doys.base)
           window <- juliancalendary[(x+366-floor(window.width/2)):(x+366+floor(window.width/2))]
           index_base <- lapply(1:length(window), FUN = function(z) which(doys.base == window[z])) %>% unlist() %>% sort()
-          
           base1 <- subsetDimension(base, dimension = "time", indices = index_base)
         } else {
           base1 <- base
         }
         if (!is.null(ref)) {
-          doys.ref <- toJulian(doys.ref)
           window <- juliancalendary[(x+366-floor(window.width/2)):(x+366+floor(window.width/2))]
           index_ref <- lapply(1:length(window), FUN = function(z) which(doys.ref == window[z])) %>% unlist() %>% sort()
-          
           ref1 <- subsetDimension(ref, dimension = "time", indices = index_ref)
         } else {
           ref1 <- ref
@@ -355,6 +350,8 @@ gridScale. <- function(grid, base, ref, clim.fun, by.member, type, parallel, max
     clim <- asub(clim, idx = targets, dims = ind.time, drop = FALSE) 
     attr(clim,"dimensions") <- dimNames
     n.times <- dim(clim)[ind.time]
+  } else {
+    targets <- 1:n.times
   }
   aux.list <- gridScale.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun, base.std, ref.std)
   Xc <- Xref <- base <- base.m <- base.std <- ref <- ref.std <- NULL
