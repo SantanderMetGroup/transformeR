@@ -25,7 +25,10 @@
 #' @param partial A logic value. If TRUE, only values that do not accomplish the condition will turn to 0 and the others will remain with their original grid real value. 
 #' For example, if condition = "GT" and threshold = 1 then every value lower than 1 will turn to 0. Default is FALSE.
 #' @param ref.obs Grid of observations. It is used to determine the number of days where there is no event (or value equal to 0).
-#' @param ref.pred Grid of predictions- It is used to calculate the threshold that will further be used to convert to binary the grid x.
+#' @param ref.pred Grid of predictions. It is used to calculate the threshold that will further be used to convert to binary the grid x.
+#' @param values A vector of length 2. For example, values = c(0,1), which is the DEFAULT. Then every sample satisfying the condition is 
+#' equal to the second element of 'values' (i.e., in our example would be equal to 1), whereas if a sample does 
+#' not satisfy the condition then takes the first element (i.e., in our example would be equal to 0). 
 #' @return A new grid object with binary values
 #' @details The function works for regular and irregular grids as downloaded from \pkg{loadeR}).
 #' @author J. Bano-Medina
@@ -41,9 +44,8 @@
 #' ybin2 <- binaryGrid(VALUE_Iberia_pr,threshold = 1, partial = TRUE)
 #' head(ybin2$Data)
 
-binaryGrid <- function(x, condition = "GE", threshold = NULL, partial = FALSE, ref.obs = NULL, ref.pred = NULL) {
+binaryGrid <- function(x, condition = "GE", threshold = NULL, partial = FALSE, ref.obs = NULL, ref.pred = NULL, values = c(0,1)) {
   condition <- match.arg(condition, choices = c("GT", "GE", "LT", "LE"))
-  dimNames <- getDim(x)
   loc <- FALSE
   if (!isRegular(x)) {loc <- TRUE}
   x <- redim(x, loc = loc)
@@ -67,7 +69,7 @@ binaryGrid <- function(x, condition = "GE", threshold = NULL, partial = FALSE, r
       for (i in 1:length(frec)) {
         if (condition == "LT" | condition == "LE") {frec[i] <- 1 - frec[i]}
         thre <- quantile(xx.pred[,i],frec[i], na.rm = TRUE)
-        xbin[,i] <- binaryGrid.(xx[,i], condition = condition, threshold = thre, partial = partial)
+        xbin[,i] <- binaryGrid.(xx[,i], condition = condition, threshold = thre, partial = partial, values = values)
       }
       
     } else {
@@ -76,7 +78,7 @@ binaryGrid <- function(x, condition = "GE", threshold = NULL, partial = FALSE, r
       } else {
         xx <- subsetGrid(x,members = j)$Data
       }
-      xbin <- binaryGrid.(xx, condition = condition, threshold = threshold, partial = partial)
+      xbin <- binaryGrid.(xx, condition = condition, threshold = threshold, partial = partial, values = values)
     }
     
     if (isRegular(x)) {
@@ -85,11 +87,10 @@ binaryGrid <- function(x, condition = "GE", threshold = NULL, partial = FALSE, r
       x$Data[j,,] <- xbin
     }
   }
-  x$Data <- drop(x$Data)
-  attr(x$Data, "dimensions") <- dimNames
+  x <- redim(x,drop = TRUE)
   return(x)}
 
-binaryGrid. <- function(x, condition, threshold, partial) {
+binaryGrid. <- function(x, condition, threshold, partial, values) {
   ineq1 <- switch(condition,
                   "GT" = ">",
                   "GE" = ">=",
@@ -103,8 +104,8 @@ binaryGrid. <- function(x, condition, threshold, partial) {
   if (!partial) {
     ind0 <- eval(parse(text = paste("x", ineq2, "threshold")))
     ind1 <- eval(parse(text = paste("x", ineq1, "threshold")))
-    x[ind0] <- 0
-    x[ind1] <- 1
+    x[ind0] <- values[1]
+    x[ind1] <- values[2]
   } else {
-    x[eval(parse(text = paste("x", ineq2, "threshold")))] <- 0}
+    x[eval(parse(text = paste("x", ineq2, "threshold")))] <- values[1]}
   return(x)}

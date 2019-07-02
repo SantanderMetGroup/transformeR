@@ -5,7 +5,7 @@
 \title{Convert grid values to a binary variable}
 \usage{
 binaryGrid(x, condition = "GE", threshold = NULL, partial = FALSE,
-  ref.obs = NULL, ref.pred = NULL)
+  ref.obs = NULL, ref.pred = NULL, values = c(0, 1))
 }
 \arguments{
 \item{x}{The input grid to be converted to binary. It can be an object or a matrix/array.}
@@ -21,7 +21,11 @@ For example, if condition = "GT" and threshold = 1 then every value lower than 1
 
 \item{ref.obs}{Grid of observations. It is used to determine the number of days where there is no event (or value equal to 0).}
 
-\item{ref.pred}{Grid of predictions- It is used to calculate the threshold that will further be used to convert to binary the grid x.}
+\item{ref.pred}{Grid of predictions. It is used to calculate the threshold that will further be used to convert to binary the grid x.}
+
+\item{values}{A vector of length 2. For example, values = c(0,1), which is the DEFAULT. Then every sample satisfying the condition is 
+equal to the second element of 'values' (i.e., in our example would be equal to 1), whereas if a sample does 
+not satisfy the condition then takes the first element (i.e., in our example would be equal to 0).}
 }
 \value{
 A new grid object with binary values
