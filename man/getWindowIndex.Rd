@@ -26,3 +26,4 @@ Get the index of the days that corresponding to the window and the target days c
 \author{
 M. Iturbide
 }
+\keyword{internal}
