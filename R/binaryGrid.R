@@ -74,7 +74,7 @@ binaryGrid <- function(x, condition = "GE", threshold = NULL, partial = FALSE, r
       
     } else {
       if (isRegular(x)) {
-        xx <- suppressWarnings(array3Dto2Dmat(subsetGrid(x,members = j)$Data))
+        xx <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(x,members = j), member = FALSE)$Data))
       } else {
         xx <- subsetGrid(x,members = j)$Data
       }
