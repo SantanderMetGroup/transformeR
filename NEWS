@@ -53,7 +53,9 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * Bug fix in bindGrid related to the "loc" dimension in irregular grids
  * Other minor changes and documentation updates
 
-## v1.5.0 (01 Jul 2019)
+## v1.5.0 (09 Jul 2019)
  * New addition to PCA, allowing for rotated EOF analysis
  * New helper function `limitArea` to get grid bounding box
  * New helper function `getWindowIndex`, for moving window applications
+ * Other internal helper additions and minor bug fixes
+ 
