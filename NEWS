@@ -58,4 +58,8 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * New helper function `limitArea` to get grid bounding box
  * New helper function `getWindowIndex`, for moving window applications
  * Other internal helper additions and minor bug fixes
- 
+
+## 1.5.1 (12 Jul 2019)
+ * Minor bug fix in `binaryGrid`
+ * New helper  matchStations` for consistent reordering of station datasets
+ * Improvement in `subsetGrid` for preservation of all station metadata
