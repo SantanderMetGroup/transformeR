@@ -581,6 +581,11 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
         }
         if ("loc" %in% dimension) {
               grid$xyCoords <- grid$xyCoords[indices,]  
+              grid$Metadata$station_id <- grid$Metadata$station_id[indices]
+              grid$Metadata$name <- grid$Metadata$name[indices]
+              grid$Metadata$altitude <- grid$Metadata$altitude[indices]
+              grid$Metadata$source <- grid$Metadata$source[indices]
+              grid$Metadata$PRUDENCEregions <- grid$Metadata$PRUDENCEregions[indices]
         }
         if ("member" %in% dimension) {
             grid$Members <- grid$Members[indices]
