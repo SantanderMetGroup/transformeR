@@ -20,9 +20,9 @@ Suggests:
     loadeR.ECOMS,
     visualizeR
 Type: Package
-Title: An R package for climate data manipulation and transformation
-Version: 1.5.0
-Date: 2019-07-01
+Title: A climate4R package for general climate data manipulation and transformation
+Version: 1.5.1
+Date: 2019-07-13
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
     "Jorge Baño Medina <bmedina@ifca.unican.es> [ctb]",
@@ -33,7 +33,7 @@ Authors@R: as.person(c(
     "Sixto Herrera <sixto@predictia.es> [ctb]",
     "Maialen Iturbide <miturbide@ifca.unican.es> [aut]"))
 BugReports: https://github.com/SantanderMetGroup/transformeR/issues
-URL: https://github.com/SantanderMetGroup/transformeR/wiki
+URL: http://www.meteo.unican.es/climate4r
 Encoding: UTF-8
 Description: Tools for climate data analysis, visualization and manipulation. A building block of the climate4R Framework <http://www.meteo.unican.es/climate4R>). 
 License: file LICENSE
