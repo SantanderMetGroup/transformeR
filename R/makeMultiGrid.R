@@ -139,7 +139,9 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
             # Lista de todos los atributos de todos los grids, menos el primero ('names')
             aux.attr.list <- lapply(1:length(field.list), function(x) attributes(field.list[[x]]$Variable))
             auxl <- lapply(1:length(aux.attr.list), function(x) names(aux.attr.list[[x]]))
-            all.attrs <- Reduce(union, auxl)[-1]
+            #all.attrs <- Reduce(union, auxl)[-1]
+            aux.attrs <- Reduce(union, auxl)
+            all.attrs <- aux.attrs[-which(aux.attrs=="names")] # filter no-names attrs, regardless of the position in the list
             aux.attr.list <- NULL
             l <- vector("list", length(all.attrs))
             names(l) <- all.attrs
