@@ -154,15 +154,18 @@ clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method){
   
   #Add attributes depending on the cluster algorithm
   if(is.null(type) | type == "kmeans"){
+    attr(aux, "cluster")<- kmModel$cluster
     attr(aux, "centers")<- centers
     attr(aux, "withinss")<- kmModel$withinss
     attr(aux, "betweenss")<- kmModel$betweenss
   }else if(type == "hierarchical"){
+    attr(aux, "cluster")<- memb
     attr(aux, "centers")<- centers
     attr(aux, "height")<- hc$height
     attr(aux, "cutree.at.height")<- hc$height[index[1]+1] #the previous heigth divides in "centers" numb. of clusters 
     attr(aux, "diff.height.threshold")<- (quantile.range[[2]]-quantile.range[[1]])
   }else if (type == "som"){
+    attr(aux, "cluster")<- som.grid$unit.classif
     if (is.null(centers)){
       attr(aux, "centers")<- 6*8
     }else {
