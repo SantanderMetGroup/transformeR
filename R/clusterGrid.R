@@ -42,8 +42,6 @@
 #'Otherwise, by default 48 clusters (8x6) with rectangular topology are obtained. 
 #'@author J. A. Fernandez
 #'@export
-#'@importFrom stats kmeans hclust cutree
-#'@importFrom kohonen som somgrid
 #'@importFrom magrittr %>% 
 #'@examples 
 #'#Example of K-means clustering: 
@@ -58,26 +56,23 @@
 #'
 #'#Example of K-means clustering of several variables:
 #' data(NCEP_Iberia_ta850, package = "transformeR")
-#' clusters<- clusterGrid(makeMultiGrid(NCEP_Iberia_psl, NCEP_Iberia_ta850), type="kmeans", centers=10, iter.max=1000)
+#' clusters<- clusterGrid(makeMultiGrid(NCEP_Iberia_psl, NCEP_Iberia_ta850),
+#'                        type="kmeans", centers=10, iter.max=1000)
 
-
-
-clusterGrid <- function(grid, type="kmeans", centers=NULL, iter.max=10, nstart=1, method = "complete"){
+clusterGrid <- function(grid, type = "kmeans", centers = NULL, iter.max = 10, nstart = 1, method = "complete") {
+  type <- match.arg(type, choices = c("kmeans", "hierarchical", "som"))
   var.names <- getVarNames(grid)
-  n.var<-length(var.names)
-
-    Xsc.list<- lapply(1:length(var.names), function(x) {
-    l <- suppressWarnings(subsetGrid(grid, var = var.names[x]) %>% redim(member = TRUE))
+  Xsc.list <- lapply(1:length(var.names), function(x) {
+    l <- suppressWarnings(subsetGrid(grid, var = var.names[x])) %>% redim(member = TRUE)
     n.mem <- getShape(l, "member")
-    d <-lapply(1:n.mem, function(m) {
+    d <- lapply(1:n.mem, function(m) {
       # calculate clusters of 3D data
-      sub.grid <- subsetGrid(l, members = m, drop = TRUE)
+      sub.grid <- suppressMessages(subsetGrid(l, members = m, drop = TRUE))
       clusters <- suppressWarnings(clusterGrid_3D(sub.grid, type, centers, iter.max, nstart, method))
-     }) 
+    }) 
     l.list <- suppressWarnings(bindGrid(d, dimension = "member"))
   }) 
   out <- suppressWarnings(makeMultiGrid(Xsc.list))
-
   return(out)
 }
 
@@ -96,82 +91,76 @@ clusterGrid <- function(grid, type="kmeans", centers=NULL, iter.max=10, nstart=1
 #'@param method (for the hierarchical algorithm) Agglomeration method to be used, one of "complete" (default), "ward.D", "ward.D2", "single",
 #'"average", "mcquitty", "median" or "centroid".  
 #'@keywords internal
+#'@importFrom stats kmeans hclust cutree dist quantile
+#'@importFrom kohonen som somgrid
 #'@return A new 3D grid object that contains the clusters created using the specified algorithm.
 #'The clustering type, number of clusters and other algorithm-specific parameters are provided as attributes.
 
 
 clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method){
-  
-  type=tolower(type)
+  type = tolower(type)
   grid.2D <- array3Dto2Dmat(grid$Data) #From 3D to 2D
-  
-  if(is.null(type) | type == "kmeans"){
-    if (is.null(centers)){
+  if (is.null(type) | type == "kmeans") {
+    if (is.null(centers)) {
       stop("in 'centers'.\n In K-means the number of clusters ('centers') needs to be provided")
     }
-    kmModel <- kmeans(grid.2D, centers, iter.max = iter.max, nstart =nstart) #Datos de entrenamiento en KNN     
+    kmModel <- kmeans(grid.2D, centers, iter.max = iter.max, nstart = nstart) #Datos de entrenamiento en KNN     
     #Going back from 2D to 3D:
     Y <- mat2Dto3Darray(kmModel$centers, grid$xyCoords$x, grid$xyCoords$y)
-    
-  }else if (type == "hierarchical"){
+  } else if (type == "hierarchical") {
     hc <- hclust(dist(grid.2D), method)
-    if(is.null(centers)){
-      #Auto-calculation of the number of clusters: Quartile method applied
-      quantile.range<-quantile(hc$height, c(0.25,0.75))
-      hc.height.diff<-numeric(length(hc$height)-1)
-      for (i in 1:length(hc$height)-1){
-        hc.height.diff[i]<-hc$height[i+1]-hc$height[i]
+    if (is.null(centers)) {
+      # Auto-calculation of the number of clusters: Quartile method applied
+      quantile.range <- quantile(hc$height, c(0.25, 0.75))
+      hc.height.diff <- numeric(length(hc$height) - 1)
+      for (i in 1:length(hc$height) - 1) {
+        hc.height.diff[i] <- hc$height[i + 1] - hc$height[i]
       }
-      index <- which(hc.height.diff > (quantile.range[[2]]-quantile.range[[1]]))
-      centers <- length(hc$order)-index[1]
+      index <- which(hc.height.diff > (quantile.range[[2]] - quantile.range[[1]]))
+      centers <- length(hc$order) - index[1]
     }
     memb <- cutree(hc, k = centers) #Found the corresponding cluster for every element
     cent <- NULL
-    for(k in 1:centers){   #Set up the centers of the clusters
-      cent <- rbind(cent, colMeans(grid.2D[memb == k, , drop = FALSE]))
+    for (k in 1:centers) {   #Set up the centers of the clusters
+      cent <- rbind(cent, colMeans(grid.2D[memb == k, ,drop = FALSE]))
     }
     Y <- mat2Dto3Darray(cent, grid$xyCoords$x, grid$xyCoords$y)
-    
-  }else if (type == "som"){
-    if(is.null(centers)){
-      som.grid<-som(grid.2D)
-    }else {
-      if(length(centers)!=2){
+  } else if (type == "som") {
+    if (is.null(centers)) {
+      som.grid <- som(grid.2D)
+    } else {
+      if (length(centers) != 2) {
         stop("in 'centers'.\n Unexpected lenght for this argument while using SOM. It must be a vector of 2 elements")
       }
-      som.grid<-som(grid.2D, somgrid(xdim=centers[1],ydim=centers[2],topo="rectangular"))
+      som.grid <- som(grid.2D, somgrid(xdim = centers[1], ydim=centers[2], topo = "rectangular"))
     }
     Y <- mat2Dto3Darray(som.grid$codes[[1]], grid$xyCoords$x, grid$xyCoords$y)
   } else {
-    stop("Input data is not valid.\n'", paste(type),"' is not a valid algorithm")
+    stop("Input data is not valid.\n'", paste(type), "' is not a valid algorithm")
   }
-  
   #Setting up metadata for Y
   aux <- grid
   aux$Data <- Y
-  attr(aux, "cluster.type")<- type
- # aux$Variable$varName<-"clusters"
-  
-  #Add attributes depending on the cluster algorithm
-  if(is.null(type) | type == "kmeans"){
-    attr(aux, "cluster")<- kmModel$cluster
-    attr(aux, "centers")<- centers
-    attr(aux, "withinss")<- kmModel$withinss
-    attr(aux, "betweenss")<- kmModel$betweenss
-  }else if(type == "hierarchical"){
-    attr(aux, "cluster")<- memb
-    attr(aux, "centers")<- centers
-    attr(aux, "height")<- hc$height
-    attr(aux, "cutree.at.height")<- hc$height[index[1]+1] #the previous heigth divides in "centers" numb. of clusters 
-    attr(aux, "diff.height.threshold")<- (quantile.range[[2]]-quantile.range[[1]])
-  }else if (type == "som"){
-    attr(aux, "cluster")<- som.grid$unit.classif
-    if (is.null(centers)){
-      attr(aux, "centers")<- 6*8
-    }else {
-      attr(aux, "centers")<- centers[1]*centers[2]
+  attr(aux, "cluster.type") <- type
+  # Add attributes depending on the cluster algorithm
+  if (type == "kmeans") {
+    attr(aux, "cluster") <- kmModel$cluster
+    attr(aux, "centers") <- centers
+    attr(aux, "withinss") <- kmModel$withinss
+    attr(aux, "betweenss") <- kmModel$betweenss
+  } else if (type == "hierarchical") {
+    attr(aux, "cluster") <- memb
+    attr(aux, "centers") <- centers
+    attr(aux, "height") <- hc$height
+    attr(aux, "cutree.at.height") <- hc$height[index[1] + 1] #the previous heigth divides in "centers" numb. of clusters 
+    attr(aux, "diff.height.threshold") <- (quantile.range[[2]] - quantile.range[[1]])
+  } else if (type == "som") {
+    attr(aux, "cluster") <- som.grid$unit.classif
+    if (is.null(centers)) {
+      attr(aux, "centers") <- "6x8"
+    } else {
+      attr(aux, "centers") <- centers[1] * centers[2]
     }
   }
   return(aux)
 }
-

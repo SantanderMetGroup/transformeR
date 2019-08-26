@@ -23,21 +23,25 @@ This subset grid of clusters is ready to be plotted with C4R plotting tools, e.g
 \description{
 This function allows to prepare a grid of clusters (included in 'time' dimension) for plotting. A subset of a variable and/or member is also performed in multimember or multigrid objects.
 }
-\details{
-
-}
 \examples{
 #Example 1: 'cluster' is a 3D grid of clusters.
 data(NCEP_Iberia_psl, package = "transformeR")
-clusters<- clusterGrid(NCEP_Iberia_psl, type="kmeans", centers=10)
+clusters<- clusterGrid(NCEP_Iberia_psl, type = "kmeans", centers = 10)
 mg <- cluster2plot(clusters)
-visualizeR::spatialPlot(mg, backdrop.theme = "coastline", rev.colors = TRUE, layout = c(2,ceiling(attr(clusters, "centers")/2)), as.table=TRUE)
+require(visualizeR)
+spatialPlot(mg, backdrop.theme = "coastline", rev.colors = TRUE,
+            layout = c(2,ceiling(attr(clusters, "centers")/2)),
+             as.table = TRUE)
 
-#Example 2: 'cluster' is a grid of clusters with two variables (same for members). 
+#Example 2: 'cluster' is a grid of clusters with two variables (same for members)
+ 
 data(NCEP_Iberia_ta850, package = "transformeR")
-clusters<- clusterGrid(makeMultiGrid(NCEP_Iberia_psl, NCEP_Iberia_ta850), type="kmeans", centers=10, iter.max=1000)
-mg <- cluster2plot(clusters, members=1, var="psl") #To obtain first member and variable called "psl"
-visualizeR::spatialPlot(mg, backdrop.theme = "coastline", rev.colors = TRUE, layout = c(2,ceiling(attr(clusters, "centers")/2)), as.table=TRUE)
+clusters <- clusterGrid(makeMultiGrid(NCEP_Iberia_psl, NCEP_Iberia_ta850),
+                        type="kmeans", centers=10, iter.max=1000)
+# To obtain first member and variable called "psl"
+mg <- cluster2plot(clusters, members = 1, var = "psl") 
+spatialPlot(mg, backdrop.theme = "coastline", rev.colors = TRUE,
+            layout = c(2,ceiling(attr(clusters, "centers")/2)), as.table=TRUE)
 }
 \seealso{
 \link[transformeR]{makeMultiGrid}, \link[transformeR]{subsetGrid}, \link[transformeR]{subsetDimension}.
