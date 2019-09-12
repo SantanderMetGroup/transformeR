@@ -26,36 +26,41 @@
 #'@seealso \link[transformeR]{makeMultiGrid}, \link[transformeR]{subsetGrid}, \link[transformeR]{subsetDimension}.
 #'@return A new C4R grid object that contains the clusters from the specified variable and/or member. 
 #'This subset grid of clusters is ready to be plotted with C4R plotting tools, e.g. \code{spatialPlot}, since clusters are intrepreted as variables (see \link[transformeR]{makeMultiGrid}).
-#'@details  
 #'@author J. A. Fernandez
 #'@export
 #'@examples 
-#'#Example 1: 'cluster' is a 3D grid of clusters.
-#'data(NCEP_Iberia_psl, package = "transformeR")
-#'clusters<- clusterGrid(NCEP_Iberia_psl, type="kmeans", centers=10)
-#'mg <- cluster2plot(clusters)
-#'visualizeR::spatialPlot(mg, backdrop.theme = "coastline", rev.colors = TRUE, layout = c(2,ceiling(attr(clusters, "centers")/2)), as.table=TRUE)
+#' #Example 1: 'cluster' is a 3D grid of clusters.
+#' data(NCEP_Iberia_psl, package = "transformeR")
+#' clusters<- clusterGrid(NCEP_Iberia_psl, type = "kmeans", centers = 10)
+#' mg <- cluster2plot(clusters)
+#' require(visualizeR)
+#' spatialPlot(mg, backdrop.theme = "coastline", rev.colors = TRUE,
+#'             layout = c(2,ceiling(attr(clusters, "centers")/2)),
+#'              as.table = TRUE)
 #'
-#'#Example 2: 'cluster' is a grid of clusters with two variables (same for members). 
-#'data(NCEP_Iberia_ta850, package = "transformeR")
-#'clusters<- clusterGrid(makeMultiGrid(NCEP_Iberia_psl, NCEP_Iberia_ta850), type="kmeans", centers=10, iter.max=1000)
-#'mg <- cluster2plot(clusters, members=1, var="psl") #To obtain first member and variable called "psl"
-#'visualizeR::spatialPlot(mg, backdrop.theme = "coastline", rev.colors = TRUE, layout = c(2,ceiling(attr(clusters, "centers")/2)), as.table=TRUE)
-
+#' #Example 2: 'cluster' is a grid of clusters with two variables (same for members)
+#'  
+#' data(NCEP_Iberia_ta850, package = "transformeR")
+#' clusters <- clusterGrid(makeMultiGrid(NCEP_Iberia_psl, NCEP_Iberia_ta850),
+#'                         type="kmeans", centers=10, iter.max=1000)
+#' # To obtain first member and variable called "psl"
+#' mg <- cluster2plot(clusters, members = 1, var = "psl") 
+#' spatialPlot(mg, backdrop.theme = "coastline", rev.colors = TRUE,
+#'             layout = c(2,ceiling(attr(clusters, "centers")/2)), as.table=TRUE)
 
 
 cluster2plot <- function(cluster, members=1, var=getVarNames(cluster)[1]){
-  
   #check if input grid has cluster_type attrib. 
-  if(is.null(attr(cluster, "cluster.type"))){
+  if (is.null(attr(cluster, "cluster.type"))) {
     stop("Input grid is not a grid of clusters.")
   }
-  s<- subsetGrid(cluster, var=var, members = members, drop=TRUE) #dimension members was = 2, after this is = 1
+  s <- subsetGrid(cluster, var = var, members = members, drop = TRUE) #dimension members was = 2, after this is = 1
   cluster.grids <- lapply(1:attr(s, "centers"), function(x) {
-    subsetDimension(s, dimension="time", indices=x)})
+    subsetDimension(s, dimension = "time", indices = x)
+  })
   mg <- do.call("makeMultiGrid", c(cluster.grids, skip.temporal.check = TRUE))
-  attr(mg$Variable,"longname")<-paste("Cluster_", 1:getShape(mg, "var"),sep="") #Prints Cluster_1, Cluster_2, etc...
-
-    return(mg)
+  #Prints Cluster_1, Cluster_2, etc...
+  attr(mg$Variable,"longname") <- paste0("Cluster_", 1:getShape(mg, "var")) 
+  return(mg)
 }
 

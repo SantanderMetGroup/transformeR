@@ -66,7 +66,8 @@ clusters<- clusterGrid(NCEP_Iberia_psl, type="som", centers = c(10,1))
 
 #Example of K-means clustering of several variables:
 data(NCEP_Iberia_ta850, package = "transformeR")
-clusters<- clusterGrid(makeMultiGrid(NCEP_Iberia_psl, NCEP_Iberia_ta850), type="kmeans", centers=10, iter.max=1000)
+clusters<- clusterGrid(makeMultiGrid(NCEP_Iberia_psl, NCEP_Iberia_ta850),
+                       type="kmeans", centers=10, iter.max=1000)
 }
 \seealso{
 \link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen]{som}.
