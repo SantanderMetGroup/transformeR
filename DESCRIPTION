@@ -22,8 +22,8 @@ Suggests:
     visualizeR
 Type: Package
 Title: A climate4R package for general climate data manipulation and transformation
-Version: 1.5.2
-Date: 2019-08-14
+Version: 1.6.0
+Date: 2019-09-17
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
     "Jorge Baño Medina <bmedina@ifca.unican.es> [ctb]",
