@@ -157,10 +157,11 @@ clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method){
   } else if (type == "som") {
     attr(aux, "cluster") <- som.grid$unit.classif
     if (is.null(centers)) {
-      attr(aux, "centers") <- "6x8"
+      attr(aux, "centers") <- 8*6
     } else {
       attr(aux, "centers") <- centers[1] * centers[2]
     }
   }
   return(aux)
 }
+
