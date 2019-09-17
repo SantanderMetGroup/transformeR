@@ -54,7 +54,7 @@ cluster2plot <- function(cluster, members=1, var=getVarNames(cluster)[1]){
   if (is.null(attr(cluster, "cluster.type"))) {
     stop("Input grid is not a grid of clusters.")
   }
-  s <- subsetGrid(cluster, var = var, members = members, drop = TRUE) #dimension members was = 2, after this is = 1
+  s <- subsetGrid(cluster, var = var, members = members, drop = TRUE) #dimension members was >= 1, after this is = 1
   cluster.grids <- lapply(1:attr(s, "centers"), function(x) {
     subsetDimension(s, dimension = "time", indices = x)
   })
