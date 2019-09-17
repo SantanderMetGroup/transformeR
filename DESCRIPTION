@@ -13,7 +13,8 @@ Imports:
     sp,
     stats,
     utils,
-    raster
+    raster,
+    kohonen
 Suggests:
     downscaleR,      
     loadeR,
@@ -21,8 +22,8 @@ Suggests:
     visualizeR
 Type: Package
 Title: A climate4R package for general climate data manipulation and transformation
-Version: 1.5.1
-Date: 2019-07-13
+Version: 1.6.0
+Date: 2019-09-17
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
     "Jorge Baño Medina <bmedina@ifca.unican.es> [ctb]",
@@ -31,7 +32,8 @@ Authors@R: as.person(c(
     "Matteo De Felice <matteo.defelice@enea.it> [ctb]",
     "José Manuel Gutiérrez <gutierjm@unican.es> [ctb]",
     "Sixto Herrera <sixto@predictia.es> [ctb]",
-    "Maialen Iturbide <miturbide@ifca.unican.es> [aut]"))
+    "Maialen Iturbide <miturbide@ifca.unican.es> [aut]", 
+    "Juan A. Fernandez <jfd70@alumnos.unican.es> [ctb]"))
 BugReports: https://github.com/SantanderMetGroup/transformeR/issues
 URL: http://www.meteo.unican.es/climate4r
 Encoding: UTF-8
