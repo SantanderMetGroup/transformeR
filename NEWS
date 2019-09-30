@@ -64,6 +64,7 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * New helper  `matchStations` for consistent reordering of station datasets
  * Improvement in `subsetGrid` for preservation of all station metadata
  
-## 1.5.2 (14 Aug 2019)
- * New function added for cluster analysis: clusterGrid.R and cluster2plot.R
+## 1.6.0 (30 Sep 2019)
+ * New functions for cluster analysis: `clusterGrid.R` and internall helper `cluster2plot.R`
+ * New helper `getGridProj` for projection retrieval
  

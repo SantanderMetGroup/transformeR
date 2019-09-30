@@ -17,7 +17,7 @@ Obtain grid coordinates as 2D matrix
 }
 \seealso{
 Other get.helpers: \code{\link{getCoordinates}},
-  \code{\link{getDim}},
+  \code{\link{getDim}}, \code{\link{getGridProj}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},
   \code{\link{getSeason}}, \code{\link{getShape}},
