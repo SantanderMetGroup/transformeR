@@ -39,20 +39,44 @@
 pattern2grid <- function(pattern, index.code, members=1, season=1,
                        coords=NULL, dates=NULL){
   
-
+  cpc.index <- c("NAO", "EA", "WP", "EP/NP", "PNA", "EA/WR", "SCA", "TNH", "POL", "PT")
+  enso.index <- c("NINO3.4", "ONI")
+  wt.index <- c("kmeans", "som", "hierarchical", "lamb")
+  
+  choices <- c(cpc.index, enso.index, wt.index)
+  
   ind.index <- which(names(pattern) %in% index.code)
-  ind.seas <- which(names(pattern[[ind.index]][[members]]) %in% paste0("Month_",season))
+  ind.seas <- which(names(pattern[[ind.index]][[members]]) %in% paste0("Month_",season)) #get season form list 'pattern'
   
-  grid <- list()
-  grid$Variable <- list(varName=index.code, level=NULL)
-  attr(grid$Variable, "description") <- "Teleconnection index obtained with circIndexGrid"
-  attr(grid$Variable, "longname") <- index.code
-  
-  grid$Data <- pattern[[ind.index]][[members]][[ind.seas]]$pattern 
-  attr(grid$Data, "dimensions") <- c("lat","lon")
-  
-  grid$xyCoords <- coords
-  grid$Dates <- dates
+  if ((length(ind.index)==1) && (choices > 12)){
+    
+    res <- list()
+    res$Variable <- list(varName=index.code, level=NULL)
+    attr(res$Variable, "description") <- "Teleconnection index obtained with circIndexGrid"
+    attr(res$Variable, "longname") <- index.code  #should this be change to the name of the variable?
+    attr(res, "cluster.type") <- index.code
+    res$Data <- pattern[[ind.index]][[members]][[1]]$pattern 
+    attr(res$Data, "dimensions") <- c("time","lat","lon")
+    attr(res, "centers") <- attr(pattern[[ind.index]][[members]][[1]], "centers")
+    res$xyCoords <- coords
+    res$Dates <- dates
+    grid <- cluster2plot(res)
+    
+  }else {
+    
+    grid <- list()
+    grid$Variable <- list(varName=index.code, level=NULL)
+    attr(grid$Variable, "description") <- "Teleconnection index obtained with circIndexGrid"
+    attr(grid$Variable, "longname") <- index.code
+    
+    grid$Data <- pattern[[ind.index]][[members]][[ind.seas]]$pattern 
+    attr(grid$Data, "dimensions") <- c("lat","lon")
+    
+    grid$xyCoords <- coords
+    grid$Dates <- dates
+    
+  }
   
   return(grid)
 }
+
