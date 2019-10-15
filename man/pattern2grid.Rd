@@ -10,11 +10,7 @@ pattern2grid(pattern, index.code, members = 1, season = 1,
 \arguments{
 \item{pattern}{A climate4R pattern, obtained from \code{circIndexGrid}.}
 
-<<<<<<< HEAD
 \item{index.code}{Circulation index to be extracted. Only ONE circulation index can be extracted at a time. See \code{circIndexShow()} for details.}
-=======
-\item{index.code}{Circulation index to be extracted. See \code{circIndexShow()} for details.}
->>>>>>> 2746b9463176502ca032730b81ff947bf53c96e2
 
 \item{members}{In a model ensemble, position of the desired member. Default: 1 (no member dimension).}
 
