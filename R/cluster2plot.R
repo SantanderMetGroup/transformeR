@@ -59,8 +59,9 @@ cluster2plot <- function(cluster, members=1, var=getVarNames(cluster)[1]){
     subsetDimension(s, dimension = "time", indices = x)
   })
   mg <- do.call("makeMultiGrid", c(cluster.grids, skip.temporal.check = TRUE))
-  #Prints Cluster_1, Cluster_2, etc...
-  attr(mg$Variable,"longname") <- paste0("Cluster_", 1:getShape(mg, "var")) 
+  #Prints varName_cluster1, varName_cluster2, etc...
+  attr(mg$Variable, "longname") <- paste0(getVarNames(mg), "_cluster", 1:getShape(mg, "var")) 
+  mg$Variable$varName <- paste0(getVarNames(mg), "_cluster", 1:getShape(mg, "var"))
   return(mg)
 }
 
