@@ -66,6 +66,8 @@ upscaleGrid <- function(grid, times = 2,
       ))
       grid <- bindGrid(grid.list.lat, dimension = "lat")
       grid$xyCoords$y <- newcoords
+      attr(grid$xyCoords, "resX") <- attr(grid$xyCoords, "resX") * times
+      attr(grid$xyCoords, "resY") <- attr(grid$xyCoords, "resY") * times
       return(grid)
 }
 
