@@ -44,7 +44,7 @@ See  \link[stats]{kmeans} for more details in the implementation.
 While using the hierarchical algorithm (check \link[stats]{hclust} for further information) 
 \code{clusterGrid} allows the user either to especify the number of clusters ('centers') or not. 
 If the argument 'centers' is not provided, they are automatically set and the tree is cut when the height 
-difference between two consecutive divisions (sorted in ascending order) is larger than the intercuartile 
+difference between two consecutive divisions (sorted in ascending order) is larger than the interquartile 
 range of the heights vector (see \link[stats]{cutree}) . 
 
 \strong{som}
