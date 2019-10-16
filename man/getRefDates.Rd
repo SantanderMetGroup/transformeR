@@ -36,6 +36,7 @@ str(getRefDates(NCEP_Iberia_hus850, which = "end"))
 \seealso{
 Other get.helpers: \code{\link{get2DmatCoordinates}},
   \code{\link{getCoordinates}}, \code{\link{getDim}},
+  \code{\link{getGridProj}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getGrid}}, \code{\link{getSeason}},
   \code{\link{getShape}}, \code{\link{getStationID}},
