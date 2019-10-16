@@ -69,5 +69,5 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * New internal helpers `cluster2plot.R` and `pattern2grid`
  * New helper `getGridProj` for proj string retrieval
  
-## 1.6.0 (04 Oct 2019)
+## 1.6.1 (16 Oct 2019)
  * Minor bug fix in `clusterGrid.R`
