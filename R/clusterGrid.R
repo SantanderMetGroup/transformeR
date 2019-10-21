@@ -64,20 +64,15 @@
 clusterGrid <- function(grid, type = "kmeans", centers = NULL, iter.max = 10, nstart = 1, method = "complete") {
  
   type <- match.arg(type, choices = c("kmeans", "hierarchical", "som"))
-  #Flags
-  num.clusters <- NULL
-  token <- NULL
   
   #Check of grid dimensions
-  var.names <- getVarNames(grid)
-  n.var <- length(var.names)
-  if (suppressMessages(is.na(getShape(grid, dimension = "member")))) {
-    grid<-redim(grid)
-  }
+  grid<-redim(grid, member = TRUE, var = TRUE)
   n.mem <- getShape(grid, "member")
+  n.var <- getShape(grid, "var")
   
   #Initialization of some attributes as matrix:
   cluster.mat <- array(dim = c(n.var, n.mem, getShape(grid, dimension = "time")))
+  patterns <- array(dim = c(n.mem, getShape(grid, dimension = "time"), getShape(grid, dimension = "lat"), getShape(grid, dimension = "lon")))
   if (type == "kmeans") {
     withinss <- array(dim = c(n.var, n.mem, ncol = centers))
     betweenss <- matrix(nrow = n.var, ncol = n.mem)
@@ -91,20 +86,22 @@ clusterGrid <- function(grid, type = "kmeans", centers = NULL, iter.max = 10, ns
   mem.list <- vector("list", n.mem)
   
   for (x in 1:n.var){
-    l <- suppressMessages(subsetGrid(grid, var = var.names[x])) %>% redim(member = TRUE)
+    l <- suppressMessages(subsetGrid(grid, var = getVarNames(grid)[x])) %>% redim(member = TRUE)
     for (m in 1:n.mem){
       # calculate clusters of 3D data
       sub.grid <- suppressMessages(subsetGrid(l, members = m, drop = TRUE))
-      clusters <- suppressWarnings(clusterGrid_3D(sub.grid, type, centers, iter.max, nstart, method, num.clusters, token))
+      clusters <- suppressWarnings(clusterGrid_3D(sub.grid, type, centers, iter.max, nstart, method))
+      centers <- attr(clusters, "centers")
       #Extract attributes as matrix:
       cluster.mat[x, m, ] <- attr(clusters, "cluster")
+      patterns[m, , , ] <- attr(clusters, "patterns")
       if (type == "kmeans") {
         withinss[x, m, ] <- attr(clusters, "withinss")
         betweenss[x, m] <- attr(clusters, "betweenss")
       }else if (type == "hierarchical") {
         height[x, m, ] <- attr(clusters, "height")
         cutree.at.height[x, m] <- attr(clusters, "cutree.at.height")
-        if (m == 1 & is.null(centers)){
+        if (m == 1){
           diff.height.threshold <- attr(clusters, "diff.height.threshold")
         }
       }
@@ -117,6 +114,8 @@ clusterGrid <- function(grid, type = "kmeans", centers = NULL, iter.max = 10, ns
   
   #Set attributes as matrix:
   attr(out, "cluster") <- drop(cluster.mat)
+  attr(out, "patterns") <- patterns
+  attr(attr(out, "patterns"), "dimensions") <- c("member", "time", "lat", "lon")
   if (type == "kmeans") {
     attr(out, "withinss") <- drop(withinss)
     attr(out, "betweenss") <- drop(betweenss)
@@ -151,7 +150,7 @@ clusterGrid <- function(grid, type = "kmeans", centers = NULL, iter.max = 10, ns
 #'The clustering type, number of clusters and other algorithm-specific parameters are provided as attributes.
 
 
-clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method, num.clusters, token){
+clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method){
   type = tolower(type)
   grid.2D <- array3Dto2Dmat(grid$Data) #From 3D to 2D
   if (is.null(type) | type == "kmeans") {
@@ -163,10 +162,9 @@ clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method, num.cl
     Y <- mat2Dto3Darray(kmModel$centers, grid$xyCoords$x, grid$xyCoords$y)
   } else if (type == "hierarchical") {
     hc <- hclust(dist(grid.2D), method)
-    if (!is.null(centers)) {
-      num.clusters <- centers
-    }
-    if (is.null(centers) & is.null(num.clusters)) {
+    token <- "FALSE"
+    if (is.null(centers)) {
+      token <- "TRUE"
       # Auto-calculation of the number of clusters: Quartile method applied
       quantile.range <- quantile(hc$height, c(0.25, 0.75), na.rm= TRUE) 
       hc.height.diff <- numeric(length(hc$height) - 1)
@@ -174,14 +172,14 @@ clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method, num.cl
         hc.height.diff[i] <- hc$height[i + 1] - hc$height[i]
       }
       index <- which(hc.height.diff > (quantile.range[[2]] - quantile.range[[1]]))
-      num.clusters <- length(hc$order) - index[1]
+      centers <- length(hc$order) - index[1]
     }
-    if(is.na(num.clusters)){
+    if(is.na(centers)){
      stop("All the height differences are smaller than the interquartile range, probably due to the fact that the 'time' dimension is too small. We recommend to set the number of clusters manually...")
     }
-    memb <- cutree(hc, k = num.clusters) #Found the corresponding cluster for every element
+    memb <- cutree(hc, k = centers) #Found the corresponding cluster for every element
     cent <- NULL
-    for (k in 1:num.clusters) {   #Set up the centers of the clusters
+    for (k in 1:centers) {   #Set up the centers of the clusters
       cent <- rbind(cent, colMeans(grid.2D[memb == k, ,drop = FALSE]))
     }
     Y <- mat2Dto3Darray(cent, grid$xyCoords$x, grid$xyCoords$y)
@@ -198,10 +196,28 @@ clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method, num.cl
   } else {
     stop("Input data is not valid.\n'", paste(type), "' is not a valid algorithm")
   }
+  
   #Setting up metadata for Y
-  aux <- grid
-  aux$Data <- Y
+  aux <- vector("list", centers)
+  
+  for (i in 1:centers){
+    aux[[i]] <- grid
+    if (type == "kmeans") {
+      ind <- which(kmModel$cluster != i)
+    } else if (type == "hierarchical") {
+      ind <- which(memb != i)
+    } else if (type == "som") {
+      ind <- which(som.grid$unit.classif != i)
+    }
+    aux[[i]]$Data[ind, , ] <- NaN
+  }
+  aux <- suppressWarnings(makeMultiGrid(aux))
+  attr(aux$Variable, "longname") <- paste0(getVarNames(aux), "_cluster", 1:getShape(aux, "var")) 
+  aux$Variable$varName <- paste0(getVarNames(aux), "_cluster", 1:getShape(aux, "var"))
   attr(aux, "cluster.type") <- type
+  attr(aux, "patterns") <- Y
+  attr(attr(aux, "patterns"), "dimensions") <- NULL
+  
   # Add attributes depending on the cluster algorithm
   if (type == "kmeans") {
     attr(aux, "cluster") <- kmModel$cluster
@@ -209,13 +225,12 @@ clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method, num.cl
     attr(aux, "withinss") <- kmModel$withinss
     attr(aux, "betweenss") <- kmModel$betweenss
   } else if (type == "hierarchical") {
-    attr(aux, "centers") <- num.clusters
+    attr(aux, "centers") <- centers
     attr(aux, "cluster") <- memb
     attr(aux, "height") <- hc$height
-    attr(aux, "cutree.at.height") <- hc$height[(length(hc$order) - num.clusters) + 1] #the previous heigth divides in "centers" numb. of clusters 
-    if (is.null(centers) & is.null(token)){
+    attr(aux, "cutree.at.height") <- hc$height[(length(hc$order) - centers) + 1] #the previous heigth divides in "centers" numb. of clusters 
+    if (token){
       attr(aux, "diff.height.threshold") <- (quantile.range[[2]] - quantile.range[[1]])
-      token <- "used"
     }
   } else if (type == "som") {
     attr(aux, "cluster") <- som.grid$unit.classif
