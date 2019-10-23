@@ -18,6 +18,7 @@
 #'@title Cluster analysis of grids
 #'@description Performs cluster analysis of grids, multigrids or multimember multigrids. Several clustering algorithms are available.  
 #'@inheritParams clusterGrid_3D 
+#'@inheritParams lambWT 
 #'@seealso \link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen]{som}.
 #'@return A new C4R grid object that contains the clusters created using the specified algorithm. Clusters are included in the dimension 'time'.
 #'The clustering type, number of clusters and other algorithm-specific parameters are provided as attributes.
@@ -61,18 +62,20 @@
 
 
 
-clusterGrid <- function(grid, type = "kmeans", centers = NULL, iter.max = 10, nstart = 1, method = "complete") {
+clusterGrid <- function(grid, type = "kmeans", centers = NULL, iter.max = 10, nstart = 1, method = "complete", center.point = c(-5, 55), base = NULL, ref = NULL) {
  
-  type <- match.arg(type, choices = c("kmeans", "hierarchical", "som"))
-  
+  type <- match.arg(type, choices = c("kmeans", "hierarchical", "som", "lamb"))
+
   #Check of grid dimensions
   grid<-redim(grid, member = TRUE, var = TRUE)
   n.mem <- getShape(grid, "member")
   n.var <- getShape(grid, "var")
+  if (n.var != 1){
+    stop("The function only manages grids with one variable so far. Do Variable subsetting using subsetGrid().")
+  }
   
   #Initialization of some attributes as matrix:
   cluster.mat <- array(dim = c(n.var, n.mem, getShape(grid, dimension = "time")))
-  patterns <- array(dim = c(n.mem, getShape(grid, dimension = "time"), getShape(grid, dimension = "lat"), getShape(grid, dimension = "lon")))
   if (type == "kmeans") {
     withinss <- array(dim = c(n.var, n.mem, ncol = centers))
     betweenss <- matrix(nrow = n.var, ncol = n.mem)
@@ -90,11 +93,17 @@ clusterGrid <- function(grid, type = "kmeans", centers = NULL, iter.max = 10, ns
     for (m in 1:n.mem){
       # calculate clusters of 3D data
       sub.grid <- suppressMessages(subsetGrid(l, members = m, drop = TRUE))
-      clusters <- suppressWarnings(clusterGrid_3D(sub.grid, type, centers, iter.max, nstart, method))
+      clusters <- suppressWarnings(clusterGrid_3D(sub.grid, type, centers, iter.max, nstart, method, center.point, base, ref))
       centers <- attr(clusters, "centers")
       #Extract attributes as matrix:
       cluster.mat[x, m, ] <- attr(clusters, "cluster")
-      patterns[m, , , ] <- attr(clusters, "patterns")
+      #Extract attribute "patterns" 
+      if (x == 1 & m == 1){
+        patterns <- array(dim = c(n.mem, centers, getShape(grid, dimension = "lat"), getShape(grid, dimension = "lon")))
+        patterns[m, , , ] <- attr(clusters, "patterns")
+      }else {
+        patterns[m, , , ] <- attr(clusters, "patterns")
+      }
       if (type == "kmeans") {
         withinss[x, m, ] <- attr(clusters, "withinss")
         betweenss[x, m] <- attr(clusters, "betweenss")
@@ -150,7 +159,8 @@ clusterGrid <- function(grid, type = "kmeans", centers = NULL, iter.max = 10, ns
 #'The clustering type, number of clusters and other algorithm-specific parameters are provided as attributes.
 
 
-clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method){
+clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method, center.point, base, ref){
+  
   type = tolower(type)
   grid.2D <- array3Dto2Dmat(grid$Data) #From 3D to 2D
   if (is.null(type) | type == "kmeans") {
@@ -185,14 +195,23 @@ clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method){
     Y <- mat2Dto3Darray(cent, grid$xyCoords$x, grid$xyCoords$y)
   } else if (type == "som") {
     if (is.null(centers)) {
+      centers <- 6*8
       som.grid <- som(grid.2D)
     } else {
       if (length(centers) != 2) {
         stop("in 'centers'.\n Unexpected lenght for this argument while using SOM. It must be a vector of 2 elements")
       }
       som.grid <- som(grid.2D, somgrid(xdim = centers[1], ydim=centers[2], topo = "rectangular"))
+      centers <- centers[1] * centers[2]
     }
     Y <- mat2Dto3Darray(som.grid$codes[[1]], grid$xyCoords$x, grid$xyCoords$y)
+  } else if (type == "lamb") {
+    if (!is.null(centers)) {
+      message("Lamb WT was choosen, so the number of clusters will be forced to 27. Arg. 'centers' will be ignored.")
+    } 
+    centers <- 27
+    lamb.wt <- lambWT(grid = grid, center.point = center.point, base = base, ref = ref)
+    Y <- lamb.wt[[1]][[1]][[1]]$pattern
   } else {
     stop("Input data is not valid.\n'", paste(type), "' is not a valid algorithm")
   }
@@ -208,6 +227,8 @@ clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method){
       ind <- which(memb != i)
     } else if (type == "som") {
       ind <- which(som.grid$unit.classif != i)
+    }else if (type == "lamb") {
+      ind <- which(lamb.wt[[1]][[1]][[1]]$index != i)
     }
     aux[[i]]$Data[ind, , ] <- NaN
   }
@@ -234,12 +255,12 @@ clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method){
     }
   } else if (type == "som") {
     attr(aux, "cluster") <- som.grid$unit.classif
-    if (is.null(centers)) {
-      attr(aux, "centers") <- 8*6
-    } else {
-      attr(aux, "centers") <- centers[1] * centers[2]
-    }
+    attr(aux, "centers") <- centers
+  } else if (type == "lamb") {
+    attr(aux, "cluster") <- lamb.wt[[1]][[1]][[1]]$index
+    attr(aux, "centers") <- centers
   }
+  
   return(aux)
 }
 
