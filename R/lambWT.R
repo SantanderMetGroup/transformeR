@@ -21,8 +21,6 @@
 #' @param grid A grid (gridded or station dataset), or multimember grid object of MSLP values.
 #' @param center.point A two value vector that must include lon and lat from a location that will work as center point for the Lamb WT.
 #' See details. 
-#' @param base Baseline grid to be substracted for the calculation of anomalies. Default: NULL. See \code{?scaleGrid}.
-#' @param ref Reference grid to be added for the calculation of anomalies. Default: NULL. See \code{?scaleGrid}.
 #' @details According to Jones et al. 2012 (Int J Climatol), Lamb WT is only applied on North Atlantic domain. 
 #' The input grid units must be Pa, not hPa/mbar. If it is not in Pa, the units will be converted automatically.
 #' A center location point must be specified by the user. Then, the function calculates from left to right and from first to 16st 
@@ -64,15 +62,11 @@
 #' }
 
 
-lambWT <- function(grid, center.point = c(-5, 55), base = NULL, ref = NULL) {
+lambWT <- function(grid, center.point = c(-5, 55)) {
 
   #  *** PREPARE OUTPUT GRID *** 
   wt <- vector("list", 1)
   names(wt) <- "lamb"
-  
-  if (!is.null(base) & !is.null(ref)){
-    grid <- scaleGrid(grid = grid, base = base, ref = ref, type = "center")
-  }
   
   suppressMessages(members <- getShape(grid, dimension = "member"))
   if (is.na(members)) {
