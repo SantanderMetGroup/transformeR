@@ -33,15 +33,6 @@ spatialPlot(mg, backdrop.theme = "coastline", rev.colors = TRUE,
             layout = c(2,ceiling(attr(clusters, "centers")/2)),
              as.table = TRUE)
 
-#Example 2: 'cluster' is a grid of clusters with two variables (same for members)
- 
-data(NCEP_Iberia_ta850, package = "transformeR")
-clusters <- clusterGrid(makeMultiGrid(NCEP_Iberia_psl, NCEP_Iberia_ta850),
-                        type="kmeans", centers=10, iter.max=1000)
-# To obtain first member and variable called "psl"
-mg <- cluster2plot(clusters, members = 1, var = "psl") 
-spatialPlot(mg, backdrop.theme = "coastline", rev.colors = TRUE,
-            layout = c(2,ceiling(attr(clusters, "centers")/2)), as.table=TRUE)
 }
 \seealso{
 \link[transformeR]{makeMultiGrid}, \link[transformeR]{subsetGrid}, \link[transformeR]{subsetDimension}.
