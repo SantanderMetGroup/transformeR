@@ -55,11 +55,6 @@
 #'
 #'#Example of som clustering: 
 #'clusters<- clusterGrid(NCEP_Iberia_psl, type="som", centers = c(10,1))
-#'
-#'#Example of K-means clustering of several variables:
-#' data(NCEP_Iberia_ta850, package = "transformeR")
-#' clusters<- clusterGrid(makeMultiGrid(NCEP_Iberia_psl, NCEP_Iberia_ta850),
-#'                        type="kmeans", centers=10, iter.max=1000)
 
 
 
@@ -123,15 +118,15 @@ clusterGrid <- function(grid, type = "kmeans", centers = NULL, iter.max = 10, ns
   out <- suppressWarnings(makeMultiGrid(var.list))
   
   #Set attributes as matrix:
-  attr(out, "index") <- drop(index.mat)
+  attr(out, "index") <- index.mat
   attr(out, "patterns") <- patterns
   attr(attr(out, "patterns"), "dimensions") <- c("member", "time", "lat", "lon")
   if (type == "kmeans") {
-    attr(out, "withinss") <- drop(withinss)
-    attr(out, "betweenss") <- drop(betweenss)
+    attr(out, "withinss") <- withinss
+    attr(out, "betweenss") <- betweenss
   }else if (type == "hierarchical") {
-    attr(out, "height") <- drop(height)
-    attr(out, "cutree.at.height") <- drop(cutree.at.height)
+    attr(out, "height") <- height
+    attr(out, "cutree.at.height") <- cutree.at.height
     attr(out, "diff.height.threshold") <- drop(diff.height.threshold)
   }
   return(out)
