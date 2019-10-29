@@ -54,7 +54,6 @@
 #' \item dates and coordinates.
 #' \item further arguments related to the Lamb WT index.
 #' }
-#' @importFrom convertR udConvertGrid
 #' @export
 #' @examples \dontrun{
 #' data(NCEP_slp_2001_2010)
@@ -89,9 +88,9 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
     d<-vector(mode = "numeric",n[[1]])
     
     #Units conversion:
-    if (attr(grid.member$Variable, "units") == "hPa" | attr(grid.member$Variable, "units") == "mbar"){
-      grid.member <- udConvertGrid(grid.member, new.units = "Pa")
-      message("Converting grid units from '",paste(attr(grid.member$Variable, "units")), "' to 'Pa'...")
+    slp.units <- c("Pascals", "Pa")
+    if (!(attr(grid.member$Variable, "units") %in% slp.units)){ 
+      stop("The grid variable must have Sea Level Pressure units 'Pascals'(Pa). Use function convertR::udConvertGrid if you have got 'hPa' or 'mbar'.")
     }
     
     #Preparing the input of lamb WT
