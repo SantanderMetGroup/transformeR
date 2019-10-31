@@ -71,3 +71,7 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  
 ## 1.6.1 (16 Oct 2019)
  * Minor bug fix in `clusterGrid.R`
+ * Other minor bug fixes and documentation updates
+
+## 1.6.2 (31 Oct 2019)
+ * New utility `sgdf2clim` for sp-class spatialGridDataFrames to climatological grids
