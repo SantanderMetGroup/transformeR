@@ -5,7 +5,7 @@
 \title{Cluster analysis of grids}
 \usage{
 clusterGrid(grid, type = "kmeans", centers = NULL, iter.max = 10,
-  nstart = 1, method = "complete")
+  nstart = 1, method = "complete", center.point = c(-5, 55))
 }
 \arguments{
 \item{grid}{A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object, as 
@@ -25,10 +25,14 @@ The core functions are \link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen
 
 \item{method}{(for the hierarchical algorithm) Agglomeration method to be used, one of "complete" (default), "ward.D", "ward.D2", "single",
 "average", "mcquitty", "median" or "centroid".}
+
+\item{center.point}{A two value vector that must include lon and lat from a location that will work as center point for the Lamb WT.
+See details.}
 }
 \value{
 A new C4R grid object that contains the clusters created using the specified algorithm. Clusters are included in the dimension 'time'.
-The clustering type, number of clusters and other algorithm-specific parameters are provided as attributes.
+The clustering type (cluster.type), number of clusters (centers), center pattern of each cluster (patterns) and the days corresponding to each 
+cluster (index) are returned as attributes in all clustering algorithms. Then, other algorithm-specific parameters are provided as attributes.
 }
 \description{
 Performs cluster analysis of grids, multigrids or multimember multigrids. Several clustering algorithms are available.
@@ -63,11 +67,6 @@ clusters<- clusterGrid(NCEP_Iberia_psl, type="hierarchical")
 
 #Example of som clustering: 
 clusters<- clusterGrid(NCEP_Iberia_psl, type="som", centers = c(10,1))
-
-#Example of K-means clustering of several variables:
-data(NCEP_Iberia_ta850, package = "transformeR")
-clusters<- clusterGrid(makeMultiGrid(NCEP_Iberia_psl, NCEP_Iberia_ta850),
-                       type="kmeans", centers=10, iter.max=1000)
 }
 \seealso{
 \link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen]{som}.

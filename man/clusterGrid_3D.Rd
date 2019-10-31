@@ -4,8 +4,7 @@
 \alias{clusterGrid_3D}
 \title{Cluster analysis of 3D grids}
 \usage{
-clusterGrid_3D(grid, type, centers, iter.max, nstart, method, num.clusters,
-  token)
+clusterGrid_3D(grid, type, centers, iter.max, nstart, method, center.point)
 }
 \arguments{
 \item{grid}{A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object, as 

@@ -67,3 +67,115 @@ sgdf2clim <- function(sp, member = FALSE, varName = NULL, level = NULL,
     return(grid)
 }
 
+
+#' @title Climatology to SpatialGridDataFrame or SpatialPointsDataFrame
+#' @description Convert a climatological grid to a SpatialGridDataFrame object from package sp
+#' @param clim A climatological grid, as returned by function \code{\link{climatology}}
+#' @param set.min Minimum value, as passed by \code{\link[visualizeR]{spatialPlot}}
+#' @param set.max Maximum value, as passed by \code{\link[visualizeR]{spatialPlot}}
+#' @seealso \code{\link{climatology}}, \code{\link[visualizeR]{spatialPlot}}
+#' @return A \pkg{sp} object of the class \code{\link[sp]{SpatialGridDataFrame}}
+#' @details This function is intended for internal usage by \code{\link[visualizeR]{spatialPlot}},
+#' that accepts all possible arguments that can be passed to \code{\link[sp]{spplot}} for plotting. 
+#' However, it may be useful for advanced \pkg{sp} users in different contexts
+#' (e.g. for reprojecting via \code{\link[sp]{spTransform}} etc.)
+#' @keywords internal
+#' @export
+#' @author J. Bedia
+#' @importFrom sp GridTopology SpatialGridDataFrame
+#' @seealso \code{sgdf2clim}, to perform the reverse operation
+#' @examples \donttest{
+#' data("CFS_Iberia_tas")
+#' # Climatology is computed:
+#' clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
+#' sgdf <- transformeR::clim2sgdf(clim, NULL, NULL)
+#' class(sgdf)
+#' }
+
+
+
+clim2sgdf <- function(clim, set.min = NULL, set.max = NULL) {
+    grid <- clim
+    if (is.null(attr(grid[["Data"]], "climatology:fun"))) {
+        stop("The input grid is not a climatology: Use function 'climatology' first")
+    }
+    dimNames <- getDim(grid)
+    ## Multigrids are treated as realizations, previously aggregated by members if present
+    is.multigrid <- "var" %in% dimNames
+    if (is.multigrid) {
+        if ("member" %in% dimNames) {
+            mem.ind <- grep("member", dimNames)
+            n.mem <- getShape(grid, "member")
+            if (n.mem > 1) message("NOTE: The multimember mean will be displayed for each variable in the multigrid")
+            grid <- suppressMessages(aggregateGrid(grid, aggr.mem = list(FUN = "mean", na.rm = TRUE)))
+            dimNames <- getDim(grid)
+        }
+        attr(grid[["Data"]], "dimensions") <- gsub("var", "member", dimNames)      
+    }
+    grid <- redim(grid, drop = FALSE)
+    dimNames <- getDim(grid)
+    mem.ind <- grep("member", dimNames)
+    n.mem <- getShape(grid, "member")
+    co <- getCoordinates(grid)
+    if (isRegular(grid)) co <- expand.grid(co$y, co$x)[2:1]
+    le <- nrow(co)
+    #############hemen nago!
+    if (isRegular(grid)) {
+        aux <- vapply(1:n.mem, FUN.VALUE = numeric(le), FUN = function(x) {
+            z <- asub(grid[["Data"]], idx = x, dims = mem.ind, drop = TRUE)
+            z <- unname(abind(z, along = -1L))
+            attr(z, "dimensions") <- c("time", "lat", "lon")
+            array3Dto2Dmat(z)
+        })
+        # Data reordering to match SpatialGrid coordinates
+        aux <- data.frame(aux[order(-co[,2], co[,1]), ])
+    } else {
+        aux <- redim(grid, loc = !isRegular(grid), drop = TRUE)$Data
+        if (n.mem > 1) {
+            naind <- lapply(1:n.mem, function(i) which(!is.na(aux[i,]), arr.ind = TRUE))
+            naind <- Reduce(intersect, naind)
+            aux <- data.frame(t(aux[,naind]))
+        } else {
+            naind <- which(!is.na(aux), arr.ind = TRUE)
+            aux <- data.frame(as.numeric(aux[naind]))
+        }
+    }
+    # Set min/max values, if provided
+    if (!is.null(set.max)) aux[aux > set.max] <- set.max
+    if (!is.null(set.min)) aux[aux < set.min] <- set.min
+    # Panel names 
+    if (is.multigrid) {
+        vname <- attr(grid$Variable, "longname")
+        if (!is.null(grid$Variable$level)) {
+            auxstr <- paste(vname, grid$Variable$level, sep = "@")
+            vname <- gsub("@NA", "", auxstr)
+        }
+        vname <- gsub("\\s", "_", vname)
+        vname <- make.names(vname, unique = TRUE)
+    } else {
+        vname <- paste0("Member_", 1:n.mem)
+    }
+    names(aux) <- vname
+    # Defining grid topology -----------------
+    aux.grid <- getGrid(grid)
+    if (!isRegular(grid)) {
+        df <- sp::SpatialPointsDataFrame(co[naind,], aux)
+    } else {
+        cellcentre.offset <- vapply(aux.grid, FUN = "[", 1L,
+                                    FUN.VALUE = numeric(1L))
+        cellsize <- vapply(c("resX", "resY"), FUN.VALUE = numeric(1L),
+                           FUN = function(x) attr(aux.grid, which = x))
+        aux.grid <- getCoordinates(grid)
+        cells.dim <- vapply(aux.grid, FUN.VALUE = integer(1L), FUN = "length")
+        grd <- sp::GridTopology(c(cellcentre.offset[["x"]],
+                                  cellcentre.offset[["y"]]),
+                                cellsize,
+                                c(cells.dim[["x"]], cells.dim[["y"]]))
+        df <- sp::SpatialGridDataFrame(grd, aux)
+    }
+    return(df)
+}
+
+
+
+
