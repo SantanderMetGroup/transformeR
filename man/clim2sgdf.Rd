@@ -17,21 +17,26 @@ clim2sgdf(clim, set.min = NULL, set.max = NULL)
 A \pkg{sp} object of the class \code{\link[sp]{SpatialGridDataFrame}}
 }
 \description{
-Convert a climatological grid to a SpatialGridDataFrame object from package sp
+Convert a climatological climate4R grid to a SpatialGridDataFrame object from package sp. See details.
 }
 \details{
 This function is intended for internal usage by \code{\link[visualizeR]{spatialPlot}},
 that accepts all possible arguments that can be passed to \code{\link[sp]{spplot}} for plotting. 
 However, it may be useful for advanced \pkg{sp} users in different contexts
-(e.g. for reprojecting via \code{\link[sp]{spTransform}} etc.)
+(e.g. for reprojecting via \code{\link[sp]{spTransform}} etc.).
+
+Note that the function can be only applied to \dQuote{climatological} climate4R grids, i.e., grids
+ whose time dimension is a singleton, typically after the application of function 
+ \code{\link{climatology}}, although not necessarily so.
 }
 \examples{
 \donttest{
 data("CFS_Iberia_tas")
 # Climatology is computed:
 clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
-sgdf <- transformeR::clim2sgdf(clim, NULL, NULL)
+sgdf <- clim2sgdf(clim, NULL, NULL)
 class(sgdf)
+sp::spplot(sgdf)
 }
 }
 \seealso{

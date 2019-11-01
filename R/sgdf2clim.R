@@ -31,7 +31,7 @@ sgdf2clim <- function(sp, member = FALSE, varName = NULL, level = NULL,
     
     # co <- expand.grid(x, rev(y)) ## Orden en el que estan los datos
     # co.ref <- expand.grid(y, x)[,2:1] ## Orden en el que mat2Dto3Darray los espera
-    # ## Very slow - unfeasible solution:
+    # ## Very slow - unfeasible solution for large grids:
     # coi <- complex(length.out = nrow(co), real = co[,1], imaginary = co[,2])
     # co.refi <- complex(length.out = nrow(co.ref), real = co.ref[,1], imaginary = co.ref[,2])
     # ind <- vector("integer", length(coi))
@@ -69,7 +69,7 @@ sgdf2clim <- function(sp, member = FALSE, varName = NULL, level = NULL,
 
 
 #' @title Climatology to SpatialGridDataFrame or SpatialPointsDataFrame
-#' @description Convert a climatological grid to a SpatialGridDataFrame object from package sp
+#' @description Convert a climatological climate4R grid to a SpatialGridDataFrame object from package sp. See details.
 #' @param clim A climatological grid, as returned by function \code{\link{climatology}}
 #' @param set.min Minimum value, as passed by \code{\link[visualizeR]{spatialPlot}}
 #' @param set.max Maximum value, as passed by \code{\link[visualizeR]{spatialPlot}}
@@ -78,7 +78,12 @@ sgdf2clim <- function(sp, member = FALSE, varName = NULL, level = NULL,
 #' @details This function is intended for internal usage by \code{\link[visualizeR]{spatialPlot}},
 #' that accepts all possible arguments that can be passed to \code{\link[sp]{spplot}} for plotting. 
 #' However, it may be useful for advanced \pkg{sp} users in different contexts
-#' (e.g. for reprojecting via \code{\link[sp]{spTransform}} etc.)
+#' (e.g. for reprojecting via \code{\link[sp]{spTransform}} etc.).
+#' 
+#' Note that the function can be only applied to \dQuote{climatological} climate4R grids, i.e., grids
+#'  whose time dimension is a singleton, typically after the application of function 
+#'  \code{\link{climatology}}, although not necessarily so.
+#'  
 #' @keywords internal
 #' @export
 #' @author J. Bedia
@@ -88,16 +93,19 @@ sgdf2clim <- function(sp, member = FALSE, varName = NULL, level = NULL,
 #' data("CFS_Iberia_tas")
 #' # Climatology is computed:
 #' clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
-#' sgdf <- transformeR::clim2sgdf(clim, NULL, NULL)
+#' sgdf <- clim2sgdf(clim, NULL, NULL)
 #' class(sgdf)
+#' sp::spplot(sgdf)
 #' }
 
 
-
 clim2sgdf <- function(clim, set.min = NULL, set.max = NULL) {
-    grid <- clim
-    if (is.null(attr(grid[["Data"]], "climatology:fun"))) {
-        stop("The input grid is not a climatology: Use function 'climatology' first")
+    grid <- redim(clim, member = TRUE, var = FALSE)
+    # if (is.null(attr(grid[["Data"]], "climatology:fun"))) {
+    #     stop("The input grid is not a climatology: Use function 'climatology' first")
+    # }
+    if (getShape(clim, dimension = "time") != 1L) {
+        stop("The input grid is not a climatology. Suggestion: use function 'climatology' first")
     }
     dimNames <- getDim(grid)
     ## Multigrids are treated as realizations, previously aggregated by members if present
