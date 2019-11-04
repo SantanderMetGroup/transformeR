@@ -69,6 +69,10 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * New internal helpers `cluster2plot.R` and `pattern2grid`
  * New helper `getGridProj` for proj string retrieval
  
-## 1.6.1 (30 Oct 2019)
+## 1.6.1 (01 Nov 2019)
  * Changes on `clusterGrid.R` output. 
  * New weather type in `clusterGrid.R`: lamb WT. 
+ * New utility `sgdf2clim` for sp-class spatialGridDataFrames to climatological grids
+ * Other minor changes and documentation updates
+
+
