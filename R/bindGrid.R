@@ -279,12 +279,12 @@ bindGrid.spatial <- function(..., dimn, tol) {
       lat <- unname(lat)
       grid.list <- NULL
       lats <- do.call(coordfun, lat)
-      if (class(lats) == "list") lats <- unlist(lats)
+      if (class(lats) == "list") lats <- unlist(lats) %>% unname()
       attr(ref[["Data"]], "dimensions") <- dimNames
       # n.vars <- getShape(ref, "var")
       #if (n.vars > 1) lats <- rep(list(lats), n.vars)
       if (dimn == "loc") {
-            ref[["xyCoords"]] <- lats  
+            ref[["xyCoords"]] <- lats
             ref[["Metadata"]][["station_id"]] <- station_id
             ref[["Metadata"]][["name"]] <- station_name
       } else {
