@@ -58,4 +58,21 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * New helper function `limitArea` to get grid bounding box
  * New helper function `getWindowIndex`, for moving window applications
  * Other internal helper additions and minor bug fixes
+
+## 1.5.1 (13 Jul 2019)
+ * Minor bug fix in `binaryGrid`
+ * New helper  `matchStations` for consistent reordering of station datasets
+ * Improvement in `subsetGrid` for preservation of all station metadata
  
+## 1.6.0 (04 Oct 2019)
+ * New function for clustering/weather typing: `clusterGrid.R`
+ * New internal helpers `cluster2plot.R` and `pattern2grid`
+ * New helper `getGridProj` for proj string retrieval
+ 
+## 1.6.1 (01 Nov 2019)
+ * Changes on `clusterGrid.R` output. 
+ * New weather type in `clusterGrid.R`: lamb WT. 
+ * New utility `sgdf2clim` for sp-class spatialGridDataFrames to climatological grids
+ * Other minor changes and documentation updates
+
+

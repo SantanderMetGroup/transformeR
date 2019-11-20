@@ -1175,3 +1175,26 @@ checkGrid <- function(...) {
       message.df[which(message.df == FALSE)] <- "ERROR"
       message.df
 }
+
+
+#' @title Obtain projection information of a grid
+#' @description Obtain projection information of a grid
+#' @param grid An input climate4R grid
+#' @return A character string with the projection definition
+#' @details The projection may be defined loosely as e.g., \dQuote{LatLon Projection},
+#' or more formally as a proj4 string. This function just retrieves the projection attribute
+#' as included within the target grid.
+#' Grid projection definition (and/or re-projection operations) can be achieved by the function \code{projectGrid}
+#' from the climate4R package \pkg{geoprocessor} (\url{https://github.com/SantanderMetGroup/geoprocessoR})
+#' @author J. Bedia
+#' @family get.helpers
+#' @export
+
+getGridProj <- function(grid) {
+  if ("projection" %in% names(attributes(grid$xyCoords))) {
+    return(attr(grid$xyCoords, "projection"))
+  } else {
+    warning("Undefined projection.\nConsider using projectGrid from package geoprocessoR for setting a valid proj definition\n<https://github.com/SantanderMetGroup/geoprocessoR>")
+  }
+}
+

@@ -31,6 +31,7 @@
 #' Default to \code{TRUE}. Ignored if no \code{aggr.lat} function is indicated, or a function different from \code{"mean"}
 #' is applied.
 #' @param aggr.lon Same as \code{aggr.lat}, but for longitude.
+#' @param aggr.loc Same as \code{aggr.d}, indicating the aggregation function to be applied along the loc dimension.
 #' @template templateParallelParams
 #' @return A grid or multigrid aggregated along the chosen dimension(s).
 #' @details
@@ -94,6 +95,7 @@ aggregateGrid <- function(grid,
                           aggr.lat = list(FUN = NULL),
                           weight.by.lat = TRUE,
                           aggr.lon = list(FUN = NULL),
+                          aggr.loc = list(FUN = NULL),
                           parallel = FALSE,
                           max.ncores = 16,
                           ncores = NULL) {
@@ -124,6 +126,9 @@ aggregateGrid <- function(grid,
     }
     if (!is.null(aggr.lon$FUN)) {
         grid <- lonAggregation(grid, aggr.lon, parallel, max.ncores, ncores)
+    }
+    if (!is.null(aggr.loc$FUN)) {
+          grid <- locAggregation(grid, aggr.loc, weight.by.lat, parallel, max.ncores, ncores)
     }
     if (!is.null(aggr.mem$FUN)) {
         grid <- memberAggregation(grid, aggr.mem, parallel, max.ncores, ncores)
@@ -334,6 +339,41 @@ latWeighting <- function(grid) {
     if (!is.null(grid$xyCoords$lat)) {
         stop("Rotated grids are not yet supported")
     }
+    
     lats <- grid$xyCoords$y
     cos(lats / 360 * 2 * pi)
+}
+
+
+
+locAggregation <- function(grid, aggr.fun, weight.by.lat, parallel, max.ncores, ncores) {
+      dimNames <- getDim(grid)
+      if (!"loc" %in% dimNames) {
+            message("There is not lat dimension: 'aggr.loc' option was ignored.")
+      } else {
+            if (isTRUE(weight.by.lat)) {
+                  message("Calculating areal weights...")
+                  lat.weights <- latWeighting(grid)
+                  if (aggr.fun[["FUN"]] == "mean") {
+                        aggr.fun <- list(FUN = "weighted.mean", w = lat.weights, na.rm = TRUE)
+                  }
+            }
+            parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
+            mar <- grep("loc", dimNames, invert = TRUE)
+            aggr.fun[["MARGIN"]] <- mar
+            aggr.fun[["X"]] <- grid$Data
+            out <- if (parallel.pars$hasparallel) {
+                  message("[", Sys.time(), "] - Aggregating lat dimension in parallel...")
+                  on.exit(parallel::stopCluster(parallel.pars$cl))
+                  aggr.fun[["cl"]] <- parallel.pars$cl
+                  do.call("parApply", aggr.fun)
+            } else {
+                  message("[", Sys.time(), "] - Aggregating lat dimension...")
+                  do.call("apply", aggr.fun)
+            }
+            grid$Data <- out
+            attr(grid$Data, "dimensions") <- dimNames[mar]
+            message("[", Sys.time(), "] - Done.")
+      }
+      return(grid)
 }

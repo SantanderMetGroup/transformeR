@@ -83,6 +83,7 @@
 #' require(visualizeR)                  
 #' spatialPlot(climatology(sub), tol = 0.005, contour = TRUE,
 #'                 backdrop.theme = "coastline", rev.colors = TRUE)
+#'                 
 #' ## Example 2 - Subsetting a multimember multigrid by variables
 #' # Multimember multigrid creation
 #' data("CFS_Iberia_pr", "CFS_Iberia_hus850")
@@ -96,6 +97,14 @@
 #' sub2 <- subsetGrid(mm.mf, var = c("pr", "tas"))
 #' getShape(sub2)
 #' getVarNames(sub2)
+#' 
+#' ## Example 3 - Subsetting stations by their codes
+#' data("VALUE_Iberia_pr")
+#' getStationID(VALUE_Iberia_pr)
+#' central_ib <- subsetGrid(VALUE_Iberia_pr, station.id = c("000229", "000231", "000232"))
+#' getStationID(central_iberia)
+#' central_iberia$Metadata
+#' VALUE_Iberia_pr$Metadata
 #' }
 
 subsetGrid <- function(grid,
@@ -395,10 +404,7 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
         } else {
               grid$xyCoords <- grid$xyCoords[lon.ind,]
               if ("Metadata" %in% names(grid)) {
-                    if ("station_id" %in% names(grid$Metadata)) grid$Metadata$station_id <- grid$Metadata$station_id[lon.ind]
-                    if ("name" %in% names(grid$Metadata)) grid$Metadata$name <- grid$Metadata$name[lon.ind]
-                    if ("altitude" %in% names(grid$Metadata)) grid$Metadata$altitude <- grid$Metadata$altitude[lon.ind]      
-                    if ("source" %in% names(grid$Metadata)) grid$Metadata$source <- grid$Metadata$source[lon.ind]
+                grid$Metadata %<>% lapply(FUN = "[", lon.ind)
               }
         }
     }
@@ -442,10 +448,7 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
         } else {
               grid$xyCoords <- grid$xyCoords[lat.ind,]
               if ("Metadata" %in% names(grid)) {
-                    if ("station_id" %in% names(grid$Metadata)) grid$Metadata$station_id <- grid$Metadata$station_id[lat.ind]
-                    if ("name" %in% names(grid$Metadata)) grid$Metadata$name <- grid$Metadata$name[lat.ind]
-                    if ("altitude" %in% names(grid$Metadata)) grid$Metadata$altitude <- grid$Metadata$altitude[lat.ind]      
-                    if ("source" %in% names(grid$Metadata)) grid$Metadata$source <- grid$Metadata$source[lat.ind]
+                grid$Metadata %<>% lapply(FUN = "[", lat.ind)
               }
         }
     }
@@ -505,10 +508,7 @@ subsetStation <- function(grid, station.id = NULL) {
       id.ind <- sapply(1:length(station.id),FUN = function(z) {which(station0 == station.id[z])})
       grid %<>% subsetDimension(dimension = "loc", indices = id.ind)
       if ("Metadata" %in% names(grid)) {
-            if ("station_id" %in% names(grid$Metadata)) grid$Metadata$station_id <- grid$Metadata$station_id[id.ind]
-            if ("name" %in% names(grid$Metadata)) grid$Metadata$name <- grid$Metadata$name[id.ind]
-            if ("altitude" %in% names(grid$Metadata)) grid$Metadata$altitude <- grid$Metadata$altitude[id.ind]      
-            if ("source" %in% names(grid$Metadata)) grid$Metadata$source <- grid$Metadata$source[id.ind]
+        grid$Metadata %<>% lapply(FUN = "[", id.ind)
       }      
       return(grid)
 }
@@ -581,11 +581,7 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
         }
         if ("loc" %in% dimension) {
               grid$xyCoords <- grid$xyCoords[indices,]  
-              grid$Metadata$station_id <- grid$Metadata$station_id[indices]
-              grid$Metadata$name <- grid$Metadata$name[indices]
-              grid$Metadata$altitude <- grid$Metadata$altitude[indices]
-              grid$Metadata$source <- grid$Metadata$source[indices]
-              grid$Metadata$PRUDENCEregions <- grid$Metadata$PRUDENCEregions[indices]
+              grid$Metadata %<>% lapply(FUN = "[", indices)
         }
         if ("member" %in% dimension) {
             grid$Members <- grid$Members[indices]

@@ -7,8 +7,8 @@
 aggregateGrid(grid, aggr.mem = list(FUN = NULL), aggr.d = list(FUN =
   NULL), aggr.m = list(FUN = NULL), aggr.y = list(FUN = NULL),
   aggr.lat = list(FUN = NULL), weight.by.lat = TRUE,
-  aggr.lon = list(FUN = NULL), parallel = FALSE, max.ncores = 16,
-  ncores = NULL)
+  aggr.lon = list(FUN = NULL), aggr.loc = list(FUN = NULL),
+  parallel = FALSE, max.ncores = 16, ncores = NULL)
 }
 \arguments{
 \item{grid}{a grid or multigrid to be aggregated.}
@@ -29,6 +29,8 @@ Default to \code{TRUE}. Ignored if no \code{aggr.lat} function is indicated, or 
 is applied.}
 
 \item{aggr.lon}{Same as \code{aggr.lat}, but for longitude.}
+
+\item{aggr.loc}{Same as \code{aggr.d}, indicating the aggregation function to be applied along the loc dimension.}
 
 \item{parallel}{Logical. Should parallel execution be used?}
 

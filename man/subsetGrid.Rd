@@ -87,6 +87,7 @@ sub <- subsetGrid(CFS_Iberia_tas,
 require(visualizeR)                  
 spatialPlot(climatology(sub), tol = 0.005, contour = TRUE,
                 backdrop.theme = "coastline", rev.colors = TRUE)
+                
 ## Example 2 - Subsetting a multimember multigrid by variables
 # Multimember multigrid creation
 data("CFS_Iberia_pr", "CFS_Iberia_hus850")
@@ -100,6 +101,14 @@ spatialPlot(climatology(sub1, by.member = TRUE), backdrop.theme = "coastline",
 sub2 <- subsetGrid(mm.mf, var = c("pr", "tas"))
 getShape(sub2)
 getVarNames(sub2)
+
+## Example 3 - Subsetting stations by their codes
+data("VALUE_Iberia_pr")
+getStationID(VALUE_Iberia_pr)
+central_ib <- subsetGrid(VALUE_Iberia_pr, station.id = c("000229", "000231", "000232"))
+getStationID(central_iberia)
+central_iberia$Metadata
+VALUE_Iberia_pr$Metadata
 }
 }
 \seealso{
