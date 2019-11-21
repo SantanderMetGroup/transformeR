@@ -5,7 +5,11 @@
 \title{Local scaling internal}
 \usage{
 gridScale.(grid, base, ref, clim.fun, by.member, type, parallel,
+<<<<<<< HEAD
   max.ncores, ncores, spatial.frame, skip.season.check, targets = NULL)
+=======
+  max.ncores, ncores, spatial.frame)
+>>>>>>> df1c0adf804789067dc40d84e41a890257a0a666
 }
 \description{
 Internal workhorse for local scaling
