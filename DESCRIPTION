@@ -37,4 +37,4 @@ Encoding: UTF-8
 Description: Implements different tools for climate data analysis, visualization and manipulation. It is a building block of the climate4R Bundle (for an overview, see the Climate Services paper in <http://www.meteo.unican.es/en/node/73360>). 
 License: file LICENSE
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

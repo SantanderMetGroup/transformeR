@@ -39,4 +39,5 @@ Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
 \author{
 M. de Felice, J Bedia
 }
+\concept{internal.helpers}
 \keyword{internal}

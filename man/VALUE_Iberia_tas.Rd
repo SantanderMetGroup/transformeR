@@ -3,7 +3,6 @@
 \docType{data}
 \name{VALUE_Iberia_tas}
 \alias{VALUE_Iberia_tas}
-\alias{VALUE_Iberia_tas}
 \title{Station data containing VALUE (ECA-D) daily data of mean temperature for the Iberian Peninsula (DJF, 1983-2002).}
 \format{Station data}
 \source{

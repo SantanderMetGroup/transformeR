@@ -56,3 +56,4 @@ Other subsetting: \code{\link{intersectGrid.time}},
 \author{
 J Bedia
 }
+\concept{subsetting}
