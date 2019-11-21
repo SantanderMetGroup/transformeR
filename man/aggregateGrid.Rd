@@ -6,14 +6,9 @@
 \usage{
 aggregateGrid(grid, aggr.mem = list(FUN = NULL), aggr.d = list(FUN =
   NULL), aggr.m = list(FUN = NULL), aggr.y = list(FUN = NULL),
-<<<<<<< HEAD
   aggr.s = list(FUN = NULL, season = NULL), aggr.lat = list(FUN =
   NULL), weight.by.lat = TRUE, aggr.lon = list(FUN = NULL),
   aggr.loc = list(FUN = NULL), parallel = FALSE, max.ncores = 16,
-=======
-  aggr.lat = list(FUN = NULL), weight.by.lat = TRUE,
-  aggr.lon = list(FUN = NULL), parallel = FALSE, max.ncores = 16,
->>>>>>> df1c0adf804789067dc40d84e41a890257a0a666
   ncores = NULL)
 }
 \arguments{

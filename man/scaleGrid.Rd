@@ -7,13 +7,8 @@
 scaleGrid(grid, base = NULL, ref = NULL, clim.fun = list(FUN =
   "mean", na.rm = TRUE), by.member = TRUE, time.frame = c("none",
   "monthly", "daily"), spatial.frame = c("gridbox", "field"),
-<<<<<<< HEAD
   type = "center", window.width = NULL, parallel = FALSE,
   max.ncores = 16, ncores = NULL, skip.season.check = FALSE)
-=======
-  type = "center", parallel = FALSE, max.ncores = 16,
-  ncores = NULL)
->>>>>>> df1c0adf804789067dc40d84e41a890257a0a666
 }
 \arguments{
 \item{grid}{Input grid to be rescaled}
