@@ -101,4 +101,3 @@ downscaling applications. \code{\link{intersectGrid}}, for temporal or spatial i
 \author{
 J Bedia and M Iturbide
 }
-\concept{internal.helpers}

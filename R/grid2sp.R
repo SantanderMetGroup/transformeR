@@ -6,7 +6,7 @@
 #'\code{\link[sp]{SpatialPointsDataFrame}} (Depending on the input grid).
 #'If the inpurt grid contains members (member dimension) a list of Spatial*
 #'objects is returned (each slot in the list is a member). 
-#'@details This function was built based on function \code{\link[visualizeR]{clim2sgdf}}
+#'@details This function was built based on function \code{\link[transformeR]{clim2sgdf}}
 #'@author M. Iturbide
 #'@export
 #'@importFrom sp GridTopology SpatialGridDataFrame is.projected CRS
