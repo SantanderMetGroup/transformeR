@@ -17,11 +17,18 @@
 
 #'@title Cluster analysis of grids
 #'@description Performs cluster analysis of grids, multigrids or multimember multigrids. Several clustering algorithms are available.  
-#'@inheritParams clusterGrid_3D 
-#'@inheritParams lambWT 
+#'@inheritParams clusterGrid_2D 
+#'@param newdata A grid containing the prediction data. It must contain the same variables as in "grid". Clustering Analysis of this 
+#' grid will be performed taking into account the Clustering of 'grid' as reference. Default: NULL. 
+#'@param y A grid containing predictands data. Clustering Analysis of this grid will be performed as a day-by-day correspondence with 
+#' the reference grid ('grid' or 'newdata'), thus time-dimension from 'y' and the reference grid must intersect. Default: NULL.
+#'@param ... Further specific arguments passed to the clustering functions 
 #'@seealso \link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen]{som}.
-#'@return A new C4R grid object that contains the clusters created using the specified algorithm. Clusters are included in the dimension 'time'.
-#'The clustering type (cluster.type), number of clusters (centers), center pattern of each cluster (patterns) and the days corresponding to each 
+#'@return A C4R (multimember/multi)grid object that will contain data from: 
+#'\item 'grid' input if none 'newdata' or 'y' are passed.  
+#'\item 'newdata' if input 'newdata' is passed and 'y' is not. 
+#'\item 'y' if this predictands grid is passed. 
+#'The clustering type (cluster.type), number of clusters (centers), centroids of clusters from 'grid' input (centroids) and the days corresponding to each 
 #'cluster (index) are returned as attributes in all clustering algorithms. Then, other algorithm-specific parameters are provided as attributes.
 #'@details 
 #'\strong{kmeans}
@@ -42,9 +49,13 @@
 #'While using the SOM (self-organizing maps) algorithm (check \link[kohonen]{som} for further information), the argument 'centers' is provided as
 #' a two-element vector, indicating the dimensions \code{xdim,ydim} of the grid (see \link[kohonen]{somgrid}).
 #'Otherwise, by default 48 clusters (8x6) with rectangular topology are obtained. 
+#'
+#'#'\strong{Lamb}
+#'
+#'While using the Lamb Weather Typing algorithm (check \link{LambWT} for further information), the argument 'centers' is not requiered, as it will 
+#'be forced to be equal to 27, according to Jones et al. 2012 (Int J Climatol).
 #'@author J. A. Fernandez
 #'@export
-#'@importFrom magrittr %>% 
 #'@examples 
 #'#Example of K-means clustering: 
 #' data(NCEP_Iberia_psl, package = "transformeR")
@@ -55,119 +66,242 @@
 #'
 #'#Example of som clustering: 
 #'clusters<- clusterGrid(NCEP_Iberia_psl, type="som", centers = c(10,1))
+#'
+#'#Example of som clustering:
+#'data(NCEP_slp_2001_2010)
+#'clusters <- clusterGrid(grid = NCEP_slp_2001_2010, type = "lamb")
+#'
+#'#Example of 'newdata' clustering:#'
+#'grid <- makeMultiGrid(CMIP5_Iberia_pr, CMIP5_Iberia_tas, CMIP5_Iberia_hus850)
+#'newdata <- makeMultiGrid(CMIP5_Iberia_pr.rcp85, CMIP5_Iberia_tas.rcp85, CMIP5_Iberia_hus850.rcp85)
+#'clusters <- clusterGrid(grid = grid, newdata = newdata, type = "kmeans", centers = 100, iter.max = 10000, nstart = 1)
 
 
-
-clusterGrid <- function(grid, type = "kmeans", centers = NULL, iter.max = 10, nstart = 1, method = "complete", center.point = c(-5, 55)) {
+clusterGrid <- function(grid, 
+                        type = "kmeans",
+                        centers = NULL,
+                        newdata = NULL, 
+                        y = NULL,
+                        ...) {
  
   type <- match.arg(type, choices = c("kmeans", "hierarchical", "som", "lamb"))
-
-  #Check of grid dimensions
-  grid<-redim(grid, member = TRUE, var = TRUE)
+  
+  #Checking grid dimensions
+  grid <- redim(grid, member = TRUE)
   n.mem <- getShape(grid, "member")
-  n.var <- getShape(grid, "var")
-  if (n.var != 1){
-    stop("The function only manages grids with one variable so far. Do Variable subsetting using subsetGrid().")
-  }
+  n.var <- suppressMessages(getShape(grid, "var")) 
+  var.names <- getVarNames(grid)
   
-  #Initialization of some attributes as matrix:
-  index.mat <- array(dim = c(n.var, n.mem, getShape(grid, dimension = "time")))
-  if (type == "kmeans") {
-    withinss <- array(dim = c(n.var, n.mem, ncol = centers))
-    betweenss <- matrix(nrow = n.var, ncol = n.mem)
-  }else if (type == "hierarchical") {
-    height <- array(dim = c(n.var, n.mem, getShape(grid, dimension = "time")-1))
-    cutree.at.height <- matrix(nrow = n.var, ncol = n.mem)
-    diff.height.threshold <- NULL
-  }
-  
-  var.list <- vector("list", n.var)
-  mem.list <- vector("list", n.mem)
-  
-  for (x in 1:n.var){
-    l <- suppressMessages(subsetGrid(grid, var = getVarNames(grid)[x])) %>% redim(member = TRUE)
-    for (m in 1:n.mem){
-      # calculate clusters of 3D data
-      sub.grid <- suppressMessages(subsetGrid(l, members = m, drop = TRUE))
-      clusters <- suppressWarnings(clusterGrid_3D(sub.grid, type, centers, iter.max, nstart, method, center.point))
-      centers <- attr(clusters, "centers")
-      #Extract attributes as matrix:
-      index.mat[x, m, ] <- attr(clusters, "index")
-      #Extract attribute "patterns" 
-      if (x == 1 & m == 1){
-        patterns <- array(dim = c(n.mem, centers, getShape(grid, dimension = "lat"), getShape(grid, dimension = "lon")))
-        patterns[m, , , ] <- attr(clusters, "patterns")
-      }else {
-        patterns[m, , , ] <- attr(clusters, "patterns")
-      }
-      if (type == "kmeans") {
-        withinss[x, m, ] <- attr(clusters, "withinss")
-        betweenss[x, m] <- attr(clusters, "betweenss")
-      }else if (type == "hierarchical") {
-        height[x, m, ] <- attr(clusters, "height")
-        cutree.at.height[x, m] <- attr(clusters, "cutree.at.height")
-        if (m == 1){
-          diff.height.threshold <- attr(clusters, "diff.height.threshold")
-        }
-      }
-      mem.list[[m]] <- clusters
+  ### Circulation types
+  #Special case: Lamb WT
+  if (type == "lamb"){
+    grid <- redim(grid, var = TRUE)
+    n.var <- getShape(grid, "var")
+    if ((n.var) != 1){
+      stop("For lamb, only 'psl' variable is admitted. Use subsetGrid to extract it")
     }
-    var.list[[x]] <- suppressWarnings(bindGrid(mem.list, dimension = "member"))
+    if (!is.null(centers)) {
+      message("Lamb WT was choosen, so the number of clusters will be forced to 27. Arg. 'centers' will be ignored.")
+    }
+    centers <- 27
+    arg.list <- list(...)
+    arg.list[["grid"]] <- grid
+    lamb.wt <- do.call("lambWT", arg.list)
+    out.grid <- grid
+    attr(out.grid, "cluster.type") <- type
+    attr(out.grid, "centers") <- centers
+    attr(out.grid, "centroids") <- lamb.wt[[1]][[1]][[1]]$pattern
+    attr(out.grid, "index") <- lamb.wt[[1]][[1]][[1]]$index
+    return(out.grid)
   }
   
-  out <- suppressWarnings(makeMultiGrid(var.list))
+  #Scaling and combining data from all variables by members:
+  if (!(is.na(n.var))){
+    data.combined <- comb.vars(grid = grid, base = NULL, ref = NULL, n.mem = n.mem, var.names = var.names)
+  }else {
+    var <- var.names
+    data.combined <-comb.vars(grid = grid, base = NULL, ref = grid, n.mem = n.mem, var.names = var.names)
+  }
   
-  #Set attributes as matrix:
-  attr(out, "index") <- index.mat
-  attr(out, "patterns") <- patterns
-  attr(attr(out, "patterns"), "dimensions") <- c("member", "time", "lat", "lon")
+  clusters.list <- vector("list", length(data.combined))
+  for (m in 1:n.mem){
+    clusters.list[[m]] <- clusterGrid_2D(grid.2D = data.combined[[m]], type, centers, ...)
+  }
+  centers <- nrow(clusters.list[[1]])
+  
+  if (!is.null(newdata)){
+    #Checking grid dimensions for newdata and var.names/n.mem matches with grid
+    newdata<-redim(newdata, member = TRUE, var = TRUE)
+    newvar.names <- getVarNames(newdata)
+    if (length(match(newvar.names, var.names)) != n.var){ 
+      stop("Variables in 'newdata' don't match with variables in 'grid'")
+    }
+    if (getShape(newdata, "member") != n.mem){
+      stop("Number of members in 'newdata' is not the same as in 'grid'")
+    }
+    #Pre-processing in order to do clustering to ref CT's: 
+    arg.list <- list(...)
+    base <- arg.list[["base"]]
+    if (length(match(newvar.names, getVarNames(base))) != n.var){ 
+      stop("Variables in 'base' don't match with variables in 'newdata'")
+    }
+    mat.newdata <- comb.vars(grid = newdata, base = base, ref = NULL, n.mem = getShape(newdata, "member"), var.names = getVarNames(newdata))
+    ind.list <- vector("list", length(mat.newdata))
+    for (m in 1:n.mem){
+      dist.mat <- rdist(mat.newdata[[m]],  clusters.list[[m]])
+      ind.list[[m]] <- apply(dist.mat, MARGIN = 1, FUN ="which.min")
+    }
+    if (is.null(y)){
+    #Reconstruct newdata using historical as base and re-analysis as ref: 
+    # newdata.correct <- comb.vars(grid = newdata, base = base, ref = grid, n.mem = n.mem, var.names = getVarNames(newdata))
+    #Extract variable requested by user:
+    # out.grid <- reconstruct.var(grid = newdata, grid.data = newdata.correct, var = var, n.mem = n.mem)
+    # #Fix $data from grid
+    # out.grid <- intersect.cluster(grid = out.grid, ind.list = ind.list, centers = centers, n.mem = getShape(newdata, "member"))
+    out.grid <- newdata
+    }
+  } else {
+    for (m in 1:n.mem){
+      ind.list[[m]] <- attr(clusters.list[[m]], "index")
+    }
+    if (is.null(y)){ 
+      # grid.correct <- comb.vars(grid = grid, base = base, ref = grid, n.mem = n.mem, var.names = getVarNames(grid))
+      # out.grid <- reconstruct.var(grid = grid, grid.data = grid.correct, var = var, n.mem = n.mem)
+      # #Fix $data from grid
+      # ind.list <- vector("list", length(data.combined))
+      # for (m in 1:n.mem){
+      #   ind.list[[m]] <- attr(clusters.list[[m]], "index")
+      # }
+      # out.grid <- intersect.cluster(grid = out.grid, ind.list = ind.list, centers = centers, n.mem = n.mem)
+      out.grid <- grid
+    }
+  }
+
+
+  if (!is.null(y)){
+    ### Weather types
+    #y.nvar <- getShape(y, "var")
+    # y.varnames <- getVarNames(y)
+    # 
+    # wt.list <- vector("list", y.nvar)
+    # names(wt.list) <- y.varnames
+    #¿Do intersect.time?: yes, with grid
+    
+    # for(n in 1:y.nvar){
+    #   l <- suppressMessages(subsetGrid(y, var = y.varnames[n])) %>% redim(member = TRUE)
+    #   aux <- intersect.cluster(grid = l, ind.list = ind.list, centers = centers, n.mem = getShape(l, "member"))
+    #   wt.list[[n]] <- aux
+    # }
+    # attr(wt.list, "index") <- ind.list
+    # attr(wt.list, "centroids") <- clusters.list
+    # return(wt.list)
+    
+    if (!is.null(newdata)){
+      aux <- intersectGrid.time(y, newdata) 
+      time.size <- getShape(aux, dimension = "time")
+      if (time.size != getShape(newdata, dimension = "time")){
+        stop("'newdata' and 'y' time dimensions' don't match. Don't use that 'y' in this case...")
+      } 
+    }else {
+      aux <- intersectGrid.time(y, grid) 
+      time.size <- getShape(aux, dimension = "time")
+      if (time.size != getShape(grid, dimension = "time")){
+        stop("'newdata' and 'y' time dimensions' don't match. Don't use that 'y' in this case...")
+      } 
+    }
+    out.grid <- y
+  }
+  attr(out.grid, "cluster.type") <- type
+  attr(out.grid, "centers") <- centers
+  for (m in 1:n.mem){
+    index.mat <- rbind(ind.list[[m]])
+    centroids <- rbind(clusters.list[[m]][ , ])
+    withinss <- rbind(attr(clusters.list[[m]], "withinss"))
+    betweenss <- rbind(attr(clusters.list[[m]], "betweenss"))
+    height <- rbind(attr(clusters.list[[m]], "height"))
+    cutree.at.height <- rbind(attr(clusters.list[[m]], "cutree.at.height"))
+    if (m == 1) {diff.height.threshold <- rbind(attr(clusters.list[[m]], "diff.height.threshold"))}
+  }
+  attr(out.grid, "index") <- drop(index.mat) 
+  attr(out.grid, "centroids") <-  centroids
   if (type == "kmeans") {
-    attr(out, "withinss") <- withinss
-    attr(out, "betweenss") <- betweenss
+    attr(out.grid, "withinss") <- withinss
+    attr(out.grid, "betweenss") <- betweenss
   }else if (type == "hierarchical") {
-    attr(out, "height") <- height
-    attr(out, "cutree.at.height") <- cutree.at.height
-    attr(out, "diff.height.threshold") <- drop(diff.height.threshold)
-  }
-  return(out)
+    attr(out.grid, "height") <- height
+    attr(out.grid, "cutree.at.height") <- cutree.at.height
+    attr(out.grid, "diff.height.threshold") <- diff.height.threshold
+    }
+  return(out.grid)
+
 }
 
 
+#' @title Variables combination
+#' @description Scaling and combining data from all variables by members
+#' @param grid A grid containing the variables to be scaled and combined 
+#' @param base Reference baseline grid to be passed to \code{'scaleGrid'}. See \link{scaleGrid} for further information.
+#' @param ref Reference grid to be passed to \code{'scaleGrid'}. See \link{scaleGrid} for further information.
+#' @param n.mem Number of members 
+#' @param var.names Variables names
+#' @importFrom magrittr %>%  
+#' @return A list
+#' @keywords internal
+#' @author J. A. Fernandez
 
-#'@title Cluster analysis of 3D grids
+comb.vars <- function(grid, base, ref, n.mem, var.names){
+  grid.scaled <- suppressMessages(scaleGrid(grid = grid, base = base, ref = ref, type = "standardize"))
+  data.combined <- lapply(1:n.mem, function(m) {
+    l <- subsetGrid(grid.scaled, members = m) %>% redim(var = TRUE)
+    vardata.list <- lapply(1:length(var.names), function(x) {
+      suppressMessages(subsetGrid(l, var = var.names[x])[["Data"]]) %>% array3Dto2Dmat()
+    }) 
+    do.call("cbind", vardata.list)
+    # grid$Data <- data.combined
+    # attr(grid$Data, "dimensions")<- c("member", "time", "lat", "lon")
+    # return(grid)
+  })
+  return(data.combined)
+}
+
+
+#'@title Cluster analysis of 2D matrix
 #'@description Performs cluster analysis of 3D grids. Several clustering algorithms are available.
 #'@param grid A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object, as 
 #' returned e.g. by \code{loadeR::loadGridData} (or \code{loadeR::loadStationData}), a
 #' multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
-#' (possibly multimember grids) as returned e.g. by \code{loadeR.ECOMS::loadECOMS}.
+#' (possibly multimember grids) as returned e.g. by \code{loadeR.ECOMS::loadECOMS}. 
 #'@param type Clustering algorithm to be used for the cluster analysis. 
 #'Possible values are "\strong{kmeans}" (default), "\strong{hierarchical}", "\strong{som}". 
 #'The core functions are \link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen]{som}, respectively. See Details.
 #'@param centers Integer value indicating the number of clusters, \strong{k}, or center points. See Details.
-#'@param iter.max (for the K-means algorithm) Integer value indicating the maximum number of iterations allowed. Default: 10.
-#'@param nstart (for the K-means algorithm) If centers is a number, how many random sets should be chosen? Default: 1.
-#'@param method (for the hierarchical algorithm) Agglomeration method to be used, one of "complete" (default), "ward.D", "ward.D2", "single",
-#'"average", "mcquitty", "median" or "centroid".  
+#'@param ... Further specific arguments passed to the clustering functions
 #'@keywords internal
 #'@importFrom stats kmeans hclust cutree dist quantile
 #'@importFrom kohonen som somgrid
-#'@return A new 3D grid object that contains the clusters created using the specified algorithm.
-#'The clustering type, number of clusters and other algorithm-specific parameters are provided as attributes.
+#'@return A matrix object that contains the clusters centroids' created using the specified algorithm.
+#'The clustering type, number of clusters, cluster index of each day and other algorithm-specific parameters are 
+#'provided as attributes.
 
 
-clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method, center.point){
-  
+clusterGrid_2D <- function(grid.2D, type, centers, ...){
+  arg.list <- list(...)
   type = tolower(type)
-  grid.2D <- array3Dto2Dmat(grid$Data) #From 3D to 2D
   if (is.null(type) | type == "kmeans") {
     if (is.null(centers)) {
       stop("in 'centers'.\n In K-means the number of clusters ('centers') needs to be provided")
     }
-    kmModel <- kmeans(grid.2D, centers, iter.max = iter.max, nstart = nstart) #Datos de entrenamiento en KNN     
-    #Going back from 2D to 3D:
-    Y <- mat2Dto3Darray(kmModel$centers, grid$xyCoords$x, grid$xyCoords$y)
+    arg.list[["centers"]] <- centers
+    arg.list[["x"]] <- grid.2D
+    kmModel <- do.call("kmeans", arg.list)
+    Y <- kmModel$centers
+    attr(Y, "dimnames")<- NULL
+    attr(Y, "index") <- kmModel$cluster
+    attr(Y, "withinss") <- kmModel$withinss
+    attr(Y, "betweenss") <- kmModel$betweenss
   } else if (type == "hierarchical") {
-    hc <- hclust(dist(grid.2D), method)
+    arg.list[["d"]] <- dist(grid.2D)
+    hc <- do.call("hclust", arg.list)
     token <- "FALSE"
     if (is.null(centers)) {
       token <- "TRUE"
@@ -181,82 +315,93 @@ clusterGrid_3D <- function(grid, type, centers, iter.max, nstart, method, center
       centers <- length(hc$order) - index[1]
     }
     if(is.na(centers)){
-     stop("All the height differences are smaller than the interquartile range, probably due to the fact that the 'time' dimension is too small. We recommend to set the number of clusters manually...")
+      stop("All the height differences are smaller than the interquartile range, probably due to the fact that the 'time' dimension is too small. We recommend to set the number of clusters manually...")
     }
     memb <- cutree(hc, k = centers) #Found the corresponding cluster for every element
     cent <- NULL
     for (k in 1:centers) {   #Set up the centers of the clusters
       cent <- rbind(cent, colMeans(grid.2D[memb == k, ,drop = FALSE]))
     }
-    Y <- mat2Dto3Darray(cent, grid$xyCoords$x, grid$xyCoords$y)
+    Y <- cent
+    attr(Y, "index") <- memb
+    attr(Y, "height") <- hc$height
+    attr(Y, "cutree.at.height") <- hc$height[(length(hc$order) - centers) + 1] #the previous heigth divides in "centers" numb. of clusters 
+    if (token){
+      attr(Y, "diff.height.threshold") <- (quantile.range[[2]] - quantile.range[[1]])
+    }
   } else if (type == "som") {
+    arg.list[["X"]] <- grid.2D
     if (is.null(centers)) {
       centers <- 6*8
-      som.grid <- som(grid.2D)
+      som.grid <- do.call("som", arg.list)
     } else {
       if (length(centers) != 2) {
         stop("in 'centers'.\n Unexpected lenght for this argument while using SOM. It must be a vector of 2 elements")
       }
-      som.grid <- som(grid.2D, somgrid(xdim = centers[1], ydim=centers[2], topo = "rectangular"))
+      arg.list[["grid"]] <- somgrid(xdim = centers[1], ydim=centers[2], topo = "rectangular")
+      som.grid <- do.call("som", arg.list)
       centers <- centers[1] * centers[2]
     }
-    Y <- mat2Dto3Darray(som.grid$codes[[1]], grid$xyCoords$x, grid$xyCoords$y)
-  } else if (type == "lamb") {
-    if (!is.null(centers)) {
-      message("Lamb WT was choosen, so the number of clusters will be forced to 27. Arg. 'centers' will be ignored.")
-    } 
-    centers <- 27
-    lamb.wt <- lambWT(grid = grid, center.point = center.point)
-    Y <- lamb.wt[[1]][[1]][[1]]$pattern
-  } else {
-    stop("Input data is not valid.\n'", paste(type), "' is not a valid algorithm")
-  }
-  
-  #Setting up metadata for Y
-  aux <- vector("list", centers)
-  
-  for (i in 1:centers){
-    aux[[i]] <- grid
-    if (type == "kmeans") {
-      ind <- which(kmModel$cluster != i)
-    } else if (type == "hierarchical") {
-      ind <- which(memb != i)
-    } else if (type == "som") {
-      ind <- which(som.grid$unit.classif != i)
-    }else if (type == "lamb") {
-      ind <- which(lamb.wt[[1]][[1]][[1]]$index != i)
-    }
-    aux[[i]]$Data[ind, , ] <- NaN
-  }
-  aux <- suppressWarnings(makeMultiGrid(aux))
-  attr(aux$Variable, "longname") <- paste0(getVarNames(aux), "_cluster", 1:getShape(aux, "var")) 
-  aux$Variable$varName <- paste0(getVarNames(aux), "_cluster", 1:getShape(aux, "var"))
-  attr(aux, "cluster.type") <- type
-  attr(aux, "patterns") <- Y
-  attr(attr(aux, "patterns"), "dimensions") <- NULL
-  
-  # Add attributes depending on the cluster algorithm
-  if (type == "kmeans") {
-    attr(aux, "index") <- kmModel$cluster
-    attr(aux, "centers") <- centers
-    attr(aux, "withinss") <- kmModel$withinss
-    attr(aux, "betweenss") <- kmModel$betweenss
-  } else if (type == "hierarchical") {
-    attr(aux, "centers") <- centers
-    attr(aux, "index") <- memb
-    attr(aux, "height") <- hc$height
-    attr(aux, "cutree.at.height") <- hc$height[(length(hc$order) - centers) + 1] #the previous heigth divides in "centers" numb. of clusters 
-    if (token){
-      attr(aux, "diff.height.threshold") <- (quantile.range[[2]] - quantile.range[[1]])
-    }
-  } else if (type == "som") {
-    attr(aux, "index") <- som.grid$unit.classif
-    attr(aux, "centers") <- centers
-  } else if (type == "lamb") {
-    attr(aux, "index") <- lamb.wt[[1]][[1]][[1]]$index
-    attr(aux, "centers") <- centers
-  }
-  
-  return(aux)
+    Y <- som.grid$codes[[1]]
+    attr(Y, "dimnames")<- NULL
+    attr(Y, "index") <- som.grid$unit.classif
+  } 
+  return(Y)
 }
 
+
+#' #' @title 
+#' #' @description Reconstructs the concatenated variable specified by user
+#' #' @param  
+#' #' 
+#' #' @importFrom  
+#' #' @return A grid
+#' #' @keywords internal
+#' #' @author 
+#' #' 
+#' reconstruct.var <- function(grid, grid.data, var, n.mem){
+#'   if (is.null(var)) {
+#'     stop("A variable to be extracted is needed. Please, enter it in 'var' argument", call. = FALSE)
+#'   }
+#'   var.idx <- grep(paste0("^", var, "$", collapse = "|"), getVarNames(grid))
+#'   if (length(var.idx) == 0) {
+#'     stop("Variable indicated for extracting not found", call. = FALSE)
+#'   }
+#'   var.out <- array(dim = c(n.mem, getShape(grid, dimension = "time"),length(grid$xyCoords$x),length(grid$xyCoords$y)))
+#'   finalpos.var <- length(grid$xyCoords$x)*length(grid$xyCoords$y)*var.idx
+#'   initialpos.var <- 1+(length(grid$xyCoords$x)*length(grid$xyCoords$y)*(var.idx-1))
+#'   for (m in 1:n.mem){
+#'     var.out[m, , , ] <- grid.data[[m]][ ,initialpos.var:finalpos.var] %>% mat2Dto3Darray(grid$xyCoords$x, grid$xyCoords$y)
+#'   }
+#'   attr(var.out, "dimensions") <- c("member", "time", "lat", "lon")
+#'   out.grid <- subsetGrid(grid = grid, var = var)
+#'   out.grid$Data <- var.out
+#'   return(out.grid)
+#' }
+#' 
+#' 
+#' #' @title 
+#' #' @description Intersects time-dimension by members with clustering index and saves it into variable dimension
+#' #' @param  
+#' #' 
+#' #' @importFrom  
+#' #' @return A grid
+#' #' @keywords internal
+#' #' @author 
+#' #' 
+#' intersect.cluster <- function(grid, ind.list, centers, n.mem){
+#'   aux <- vector("list", centers)
+#'   for (i in 1:centers){
+#'     aux[[i]] <- grid
+#'     for(j in 1:n.mem){
+#'       ind <- which(ind.list[[j]] != i)
+#'       aux[[i]]$Data[j,ind, , ] <- NaN
+#'     }
+#'   }
+#'   aux <- suppressWarnings(makeMultiGrid(aux))
+#'   attr(aux$Variable, "longname") <- paste0(getVarNames(aux), "_cluster", 1:getShape(aux, "var")) 
+#'   aux$Variable$varName <- paste0(getVarNames(aux), "_cluster", 1:getShape(aux, "var"))
+#'   return(aux)
+#' }
+#' 
+#' 
