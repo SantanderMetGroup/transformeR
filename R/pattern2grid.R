@@ -73,7 +73,9 @@ pattern2grid <- function(pattern, index.code, members=1, season=1,
   }else {
     ind.seas <- which(names(pattern[[ind.index]][[members]]) %in% paste0("Month_",season)) #get season form list 'pattern'
     grid <- list()
-    grid$Variable <- pattern[[ind.index]]$Variable
+    grid$Variable <- list(varName=index.code, level=NULL)
+    attr(grid$Variable, "description") <- "Teleconnection index obtained with circIndexGrid"
+    attr(grid$Variable, "longname") <- index.code
     grid$Data <- pattern[[ind.index]][[members]][[ind.seas]]$pattern 
     attr(grid$Data, "dimensions") <- c("lat","lon")
     grid$xyCoords <- coords
