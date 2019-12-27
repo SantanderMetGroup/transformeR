@@ -49,6 +49,7 @@ checkDim(predictor.adj, predictand.adj, dimensions = "time") # perfect
 Other subsetting: \code{\link{intersectGrid.spatial}},
   \code{\link{intersectGrid.time}},
   \code{\link{intersectGrid}}, \code{\link{limitArea}},
+  \code{\link{subsetCluster}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},

@@ -24,6 +24,7 @@
 #' the reference grid ('grid' or 'newdata'), thus time-dimension from 'y' and the reference grid must intersect. Default: NULL.
 #'@param ... Further specific arguments passed to the clustering functions 
 #'@seealso \link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen]{som}.
+#'@importFrom fields rdist
 #'@return A C4R (multimember/multi)grid object that will contain data from: 
 #'\item 'grid' input if none 'newdata' or 'y' are passed.  
 #'\item 'newdata' if input 'newdata' is passed and 'y' is not. 
@@ -123,12 +124,14 @@ clusterGrid <- function(grid,
     data.combined <-comb.vars(grid = grid, base = NULL, ref = grid, n.mem = n.mem, var.names = var.names)
   }
   
+  #Clustering Analysis of 'grid' by members:
   clusters.list <- vector("list", length(data.combined))
   for (m in 1:n.mem){
     clusters.list[[m]] <- clusterGrid_2D(grid.2D = data.combined[[m]], type, centers, ...)
   }
   centers <- nrow(clusters.list[[1]])
   
+  #Clustering Analysis of 'newdata':
   if (!is.null(newdata)){
     #Checking grid dimensions for newdata and var.names/n.mem matches with grid
     newdata<-redim(newdata, member = TRUE, var = TRUE)
@@ -152,12 +155,6 @@ clusterGrid <- function(grid,
       ind.list[[m]] <- apply(dist.mat, MARGIN = 1, FUN ="which.min")
     }
     if (is.null(y)){
-    #Reconstruct newdata using historical as base and re-analysis as ref: 
-    # newdata.correct <- comb.vars(grid = newdata, base = base, ref = grid, n.mem = n.mem, var.names = getVarNames(newdata))
-    #Extract variable requested by user:
-    # out.grid <- reconstruct.var(grid = newdata, grid.data = newdata.correct, var = var, n.mem = n.mem)
-    # #Fix $data from grid
-    # out.grid <- intersect.cluster(grid = out.grid, ind.list = ind.list, centers = centers, n.mem = getShape(newdata, "member"))
     out.grid <- newdata
     }
   } else {
@@ -165,14 +162,6 @@ clusterGrid <- function(grid,
       ind.list[[m]] <- attr(clusters.list[[m]], "index")
     }
     if (is.null(y)){ 
-      # grid.correct <- comb.vars(grid = grid, base = base, ref = grid, n.mem = n.mem, var.names = getVarNames(grid))
-      # out.grid <- reconstruct.var(grid = grid, grid.data = grid.correct, var = var, n.mem = n.mem)
-      # #Fix $data from grid
-      # ind.list <- vector("list", length(data.combined))
-      # for (m in 1:n.mem){
-      #   ind.list[[m]] <- attr(clusters.list[[m]], "index")
-      # }
-      # out.grid <- intersect.cluster(grid = out.grid, ind.list = ind.list, centers = centers, n.mem = n.mem)
       out.grid <- grid
     }
   }
@@ -180,22 +169,6 @@ clusterGrid <- function(grid,
 
   if (!is.null(y)){
     ### Weather types
-    #y.nvar <- getShape(y, "var")
-    # y.varnames <- getVarNames(y)
-    # 
-    # wt.list <- vector("list", y.nvar)
-    # names(wt.list) <- y.varnames
-    #¿Do intersect.time?: yes, with grid
-    
-    # for(n in 1:y.nvar){
-    #   l <- suppressMessages(subsetGrid(y, var = y.varnames[n])) %>% redim(member = TRUE)
-    #   aux <- intersect.cluster(grid = l, ind.list = ind.list, centers = centers, n.mem = getShape(l, "member"))
-    #   wt.list[[n]] <- aux
-    # }
-    # attr(wt.list, "index") <- ind.list
-    # attr(wt.list, "centroids") <- clusters.list
-    # return(wt.list)
-    
     if (!is.null(newdata)){
       aux <- intersectGrid.time(y, newdata) 
       time.size <- getShape(aux, dimension = "time")
@@ -257,9 +230,6 @@ comb.vars <- function(grid, base, ref, n.mem, var.names){
       suppressMessages(subsetGrid(l, var = var.names[x])[["Data"]]) %>% array3Dto2Dmat()
     }) 
     do.call("cbind", vardata.list)
-    # grid$Data <- data.combined
-    # attr(grid$Data, "dimensions")<- c("member", "time", "lat", "lon")
-    # return(grid)
   })
   return(data.combined)
 }
@@ -350,58 +320,3 @@ clusterGrid_2D <- function(grid.2D, type, centers, ...){
 }
 
 
-#' #' @title 
-#' #' @description Reconstructs the concatenated variable specified by user
-#' #' @param  
-#' #' 
-#' #' @importFrom  
-#' #' @return A grid
-#' #' @keywords internal
-#' #' @author 
-#' #' 
-#' reconstruct.var <- function(grid, grid.data, var, n.mem){
-#'   if (is.null(var)) {
-#'     stop("A variable to be extracted is needed. Please, enter it in 'var' argument", call. = FALSE)
-#'   }
-#'   var.idx <- grep(paste0("^", var, "$", collapse = "|"), getVarNames(grid))
-#'   if (length(var.idx) == 0) {
-#'     stop("Variable indicated for extracting not found", call. = FALSE)
-#'   }
-#'   var.out <- array(dim = c(n.mem, getShape(grid, dimension = "time"),length(grid$xyCoords$x),length(grid$xyCoords$y)))
-#'   finalpos.var <- length(grid$xyCoords$x)*length(grid$xyCoords$y)*var.idx
-#'   initialpos.var <- 1+(length(grid$xyCoords$x)*length(grid$xyCoords$y)*(var.idx-1))
-#'   for (m in 1:n.mem){
-#'     var.out[m, , , ] <- grid.data[[m]][ ,initialpos.var:finalpos.var] %>% mat2Dto3Darray(grid$xyCoords$x, grid$xyCoords$y)
-#'   }
-#'   attr(var.out, "dimensions") <- c("member", "time", "lat", "lon")
-#'   out.grid <- subsetGrid(grid = grid, var = var)
-#'   out.grid$Data <- var.out
-#'   return(out.grid)
-#' }
-#' 
-#' 
-#' #' @title 
-#' #' @description Intersects time-dimension by members with clustering index and saves it into variable dimension
-#' #' @param  
-#' #' 
-#' #' @importFrom  
-#' #' @return A grid
-#' #' @keywords internal
-#' #' @author 
-#' #' 
-#' intersect.cluster <- function(grid, ind.list, centers, n.mem){
-#'   aux <- vector("list", centers)
-#'   for (i in 1:centers){
-#'     aux[[i]] <- grid
-#'     for(j in 1:n.mem){
-#'       ind <- which(ind.list[[j]] != i)
-#'       aux[[i]]$Data[j,ind, , ] <- NaN
-#'     }
-#'   }
-#'   aux <- suppressWarnings(makeMultiGrid(aux))
-#'   attr(aux$Variable, "longname") <- paste0(getVarNames(aux), "_cluster", 1:getShape(aux, "var")) 
-#'   aux$Variable$varName <- paste0(getVarNames(aux), "_cluster", 1:getShape(aux, "var"))
-#'   return(aux)
-#' }
-#' 
-#' 
