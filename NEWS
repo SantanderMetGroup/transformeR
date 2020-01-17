@@ -74,8 +74,16 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * New weather type in `clusterGrid.R`: lamb WT. 
  * New utility `sgdf2clim` for sp-class spatialGridDataFrames to climatological grids
  * Other minor changes and documentation updates
+<<<<<<< HEAD
  
 ## 1.6.2 (27 Dic 2019)
  * New changes on `clusterGrid.R` structure 
  * Changes on subsetGrid: Add subsetting by cluster
+=======
+
+## 1.6.2 (06 Jan 2020)
+ * Seasonal aggregation implementation
+ * Other minor changes and documentation updates
+
+>>>>>>> devel
 
