@@ -28,4 +28,7 @@ provided as attributes.
 \description{
 Performs cluster analysis of 3D grids. Several clustering algorithms are available.
 }
+\author{
+J. A. Fernandez
+}
 \keyword{internal}

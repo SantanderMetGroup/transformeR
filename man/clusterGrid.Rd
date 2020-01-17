@@ -74,11 +74,11 @@ clusters<- clusterGrid(NCEP_Iberia_psl, type="hierarchical")
 #Example of som clustering: 
 clusters<- clusterGrid(NCEP_Iberia_psl, type="som", centers = c(10,1))
 
-#Example of som clustering:
+#Example of lamb clustering:
 data(NCEP_slp_2001_2010)
 clusters <- clusterGrid(grid = NCEP_slp_2001_2010, type = "lamb")
 
-#Example of 'newdata' clustering:#'
+#Example of 'newdata' clustering:
 grid <- makeMultiGrid(CMIP5_Iberia_pr, CMIP5_Iberia_tas, CMIP5_Iberia_hus850)
 newdata <- makeMultiGrid(CMIP5_Iberia_pr.rcp85, CMIP5_Iberia_tas.rcp85, CMIP5_Iberia_hus850.rcp85)
 clusters <- clusterGrid(grid = grid, newdata = newdata, type = "kmeans", centers = 100, iter.max = 10000, nstart = 1)

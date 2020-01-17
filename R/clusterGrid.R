@@ -59,8 +59,8 @@
 #'@export
 #'@examples 
 #'#Example of K-means clustering: 
-#' data(NCEP_Iberia_psl, package = "transformeR")
-#' clusters<- clusterGrid(NCEP_Iberia_psl, type="kmeans", centers=10, iter.max=1000)
+#'data(NCEP_Iberia_psl, package = "transformeR")
+#'clusters<- clusterGrid(NCEP_Iberia_psl, type="kmeans", centers=10, iter.max=1000)
 #'
 #'#Example of hierarchical clustering: 
 #'clusters<- clusterGrid(NCEP_Iberia_psl, type="hierarchical")
@@ -68,11 +68,11 @@
 #'#Example of som clustering: 
 #'clusters<- clusterGrid(NCEP_Iberia_psl, type="som", centers = c(10,1))
 #'
-#'#Example of som clustering:
+#'#Example of lamb clustering:
 #'data(NCEP_slp_2001_2010)
 #'clusters <- clusterGrid(grid = NCEP_slp_2001_2010, type = "lamb")
 #'
-#'#Example of 'newdata' clustering:#'
+#'#Example of 'newdata' clustering:
 #'grid <- makeMultiGrid(CMIP5_Iberia_pr, CMIP5_Iberia_tas, CMIP5_Iberia_hus850)
 #'newdata <- makeMultiGrid(CMIP5_Iberia_pr.rcp85, CMIP5_Iberia_tas.rcp85, CMIP5_Iberia_hus850.rcp85)
 #'clusters <- clusterGrid(grid = grid, newdata = newdata, type = "kmeans", centers = 100, iter.max = 10000, nstart = 1)
@@ -86,7 +86,7 @@ clusterGrid <- function(grid,
                         ...) {
  
   type <- match.arg(type, choices = c("kmeans", "hierarchical", "som", "lamb"))
-  
+ 
   #Checking grid dimensions
   grid <- redim(grid, member = TRUE)
   n.mem <- getShape(grid, "member")
@@ -108,33 +108,32 @@ clusterGrid <- function(grid,
     arg.list <- list(...)
     arg.list[["grid"]] <- grid
     lamb.wt <- do.call("lambWT", arg.list)
-    out.grid <- grid
-    attr(out.grid, "cluster.type") <- type
-    attr(out.grid, "centers") <- centers
-    attr(out.grid, "centroids") <- lamb.wt[[1]][[1]][[1]]$pattern
-    attr(out.grid, "index") <- lamb.wt[[1]][[1]][[1]]$index
-    return(out.grid)
+    clusters.list <- vector("list", n.mem)
+    for (m in 1:n.mem){
+      clusters.list[[m]] <- array3Dto2Dmat(lamb.wt[[1]][[m]][[1]]$pattern)
+    } 
+  } else {
+    #Scaling and combining data from all variables by members:
+    if (!(is.na(n.var))){
+      data.combined <- comb.vars(grid = grid, base = NULL, ref = NULL, n.mem = n.mem, var.names = var.names)
+    }else {
+      n.var <- 1
+      var <- var.names
+      data.combined <- comb.vars(grid = grid, base = NULL, ref = grid, n.mem = n.mem, var.names = var.names)
+    }
+    
+    #Clustering Analysis of 'grid' by members:
+    clusters.list <- vector("list", length(data.combined))
+    for (m in 1:n.mem){
+      clusters.list[[m]] <- clusterGrid_2D(grid.2D = data.combined[[m]], type, centers, ...)
+    }
+    centers <- nrow(clusters.list[[1]])
   }
-  
-  #Scaling and combining data from all variables by members:
-  if (!(is.na(n.var))){
-    data.combined <- comb.vars(grid = grid, base = NULL, ref = NULL, n.mem = n.mem, var.names = var.names)
-  }else {
-    var <- var.names
-    data.combined <-comb.vars(grid = grid, base = NULL, ref = grid, n.mem = n.mem, var.names = var.names)
-  }
-  
-  #Clustering Analysis of 'grid' by members:
-  clusters.list <- vector("list", length(data.combined))
-  for (m in 1:n.mem){
-    clusters.list[[m]] <- clusterGrid_2D(grid.2D = data.combined[[m]], type, centers, ...)
-  }
-  centers <- nrow(clusters.list[[1]])
   
   #Clustering Analysis of 'newdata':
   if (!is.null(newdata)){
     #Checking grid dimensions for newdata and var.names/n.mem matches with grid
-    newdata<-redim(newdata, member = TRUE, var = TRUE)
+    newdata<-redim(newdata, member = TRUE)
     newvar.names <- getVarNames(newdata)
     if (length(match(newvar.names, var.names)) != n.var){ 
       stop("Variables in 'newdata' don't match with variables in 'grid'")
@@ -148,7 +147,11 @@ clusterGrid <- function(grid,
     if (length(match(newvar.names, getVarNames(base))) != n.var){ 
       stop("Variables in 'base' don't match with variables in 'newdata'")
     }
-    mat.newdata <- comb.vars(grid = newdata, base = base, ref = NULL, n.mem = getShape(newdata, "member"), var.names = getVarNames(newdata))
+    if (n.var != 1){
+      mat.newdata <- comb.vars(grid = newdata, base = base, ref = NULL, n.mem = getShape(newdata, "member"), var.names = getVarNames(newdata))
+    } else {
+      mat.newdata <- comb.vars(grid = newdata, base = base, ref = newdata, n.mem = getShape(newdata, "member"), var.names = getVarNames(newdata))
+    }
     ind.list <- vector("list", length(mat.newdata))
     for (m in 1:n.mem){
       dist.mat <- rdist(mat.newdata[[m]],  clusters.list[[m]])
@@ -159,7 +162,11 @@ clusterGrid <- function(grid,
     }
   } else {
     for (m in 1:n.mem){
-      ind.list[[m]] <- attr(clusters.list[[m]], "index")
+      if (type == "lamb") {
+        ind.list[[m]] <- lamb.wt[[1]][[m]][[1]]$index
+      } else {
+        ind.list[[m]] <- attr(clusters.list[[m]], "index")
+      }
     }
     if (is.null(y)){ 
       out.grid <- grid
@@ -204,9 +211,8 @@ clusterGrid <- function(grid,
     attr(out.grid, "height") <- height
     attr(out.grid, "cutree.at.height") <- cutree.at.height
     attr(out.grid, "diff.height.threshold") <- diff.height.threshold
-    }
+  }
   return(out.grid)
-
 }
 
 
@@ -247,6 +253,7 @@ comb.vars <- function(grid, base, ref, n.mem, var.names){
 #'@param centers Integer value indicating the number of clusters, \strong{k}, or center points. See Details.
 #'@param ... Further specific arguments passed to the clustering functions
 #'@keywords internal
+#'@author J. A. Fernandez
 #'@importFrom stats kmeans hclust cutree dist quantile
 #'@importFrom kohonen som somgrid
 #'@return A matrix object that contains the clusters centroids' created using the specified algorithm.

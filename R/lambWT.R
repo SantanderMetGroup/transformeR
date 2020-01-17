@@ -16,15 +16,14 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #' @title Calculation of Lamb Weather types (WT).
-#' @description Calculate automated Lamb WT as defined in Trigo daCamara 2000 and Jones et al. 2012, 
-#' both Int J Climatol 
+#' @description Calculate automated Lamb WT as defined in Trigo and daCamara (2000), Int J Climatol 
 #' @param grid A grid (gridded or station dataset), or multimember grid object of MSLP values.
 #' @param center.point A two value vector that must include lon and lat from a location that will work as center point for the Lamb WT.
 #' See details. 
-#' @details According to Jones et al. 2012 (Int J Climatol), Lamb WT is only applied on North Atlantic domain. 
+#' @details According to Trigo and daCamara (2000), Int J Climatol, Lamb WT is only applied on North Atlantic domain. 
 #' The input grid units must be Pa, not hPa/mbar. If it is not in Pa, the units will be converted automatically.
 #' A center location point must be specified by the user. Then, the function calculates from left to right and from first to 16st 
-#' the rest of the location point from the grid specified by Jones et al. 2012:
+#' the rest of the location point from the grid specified by Trigo and daCamara (2000):
 #'  
 #'   \tabular{ccccccccccccc}{
 #'     \tab  \tab  \tab    \tab  \tab  \tab 01 \tab  \tab  \tab 02 \tab  \tab  \tab    \cr
@@ -47,10 +46,8 @@
 #' 
 #' purely cyclonic = 18
 #' 
-#' directional cyclonic from NE to N = 19 to 26
-#' 
-#' light indeterminate flow N = 27  .
-#' \item pattern: Array with the spatial pattern of the 27 weather types obtained.
+#' directional cyclonic from NE to N = 19 to 26.
+#' \item pattern: Array with the spatial pattern of the 26 weather types obtained.
 #' \item dates and coordinates.
 #' \item further arguments related to the Lamb WT index.
 #' }
@@ -62,7 +59,7 @@
 
 
 lambWT <- function(grid, center.point = c(-5, 55)) {
-
+  
   #  *** PREPARE OUTPUT GRID *** 
   wt <- vector("list", 1)
   names(wt) <- "lamb"
@@ -168,12 +165,12 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
       #mixed cyclonic
       wtseries[intersect(hybcyc, which(d == i))] <- i+9
     }
-    indFlow <- which(abs(z) < 6 & f < 6) 
-    wtseries[indFlow] <- 27 #indeterminate 
+    #indFlow <- which(abs(z) < 6 & f < 6) 
+    #wtseries[indFlow] <- 27 #indeterminate 
     
     wtseries.2<-wtseries[1:n[[1]]]
     
-    lamb.list <- lapply(1:27, function(y){
+    lamb.list <- lapply(1:26, function(y){
       lamb.pattern <- which(wtseries.2 == y)
       #We subset the desired point from slp dataset: 
       grid.wt <- subsetDimension(grid.member, dimension = "time", indices = lamb.pattern)
@@ -188,7 +185,7 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
     attr(memb[[1]], "season") <- getSeason(grid)
     attr(memb[[1]], "dates_start") <- grid.member$Dates$start
     attr(memb[[1]], "dates_end") <- grid.member$Dates$end
-    attr(memb[[1]], "centers") <- 27
+    attr(memb[[1]], "centers") <- 26
     wt[[1]][[x]] <- memb
   }
   

@@ -25,23 +25,20 @@ purely directional from NE to N = 10 to 17
 
 purely cyclonic = 18
 
-directional cyclonic from NE to N = 19 to 26
-
-light indeterminate flow N = 27  .
-\item pattern: Array with the spatial pattern of the 27 weather types obtained.
+directional cyclonic from NE to N = 19 to 26.
+\item pattern: Array with the spatial pattern of the 26 weather types obtained.
 \item dates and coordinates.
 \item further arguments related to the Lamb WT index.
 }
 }
 \description{
-Calculate automated Lamb WT as defined in Trigo daCamara 2000 and Jones et al. 2012, 
-both Int J Climatol
+Calculate automated Lamb WT as defined in Trigo and daCamara (2000), Int J Climatol
 }
 \details{
-According to Jones et al. 2012 (Int J Climatol), Lamb WT is only applied on North Atlantic domain. 
+According to Trigo and daCamara (2000), Int J Climatol, Lamb WT is only applied on North Atlantic domain. 
 The input grid units must be Pa, not hPa/mbar. If it is not in Pa, the units will be converted automatically.
 A center location point must be specified by the user. Then, the function calculates from left to right and from first to 16st 
-the rest of the location point from the grid specified by Jones et al. 2012:
+the rest of the location point from the grid specified by Trigo and daCamara (2000):
  
   \tabular{ccccccccccccc}{
     \tab  \tab  \tab    \tab  \tab  \tab 01 \tab  \tab  \tab 02 \tab  \tab  \tab    \cr
