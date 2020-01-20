@@ -75,4 +75,8 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * New utility `sgdf2clim` for sp-class spatialGridDataFrames to climatological grids
  * Other minor changes and documentation updates
 
+## 1.6.2 (06 Jan 2020)
+ * New Seasonal aggregation option in `aggregateGrid`
+ * Other minor changes and documentation updates
 
+## 1.6.3 (devel)
