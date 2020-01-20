@@ -6,9 +6,10 @@
 \usage{
 aggregateGrid(grid, aggr.mem = list(FUN = NULL), aggr.d = list(FUN =
   NULL), aggr.m = list(FUN = NULL), aggr.y = list(FUN = NULL),
-  aggr.lat = list(FUN = NULL), weight.by.lat = TRUE,
-  aggr.lon = list(FUN = NULL), aggr.loc = list(FUN = NULL),
-  parallel = FALSE, max.ncores = 16, ncores = NULL)
+  aggr.s = list(FUN = NULL, season = NULL), aggr.lat = list(FUN =
+  NULL), weight.by.lat = TRUE, aggr.lon = list(FUN = NULL),
+  aggr.loc = list(FUN = NULL), parallel = FALSE, max.ncores = 16,
+  ncores = NULL)
 }
 \arguments{
 \item{grid}{a grid or multigrid to be aggregated.}
@@ -21,6 +22,9 @@ aggregation function in first place, and other optional arguments to be passed t
 \item{aggr.m}{Same as \code{aggr.d}, but indicating the monthly aggregation function.}
 
 \item{aggr.y}{Same as \code{aggr.d}, but indicating the annual aggregation function.}
+
+\item{aggr.s}{Same as \code{aggr.d}, but indicating the seasonal aggregation function. The season can be indicated
+as shown in this example:  aggr.s = list(FUN = list("mean", na.rm = TRUE), season = c(12,1,2))}
 
 \item{aggr.lat}{Same as \code{aggr.d}, indicating the aggregation function to be applied along latitude.}
 

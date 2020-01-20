@@ -6,7 +6,7 @@
 #'@param level Character with the level for the resulting grid.
 #'@param dates Named list of the form: list(start = NULL, end = NULL), for the resulting grid.
 #'@param metadata Named list of characters with furher metadata for the resulting grid.
-#'@seealso \code{\link[visualizeR]{clim2sgdf}}
+#'@seealso \code{\link[transformeR]{clim2sgdf}}
 #'@return A C4R grid, with the metadata specified by the input arguments.
 #'@keywords internal
 #'@author M. Iturbide

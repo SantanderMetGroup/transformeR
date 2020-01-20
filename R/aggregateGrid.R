@@ -23,6 +23,8 @@
 #'  aggregation function in first place, and other optional arguments to be passed to the aggregation function. See the examples.
 #' @param aggr.m Same as \code{aggr.d}, but indicating the monthly aggregation function. 
 #' @param aggr.y Same as \code{aggr.d}, but indicating the annual aggregation function. 
+#' @param aggr.s Same as \code{aggr.d}, but indicating the seasonal aggregation function. The season can be indicated
+#' as shown in this example:  aggr.s = list(FUN = list("mean", na.rm = TRUE), season = c(12,1,2)) 
 #' @param aggr.mem Same as \code{aggr.d}, but indicating the function for computing the member aggregation.
 #' @param aggr.lat Same as \code{aggr.d}, indicating the aggregation function to be applied along latitude.
 #' @param weight.by.lat Logical. Should latitudinal averages be weighted by the cosine of latitude?.
@@ -89,6 +91,7 @@ aggregateGrid <- function(grid,
                           aggr.d = list(FUN = NULL),
                           aggr.m = list(FUN = NULL),
                           aggr.y = list(FUN = NULL),
+                          aggr.s = list(FUN = NULL, season = NULL),
                           aggr.lat = list(FUN = NULL),
                           weight.by.lat = TRUE,
                           aggr.lon = list(FUN = NULL),
@@ -105,6 +108,18 @@ aggregateGrid <- function(grid,
     }
     if (!is.null(aggr.y$FUN)) {
         grid <- timeAggregation(grid, "YY", aggr.y, parallel, max.ncores, ncores)
+    }
+    if (!is.null(aggr.s$FUN)) {
+        if (is.null(aggr.s$season)) stop("Please indicate the desired season using the aggr.s argument")
+        grid <- subsetGrid(grid,season = aggr.s$season)
+        months <- sapply(getRefDates(grid),FUN = function(z) substr(z,start = 6,stop = 7)) %>% as.numeric()
+        indLastMonth <- which(months == aggr.s$season[length(aggr.s$season)])
+        indCut <- c(0,indLastMonth[which(diff(indLastMonth) > 1)],length(months))
+        
+        grid <- lapply(1:(length(indCut)-1), FUN = function(z) {
+            subsetDimension(grid,dimension = "time", indices = (indCut[z]+1):(indCut[z+1])) %>%
+                climatology(clim.fun = aggr.s$FUN)  
+        }) %>% bindGrid(dimension = "time")
     }
     if (!is.null(aggr.lat$FUN)) {
         grid <- latAggregation(grid, aggr.lat, weight.by.lat, parallel, max.ncores, ncores)
