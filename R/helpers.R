@@ -1105,6 +1105,31 @@ setGridUnits <- function(grid, unit.string, var = NULL) {
 }
 
 
+#' @title Set grid projection
+#' @description Set the \code{"projection"} attribute of a climate4R grid
+#' @param grid An input grid
+#' @param proj Character string. A string specifying the projection attribute value. See details.
+#' @return Returns (invisible) the same input grid with the new \code{"projection"} 
+#' attribute in \code{"$xyCoords"} list element.
+#' @details 
+#' The projection string format is free, although usually a valid epsg code or proj4 string is introduced here.
+#' @export
+#' @author J Bedia
+#' @family get.helpers 
+#' @examples 
+#' data(NCEP_Iberia_hus850)
+#' getGridProj(NCEP_Iberia_hus850)
+#' # We introduce the standard definition of WGS84 lat-lon projection
+#' NCEP_Iberia_hus850 <- setGridProj(NCEP_Iberia_hus850,
+#'                                   proj= "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+#' getGridProj(NCEP_Iberia_hus850)                                   
+
+setGridProj <- function(grid, proj = NULL) {
+  stopifnot(isGrid(grid))
+  attr(grid[["xyCoords"]], "projection") <- proj
+  invisible(grid)
+}
+
 #' @title Obtain station names and IDs
 #' @description Obtain station names and IDs
 #' @param grid An input station data grid
