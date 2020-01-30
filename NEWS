@@ -79,6 +79,7 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * New Seasonal aggregation option in `aggregateGrid`
  * Other minor changes and documentation updates
 
-## 1.6.3 (30 Jan 2020)
-* New changes on `clusterGrid.R` structure 
-* Add subsetting by cluster in 'subsetGrid.R' 
+## 1.7.0 (30 Jan 2020)
+ * Changes in `clusterGrid` structure to allow for flexible prediction
+ * Add subsetting by cluster in `subsetGrid`
+ * Other minor bug fixes and documentation updates
