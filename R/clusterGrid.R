@@ -73,11 +73,6 @@
 #'#Example of lamb clustering:
 #'data(NCEP_slp_2001_2010)
 #'clusters <- clusterGrid(grid = NCEP_slp_2001_2010, type = "lamb")
-#'
-#'#Example of 'newdata' clustering:
-#'grid <- makeMultiGrid(CMIP5_Iberia_pr, CMIP5_Iberia_tas, CMIP5_Iberia_hus850)
-#'newdata <- makeMultiGrid(CMIP5_Iberia_pr.rcp85, CMIP5_Iberia_tas.rcp85, CMIP5_Iberia_hus850.rcp85)
-#'clusters <- clusterGrid(grid = grid, newdata = newdata, type = "kmeans", centers = 100, iter.max = 10000, nstart = 1)
 
 
 clusterGrid <- function(grid, 
@@ -88,10 +83,10 @@ clusterGrid <- function(grid,
                         ...) {
  
   type <- match.arg(type, choices = c("kmeans", "hierarchical", "som", "lamb"))
-  
+  #browser()
   if (is.null(newdata)){
     #Checking grid dimensions
-    if (getShape(grid, "member") > 1){
+    if (!is.na(suppressMessages(getShape(grid, "member"))) && getShape(grid, "member") > 1){
       message("Clustering analysis will be done after Ensemble mean...")
       grid <- suppressMessages(aggregateGrid(grid = grid, aggr.mem = list(FUN = "mean", na.rm = TRUE)))
     }

@@ -4,7 +4,7 @@
 \alias{comb.vars}
 \title{Variables combination}
 \usage{
-comb.vars(grid, base, ref, n.mem, var.names)
+comb.vars(grid, base, ref, var.names)
 }
 \arguments{
 \item{grid}{A grid containing the variables to be scaled and combined}
@@ -13,15 +13,13 @@ comb.vars(grid, base, ref, n.mem, var.names)
 
 \item{ref}{Reference grid to be passed to \code{'scaleGrid'}. See \link{scaleGrid} for further information.}
 
-\item{n.mem}{Number of members}
-
 \item{var.names}{Variables names}
 }
 \value{
 A list
 }
 \description{
-Scaling and combining data from all variables by members
+Scaling and combining data from all variables
 }
 \author{
 J. A. Fernandez

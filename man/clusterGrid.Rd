@@ -28,12 +28,14 @@ the reference grid ('grid' or 'newdata'), thus time-dimension from 'y' and the r
 \item{...}{Further specific arguments passed to the clustering functions}
 }
 \value{
-A C4R (multimember/multi)grid object that will contain data from: 
+A C4R (multimember/multi) grid object that will contain data from: 
+\itemize{
 \item 'grid' input if none 'newdata' or 'y' are passed.  
 \item 'newdata' if input 'newdata' is passed and 'y' is not. 
 \item 'y' if this predictands grid is passed. 
 The clustering type (cluster.type), number of clusters (centers), centroids of clusters from 'grid' input (centroids) and the days corresponding to each 
 cluster (index) are returned as attributes in all clustering algorithms. Then, other algorithm-specific parameters are provided as attributes.
+}
 }
 \description{
 Performs cluster analysis of grids, multigrids or multimember multigrids. Several clustering algorithms are available.
@@ -60,8 +62,8 @@ Otherwise, by default 48 clusters (8x6) with rectangular topology are obtained.
 
 #'\strong{Lamb}
 
-While using the Lamb Weather Typing algorithm (check \link{LambWT} for further information), the argument 'centers' is not requiered, as it will 
-be forced to be equal to 27, according to Jones et al. 2012 (Int J Climatol).
+While using the Lamb Weather Typing algorithm (check \link{lambWT} for further information), the argument 'centers' is not requiered, as it will 
+be forced to be equal to 26, according to Trigo and daCamara (2000), Int J Climatol.
 }
 \examples{
 #Example of K-means clustering: 
@@ -77,11 +79,6 @@ clusters<- clusterGrid(NCEP_Iberia_psl, type="som", centers = c(10,1))
 #Example of lamb clustering:
 data(NCEP_slp_2001_2010)
 clusters <- clusterGrid(grid = NCEP_slp_2001_2010, type = "lamb")
-
-#Example of 'newdata' clustering:
-grid <- makeMultiGrid(CMIP5_Iberia_pr, CMIP5_Iberia_tas, CMIP5_Iberia_hus850)
-newdata <- makeMultiGrid(CMIP5_Iberia_pr.rcp85, CMIP5_Iberia_tas.rcp85, CMIP5_Iberia_hus850.rcp85)
-clusters <- clusterGrid(grid = grid, newdata = newdata, type = "kmeans", centers = 100, iter.max = 10000, nstart = 1)
 }
 \seealso{
 \link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen]{som}.
