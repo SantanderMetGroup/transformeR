@@ -66,7 +66,7 @@
 #' data("CFS_Iberia_tas")
 #' ## Aggregating members
 #' # Ensemble mean
-#' mn <- aggregateGrid(grid = CFS_Iberia_tas, aggr.mem = list("mean", na.rm = TRUE))
+#' mn <- aggregateGrid(grid = CFS_Iberia_tas, aggr.mem = list(FUN = "mean", na.rm = TRUE))
 #' plotClimatology(climatology(mn, by.member = FALSE),
 #'                 backdrop.theme = "coastline", main = "Ensemble mean tmax climatology")
 #' # Ensemble 90th percentile

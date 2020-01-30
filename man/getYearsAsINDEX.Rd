@@ -64,8 +64,8 @@ Other get.helpers: \code{\link{get2DmatCoordinates}},
   \code{\link{getSeason}}, \code{\link{getShape}},
   \code{\link{getStationID}},
   \code{\link{getTimeResolution}},
-  \code{\link{getVarNames}}, \code{\link{typeofGrid}},
-  \code{\link{which.leap}}
+  \code{\link{getVarNames}}, \code{\link{setGridProj}},
+  \code{\link{typeofGrid}}, \code{\link{which.leap}}
 }
 \author{
 J. Bedia

@@ -25,7 +25,7 @@ Other get.helpers: \code{\link{get2DmatCoordinates}},
   \code{\link{getStationID}},
   \code{\link{getTimeResolution}},
   \code{\link{getVarNames}}, \code{\link{getYearsAsINDEX}},
-  \code{\link{which.leap}}
+  \code{\link{setGridProj}}, \code{\link{which.leap}}
 }
 \author{
 J Bedia
