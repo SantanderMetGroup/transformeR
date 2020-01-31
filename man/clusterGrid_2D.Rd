@@ -15,10 +15,7 @@ The core functions are \link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen
 
 \item{...}{Further specific arguments passed to the clustering functions}
 
-\item{grid}{A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object, as 
-returned e.g. by \code{loadeR::loadGridData} (or \code{loadeR::loadStationData}), a
-multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
-(possibly multimember grids) as returned e.g. by \code{loadeR.ECOMS::loadECOMS}.}
+\item{grid}{A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object}
 }
 \value{
 A matrix object that contains the clusters centroids' created using the specified algorithm.

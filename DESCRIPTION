@@ -23,21 +23,19 @@ Suggests:
 Type: Package
 Title: A climate4R package for general climate data manipulation and transformation
 Version: 1.7.0
-Date: 2020-01-30
-Authors@R: as.person(c(
-    "Santander Meteorology Group <http://meteo.unican.es> [cph]",
-    "Jorge Baño Medina <bmedina@ifca.unican.es> [ctb]",
-    "Joaquín Bedia <bediaj@unican.es> [aut, cre]",
-    "Ana Casanueva <ana.casanueva@unican.es> [ctb]",
-    "Matteo De Felice <matteo.defelice@enea.it> [ctb]",
-    "José Manuel Gutiérrez <gutierjm@unican.es> [ctb]",
-    "Sixto Herrera <herreras@unican.es> [ctb]",
-    "Maialen Iturbide <miturbide@ifca.unican.es> [aut]", 
-    "Juan A. Fernandez <juan.fernandez@unican.es> [ctb]"))
+Date: 2020-01-31
+Authors@R: c(person("Bedia", "Joaquín", email = "bediaj@unican.es", role = c("aut","cre","dtc"), comment = c(ORCID = "0000-0001-6219-4312")),
+             person("Jorge", "Baño Medina", email = "bmedina@ifca.unican.es", role = "ctb"),
+             person("Ana", "Casanueva", email = "ana.casanueva@unican.es", role = "ctb"),
+             person("Matteo", "De Felice", email = "matteo.defelice@enea.it", role = "ctb"),
+             person("José Manuel", "Gutiérrez", email = "gutierjm@unican.es", role = "ctb"),
+             person("Sixto", "Herrera", email = "herreras@unican.es", role = c("ctb", "dtc")),
+             person("Maialen", "Iturbide", email = "miturbide@ifca.unican.es", role = c("aut","dtc"), comment = c(ORCID = "0000-0002-5048-0941")), 
+             person("Juan A.", "Fernández", email = "juan.fernandez@unican.es", role = "ctb"))
 BugReports: https://github.com/SantanderMetGroup/transformeR/issues
 URL: http://www.meteo.unican.es/climate4r
 Encoding: UTF-8
-Description: Tools for climate data analysis, visualization and manipulation. A building block of the climate4R Framework <http://www.meteo.unican.es/climate4R>). 
+Description: Tools for climate data analysis, visualization and manipulation. A building block of the climate4R Framework <http://www.meteo.unican.es/climate4R>. 
 License: file LICENSE
 LazyData: true
 RoxygenNote: 6.1.1

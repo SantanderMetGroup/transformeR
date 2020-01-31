@@ -87,7 +87,7 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
     #Units conversion:
     slp.units <- c("Pascals", "Pa")
     if (!(attr(grid.member$Variable, "units") %in% slp.units)){ 
-      stop("The grid variable must have Sea Level Pressure units 'Pascals'(Pa). Use function convertR::udConvertGrid if you have got 'hPa' or 'mbar'.")
+      stop("The grid variable must have Sea Level Pressure units in 'Pascals' (Pa).\nSee function convertR::udConvertGrid for unit conversion.")
     }
     
     #Preparing the input of lamb WT
