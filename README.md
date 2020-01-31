@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/68922156.svg)](https://zenodo.org/badge/latestdoi/68922156)
+
 # What is transformeR?
 
 `transformeR` is an R package for climate data manipulation and transformation including subsetting, regridding and data conversion. Find out more about this package at the [transformeR wiki](https://github.com/SantanderMetGroup/transformeR/wiki).
