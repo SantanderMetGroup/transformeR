@@ -1,6 +1,6 @@
 #     clusterGrid.R Cluster analysis of grid data
 #
-#     Copyright (C) 2019 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2020 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -15,50 +15,53 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#'@title Cluster analysis of grids
-#'@description Performs cluster analysis of grids, multigrids or multimember multigrids. Several clustering algorithms are available.  
+#'@title Cluster analysis
+#'@description Cluster analysis of climate data. Several clustering algorithms are available.  
 #'@inheritParams clusterGrid_2D 
-#'@param newdata A grid containing the prediction data. It must contain the same variables as in "grid". Clustering Analysis of this 
-#' grid will be performed taking into account the Clustering of 'grid' as reference. Default: NULL. 
-#'@param y A grid containing predictands data. Clustering Analysis of this grid will be performed as a day-by-day correspondence with 
-#' the reference grid ('grid' or 'newdata'), thus time-dimension from 'y' and the reference grid must intersect. Default: NULL.
-#'@param ... Further specific arguments passed to the clustering functions 
+#'@param type Clustering algorithm. Possible values are \code{"kmeans"} (default), \code{"hierarchical"}, \code{"som"} and \code{"lamb"}. See Details.
+#'@param newdata Optional grid containing the data for prediction. It must contain the same variables as the input \code{grid} taken as reference.
+#'@param y Optional predictand grid data. Clustering Analysis of this grid will be performed as a day-by-day correspondence with 
+#' the reference grid (\code{grid} or \code{newdata}). Thus time dimension from \code{y} and the reference grid must intersect. For weather typing.
+#'@param ... Further specific arguments passed to the different clustering functions. 
 #'@seealso \link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen]{som}.
 #'@importFrom fields rdist
-#'@return A C4R (multimember/multi) grid object that will contain data from: 
+#'@return A C4R (multimember/multi) grid object that will contain the data from: 
 #'\itemize{
-#'\item 'grid' input if none 'newdata' or 'y' are passed.  
-#'\item 'newdata' if input 'newdata' is passed and 'y' is not. 
-#'\item 'y' if this predictands grid is passed. 
+#'\item The input \code{grid}, if neither \code{newdata} nor \code{y} are indicated.  
+#'\item The \code{newdata} grid if this is specified, and \code{y = NULL}. 
+#'\item The \code{y} grid, if this is specified.
+#'}
 #'The clustering type (cluster.type), number of clusters (centers), centroids of clusters from 'grid' input (centroids) and the days corresponding to each 
 #'cluster (index) are returned as attributes in all clustering algorithms. Then, other algorithm-specific parameters are provided as attributes.
-#'}
 #'@details 
 #'\strong{kmeans}
 #'
-#'While using the  K-means algorithm, the number of clusters (argument 'centers') needs to be provided (no default). 
-#'See  \link[stats]{kmeans} for more details in the implementation.
+#'While using the K-means algorithm, the number of clusters (argument \code{centers}) needs to be provided (with no default). 
+#'See the \code{\link[stats]{kmeans}} documentation for further details and optional arguments of the method.
 #'
 #'\strong{hierarchical}
 #'
-#'While using the hierarchical algorithm (check \link[stats]{hclust} for further information) 
-#'\code{clusterGrid} allows the user either to especify the number of clusters ('centers') or not. 
-#'If the argument 'centers' is not provided, they are automatically set and the tree is cut when the height 
+#'While using the hierarchical algorithm (check \code{\link[stats]{hclust}} for further information) 
+#'\code{clusterGrid} allows the user either to especify a predefined number of clusters (\code{centers}) or not. 
+#'If the argument \code{centers} is not provided, they are automatically set and the tree is cut when the height 
 #'difference between two consecutive divisions (sorted in ascending order) is larger than the interquartile 
-#'range of the heights vector (see \link[stats]{cutree}) . 
+#'range of the heights vector, as determined by \code{\link[stats]{cutree}}. 
 #'
 #'\strong{som}
 #'
-#'While using the SOM (self-organizing maps) algorithm (check \link[kohonen]{som} for further information), the argument 'centers' is provided as
+#'While using the SOM (self-organizing maps) algorithm (check \code{\link[kohonen]{som}} for further information), the argument \code{centers} is provided as
 #' a two-element vector, indicating the dimensions \code{xdim,ydim} of the grid (see \link[kohonen]{somgrid}).
-#'Otherwise, by default 48 clusters (8x6) with rectangular topology are obtained. 
+#'By default, a rectangular topology (8x6) of 48 clusters is obtained. 
 #'
-#'#'\strong{Lamb}
+#'\strong{Lamb}
 #'
-#'While using the Lamb Weather Typing algorithm (check \link{lambWT} for further information), the argument 'centers' is not requiered, as it will 
-#'be forced to be equal to 26, according to Trigo and daCamara (2000), Int J Climatol. 
-#'@author J. A. Fernandez
+#'The Lamb Weather Typing algorithm is implemented in the function \code{\link{lambWT}}. The argument \code{centers} is not used.
+#'A default of 26 types is calculated, following Trigo and daCamara (2000) 
+#'@author J. A. Fernández
 #'@export
+#'@references Trigo, R.M., DaCamara, C.C., 2000. Circulation weather types and their influence on the precipitation regime in Portugal. 
+#'Int. J. Climatol. 23. https://doi.org/10.1002/1097-0088(20001115)20:13%3C1559::AID-JOC555%3E3.0.CO;2-5
+
 #'@examples 
 #'#Example of K-means clustering: 
 #'data(NCEP_Iberia_psl, package = "transformeR")
@@ -228,10 +231,7 @@ comb.vars <- function(grid, base, ref, var.names){
 
 #'@title Cluster analysis of 2D matrix
 #'@description Performs cluster analysis of 3D grids. Several clustering algorithms are available.
-#'@param grid A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object, as 
-#' returned e.g. by \code{loadeR::loadGridData} (or \code{loadeR::loadStationData}), a
-#' multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
-#' (possibly multimember grids) as returned e.g. by \code{loadeR.ECOMS::loadECOMS}. 
+#'@param grid A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object
 #'@param type Clustering algorithm to be used for the cluster analysis. 
 #'Possible values are "\strong{kmeans}" (default), "\strong{hierarchical}", "\strong{som}". 
 #'The core functions are \link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen]{som}, respectively. See Details.
