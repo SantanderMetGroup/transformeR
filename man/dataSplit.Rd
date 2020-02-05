@@ -14,7 +14,8 @@ dataSplit(x, y, f = 3/4, type = "random")
 \item{f}{Could be a fraction, value between (0,1) indicating the fraction of the data that will define the train set, 
 or an integer indicating the number of folds. It can also be a list of folds indicating the years of each fold.}
 
-\item{type}{A string, c("random","chronological"), indicating if the splits should be random or in a chronological order. 
+\item{type}{A string. Indicates if the splitting should be random (type = "random"),
+chronological (type = "chronological") or specified by the user (type = NULL). Default is "random". 
 Default is "random".}
 }
 \value{

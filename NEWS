@@ -83,3 +83,8 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * Changes in `clusterGrid` structure to allow for flexible prediction
  * Add subsetting by cluster in `subsetGrid`
  * Other minor bug fixes and documentation updates
+
+## 1.7.1 (5 Feb 2020)
+ * Allow type = NULL in `dataSplit' function.
+ * Add zenodo badge in documentation
+ * Other minor documentation issues.
