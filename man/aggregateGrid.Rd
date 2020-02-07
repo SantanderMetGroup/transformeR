@@ -8,7 +8,12 @@ aggregateGrid(grid, aggr.mem = list(FUN = NULL), aggr.d = list(FUN =
   NULL), aggr.m = list(FUN = NULL), aggr.y = list(FUN = NULL),
   aggr.s = list(FUN = NULL, season = NULL), aggr.lat = list(FUN =
   NULL), weight.by.lat = TRUE, aggr.lon = list(FUN = NULL),
+<<<<<<< HEAD
   parallel = FALSE, max.ncores = 16, ncores = NULL)
+=======
+  aggr.loc = list(FUN = NULL), parallel = FALSE, max.ncores = 16,
+  ncores = NULL)
+>>>>>>> 3b2929bb8f2ebaf513b884aa78b2b1488ad3f665
 }
 \arguments{
 \item{grid}{a grid or multigrid to be aggregated.}
@@ -32,6 +37,8 @@ Default to \code{TRUE}. Ignored if no \code{aggr.lat} function is indicated, or 
 is applied.}
 
 \item{aggr.lon}{Same as \code{aggr.lat}, but for longitude.}
+
+\item{aggr.loc}{Same as \code{aggr.d}, indicating the aggregation function to be applied along the loc dimension.}
 
 \item{parallel}{Logical. Should parallel execution be used?}
 
@@ -90,7 +97,7 @@ Parallel computing is currently not available for Windows machines.
 data("CFS_Iberia_tas")
 ## Aggregating members
 # Ensemble mean
-mn <- aggregateGrid(grid = CFS_Iberia_tas, aggr.mem = list("mean", na.rm = TRUE))
+mn <- aggregateGrid(grid = CFS_Iberia_tas, aggr.mem = list(FUN = "mean", na.rm = TRUE))
 plotClimatology(climatology(mn, by.member = FALSE),
                 backdrop.theme = "coastline", main = "Ensemble mean tmax climatology")
 # Ensemble 90th percentile

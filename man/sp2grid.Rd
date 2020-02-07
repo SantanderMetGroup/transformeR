@@ -26,7 +26,7 @@ A C4R grid, with the metadata specified by the input arguments.
 Convert a SpatialGridDataFrame (package \pkg{sp}) to a C4R grid
 }
 \seealso{
-\code{\link[visualizeR]{clim2sgdf}}
+\code{\link[transformeR]{clim2sgdf}}
 }
 \author{
 M. Iturbide

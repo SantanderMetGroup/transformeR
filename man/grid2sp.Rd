@@ -19,7 +19,7 @@ objects is returned (each slot in the list is a member).
 Convert a grid to a SpatialGridDataFrame object from package sp
 }
 \details{
-This function was built based on function \code{\link[visualizeR]{clim2sgdf}}
+This function was built based on function \code{\link[transformeR]{clim2sgdf}}
 }
 \examples{
 library(sp)

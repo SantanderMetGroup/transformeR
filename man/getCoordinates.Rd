@@ -29,14 +29,15 @@ str(getCoordinates(VALUE_Iberia_tas))
 }
 \seealso{
 Other get.helpers: \code{\link{get2DmatCoordinates}},
-  \code{\link{getDim}},
+  \code{\link{getDim}}, \code{\link{getGridProj}},
   \code{\link{getGridVerticalLevels}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},
   \code{\link{getSeason}}, \code{\link{getShape}},
   \code{\link{getStationID}},
   \code{\link{getTimeResolution}},
   \code{\link{getVarNames}}, \code{\link{getYearsAsINDEX}},
-  \code{\link{typeofGrid}}, \code{\link{which.leap}}
+  \code{\link{setGridProj}}, \code{\link{typeofGrid}},
+  \code{\link{which.leap}}
 }
 \author{
 J. Bedia

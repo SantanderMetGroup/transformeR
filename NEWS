@@ -64,4 +64,27 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * New helper  `matchStations` for consistent reordering of station datasets
  * Improvement in `subsetGrid` for preservation of all station metadata
  
+## 1.6.0 (04 Oct 2019)
+ * New function for clustering/weather typing: `clusterGrid.R`
+ * New internal helpers `cluster2plot.R` and `pattern2grid`
+ * New helper `getGridProj` for proj string retrieval
  
+## 1.6.1 (01 Nov 2019)
+ * Changes on `clusterGrid.R` output. 
+ * New weather type in `clusterGrid.R`: lamb WT. 
+ * New utility `sgdf2clim` for sp-class spatialGridDataFrames to climatological grids
+ * Other minor changes and documentation updates
+
+## 1.6.2 (06 Jan 2020)
+ * New Seasonal aggregation option in `aggregateGrid`
+ * Other minor changes and documentation updates
+
+## 1.7.0 (30 Jan 2020)
+ * Changes in `clusterGrid` structure to allow for flexible prediction
+ * Add subsetting by cluster in `subsetGrid`
+ * Other minor bug fixes and documentation updates
+
+## 1.7.1 (5 Feb 2020)
+ * Allow type = NULL in `dataSplit' function.
+ * Add zenodo badge in documentation
+ * Other minor documentation issues.

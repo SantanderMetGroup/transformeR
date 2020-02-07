@@ -4,7 +4,7 @@
 \alias{upscaleGrid}
 \title{Horizontal grid upscaling}
 \usage{
-upscaleGrid(grid, times = 2, aggr.fun = list(FUN = max, na.rm = TRUE))
+upscaleGrid(grid, times = 5, aggr.fun = list(FUN = max, na.rm = TRUE))
 }
 \arguments{
 \item{grid}{a grid or multigrid to be aggregated.}

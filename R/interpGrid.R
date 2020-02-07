@@ -240,7 +240,7 @@ interpGrid <- function(grid,
                               ind.NN.y[k,k] <- aux.ind[1,1] 
                         }else{
                               ind.NN.x[k,k] <- 1
-                              ind.NN.y[k,k] <- aux.ind#[1,]
+                              ind.NN.y[k,k] <- aux.ind[1]
                         }
                   }
             }

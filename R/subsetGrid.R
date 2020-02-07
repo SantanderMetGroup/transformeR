@@ -22,6 +22,7 @@
 #' multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
 #' (possibly multimember grids) as returned e.g. by \code{loadeR.ECOMS::loadECOMS}.
 #' @param var Character vector indicating the variables(s) to be extracted. (Used for multigrid subsetting). See details.
+#' @param cluster An integer indicating \strong{the cluster} to be subset.
 #' @param members An integer vector indicating \strong{the position} of the members to be subset.
 #' @param runtime An integer vector indicating \strong{the position} of the runtimes to be subset.
 #' @param years The years to be selected. Note that this can be either a continuous or discontinuous
@@ -69,7 +70,7 @@
 #'   they are in the original multigrid.
 #'  
 #' @importFrom abind asub
-#' @author J. Bedia, M. Iturbide
+#' @author J. Bedia, M. Iturbide, J. A. Fernandez
 #' @export
 #' @family subsetting
 #' @examples \dontrun{
@@ -109,6 +110,7 @@
 
 subsetGrid <- function(grid,
                        var = NULL,
+                       cluster = NULL,
                        runtime = NULL,
                        members = NULL,
                        years = NULL,
@@ -120,6 +122,9 @@ subsetGrid <- function(grid,
                        drop = TRUE) {
     if (!is.null(var)) {
         grid <- subsetVar(grid, var)
+    }
+    if (!is.null(cluster)) {
+      grid <- subsetCluster(grid, cluster)
     }
     if (!is.null(runtime)) {
         grid <- subsetRuntime(grid, runtime)
@@ -196,6 +201,37 @@ subsetVar <- function(grid, var) {
     attr(grid$Variable, "subset") <- "subsetVar"
     attr(grid$Data, "dimensions") <- dimNames
     return(grid)
+}
+# End
+
+#' Cluster subsets from a multimember grid
+#' 
+#' Retrieves a grid that is a logical subset of a multimember grid along its 'time' dimension based on the cluster index.
+#'  Multimember multigrids are supported. Subroutine of \code{\link{subsetGrid}}.
+#'
+#' @param grid Input multimember grid to be subset (possibly a multimember multigrid).
+#' @param cluster An integer indicating \strong{the cluster} to be subset.
+#' @return A grid (or multigrid) that is a logical subset of the input grid along its 'time' dimension based on the cluster index.
+#' @details The variable name will be added an extension refering to the cluster extracted.
+#' @keywords internal
+#' @export
+#' @author J. A. Fernandez 
+#' @family subsetting
+
+subsetCluster <- function(grid, cluster) {
+  #Check 'grid' is a clustering analyzed grid
+  if (is.null(attr(grid, "cluster.type"))) {
+    warning("Argument 'cluster' was ignored: There is not any clustering information in 'grid'",
+            call. = FALSE)
+    return(grid)
+  }
+  if (!all(cluster %in% attr(grid, "index"))) {
+    stop("'cluster' index out of bounds", call. = FALSE)
+  }
+  grid <- subsetDimension(grid, dimension = "time", indices = which(attr(grid, "index") == cluster))
+  attr(grid$Variable, "longname") <- paste0(getVarNames(grid), "_cluster", cluster) 
+  grid$Variable$varName <- paste0(getVarNames(grid), "_cluster", cluster)
+  return(grid)
 }
 # End
 

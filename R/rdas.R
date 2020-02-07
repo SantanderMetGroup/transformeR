@@ -915,3 +915,29 @@ NULL
 #' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
 NULL
 
+
+#' @title Exemplary data for \code{clusterGrid.R}
+#'
+#' @description This exemplary grid contains daily mean data of sea level pressure from NCEP renalysis, for the period 2001-2010, for a domain in the North-Atlantic.
+#' This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
+#' log-in is requiered, 
+#' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
+#' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
+#' 
+#' \code{loginUDG("username", "pasword")}\cr 
+#'  
+#' \code{NCEP_slp_2001_2010 <- loadGridData(dataset = "http://meteo.unican.es/tds5/dodsC/ncepReanalysis1/ncepReanalysis1_4xDaily.ncml", var = "slp", latLim = c(30,70), lonLim = c(-70,10), years = 2001:2010, time="DD", aggr.d="mean")}\cr
+#' 
+#' @format A grid object.
+#' @name NCEP_slp_2001_2010 
+#' @docType data 
+#' @source \url{https://www.esrl.noaa.gov/psd/data/gridded/data.ncep.reanalysis.html} and \url{http://www.meteo.unican.es/udg-tap}.
+#' @seealso \code{\link[loadeR]{loadGridData}}
+#' @examples \dontrun{
+#' data("NCEP_slp_2001_2010")
+#' # Plot in longlat projection
+#' visualizeR::spatialPlot(transformeR::climatology(NCEP_slp_2001_2010), 
+#' backdrop.theme = "coastline")
+#' }
+NULL
+

@@ -41,10 +41,11 @@ Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{intersectGrid.spatial}},
   \code{\link{intersectGrid.time}},
   \code{\link{intersectGrid}}, \code{\link{limitArea}},
-  \code{\link{subsetGrid}}, \code{\link{subsetMembers}},
-  \code{\link{subsetRuntime}}, \code{\link{subsetSeason}},
-  \code{\link{subsetSpatial}}, \code{\link{subsetStation}},
-  \code{\link{subsetVar}}, \code{\link{subsetYears}}
+  \code{\link{subsetCluster}}, \code{\link{subsetGrid}},
+  \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
+  \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
+  \code{\link{subsetStation}}, \code{\link{subsetVar}},
+  \code{\link{subsetYears}}
 }
 \author{
 J. Bedia and S. Herrera

@@ -1105,6 +1105,31 @@ setGridUnits <- function(grid, unit.string, var = NULL) {
 }
 
 
+#' @title Set grid projection
+#' @description Set the \code{"projection"} attribute of a climate4R grid
+#' @param grid An input grid
+#' @param proj Character string. A string specifying the projection attribute value. See details.
+#' @return Returns (invisible) the same input grid with the new \code{"projection"} 
+#' attribute in \code{"$xyCoords"} list element.
+#' @details 
+#' The projection string format is free, although usually a valid epsg code or proj4 string is introduced here.
+#' @export
+#' @author J Bedia
+#' @family get.helpers 
+#' @examples 
+#' data(NCEP_Iberia_hus850)
+#' getGridProj(NCEP_Iberia_hus850)
+#' # We introduce the standard definition of WGS84 lat-lon projection
+#' NCEP_Iberia_hus850 <- setGridProj(NCEP_Iberia_hus850,
+#'                                   proj= "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+#' getGridProj(NCEP_Iberia_hus850)                                   
+
+setGridProj <- function(grid, proj = NULL) {
+  stopifnot(isGrid(grid))
+  attr(grid[["xyCoords"]], "projection") <- proj
+  invisible(grid)
+}
+
 #' @title Obtain station names and IDs
 #' @description Obtain station names and IDs
 #' @param grid An input station data grid
@@ -1175,3 +1200,26 @@ checkGrid <- function(...) {
       message.df[which(message.df == FALSE)] <- "ERROR"
       message.df
 }
+
+
+#' @title Obtain projection information of a grid
+#' @description Obtain projection information of a grid
+#' @param grid An input climate4R grid
+#' @return A character string with the projection definition
+#' @details The projection may be defined loosely as e.g., \dQuote{LatLon Projection},
+#' or more formally as a proj4 string. This function just retrieves the projection attribute
+#' as included within the target grid.
+#' Grid projection definition (and/or re-projection operations) can be achieved by the function \code{projectGrid}
+#' from the climate4R package \pkg{geoprocessor} (\url{https://github.com/SantanderMetGroup/geoprocessoR})
+#' @author J. Bedia
+#' @family get.helpers
+#' @export
+
+getGridProj <- function(grid) {
+  if ("projection" %in% names(attributes(grid$xyCoords))) {
+    return(attr(grid$xyCoords, "projection"))
+  } else {
+    warning("Undefined projection.\nConsider using projectGrid from package geoprocessoR for setting a valid proj definition\n<https://github.com/SantanderMetGroup/geoprocessoR>")
+  }
+}
+

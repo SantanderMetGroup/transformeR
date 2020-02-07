@@ -376,7 +376,9 @@ bindGrid.time <- function(..., tol) {
       n.vars <- getShape(ref, "var")
       if (n.vars > 1) refdates <- rep(list(refdates), n.vars)
       ref[["Dates"]] <- refdates
-      ref %<>% sortDim.time()
+      ref <- tryCatch({sortDim.time(ref)}, error = function(err) {
+            warning("time dimension could not be sorted!")
+            ref})
       ref <- redim(ref, drop = TRUE)
       return(ref)
 }

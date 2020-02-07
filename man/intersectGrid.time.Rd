@@ -23,6 +23,7 @@ Takes multiple input grids and crops the overlapping part along time dimension
 Other subsetting: \code{\link{getTemporalIntersection}},
   \code{\link{intersectGrid.spatial}},
   \code{\link{intersectGrid}}, \code{\link{limitArea}},
+  \code{\link{subsetCluster}},
   \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
   \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
   \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
