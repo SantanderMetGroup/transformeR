@@ -22,7 +22,7 @@
 #' multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
 #' (possibly multimember grids) as returned e.g. by \code{loadeR.ECOMS::loadECOMS}.
 #' @param var Character vector indicating the variables(s) to be extracted. (Used for multigrid subsetting). See details.
-#' @param cluster An integer indicating \strong{the cluster} to be subset.
+#' @param cluster An integer vector indicating \strong{the clusters} to be subset.
 #' @param members An integer vector indicating \strong{the position} of the members to be subset.
 #' @param runtime An integer vector indicating \strong{the position} of the runtimes to be subset.
 #' @param years The years to be selected. Note that this can be either a continuous or discontinuous
@@ -225,12 +225,13 @@ subsetCluster <- function(grid, cluster) {
             call. = FALSE)
     return(grid)
   }
-  if (!all(cluster %in% attr(grid, "index"))) {
+  if (!all(cluster %in% attr(grid, "wt.index"))) {
     stop("'cluster' index out of bounds", call. = FALSE)
   }
-  grid <- subsetDimension(grid, dimension = "time", indices = which(attr(grid, "index") == cluster))
-  attr(grid$Variable, "longname") <- paste0(getVarNames(grid), "_cluster", cluster) 
-  grid$Variable$varName <- paste0(getVarNames(grid), "_cluster", cluster)
+  indices = which(!is.na(match(attr(grid, "wt.index"), cluster))) 
+  grid <- subsetDimension(grid, dimension = "time", indices = indices)
+  attr(grid, "wt.index") <- attr(grid, "wt.index")[indices]
+  attr(grid$Variable, "subset") <- "subsetCluster"
   return(grid)
 }
 # End

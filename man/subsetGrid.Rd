@@ -16,7 +16,7 @@ multigrid, as returned by \code{makeMultiGrid}, or other types of multimember gr
 
 \item{var}{Character vector indicating the variables(s) to be extracted. (Used for multigrid subsetting). See details.}
 
-\item{cluster}{An integer indicating \strong{the cluster} to be subset.}
+\item{cluster}{An integer vector indicating \strong{the clusters} to be subset.}
 
 \item{runtime}{An integer vector indicating \strong{the position} of the runtimes to be subset.}
 
