@@ -230,6 +230,7 @@ subsetCluster <- function(grid, cluster) {
   }
   indices = which(!is.na(match(attr(grid, "wt.index"), cluster))) 
   grid <- subsetDimension(grid, dimension = "time", indices = indices)
+  attr(grid$Variable, "longname") <- paste0(getVarNames(grid), "_cluster", cluster)
   attr(grid, "wt.index") <- attr(grid, "wt.index")[indices]
   attr(grid$Variable, "subset") <- "subsetCluster"
   return(grid)
