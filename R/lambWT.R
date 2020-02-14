@@ -149,6 +149,7 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
     #Define discrete wt series, codes similar to http://www.cru.uea.ac.uk/cru/data/hulme/uk/lamb.htm
     pd <- which(abs(z) < f) 
     wtseries[pd] <- d[pd] #purely directional type
+    names(wtseries)[pd] <- names(d)[pd]
     pcyc <- which(abs(z) >= (2*f) & z >= 0) 
     wtseries[pcyc] <- 18 #purely cyclonic type
     names(wtseries)[pcyc] <- "C"
