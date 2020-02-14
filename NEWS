@@ -88,3 +88,8 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * Allow type = NULL in `dataSplit' function.
  * Add zenodo badge in documentation
  * Other minor documentation issues.
+
+## 1.7.2 (14 Feb 2020)
+ * Update longname attribute in cluster-type grids
+ * Other minor changes
+ 
