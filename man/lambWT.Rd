@@ -36,7 +36,7 @@ Calculate automated Lamb WT as defined in Trigo and daCamara (2000), Int J Clima
 }
 \details{
 According to Trigo and daCamara (2000), Int J Climatol, Lamb WT is only applied on North Atlantic domain. 
-The input grid units must be Pa, not hPa/mbar. If it is not in Pa, the units will be converted automatically.
+The input grid units must be Pa, not hPa/mbar. If it is not in Pa, the units must be converted.
 A center location point must be specified by the user. Then, the function calculates from left to right and from first to 16st 
 the rest of the location point from the grid specified by Trigo and daCamara (2000):
  
@@ -48,7 +48,8 @@ the rest of the location point from the grid specified by Trigo and daCamara (20
     \tab  \tab  \tab    \tab  \tab  \tab 15 \tab  \tab  \tab 16 \tab  \tab  \tab    
 }  
 
-where the north-south distance is 5º and the west-east distance is 10º.
+where the north-south distance is 5º and the west-east distance is 10º. 26 different WTs are defined, 10 pure types (NE, E, SE, S, SW, 
+W, NW, N, C and A) and 16 hybrid types (8 for each C and A hybrid).
 }
 \examples{
 \dontrun{

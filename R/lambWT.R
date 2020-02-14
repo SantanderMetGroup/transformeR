@@ -21,7 +21,7 @@
 #' @param center.point A two value vector that must include lon and lat from a location that will work as center point for the Lamb WT.
 #' See details. 
 #' @details According to Trigo and daCamara (2000), Int J Climatol, Lamb WT is only applied on North Atlantic domain. 
-#' The input grid units must be Pa, not hPa/mbar. If it is not in Pa, the units will be converted automatically.
+#' The input grid units must be Pa, not hPa/mbar. If it is not in Pa, the units must be converted.
 #' A center location point must be specified by the user. Then, the function calculates from left to right and from first to 16st 
 #' the rest of the location point from the grid specified by Trigo and daCamara (2000):
 #'  
@@ -33,7 +33,8 @@
 #'     \tab  \tab  \tab    \tab  \tab  \tab 15 \tab  \tab  \tab 16 \tab  \tab  \tab    
 #' }  
 #'
-#' where the north-south distance is 5º and the west-east distance is 10º.
+#' where the north-south distance is 5º and the west-east distance is 10º. 26 different WTs are defined, 10 pure types (NE, E, SE, S, SW, 
+#' W, NW, N, C and A) and 16 hybrid types (8 for each C and A hybrid). 
 #' @return The Lamb WT circulation index (and members, if applicable) with:
 #' \itemize{
 #' \item index: vector with the corresponding weather type from each point of the series, that is defined as follows:
@@ -97,15 +98,8 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
     lon.array <- rep(centerlon, times=16)+c(-5, 5, -15, -5, 5, 15, -15, -5, 5, 15, -15, -5, 5, 15, -5, 5)
     lat.array <- rep(centerlat, times=16)+c(10, 10, 5, 5, 5, 5, 0, 0, 0, 0, -5, -5, -5, -5, -10, 10)
     
-    subgrid <- grid.member
-    l <- lapply(1:16, function(i){
-      subgrid$xyCoords$x <- lon.array[i]
-      subgrid$xyCoords$y <- lat.array[i]
-      grid.inter<-intersectGrid(grid.member, subgrid, type = c("spatial"), which.return = 1)
-      return(grid.inter)
-    }) 
-    list.grid<-bindGrid(l, dimension = "loc")
-    X<-list.grid$Data[1,1, , ]
+    grid.inter <- interpGrid(grid.member, new.coordinates = list(x = lon.array, y = lat.array), method = "nearest")
+    X <- grid.inter$Data
     
     sf.const<-1/cospi(centerlat/180)
     zw.const1<-sinpi(centerlat/180)/sinpi((centerlat-5)/180)
@@ -148,14 +142,20 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
     nind <- which(d > 337.5 | d <= 22.5) #N
     d[neind] = 10; d[eind] = 11; d[seind] = 12; d[soind] = 13
     d[swind] = 14; d[wind] = 15; d[nwind] = 16; d[nind] = 17
+    names(d)[neind] <- "NE"; names(d)[eind] <- "E"; names(d)[seind] <- "SE"; names(d)[soind] <- "S"
+    names(d)[swind] <- "SW"; names(d)[wind] <- "W"; names(d)[nwind] <- "NW"; names(d)[nind] <- "N"
+    
     
     #Define discrete wt series, codes similar to http://www.cru.uea.ac.uk/cru/data/hulme/uk/lamb.htm
     pd <- which(abs(z) < f) 
     wtseries[pd] <- d[pd] #purely directional type
+    names(wtseries)[pd] <- names(d)[pd]
     pcyc <- which(abs(z) >= (2*f) & z >= 0) 
     wtseries[pcyc] <- 18 #purely cyclonic type
+    names(wtseries)[pcyc] <- "C"
     pant <- which(abs(z) >= (2*f) & z < 0) 
     wtseries[pant] <- 1 #purely anticyclonic type
+    names(wtseries)[pant] <- "A"
     hyb <- which(abs(z) >= f & abs(z) < (2*f)) #hybrid type
     hybant <- intersect(hyb, which(z < 0)) #anticyclonic
     hybcyc <- intersect(hyb, which(z >= 0)) #cyclonic
@@ -164,11 +164,19 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
       wtseries[intersect(hybant, which(d == i))] <- i-8
       #mixed cyclonic
       wtseries[intersect(hybcyc, which(d == i))] <- i+9
+      if(i == 10){names(wtseries)[intersect(hybant, which(d == i))] <- "ANE"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CNE"}
+      else if(i == 11){names(wtseries)[intersect(hybant, which(d == i))] <- "AE"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CE"}
+      else if(i == 12){names(wtseries)[intersect(hybant, which(d == i))] <- "ASE"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CSE"}
+      else if(i == 13){names(wtseries)[intersect(hybant, which(d == i))] <- "AS"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CS"}
+      else if(i == 14){names(wtseries)[intersect(hybant, which(d == i))] <- "ASW"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CSW"}
+      else if(i == 15){names(wtseries)[intersect(hybant, which(d == i))] <- "AW"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CW"}
+      else if(i == 16){names(wtseries)[intersect(hybant, which(d == i))] <- "ANW"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CNW"}
+      else {names(wtseries)[intersect(hybant, which(d == i))] <- "AN"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CN"}
     }
-    #indFlow <- which(abs(z) < 6 & f < 6) 
+    #indFlow <- which(abs(z) < 6 & f < 6)     
     #wtseries[indFlow] <- 27 #indeterminate 
     
-    wtseries.2<-wtseries[1:n[[1]]]
+    wtseries.2 <- wtseries[1:n[[1]]]
     
     lamb.list <- lapply(1:26, function(y){
       lamb.pattern <- which(wtseries.2 == y)

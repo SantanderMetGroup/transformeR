@@ -86,7 +86,7 @@ clusterGrid <- function(grid,
                         ...) {
  
   type <- match.arg(type, choices = c("kmeans", "hierarchical", "som", "lamb"))
-  #browser()
+  
   if (is.null(newdata)){
     #Checking grid dimensions
     if (!is.na(suppressMessages(getShape(grid, "member"))) && getShape(grid, "member") > 1){
@@ -105,9 +105,9 @@ clusterGrid <- function(grid,
         stop("For lamb, only 'psl' variable is required Use subsetGrid to extract it")
       }
       if (!is.null(centers)) {
-        message("Lamb WT was choosen, so the number of clusters will be forced to 27. Arg. 'centers' will be ignored.")
+        message("Lamb WT was choosen, so the number of clusters will be forced to 26. Arg. 'centers' will be ignored.")
       }
-      centers <- 27
+      centers <- 26
       arg.list <- list(...)
       arg.list[["grid"]] <- grid
       lamb.wt <- do.call("lambWT", arg.list)
@@ -158,24 +158,38 @@ clusterGrid <- function(grid,
     if(is.null(attr(grid, "wt.index"))){
       stop("'grid' is not a clustering object.")
     }
-    #Checking grid dimensions for newdata and var.names/n.mem matches with grid
-    if (getShape(newdata, "member") > 1){
+    if (!is.na(suppressMessages(getShape(newdata, "member"))) && getShape(newdata, "member") > 1){
       message("Clustering analysis will be done after Ensemble mean...")
       newdata <- suppressMessages(aggregateGrid(grid = newdata, aggr.mem = list(FUN = "mean", na.rm = TRUE)))
     }
+    #Checking consistency among input grids
     checkVarNames(newdata, grid)
-    checkDim(newdata, grid, dimensions = "var")
+    if (getGridUnits(grid) != getGridUnits(newdata)){
+      stop("Inconsistent variable units among 'grid' and 'newdata'")
+    }
+    checkDim(newdata, grid, dimensions = c("var", "lat", "lon"))
+    checkSeason(grid, newdata)
+    if (getTimeResolution(grid) != getTimeResolution(newdata)){
+      stop("Inconsistent time resolution among 'grid' and 'newdata'")
+    }
     n.var <- suppressMessages(getShape(grid, "var")) 
-    #Pre-processing in order to do clustering to ref CT's: 
     arg.list <- list(...)
     base <- arg.list[["base"]]
     if (!is.null(base)){ 
-      if (getShape(base, "member") > 1){
+      if (!is.na(suppressMessages(getShape(base, "member"))) && getShape(base, "member") > 1){
         base <- suppressMessages(aggregateGrid(grid = base, aggr.mem = list(FUN = "mean", na.rm = TRUE)))
       }
       checkVarNames(newdata, base)
-      checkDim(newdata, base, dimensions = "var")
+      if (getGridUnits(base) != getGridUnits(newdata)){
+        stop("Inconsistent variable units among 'base' and 'newdata'")
+      }
+      checkDim(newdata, base, dimensions = c("var", "lat", "lon"))
+      checkSeason(base, newdata)
+      if (getTimeResolution(base) != getTimeResolution(newdata)){
+        stop("Inconsistent time resolution among 'base' and 'newdata'")
+      }
     }
+    #Pre-processing in order to do clustering to ref CT's: 
     if (n.var != 1){
       mat.newdata <- comb.vars(grid = newdata, base = base, ref = NULL, var.names = getVarNames(newdata))
     } else {
@@ -189,8 +203,8 @@ clusterGrid <- function(grid,
       checkTemporalConsistency(newdata, y)
       out.grid <- y
     }
-    attr(out.grid, "cluster.type") <- type
-    attr(out.grid, "centers") <- centers
+    attr(out.grid, "cluster.type") <- attr(grid, "cluster.type")
+    attr(out.grid, "centers") <- attr(grid, "centers")
     attr(out.grid, "wt.index") <- wt.index
     attr(out.grid, "centroids") <- attr(grid, "centroids")
     if (type == "kmeans") {
