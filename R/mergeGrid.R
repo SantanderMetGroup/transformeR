@@ -18,7 +18,7 @@
 
 #' @title Flexible grid aggregation along selected dimensions
 #' @description Merge multiple grids in space (latitude and longitude).
-#' @param grid a grid or multigrid to be aggregated.
+#' @param ... Input grids to be merged.
 #' @param aggr.fun Aggregation function to the intersection areas among grids. The default option computes the mean
 #' aggr.fun = list(FUN = "mean", na.rm = TRUE).
 #' @template templateParallelParams
@@ -35,6 +35,19 @@
 #' @export
 #' @importFrom magrittr %<>% 
 #' @examples 
+#' # We load the dataset (temperature)
+#' data("CFS_Iberia_tas")
+#' # We take a look at the domain of the dataset
+#' spatialPlot(climatology(CFS_Iberia_tas),backdrop.theme = "coastline")
+#' getGrid(CFS_Iberia_tas)
+#' # We divide the dataset in 2 regions
+#' region1 <- subsetGrid(CFS_Iberia_tas,lonLim = c(-10,-6), latLim = c(36,38))
+#' spatialPlot(climatology(region1),backdrop.theme = "coastline")
+#' region2 <- subsetGrid(CFS_Iberia_tas,lonLim = c(-5,3), latLim = c(37,43))
+#' spatialPlot(climatology(region2),backdrop.theme = "coastline")
+#' # We merge the regions and apply the mean function to the intersection
+#' merged <- mergeGrid(region1,region2,aggr.fun = list(FUN = "mean", na.rm = TRUE))
+#' spatialPlot(climatology(merged),backdrop.theme = "coastline")
 mergeGrid <- function(...,aggr.fun = list(FUN = "mean", na.rm = TRUE)) {
   grid.list <- list(...)
   if (!isGrid(grid.list[[1]])) grid.list <- unlist(grid.list, recursive = FALSE)
@@ -42,34 +55,40 @@ mergeGrid <- function(...,aggr.fun = list(FUN = "mean", na.rm = TRUE)) {
   
   res <- sapply(grid.list, FUN = function(z) {
     c(attr(getGrid(z),"resX"),attr(getGrid(z),"resY"))
-  }) %>% apply(MARGIN = 2,unique)
-  if (is.list(res) | nrow(res) > 1) stop("Grid resolutions do not match")
+  }) %>% apply(MARGIN = 1,unique)
+  if (is.list(res) | length(res) > 2) stop("Grid resolutions do not match")
   
   mins <- sapply(grid.list, FUN = function(z) {
     c(getGrid(z)$x[1],getGrid(z)$y[1])
-  }) %>% apply(MARGIN = 2,min)
+  }) %>% apply(MARGIN = 1,min)
   
   maxs <- sapply(grid.list, FUN = function(z) {
-    c(getGrid(z)$x[1],getGrid(z)$y[1])
-  }) %>% apply(MARGIN = 2,max)
+    c(getGrid(z)$x[2],getGrid(z)$y[2])
+  }) %>% apply(MARGIN = 1,max)
   
-  lons <- seq(mins[1],maxs[1],res[1])
-  lats <- seq(mins[2],maxs[2],res[2])
+  lons <- seq(mins[1],maxs[1],res[1]) %>% round(digits = 3)
+  lats <- seq(mins[2],maxs[2],res[2]) %>% round(digits = 3)
   
-  template <- grid.list[[1]]
-  n.mem <- getShape(template,"member")
-  lapply(1:n.mem, FUN = function(z){
+  template <- grid.list[[1]] %>% redim(var = TRUE)
+  dimNames <- attr(template$Data,"dimensions")
+  template$Data <- array(dim = c(getShape(template,"var"),getShape(template,"member"),getShape(template,"time"),length(lats),length(lons)))
+  attr(template$Data,"dimensions") <- dimNames
+  template$xyCoords$x <- lons; template$xyCoords$y <- lats
+  
+  
+  grid.list <- lapply(grid.list, FUN = function(z) {
+    z <- z %>% redim(var = TRUE)
+    minX <- which(round(min(z$xyCoords$x),digits = 3) == lons)
+    maxX <- which(round(max(z$xyCoords$x),digits = 3) == lons)
+    minY <- which(round(min(z$xyCoords$y),digits = 3) == lats)
+    maxY <- which(round(max(z$xyCoords$y),digits = 3) == lats)
+    template$Data[,,,minY:maxY,minX:maxX] <- z$Data
+    attr(template$Data,"dimensions") <- dimNames
+    return(template)
+  }) 
+  lapply(1:getShape(template,"member"), FUN = function(z) {
     lapply(grid.list, FUN = function(zz) {
-      zz <- zz %>% redim() %>% subsetGrid(members = z)
-      aux <- zz
-      aux$Data <- array(dims(getShape(zz,"var"),1,getShape(zz,"time"),length(lats),length(lons)))
-      minX <- which(min(zz$xyCoords$x) == lons)
-      maxX <- which(max(zz$xyCoords$x) == lons)
-      minY <- which(min(zz$xyCoords$y) == lats)
-      maxY <- which(max(zz$xyCoords$y) == lats)
-      aux$Data[,,,minY:maxY,minX:maxX] <- zz$Data
-      aux$xyCoords$x <- c(mins[1],maxs[1]); aux$xyCoords$y <- c(mins[2],maxs[2])
-      return(aux)
-    }) %>% aggregateGrid(aggr.mem = aggr.fun)
+      subsetGrid(zz,members = z)
+    }) %>% bindGrid(dimension = "member") %>% aggregateGrid(aggr.mem = aggr.fun)
   }) %>% bindGrid(dimension = "member") %>% redim(drop = TRUE)
 }
