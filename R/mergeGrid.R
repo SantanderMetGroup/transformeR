@@ -21,7 +21,6 @@
 #' @param ... Input grids to be merged.
 #' @param aggr.fun Aggregation function to the intersection areas among grids. The default option computes the mean
 #' aggr.fun = list(FUN = "mean", na.rm = TRUE).
-#' @template templateParallelParams
 #' @return A single grid result of merging the input grids.
 #' @details
 #' 
@@ -36,6 +35,7 @@
 #' @importFrom magrittr %<>% 
 #' @examples 
 #' # We load the dataset (temperature)
+#' library(visualizeR)
 #' data("CFS_Iberia_tas")
 #' # We take a look at the domain of the dataset
 #' spatialPlot(climatology(CFS_Iberia_tas),backdrop.theme = "coastline")

@@ -11,13 +11,6 @@ mergeGrid(..., aggr.fun = list(FUN = "mean", na.rm = TRUE))
 
 \item{aggr.fun}{Aggregation function to the intersection areas among grids. The default option computes the mean
 aggr.fun = list(FUN = "mean", na.rm = TRUE).}
-
-\item{parallel}{Logical. Should parallel execution be used?}
-
-\item{max.ncores}{Integer. Upper bound for user-defined number of cores.}
-
-\item{ncores}{Integer number of cores used in parallel computation. Self-selected number of
-cores is used when \code{ncpus = NULL} (the default), or when \code{maxcores} exceeds the default \code{ncores} value.}
 }
 \value{
 A single grid result of merging the input grids.
@@ -34,6 +27,7 @@ internally passes to \code{\link{tapply}}. Note that the name of the function is
 }
 \examples{
 # We load the dataset (temperature)
+library(visualizeR)
 data("CFS_Iberia_tas")
 # We take a look at the domain of the dataset
 spatialPlot(climatology(CFS_Iberia_tas),backdrop.theme = "coastline")
