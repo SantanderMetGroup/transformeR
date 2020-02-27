@@ -16,7 +16,7 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #' @title Remove missing values from grids
-#' @description Removes the dates for all grid points whenever there exists missing values such as NaN or NA.
+#' @description Removes the dates for all grid points whenever there exists missing values (i.e., NaN or NA).
 #' @param grid The input grid to be filtered. 
 #' @return A new grid object without missing values
 #' @details The function also takes care of adjusting dates and other relevant metadata (via the internal \code{\link{subsetDimension}}).
@@ -35,13 +35,33 @@
 #' getShape(na.filtered)
 
 filterNA <- function(grid) {
+        grid <- grid %>% redim(drop = TRUE)
+        if (!is.na(getShape(grid,"member"))) stop("No multimember objects allowed due to possible temporal inconsistencies")
+        if (!is.na(getShape(grid,"var"))) stop("No multigrid objects allowed due to possible temporal inconsistencies")
     if (!anyNA(grid$Data)) {
         message("NOTE: No missing values were found in the input grid")
     } else {
         time.ind <- grep("time", getDim(grid))
-        na.index <- which(!is.finite(grid$Data), arr.ind = TRUE) %>% as.data.frame() %>% extract2(time.ind) %>% unique()
+        if (isRegular(grid)) {
+            dims <- getShape(grid)
+            dim(grid$Data) <- c(getShape(grid,"time"),getShape(grid,"lat")*getShape(grid,"lon"))
+        }
+        mask <- apply(grid$Data,MARGIN = 2, FUN = function(z) is.na(z) %>% all())
+        grid$Data[,mask] <- -Inf
+        if (isRegular(grid)) dim(grid$Data) <- dims
+        
+        
+        na.index <- apply(grid$Data,MARGIN = time.ind,anyNA) %>% which()
         na.index <- setdiff(1:getShape(grid, "time"), na.index)
         grid <- subsetDimension(grid, dimension = "time", indices = na.index)
+        
+        if (isRegular(grid)) {
+            dims <- getShape(grid)
+            dim(grid$Data) <- c(getShape(grid,"time"),getShape(grid,"lat")*getShape(grid,"lon"))
+        }
+        grid$Data[,mask] <- NA
+        if (isRegular(grid)) dim(grid$Data) <- dims
+        
         attr(grid$Variable, "subset") <- "filterNA"
     }
     return(grid)

@@ -13,7 +13,7 @@ filterNA(grid)
 A new grid object without missing values
 }
 \description{
-Removes the dates for all grid points whenever there exists missing values such as NaN or NA.
+Removes the dates for all grid points whenever there exists missing values (i.e., NaN or NA).
 }
 \details{
 The function also takes care of adjusting dates and other relevant metadata (via the internal \code{\link{subsetDimension}}).
