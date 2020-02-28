@@ -267,20 +267,23 @@ bindGrid.spatial <- function(..., dimn, tol) {
                   stop("Member dimension is not consistent")
             }
       }
+      
+      lat <- lapply(grid.list, FUN = function(x) {
+            getCoordinates(x)[dimsort]
+      })
+      lat <- unname(lat)
+      lats <- do.call(coordfun, lat)
+      if (class(lats) == "list") lats <- unlist(lats) %>% unname()
+      indLats <- sapply(1:length(lats), FUN = function(z) which(sort(lats)[z] == lats))
+      lats <- sort(lats)
+      grid.list <- grid.list[indLats]
       ref <- grid.list[[1]]
       dimNames <- getDim(ref) 
       dim.bind <- grep(dimn, dimNames)
       data.list <- lapply(grid.list, FUN = "[[", "Data")
       ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
-      data.list <- NULL
-      lat <- lapply(grid.list, FUN = function(x) {
-            getCoordinates(x)[dimsort]
-      })
-      lat <- unname(lat)
-      grid.list <- NULL
-      lats <- do.call(coordfun, lat)
-      if (class(lats) == "list") lats <- unlist(lats) %>% unname()
       attr(ref[["Data"]], "dimensions") <- dimNames
+      grid.list <- data.list <- NULL
       # n.vars <- getShape(ref, "var")
       #if (n.vars > 1) lats <- rep(list(lats), n.vars)
       if (dimn == "loc") {

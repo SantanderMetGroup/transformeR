@@ -96,7 +96,7 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
     centerlat<-center.point[2]
     
     lon.array <- rep(centerlon, times=16)+c(-5, 5, -15, -5, 5, 15, -15, -5, 5, 15, -15, -5, 5, 15, -5, 5)
-    lat.array <- rep(centerlat, times=16)+c(10, 10, 5, 5, 5, 5, 0, 0, 0, 0, -5, -5, -5, -5, -10, 10)
+    lat.array <- rep(centerlat, times=16)+c(10, 10, 5, 5, 5, 5, 0, 0, 0, 0, -5, -5, -5, -5, -10, -10)
     
     grid.inter <- interpGrid(grid.member, new.coordinates = list(x = lon.array, y = lat.array), method = "nearest")
     X <- grid.inter$Data

@@ -27,9 +27,9 @@ Other get.helpers: \code{\link{get2DmatCoordinates}},
   \code{\link{getGrid}}, \code{\link{getRefDates}},
   \code{\link{getShape}}, \code{\link{getStationID}},
   \code{\link{getTimeResolution}},
-  \code{\link{getVarNames}}, \code{\link{getYearsAsINDEX}},
-  \code{\link{setGridProj}}, \code{\link{typeofGrid}},
-  \code{\link{which.leap}}
+  \code{\link{getVarNames}}, \code{\link{getWT}},
+  \code{\link{getYearsAsINDEX}}, \code{\link{setGridProj}},
+  \code{\link{typeofGrid}}, \code{\link{which.leap}}
 }
 \author{
 J. Bedia
