@@ -355,7 +355,7 @@ subsetYears <- function(grid, years) {
     grid$Data <- asub(grid$Data, time.ind, dims, drop = FALSE)
     attr(grid$Data, "dimensions") <- dimNames
     # Verification Date adjustment
-    grid$Dates <- if (any(grepl("var", dimNames))) {
+    grid$Dates <- if (getShape(redim(grid, var = TRUE), dimension = "var") != 1) {
         lapply(1:length(grid$Dates), function(i) {
             lapply(grid$Dates[[i]], function(x) x[time.ind])})
     } else {
