@@ -22,7 +22,8 @@
 #' multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
 #' (possibly multimember grids) as returned e.g. by \code{loadeR.ECOMS::loadECOMS}.
 #' @param var Character vector indicating the variables(s) to be extracted. (Used for multigrid subsetting). See details.
-#' @param cluster An integer vector indicating \strong{the clusters} to be subset.
+#' @param cluster For Lamb WTs (clusters): Character vector indicating \strong{the cluster(s)} to be subset. For the rest of clustering algorithms: 
+#' An integer vector indicating the cluster(s) to be subset.
 #' @param members An integer vector indicating \strong{the position} of the members to be subset.
 #' @param runtime An integer vector indicating \strong{the position} of the runtimes to be subset.
 #' @param years The years to be selected. Note that this can be either a continuous or discontinuous
@@ -207,12 +208,13 @@ subsetVar <- function(grid, var) {
 #' Cluster subsets from a multimember grid
 #' 
 #' Retrieves a grid that is a logical subset of a multimember grid along its 'time' dimension based on the cluster index.
-#'  Multimember multigrids are supported. Subroutine of \code{\link{subsetGrid}}.
+#' Multimember multigrids are supported. Subroutine of \code{\link{subsetGrid}}.
 #'
-#' @param grid Input multimember grid to be subset (possibly a multimember multigrid).
-#' @param cluster An integer indicating \strong{the cluster} to be subset.
+#' @param grid Input multimember grid to be subset (possibly a multimember multigrid). A grid resulting from \code{\link{clusterGrid}} 
+#' must be used here, otherwise the function will return an error message
+#' @param cluster For Lamb WTs (clusters): Character vector indicating \strong{the cluster(s)} to be subset. For the rest of clustering algorithms: 
+#' An integer vector indicating the cluster(s) to be subset.
 #' @return A grid (or multigrid) that is a logical subset of the input grid along its 'time' dimension based on the cluster index.
-#' @details The variable name will be added an extension refering to the cluster extracted.
 #' @keywords internal
 #' @export
 #' @author J. A. Fernandez 
@@ -225,13 +227,18 @@ subsetCluster <- function(grid, cluster) {
             call. = FALSE)
     return(grid)
   }
-  if (!all(cluster %in% attr(grid, "wt.index"))) {
-    stop("'cluster' index out of bounds", call. = FALSE)
+  if(attr(grid, "cluster.type") == "lamb"){
+    if (!all(cluster %in% names(attr(grid, "wt.index")))) {
+      stop("Lamb 'cluster' not found", call. = FALSE)
+    }
+    indices = which(!is.na(match(names(attr(grid, "wt.index")), cluster))) 
+  }else{
+    if (!all(cluster %in% attr(grid, "wt.index"))) {
+      stop("'cluster' index out of bounds", call. = FALSE)
+    }
+    indices = which(!is.na(match(attr(grid, "wt.index"), cluster))) 
   }
-  indices = which(!is.na(match(attr(grid, "wt.index"), cluster))) 
   grid <- subsetDimension(grid, dimension = "time", indices = indices)
-  attr(grid$Variable, "longname") <- paste0(getVarNames(grid), "_cluster", cluster)
-  attr(grid, "wt.index") <- attr(grid, "wt.index")[indices]
   attr(grid$Variable, "subset") <- "subsetCluster"
   return(grid)
 }
@@ -354,6 +361,7 @@ subsetYears <- function(grid, years) {
     } 
     grid$Data <- asub(grid$Data, time.ind, dims, drop = FALSE)
     attr(grid$Data, "dimensions") <- dimNames
+    attr(grid, "wt.index") <- attr(grid, "wt.index")[time.ind]
     # Verification Date adjustment
     grid$Dates <- if (getShape(redim(grid, var = TRUE), dimension = "var") != 1) {
         lapply(1:length(grid$Dates), function(i) {
@@ -610,6 +618,7 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
             }
             mostattributes(grid$Dates) <- attrs
             attr(grid$Dates, "season") <- getSeason(grid)
+            attr(grid, "wt.index") <- attr(grid, "wt.index")[indices]
         }
         if ("lon" %in% dimension) {
             grid$xyCoords$x <- grid$xyCoords$x[indices]

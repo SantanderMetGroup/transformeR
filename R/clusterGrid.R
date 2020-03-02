@@ -217,7 +217,7 @@ clusterGrid <- function(grid,
     }
   }
   
-  return(redim(out.grid, drop = FALSE))
+  return(redim(out.grid, drop = TRUE))
 }
 
 
