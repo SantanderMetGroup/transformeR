@@ -1223,3 +1223,13 @@ getGridProj <- function(grid) {
   }
 }
 
+
+#' @title Obtain Weather Typing (WT) classification
+#' @description Obtain the classification attribute from \code{\link{clusterGrid}} outputs
+#' @param grid An input climate4R grid. 
+#' @return The attribute vector \code{"wt.index"}, when present. Otherwise \code{NULL}. See \code{\link{clusterGrid}} for details.
+#' @author J. Bedia
+#' @family get.helpers
+#' @export
+
+getWT <- function(grid) attr(x = grid, which = "wt.index")

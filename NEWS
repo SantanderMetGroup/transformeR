@@ -93,3 +93,8 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * Update longname attribute in cluster-type grids
  * Other minor changes
  
+## 1.7.3 (28 Feb 2020)
+ * Bug fix in Lamb cross definition
+ * Drop singleton 'var' dimension from `clusterGrid` outputs
+ * New helper `getWT` to retrieve the wt.index attribute
+ * Other minor bug fixes and documentation updates
