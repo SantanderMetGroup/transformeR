@@ -22,8 +22,8 @@ Suggests:
     visualizeR
 Type: Package
 Title: A climate4R package for general climate data manipulation and transformation
-Version: 1.7.3
-Date: 2020-02-28
+Version: 1.7.4
+Date: 2020-03-04
 Authors@R: c(person("Bedia", "Joaquín", email = "bediaj@unican.es", role = c("aut","cre"), comment = c(ORCID = "0000-0001-6219-4312")),
              person("Jorge", "Baño Medina", email = "bmedina@ifca.unican.es", role = "ctb"),
              person("Ana", "Casanueva", email = "ana.casanueva@unican.es", role = "ctb"),

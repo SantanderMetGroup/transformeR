@@ -98,3 +98,10 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * Drop singleton 'var' dimension from `clusterGrid` outputs
  * New helper `getWT` to retrieve the wt.index attribute
  * Other minor bug fixes and documentation updates
+
+## 1.7.4 (in devel)
+ * Update the wt.index attribute after time-dimension subsetting
+ * Minor bug fix in date subsetting on multigrids
+ 
+ 
+ 
