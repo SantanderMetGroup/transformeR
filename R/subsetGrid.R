@@ -44,15 +44,22 @@
 #' the value of the subroutine called in each case (e.g.: attribute subset will have the value \code{subsetSpatial}
 #' in the xyCoords slot after spatial subsetting...).
 #' 
-#' \strong{Time slicing by years}
+#' \strong{Time slicing by years and season}
 #' 
 #' In case of year-crossing seasons (e.g. boreal winter (DJF), \code{season = c(12,1,2)}),
 #' the season is assigned to the years of January and February 
 #' (i.e., winter of year 2000 corresponds to Dec 1999, Jan 2000 and Feb 2000). Thus, 
 #' the \code{years} argument must be introduced accordingly (See e.g. \code{\link{getYearsAsINDEX}}
-#' function for details).
+#' function for details). Hence, when subsetting along \code{season}, some data might be lost when using year-crossing
+#' seasons. For example, assume a dataset encompassing a full-year season (i.e., \code{season=1:12}) for the period 1981-2010
+#'  (i.e., \code{years=1981:2010}). When performing a subset on boreal winter (DJF, \code{season = c(12,1,2)}),
+#'  the first available winter will be \dQuote{winter 1982}, encompassing Dec 1981 and Jan and Feb 1982. Thus, all data corresponding to
+#'  Jan and Feb 1981 are discarded from the subset (i.e., only complete \dQuote{winters} will be returned). Similarly,
+#'  December 2010 will be lost, and the last data provided will correspond to winter 2009. To override this default behaviour, the user can
+#'  always use the non-standard \code{season=c(1,2,12)}, although this is rarely needed.
 #' 
-#'  \strong{Spatial slicing}
+#'  
+#' \strong{Spatial slicing}
 #'  
 #'  Spatial subset definition is done via the \code{lonLim} and \code{latLim} arguments, in the same way as
 #'   for instance the \code{loadGridData} function, from package \pkg{loadeR}, with the exception that several checks are undertaken
@@ -519,15 +526,37 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
 #' @author J. Bedia 
 #' @family subsetting
 
-subsetSeason <- function(grid, season = NULL) {
+subsetSeason <- function(grid, season) {
   season0 <- getSeason(grid)
-  if (!all(season %in% season0)) stop("Month selection outside original season values")      
-  if (getTimeResolution(grid) != "YY") {
-    mon <- getRefDates(grid) %>% substr(6,7) %>% as.integer()
-    time.ind <- which(mon %in% season)
-    grid %<>% subsetDimension(dimension = "time", indices = time.ind)
-  } else {
-    message("NOTE: Can't perform monthly subsetting on annual data. 'season' argument was ignored.")
+  if ((min(season) < 1 | max(season) > 12)) stop("Invalid season definition", call. = FALSE)
+  if (!all(season %in% season0)) stop("Month selection outside original season values") 
+  if (!identical(season0, season)) {
+    if (getTimeResolution(grid) != "YY") {
+      mon <- getRefDates(grid) %>% substr(6,7) %>% as.integer()
+      time.ind <- which(mon %in% season)
+      grid %<>% subsetDimension(dimension = "time", indices = time.ind)
+      if (!identical(season, sort(season))) {
+        
+        mon <- getRefDates(grid) %>% substr(6,7) %>% as.integer()
+        yr <- getRefDates(grid) %>% substr(1,4) %>% as.integer()
+        # Lost months from first year
+        rm.ind.head <- (which(diff(season) != 1L) + 1):length(season)
+        rm1 <- which(yr == head(yr, 1) & (mon %in% season[rm.ind.head]))
+        if (length(rm1) == 0L) rm1 <- NA
+        # Lost months from last year
+        rm.ind.tail <- 1:which(diff(season) != 1L)
+        rm2 <- which(yr == tail(yr, 1) & (mon %in% season[rm.ind.tail]))
+        if (length(rm2) == 0L) rm1 <- NA
+        rm.ind <- na.omit(c(rm1, rm2))
+        if (length(rm.ind) > 0L) {
+          message("NOTE: Some data might will be lost on year-crossing season subset. See the \'subsetGrid\' Details Section")
+          time.ind <- (1:getShape(grid, "time"))[-rm.ind]
+          grid %<>% subsetDimension(dimension = "time", indices = time.ind)
+        }
+      }
+    } else {
+      message("NOTE: Can't perform monthly subsetting on annual data. 'season' argument was ignored.")
+    }
   }
   return(grid)
 }
