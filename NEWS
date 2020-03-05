@@ -101,7 +101,9 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
 
 ## 1.7.4 (in devel)
  * Update the wt.index attribute after time-dimension subsetting
+ * Changed the default behaviour of subsetGrid along year-crossing seasons. It is now consistent with loadGridData specifications.
  * Minor bug fix in date subsetting on multigrids
+ * Documentation updates
  
  
  
