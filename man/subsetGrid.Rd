@@ -52,7 +52,7 @@ The attribute \code{subset} will be added to the different slots corresponding t
 the value of the subroutine called in each case (e.g.: attribute subset will have the value \code{subsetSpatial}
 in the xyCoords slot after spatial subsetting...).
 
-\strong{Time slicing by years and season}
+\strong{Time slicing}
 
 In case of year-crossing seasons (e.g. boreal winter (DJF), \code{season = c(12,1,2)}),
 the season is assigned to the years of January and February 
@@ -63,8 +63,10 @@ seasons. For example, assume a dataset encompassing a full-year season (i.e., \c
  (i.e., \code{years=1981:2010}). When performing a subset on boreal winter (DJF, \code{season = c(12,1,2)}),
  the first available winter will be \dQuote{winter 1982}, encompassing Dec 1981 and Jan and Feb 1982. Thus, all data corresponding to
  Jan and Feb 1981 are discarded from the subset (i.e., only complete \dQuote{winters} will be returned). Similarly,
- December 2010 will be lost, and the last data provided will correspond to winter 2009. To override this default behaviour, the user can
- always use the non-standard \code{season=c(1,2,12)}, although this is rarely needed.
+ December 2010 will be lost (because it belongs to winter 2011, beyond the temporal extent of the dataset),
+ and the last data provided will correspond to winter 2009. To override this default behaviour and retaining all
+ January, February and December records strictly within the period 1981-2010, 
+ the non-standard \code{season=c(1,2,12)} can be specified (although this is rarely needed).
 
  
 \strong{Spatial slicing}
