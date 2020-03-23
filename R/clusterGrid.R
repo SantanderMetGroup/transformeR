@@ -23,7 +23,7 @@
 #'@param y Optional predictand grid data. Clustering Analysis of this grid will be performed as a day-by-day correspondence with 
 #' the reference grid (\code{grid} or \code{newdata}). Thus time dimension from \code{y} and the reference grid must intersect. For weather typing.
 #'@param ... Further specific arguments passed to the different clustering functions. 
-#'@seealso \link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen]{som}.
+#'@seealso \code{\link[stats]{kmeans}}, \code{\link[stats]{hclust}}, \code{\link[kohonen]{som}}.
 #'@importFrom fields rdist
 #'@return A C4R (multimember/multi) grid object that will contain the data from: 
 #'\itemize{
@@ -50,7 +50,7 @@
 #'\strong{som}
 #'
 #'While using the SOM (self-organizing maps) algorithm (check \code{\link[kohonen]{som}} for further information), the argument \code{centers} is provided as
-#' a two-element vector, indicating the dimensions \code{xdim,ydim} of the grid (see \link[kohonen]{somgrid}).
+#' a two-element vector, indicating the dimensions \code{xdim,ydim} of the grid (see \code{\link[kohonen]{somgrid}}).
 #'By default, a rectangular topology (8x6) of 48 clusters is obtained. 
 #'
 #'\strong{Lamb}
@@ -217,7 +217,7 @@ clusterGrid <- function(grid,
     }
   }
   
-  return(redim(out.grid, drop = FALSE))
+  return(redim(out.grid, drop = TRUE))
 }
 
 

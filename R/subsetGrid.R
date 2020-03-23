@@ -1,6 +1,6 @@
 ##     subsetGrid.R Arbitrary subsetting of grids along one or more of its dimensions
 ##
-##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
+##     Copyright (C) 2020 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
 ##     This program is free software: you can redistribute it and/or modify
 ##     it under the terms of the GNU General Public License as published by
@@ -22,7 +22,8 @@
 #' multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
 #' (possibly multimember grids) as returned e.g. by \code{loadeR.ECOMS::loadECOMS}.
 #' @param var Character vector indicating the variables(s) to be extracted. (Used for multigrid subsetting). See details.
-#' @param cluster An integer vector indicating \strong{the clusters} to be subset.
+#' @param cluster For Lamb WTs (clusters): Character vector indicating \strong{the cluster(s)} to be subset. For the rest of clustering algorithms: 
+#' An integer vector indicating the cluster(s) to be subset.
 #' @param members An integer vector indicating \strong{the position} of the members to be subset.
 #' @param runtime An integer vector indicating \strong{the position} of the runtimes to be subset.
 #' @param years The years to be selected. Note that this can be either a continuous or discontinuous
@@ -43,15 +44,24 @@
 #' the value of the subroutine called in each case (e.g.: attribute subset will have the value \code{subsetSpatial}
 #' in the xyCoords slot after spatial subsetting...).
 #' 
-#' \strong{Time slicing by years}
+#' \strong{Time slicing}
 #' 
 #' In case of year-crossing seasons (e.g. boreal winter (DJF), \code{season = c(12,1,2)}),
 #' the season is assigned to the years of January and February 
 #' (i.e., winter of year 2000 corresponds to Dec 1999, Jan 2000 and Feb 2000). Thus, 
 #' the \code{years} argument must be introduced accordingly (See e.g. \code{\link{getYearsAsINDEX}}
-#' function for details).
+#' function for details). Hence, when subsetting along \code{season}, some data might be lost when using year-crossing
+#' seasons. For example, assume a dataset encompassing a full-year season (i.e., \code{season=1:12}) for the period 1981-2010
+#'  (i.e., \code{years=1981:2010}). When performing a subset on boreal winter (DJF, \code{season = c(12,1,2)}),
+#'  the first available winter will be \dQuote{winter 1982}, encompassing Dec 1981 and Jan and Feb 1982. Thus, all data corresponding to
+#'  Jan and Feb 1981 are discarded from the subset (i.e., only complete \dQuote{winters} will be returned). Similarly,
+#'  December 2010 will be lost (because it belongs to winter 2011, beyond the temporal extent of the dataset),
+#'  and the last data provided will correspond to winter 2009. To override this default behaviour and retaining all
+#'  January, February and December records strictly within the period 1981-2010, 
+#'  the non-standard \code{season=c(1,2,12)} can be specified (although this is rarely needed).
 #' 
-#'  \strong{Spatial slicing}
+#'  
+#' \strong{Spatial slicing}
 #'  
 #'  Spatial subset definition is done via the \code{lonLim} and \code{latLim} arguments, in the same way as
 #'   for instance the \code{loadGridData} function, from package \pkg{loadeR}, with the exception that several checks are undertaken
@@ -207,12 +217,13 @@ subsetVar <- function(grid, var) {
 #' Cluster subsets from a multimember grid
 #' 
 #' Retrieves a grid that is a logical subset of a multimember grid along its 'time' dimension based on the cluster index.
-#'  Multimember multigrids are supported. Subroutine of \code{\link{subsetGrid}}.
+#' Multimember multigrids are supported. Subroutine of \code{\link{subsetGrid}}.
 #'
-#' @param grid Input multimember grid to be subset (possibly a multimember multigrid).
-#' @param cluster An integer indicating \strong{the cluster} to be subset.
+#' @param grid Input multimember grid to be subset (possibly a multimember multigrid). A grid resulting from \code{\link{clusterGrid}} 
+#' must be used here, otherwise the function will return an error message
+#' @param cluster For Lamb WTs (clusters): Character vector indicating \strong{the cluster(s)} to be subset. For the rest of clustering algorithms: 
+#' An integer vector indicating the cluster(s) to be subset.
 #' @return A grid (or multigrid) that is a logical subset of the input grid along its 'time' dimension based on the cluster index.
-#' @details The variable name will be added an extension refering to the cluster extracted.
 #' @keywords internal
 #' @export
 #' @author J. A. Fernandez 
@@ -225,13 +236,18 @@ subsetCluster <- function(grid, cluster) {
             call. = FALSE)
     return(grid)
   }
-  if (!all(cluster %in% attr(grid, "wt.index"))) {
-    stop("'cluster' index out of bounds", call. = FALSE)
+  if (attr(grid, "cluster.type") == "lamb") {
+    if (!all(cluster %in% names(attr(grid, "wt.index")))) {
+      stop("Lamb 'cluster' not found", call. = FALSE)
+    }
+    indices = which(!is.na(match(names(attr(grid, "wt.index")), cluster))) 
+  } else {
+    if (!all(cluster %in% attr(grid, "wt.index"))) {
+      stop("'cluster' index out of bounds", call. = FALSE)
+    }
+    indices = which(!is.na(match(attr(grid, "wt.index"), cluster))) 
   }
-  indices = which(!is.na(match(attr(grid, "wt.index"), cluster))) 
   grid <- subsetDimension(grid, dimension = "time", indices = indices)
-  attr(grid$Variable, "longname") <- paste0(getVarNames(grid), "_cluster", cluster)
-  attr(grid, "wt.index") <- attr(grid, "wt.index")[indices]
   attr(grid$Variable, "subset") <- "subsetCluster"
   return(grid)
 }
@@ -354,6 +370,7 @@ subsetYears <- function(grid, years) {
     } 
     grid$Data <- asub(grid$Data, time.ind, dims, drop = FALSE)
     attr(grid$Data, "dimensions") <- dimNames
+    attr(grid, "wt.index") <- attr(grid, "wt.index")[time.ind]
     # Verification Date adjustment
     grid$Dates <- if (getShape(redim(grid, var = TRUE), dimension = "var") != 1) {
         lapply(1:length(grid$Dates), function(i) {
@@ -511,15 +528,36 @@ subsetSpatial <- function(grid, lonLim, latLim, outside) {
 #' @author J. Bedia 
 #' @family subsetting
 
-subsetSeason <- function(grid, season = NULL) {
+subsetSeason <- function(grid, season) {
   season0 <- getSeason(grid)
-  if (!all(season %in% season0)) stop("Month selection outside original season values")      
-  if (getTimeResolution(grid) != "YY") {
-    mon <- getRefDates(grid) %>% substr(6,7) %>% as.integer()
-    time.ind <- which(mon %in% season)
-    grid %<>% subsetDimension(dimension = "time", indices = time.ind)
-  } else {
-    message("NOTE: Can't perform monthly subsetting on annual data. 'season' argument was ignored.")
+  if ((min(season) < 1 | max(season) > 12)) stop("Invalid season definition", call. = FALSE)
+  if (!all(season %in% season0)) stop("Month selection outside original season values") 
+  if (!identical(season0, season)) {
+    if (getTimeResolution(grid) != "YY") {
+      mon <- getRefDates(grid) %>% substr(6,7) %>% as.integer()
+      time.ind <- which(mon %in% season)
+      grid %<>% subsetDimension(dimension = "time", indices = time.ind)
+      if (!identical(season, sort(season))) {
+        mon <- getRefDates(grid) %>% substr(6,7) %>% as.integer()
+        yr <- getRefDates(grid) %>% substr(1,4) %>% as.integer()
+        # Lost months from first year
+        rm.ind.head <- (which(diff(season) != 1L) + 1):length(season)
+        rm1 <- which(yr == head(yr, 1) & (mon %in% season[rm.ind.head]))
+        if (length(rm1) == 0L) rm1 <- NA
+        # Lost months from last year
+        rm.ind.tail <- 1:which(diff(season) != 1L)
+        rm2 <- which(yr == tail(yr, 1) & (mon %in% season[rm.ind.tail]))
+        if (length(rm2) == 0L) rm1 <- NA
+        rm.ind <- na.omit(c(rm1, rm2))
+        if (length(rm.ind) > 0L) {
+          message("NOTE: Some data will be lost on year-crossing season subset (see the \'Time slicing\' section of subsetGrid documentation for more details)")
+          time.ind <- (1:getShape(grid, "time"))[-rm.ind]
+          grid %<>% subsetDimension(dimension = "time", indices = time.ind)
+        }
+      }
+    } else {
+      message("NOTE: Can't perform monthly subsetting on annual data. 'season' argument was ignored.")
+    }
   }
   return(grid)
 }
@@ -545,9 +583,9 @@ subsetStation <- function(grid, station.id = NULL) {
       if (!all(station.id %in% station0)) stop("Station ID selection does not exist in the data")      
       id.ind <- sapply(1:length(station.id),FUN = function(z) {which(station0 == station.id[z])})
       grid %<>% subsetDimension(dimension = "loc", indices = id.ind)
-      if ("Metadata" %in% names(grid)) {
-        grid$Metadata %<>% lapply(FUN = "[", id.ind)
-      }      
+      # if ("Metadata" %in% names(grid)) {
+      #   grid$Metadata %<>% lapply(FUN = "[", id.ind)
+      # }      
       return(grid)
 }
 
@@ -610,6 +648,7 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
             }
             mostattributes(grid$Dates) <- attrs
             attr(grid$Dates, "season") <- getSeason(grid)
+            attr(grid, "wt.index") <- attr(grid, "wt.index")[indices]
         }
         if ("lon" %in% dimension) {
             grid$xyCoords$x <- grid$xyCoords$x[indices]

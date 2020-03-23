@@ -51,7 +51,7 @@ range of the heights vector, as determined by \code{\link[stats]{cutree}}.
 \strong{som}
 
 While using the SOM (self-organizing maps) algorithm (check \code{\link[kohonen]{som}} for further information), the argument \code{centers} is provided as
-a two-element vector, indicating the dimensions \code{xdim,ydim} of the grid (see \link[kohonen]{somgrid}).
+a two-element vector, indicating the dimensions \code{xdim,ydim} of the grid (see \code{\link[kohonen]{somgrid}}).
 By default, a rectangular topology (8x6) of 48 clusters is obtained. 
 
 \strong{Lamb}
@@ -79,7 +79,7 @@ Trigo, R.M., DaCamara, C.C., 2000. Circulation weather types and their influence
 Int. J. Climatol. 23. https://doi.org/10.1002/1097-0088(20001115)20:13%3C1559::AID-JOC555%3E3.0.CO;2-5
 }
 \seealso{
-\link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen]{som}.
+\code{\link[stats]{kmeans}}, \code{\link[stats]{hclust}}, \code{\link[kohonen]{som}}.
 }
 \author{
 J. A. Fernández

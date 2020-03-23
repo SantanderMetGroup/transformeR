@@ -7,19 +7,18 @@
 subsetCluster(grid, cluster)
 }
 \arguments{
-\item{grid}{Input multimember grid to be subset (possibly a multimember multigrid).}
+\item{grid}{Input multimember grid to be subset (possibly a multimember multigrid). A grid resulting from \code{\link{clusterGrid}} 
+must be used here, otherwise the function will return an error message}
 
-\item{cluster}{An integer indicating \strong{the cluster} to be subset.}
+\item{cluster}{For Lamb WTs (clusters): Character vector indicating \strong{the cluster(s)} to be subset. For the rest of clustering algorithms: 
+An integer vector indicating the cluster(s) to be subset.}
 }
 \value{
 A grid (or multigrid) that is a logical subset of the input grid along its 'time' dimension based on the cluster index.
 }
 \description{
 Retrieves a grid that is a logical subset of a multimember grid along its 'time' dimension based on the cluster index.
- Multimember multigrids are supported. Subroutine of \code{\link{subsetGrid}}.
-}
-\details{
-The variable name will be added an extension refering to the cluster extracted.
+Multimember multigrids are supported. Subroutine of \code{\link{subsetGrid}}.
 }
 \seealso{
 Other subsetting: \code{\link{getTemporalIntersection}},

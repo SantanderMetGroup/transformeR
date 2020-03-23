@@ -4,7 +4,7 @@
 \alias{subsetSeason}
 \title{Monthly subset of a grid}
 \usage{
-subsetSeason(grid, season = NULL)
+subsetSeason(grid, season)
 }
 \arguments{
 \item{grid}{Input grid to be subset (possibly a multimember/multigrid).}

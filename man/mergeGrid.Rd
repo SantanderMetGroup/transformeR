@@ -2,7 +2,7 @@
 % Please edit documentation in R/mergeGrid.R
 \name{mergeGrid}
 \alias{mergeGrid}
-\title{Flexible grid aggregation along selected dimensions}
+\title{Merge multiple grids in space}
 \usage{
 mergeGrid(..., aggr.fun = list(FUN = "mean", na.rm = TRUE))
 }

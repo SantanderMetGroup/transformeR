@@ -16,7 +16,7 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#' @title Flexible grid aggregation along selected dimensions
+#' @title Merge multiple grids in space 
 #' @description Merge multiple grids in space (latitude and longitude).
 #' @param ... Input grids to be merged.
 #' @param aggr.fun Aggregation function to the intersection areas among grids. The default option computes the mean
