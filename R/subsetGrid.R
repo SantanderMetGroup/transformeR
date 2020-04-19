@@ -200,8 +200,9 @@ subsetVar <- function(grid, var) {
     grid$Variable$varName <- grid$Variable$varName[var.idx]
     grid$Variable$level <- grid$Variable$level[var.idx]
     attrs <- attributes(grid$Variable)
+    add.attr <- attrs[which(names(attrs) == "names")]
+    attrs <- attrs[setdiff(1:length(attrs),which(names(attrs) == "names"))]
     attr.ind <- which(sapply(attrs, "length") == length(varnames))
-    add.attr <- attrs[setdiff(1:length(attrs), attr.ind)]
     attributes(grid$Variable) <- c(lapply(attrs[attr.ind], "[", var.idx), add.attr)
     grid$Dates <- if (length(var.idx) > 1L) {
         grid$Dates[var.idx]
