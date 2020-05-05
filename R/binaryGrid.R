@@ -29,10 +29,12 @@
 #' @param values A vector of length 2. For example, values = c(0,1), which is the DEFAULT. Then every sample satisfying the condition is 
 #' equal to the second element of 'values' (i.e., in our example would be equal to 1), whereas if a sample does 
 #' not satisfy the condition then takes the first element (i.e., in our example would be equal to 0). 
+#' @param simulate A logical value. If TRUE then the output is an stochastic sample for given the probability of rain 'p'. 
+#' Therefore only where the input grid 'x' is a grid of probabilities (e.g., for example coming from a logistic regression).
 #' @return A new grid object with binary values
 #' @details The function works for regular and irregular grids as downloaded from \pkg{loadeR}).
 #' @author J. Bano-Medina
-#' @importFrom stats quantile
+#' @importFrom stats quantile runif
 #' @export
 #' @examples
 #' # Take a look at the data:
@@ -43,8 +45,18 @@
 #' # Convert to partial binary variable:
 #' ybin2 <- binaryGrid(VALUE_Iberia_pr,threshold = 1, partial = TRUE)
 #' head(ybin2$Data)
-
-binaryGrid <- function(x, condition = "GE", threshold = NULL, partial = FALSE, ref.obs = NULL, ref.pred = NULL, values = c(0,1)) {
+#' # Convert to binary simulating:
+#' dat <- gridArithmetics(ybin,0.5) # to build a dataset with probabilities
+#' ybin3 <- binaryGrid(dat,simulate = TRUE)
+#' head(ybin3$Data)
+binaryGrid <- function(x, 
+                       condition = "GE", 
+                       threshold = NULL, 
+                       partial = FALSE, 
+                       ref.obs = NULL, 
+                       ref.pred = NULL, 
+                       values = c(0,1),
+                       simulate = FALSE) {
   condition <- match.arg(condition, choices = c("GT", "GE", "LT", "LE"))
   loc <- FALSE
   if (!isRegular(x)) {loc <- TRUE}
@@ -52,27 +64,36 @@ binaryGrid <- function(x, condition = "GE", threshold = NULL, partial = FALSE, r
   nMemb <- dim(x$Data)[which(getDim(x) == "member")]
   for (j in 1:nMemb) {
     if (is.null(threshold)) {
-      ref.obs <- redim(ref.obs, loc = loc)
-      if (isRegular(x)) {
-        xx <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(x,members = j), member = FALSE)$Data))
-        xx.obs <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(ref.obs,members = 1),member = FALSE)$Data))
-        if (is.null(ref.pred)) {xx.pred <- xx} else {xx.pred <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(ref.pred,members = 1), member = FALSE)$Data))}
+      if (is.null(ref.obs)) {
+        if (isRegular(x)) {
+          xx <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(x,members = j), member = FALSE)$Data))
+        } else {
+          xx <- x$Data[j,,]
+        }
+        s <- matrix(runif(nrow(xx)*ncol(xx),min = 0,max = 1),nrow = nrow(xx), ncol = ncol(xx))
+        xbin <- (xx > s)*1
       } else {
-        xx <- x$Data[j,,]
-        xx.obs <- ref.obs$Data[1,,]
-        if (is.null(ref.pred)) {xx.pred <- xx} else {xx.pred <- redim(ref.pred, loc = loc)$Data[1,,]}
-      }
-      
-      frec <- apply(X = xx.obs, MARGIN = 2, function(X) {
-        return(length(which(X == 0))/length(which(!is.na(X))))
-      })
-      xbin <- xx
-      for (i in 1:length(frec)) {
-        if (condition == "LT" | condition == "LE") {frec[i] <- 1 - frec[i]}
-        thre <- quantile(xx.pred[,i],frec[i], na.rm = TRUE)
-        xbin[,i] <- binaryGrid.(xx[,i], condition = condition, threshold = thre, partial = partial, values = values)
-      }
-      
+        ref.obs <- redim(ref.obs, loc = loc)
+        if (isRegular(x)) {
+          xx <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(x,members = j), member = FALSE)$Data))
+          xx.obs <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(ref.obs,members = 1),member = FALSE)$Data))
+          if (is.null(ref.pred)) {xx.pred <- xx} else {xx.pred <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(ref.pred,members = 1), member = FALSE)$Data))}
+        } else {
+          xx <- x$Data[j,,]
+          xx.obs <- ref.obs$Data[1,,]
+          if (is.null(ref.pred)) {xx.pred <- xx} else {xx.pred <- redim(ref.pred, loc = loc)$Data[1,,]}
+        }
+        
+        frec <- apply(X = xx.obs, MARGIN = 2, function(X) {
+          return(length(which(X == 0))/length(which(!is.na(X))))
+        })
+        xbin <- xx
+        for (i in 1:length(frec)) {
+          if (condition == "LT" | condition == "LE") {frec[i] <- 1 - frec[i]}
+          thre <- quantile(xx.pred[,i],frec[i], na.rm = TRUE)
+          xbin[,i] <- binaryGrid.(xx[,i], condition = condition, threshold = thre, partial = partial, values = values)
+        }
+      }  
     } else {
       if (isRegular(x)) {
         xx <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(x,members = j), member = FALSE)$Data))

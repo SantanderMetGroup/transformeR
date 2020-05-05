@@ -105,6 +105,8 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * Changed the default behaviour of subsetGrid along year-crossing seasons, consistent with loadGridData specifications.
  * Minor bug fix in date subsetting on multigrids
  * Documentation updates
- 
+
+## 1.7.5 (on-going..)
+ * Added 'simulate' parameter in binaryGrid function
  
  
