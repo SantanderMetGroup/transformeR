@@ -64,7 +64,7 @@ binaryGrid <- function(x,
   nMemb <- dim(x$Data)[which(getDim(x) == "member")]
   for (j in 1:nMemb) {
     if (is.null(threshold)) {
-      if (is.null(ref.obs)) {
+      if (isTRUE(simulate)) {
         if (isRegular(x)) {
           xx <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(x,members = j), member = FALSE)$Data))
         } else {
