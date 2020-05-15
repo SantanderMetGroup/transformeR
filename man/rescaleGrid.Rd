@@ -4,8 +4,15 @@
 \alias{rescaleGrid}
 \title{Grid rescaling}
 \usage{
-rescaleGrid(grid, grid.clim = NULL, ref = NULL, by.member = TRUE,
-  parallel = FALSE, max.ncores = 16, ncores = NULL)
+rescaleGrid(
+  grid,
+  grid.clim = NULL,
+  ref = NULL,
+  by.member = TRUE,
+  parallel = FALSE,
+  max.ncores = 16,
+  ncores = NULL
+)
 }
 \arguments{
 \item{grid}{Input grid to be rescaled}

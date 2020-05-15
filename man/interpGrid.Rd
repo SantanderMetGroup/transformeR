@@ -4,9 +4,16 @@
 \alias{interpGrid}
 \title{Grid interpolation}
 \usage{
-interpGrid(grid, new.coordinates = list(x = NULL, y = NULL),
-  method = c("nearest", "bilinear"), bilin.method = "fields",
-  parallel = FALSE, max.ncores = 16, ncores = NULL, ...)
+interpGrid(
+  grid,
+  new.coordinates = list(x = NULL, y = NULL),
+  method = c("nearest", "bilinear"),
+  bilin.method = "fields",
+  parallel = FALSE,
+  max.ncores = 16,
+  ncores = NULL,
+  ...
+)
 }
 \arguments{
 \item{grid}{An input grid to be interpolated/regridded.}

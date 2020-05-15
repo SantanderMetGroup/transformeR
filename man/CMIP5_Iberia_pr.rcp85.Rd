@@ -4,7 +4,9 @@
 \name{CMIP5_Iberia_pr.rcp85}
 \alias{CMIP5_Iberia_pr.rcp85}
 \title{Grid containing CMIP5 data (model CNRM-CM5) of daily precipitation for the RCP8.5 scenario and for the Iberian Peninsula (DJF, 2081-2100).}
-\format{A grid}
+\format{
+A grid
+}
 \source{
 \url{http://www.meteo.unican.es/udg-tap}
 }

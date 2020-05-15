@@ -4,8 +4,16 @@
 \alias{filterGrid}
 \title{Time filtering}
 \usage{
-filterGrid(grid, window.width, method = c("convolution", "recursive"),
-  sides = 1, parallel = FALSE, max.ncores = 16, ncores = NULL, ...)
+filterGrid(
+  grid,
+  window.width,
+  method = c("convolution", "recursive"),
+  sides = 1,
+  parallel = FALSE,
+  max.ncores = 16,
+  ncores = NULL,
+  ...
+)
 }
 \arguments{
 \item{grid}{Input grid (possibly multimember)}

@@ -4,7 +4,9 @@
 \alias{NCEP_Iberia_hus850}
 \title{Grid containing NCEP-ENCAR reanalysis1 data of daily specific humidity at 850mb for the 
 Iberian Peninsula (DJF, 1983-2002).}
-\format{A grid}
+\format{
+A grid
+}
 \source{
 \url{http://www.meteo.unican.es/ecoms-udg}
 }

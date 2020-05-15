@@ -4,8 +4,14 @@
 \alias{plotClimatology}
 \title{Lattice plot methods for climatological grids}
 \usage{
-plotClimatology(grid, backdrop.theme = "none", set.min = NULL,
-  set.max = NULL, lonCenter = NULL, ...)
+plotClimatology(
+  grid,
+  backdrop.theme = "none",
+  set.min = NULL,
+  set.max = NULL,
+  lonCenter = NULL,
+  ...
+)
 }
 \arguments{
 \item{grid}{Input grid}

@@ -4,8 +4,14 @@
 \alias{clusterGrid}
 \title{Cluster analysis}
 \usage{
-clusterGrid(grid, type = "kmeans", centers = NULL, newdata = NULL,
-  y = NULL, ...)
+clusterGrid(
+  grid,
+  type = "kmeans",
+  centers = NULL,
+  newdata = NULL,
+  y = NULL,
+  ...
+)
 }
 \arguments{
 \item{grid}{A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object}

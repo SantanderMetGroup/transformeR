@@ -4,7 +4,9 @@
 \alias{CFS_Iberia_tas}
 \title{Multimember grid containing CFSv2 seasonal forecast data of daily mean temperature for
 the Iberian Peninsula (DJF, 1983-2002).}
-\format{A multimember grid}
+\format{
+A multimember grid
+}
 \source{
 \url{http://www.meteo.unican.es/ecoms-udg}
 }

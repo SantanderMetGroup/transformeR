@@ -4,7 +4,9 @@
 \name{CORDEX_Iberia_pr.rcp85}
 \alias{CORDEX_Iberia_pr.rcp85}
 \title{Grid containing CORDEX data (model KNMI-RACMO22E) of daily precipitation for the RCP8.5 scenario and for the Iberian Peninsula (DJF, 2081-2100).}
-\format{A grid}
+\format{
+A grid
+}
 \source{
 \url{http://www.meteo.unican.es/udg-tap}
 }

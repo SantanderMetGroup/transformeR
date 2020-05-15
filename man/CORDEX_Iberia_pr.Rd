@@ -4,7 +4,9 @@
 \name{CORDEX_Iberia_pr}
 \alias{CORDEX_Iberia_pr}
 \title{Grid containing historical CORDEX data (model KNMI-RACMO22E) of daily precipitation for the Iberian Peninsula (DJF, 1983-2002).}
-\format{A grid}
+\format{
+A grid
+}
 \source{
 \url{http://www.meteo.unican.es/udg-tap}
 }

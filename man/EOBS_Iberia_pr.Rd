@@ -4,7 +4,9 @@
 \name{EOBS_Iberia_pr}
 \alias{EOBS_Iberia_pr}
 \title{Grid containing E-OBS daily data of precipitation for the Iberian Peninsula (DJF, 1983-2002).}
-\format{A grid}
+\format{
+A grid
+}
 \source{
 \url{http://www.meteo.unican.es/udg-tap}
 }

@@ -4,8 +4,7 @@
 \alias{makeMultiGrid}
 \title{Multigrid constructor}
 \usage{
-makeMultiGrid(..., spatial.tolerance = 0.001,
-  skip.temporal.check = FALSE)
+makeMultiGrid(..., spatial.tolerance = 0.001, skip.temporal.check = FALSE)
 }
 \arguments{
 \item{...}{Input grids to form the multigrid. These must be compatible in time and space (see details). 
@@ -92,8 +91,9 @@ mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_hus850, CFS_Iberia_pr)
 \seealso{
 \code{\link{interpGrid}} for spatial consistency of input grids.
 
-Other downscaling.helpers: \code{\link{convert2bin}},
-  \code{\link{filterNA}}
+Other downscaling.helpers: 
+\code{\link{convert2bin}()},
+\code{\link{filterNA}()}
 }
 \author{
 J. Bedia

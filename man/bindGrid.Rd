@@ -4,8 +4,12 @@
 \alias{bindGrid}
 \title{Grid binding by the specified dimension}
 \usage{
-bindGrid(..., dimension = c("member", "time", "lat", "lon", "loc"),
-  spatial.tolerance = 0.001, dataset.attr = NULL)
+bindGrid(
+  ...,
+  dimension = c("member", "time", "lat", "lon", "loc"),
+  spatial.tolerance = 0.001,
+  dataset.attr = NULL
+)
 }
 \arguments{
 \item{...}{Input grids to bind by their member dimension. These must be compatible in time and space (see details).

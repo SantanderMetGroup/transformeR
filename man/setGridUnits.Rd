@@ -42,7 +42,8 @@ mf3 <- setGridUnits(mf, unit.string = c("1", "Pa"), var = c("hus@850", "psl"))
 getGridUnits(mf3)
 }
 \seealso{
-Other get.helpers unit.helpers: \code{\link{getGridUnits}}
+Other get.helpers unit.helpers: 
+\code{\link{getGridUnits}()}
 }
 \author{
 J Bedia

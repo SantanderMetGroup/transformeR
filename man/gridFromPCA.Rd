@@ -29,7 +29,7 @@ names(pca)
 psl2 <- gridFromPCA(pca, "psl")
 str(psl2)
 # The attributes of psl2 indicate that this is a reconstructed grid from 10 PCs, 
-# explaining 99\\\% of the variance:
+# explaining 99\\% of the variance:
 attributes(psl2)
 multigrid$Variable$varName
 # psl is the 3rd one
@@ -41,7 +41,7 @@ plotClimatology(climatology(NCEP_Iberia_psl), backdrop.theme = "coastline",
 pca2 <- prinComp(NCEP_Iberia_psl, n.eofs = 1)
 psl_recovered <- gridFromPCA(pca2)
 plotClimatology(climatology(psl_recovered), backdrop.theme = "coastline", 
-                main = "DJF Mean Sea-level Pressure (1983-2002)\\n-Reconstructed from first EOF-")
+                main = "DJF Mean Sea-level Pressure (1983-2002)\n-Reconstructed from first EOF-")
 # The mean field is similar, but there are (small) differences in temporal variability:
 plot(NCEP_Iberia_psl$Data[,3,3], ty = 'l', ylab = "psl")
 lines(psl_recovered$Data[,3,3], col = "red")
@@ -51,8 +51,11 @@ legend("top", c("original", "reconstructed"), lty = 1, col = c(1,2), bty = "n")
 attributes(psl_recovered)$'explained_variance'
 }
 \seealso{
-Other pca: \code{\link{PC2grid}}, \code{\link{grid2PCs}},
-  \code{\link{plotEOF}}, \code{\link{prinComp}}
+Other pca: 
+\code{\link{PC2grid}()},
+\code{\link{grid2PCs}()},
+\code{\link{plotEOF}()},
+\code{\link{prinComp}()}
 }
 \author{
 J. Bedia

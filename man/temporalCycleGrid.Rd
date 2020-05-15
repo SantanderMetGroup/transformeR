@@ -4,9 +4,15 @@
 \alias{temporalCycleGrid}
 \title{Temporal cycle calculation}
 \usage{
-temporalCycleGrid(grid, time.frame = c("daily", "monthly"),
-  clim.fun = "mean", ..., parallel = FALSE, max.ncores = 16,
-  ncores = NULL)
+temporalCycleGrid(
+  grid,
+  time.frame = c("daily", "monthly"),
+  clim.fun = "mean",
+  ...,
+  parallel = FALSE,
+  max.ncores = 16,
+  ncores = NULL
+)
 }
 \arguments{
 \item{grid}{Input grid. This must be a daily or monthly grid, depending on the next argument choice. See details}

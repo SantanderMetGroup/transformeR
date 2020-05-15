@@ -27,7 +27,8 @@ Two-tailed hypothesis testing for \pkg{easyVerification} sigma outputs
 \code{\link{easyVeri2grid}}, for conversion of verification matrices into climatological grids.
  Also, \code{\link{map.stippling}}, to draw significant points on verification maps.
 
-Other easyVerification.bridges: \code{\link{easyVeri2grid}}
+Other easyVerification.bridges: 
+\code{\link{easyVeri2grid}()}
 }
 \author{
 J Bedia

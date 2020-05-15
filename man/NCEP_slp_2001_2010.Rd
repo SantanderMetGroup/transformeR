@@ -4,7 +4,9 @@
 \name{NCEP_slp_2001_2010}
 \alias{NCEP_slp_2001_2010}
 \title{Exemplary data for \code{clusterGrid.R}}
-\format{A grid object.}
+\format{
+A grid object.
+}
 \source{
 \url{https://www.esrl.noaa.gov/psd/data/gridded/data.ncep.reanalysis.html} and \url{http://www.meteo.unican.es/udg-tap}.
 }

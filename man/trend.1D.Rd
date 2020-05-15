@@ -4,8 +4,13 @@
 \alias{trend.1D}
 \title{Linear trend analysis}
 \usage{
-trend.1D(ts, dates, method = c("pearson", "spearman", "kendall"),
-  return.pvalue = FALSE, conf.level = 0.95)
+trend.1D(
+  ts,
+  dates,
+  method = c("pearson", "spearman", "kendall"),
+  return.pvalue = FALSE,
+  conf.level = 0.95
+)
 }
 \arguments{
 \item{ts}{Numeric vector containing a time series}

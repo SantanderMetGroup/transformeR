@@ -30,7 +30,7 @@ Plots an arbitrary number of EOFs. Useful to have a quick overview of the main s
 \examples{
 # Winter temperature at 850 mb isobaric surface pressure level is loaded (period 1981--2010):
 data("NCEP_Iberia_hus850")
-# PCA analysis, retaining the PCs that explain 90\\\% of the total variance:
+# PCA analysis, retaining the PCs that explain 90\\% of the total variance:
 pca <- prinComp(NCEP_Iberia_hus850, v.exp = .90)
 # Plot of all EOFs
 plotEOF(pca)
@@ -48,8 +48,11 @@ names(pca2)
 plotEOF(pca2, "ta@850", backdrop.theme = "coastline")
 }
 \seealso{
-Other pca: \code{\link{PC2grid}}, \code{\link{grid2PCs}},
-  \code{\link{gridFromPCA}}, \code{\link{prinComp}}
+Other pca: 
+\code{\link{PC2grid}()},
+\code{\link{grid2PCs}()},
+\code{\link{gridFromPCA}()},
+\code{\link{prinComp}()}
 }
 \author{
 J. Bedia

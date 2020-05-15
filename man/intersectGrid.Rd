@@ -28,15 +28,21 @@ z <- intersectGrid(a, b, type = "spatial", which.return = 1)
 \seealso{
 \code{\link{subsetGrid}}
 
-Other subsetting: \code{\link{getTemporalIntersection}},
-  \code{\link{intersectGrid.spatial}},
-  \code{\link{intersectGrid.time}},
-  \code{\link{limitArea}}, \code{\link{subsetCluster}},
-  \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
-  \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
-  \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetStation}}, \code{\link{subsetVar}},
-  \code{\link{subsetYears}}
+Other subsetting: 
+\code{\link{getTemporalIntersection}()},
+\code{\link{intersectGrid.spatial}()},
+\code{\link{intersectGrid.time}()},
+\code{\link{limitArea}()},
+\code{\link{subsetCluster}()},
+\code{\link{subsetDimension}()},
+\code{\link{subsetGrid}()},
+\code{\link{subsetMembers}()},
+\code{\link{subsetRuntime}()},
+\code{\link{subsetSeason}()},
+\code{\link{subsetSpatial}()},
+\code{\link{subsetStation}()},
+\code{\link{subsetVar}()},
+\code{\link{subsetYears}()}
 }
 \author{
 M Iturbide

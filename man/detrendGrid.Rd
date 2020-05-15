@@ -4,8 +4,13 @@
 \alias{detrendGrid}
 \title{Linear detrending}
 \usage{
-detrendGrid(grid, grid2 = NULL, parallel = FALSE, max.ncores = 16,
-  ncores = NULL)
+detrendGrid(
+  grid,
+  grid2 = NULL,
+  parallel = FALSE,
+  max.ncores = 16,
+  ncores = NULL
+)
 }
 \arguments{
 \item{grid}{Input grid (possibly multimember)}

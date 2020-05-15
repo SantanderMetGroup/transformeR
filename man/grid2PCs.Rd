@@ -44,9 +44,11 @@ str(CFSv2_PCs)
 \seealso{
 \code{\link{prinComp}} for EOF analysis.
 
-Other pca: \code{\link{PC2grid}},
-  \code{\link{gridFromPCA}}, \code{\link{plotEOF}},
-  \code{\link{prinComp}}
+Other pca: 
+\code{\link{PC2grid}()},
+\code{\link{gridFromPCA}()},
+\code{\link{plotEOF}()},
+\code{\link{prinComp}()}
 }
 \author{
 J Bedia

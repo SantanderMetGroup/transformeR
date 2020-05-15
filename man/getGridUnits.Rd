@@ -33,7 +33,8 @@ getGridUnits(mf, "hus@850")
 getGridUnits(mf, var = c("hus@850", "ta@850"))
 }
 \seealso{
-Other get.helpers unit.helpers: \code{\link{setGridUnits}}
+Other get.helpers unit.helpers: 
+\code{\link{setGridUnits}()}
 }
 \author{
 J Bedia

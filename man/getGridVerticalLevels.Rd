@@ -38,15 +38,23 @@ getGridVerticalLevels(mg, var.index = c("hus@850","ta@850"))
 getGridVerticalLevels(mg, var.index = c(1,3))
 }
 \seealso{
-Other get.helpers: \code{\link{get2DmatCoordinates}},
-  \code{\link{getCoordinates}}, \code{\link{getDim}},
-  \code{\link{getGridProj}}, \code{\link{getGrid}},
-  \code{\link{getRefDates}}, \code{\link{getSeason}},
-  \code{\link{getShape}}, \code{\link{getStationID}},
-  \code{\link{getTimeResolution}},
-  \code{\link{getVarNames}}, \code{\link{getWT}},
-  \code{\link{getYearsAsINDEX}}, \code{\link{setGridProj}},
-  \code{\link{typeofGrid}}, \code{\link{which.leap}}
+Other get.helpers: 
+\code{\link{get2DmatCoordinates}()},
+\code{\link{getCoordinates}()},
+\code{\link{getDim}()},
+\code{\link{getGridProj}()},
+\code{\link{getGrid}()},
+\code{\link{getRefDates}()},
+\code{\link{getSeason}()},
+\code{\link{getShape}()},
+\code{\link{getStationID}()},
+\code{\link{getTimeResolution}()},
+\code{\link{getVarNames}()},
+\code{\link{getWT}()},
+\code{\link{getYearsAsINDEX}()},
+\code{\link{setGridProj}()},
+\code{\link{typeofGrid}()},
+\code{\link{which.leap}()}
 }
 \author{
 J Bedia

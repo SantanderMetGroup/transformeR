@@ -4,7 +4,9 @@
 \alias{CFS_Iberia_hus850}
 \title{Multimember grid containing CFSv2 seasonal forecast data of daily specific humidity at 850mb for
 the Iberian Peninsula (DJF, 1983-2002).}
-\format{A multimember grid}
+\format{
+A multimember grid
+}
 \source{
 \url{http://www.meteo.unican.es/ecoms-udg}
 }

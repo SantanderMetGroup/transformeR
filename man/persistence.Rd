@@ -4,8 +4,14 @@
 \alias{persistence}
 \title{Persistence climatology (Temporal autocorrelation at given time lag)}
 \usage{
-persistence(grid, lag = 1, ci = NULL, parallel = FALSE,
-  max.ncores = 16, ncores = NULL)
+persistence(
+  grid,
+  lag = 1,
+  ci = NULL,
+  parallel = FALSE,
+  max.ncores = 16,
+  ncores = NULL
+)
 }
 \arguments{
 \item{grid}{Input grid (most likely annually aggregated)}

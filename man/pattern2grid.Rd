@@ -4,8 +4,14 @@
 \alias{pattern2grid}
 \title{Transform a climate4R pattern into a climate4R grid.}
 \usage{
-pattern2grid(pattern, index.code, members = 1, season = 1,
-  coords = NULL, dates = NULL)
+pattern2grid(
+  pattern,
+  index.code,
+  members = 1,
+  season = 1,
+  coords = NULL,
+  dates = NULL
+)
 }
 \arguments{
 \item{pattern}{A climate4R pattern, obtained from \code{circIndexGrid}.}

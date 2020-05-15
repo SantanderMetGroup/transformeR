@@ -4,7 +4,9 @@
 \alias{CFS_Iberia_psl}
 \title{Multimember grid containing CFSv2 seasonal forecast data of daily sea level pressure for
 the Iberian Peninsula (DJF, 1983-2002).}
-\format{A multimember grid}
+\format{
+A multimember grid
+}
 \source{
 \url{http://www.meteo.unican.es/ecoms-udg}
 }

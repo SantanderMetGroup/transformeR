@@ -27,15 +27,21 @@ will be always returned in the same order they are in the original multigrid.
 An attribute 'subset' with value 'subsetVar' is added to the Variable slot of the output subset.
 }
 \seealso{
-Other subsetting: \code{\link{getTemporalIntersection}},
-  \code{\link{intersectGrid.spatial}},
-  \code{\link{intersectGrid.time}},
-  \code{\link{intersectGrid}}, \code{\link{limitArea}},
-  \code{\link{subsetCluster}},
-  \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
-  \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
-  \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetStation}}, \code{\link{subsetYears}}
+Other subsetting: 
+\code{\link{getTemporalIntersection}()},
+\code{\link{intersectGrid.spatial}()},
+\code{\link{intersectGrid.time}()},
+\code{\link{intersectGrid}()},
+\code{\link{limitArea}()},
+\code{\link{subsetCluster}()},
+\code{\link{subsetDimension}()},
+\code{\link{subsetGrid}()},
+\code{\link{subsetMembers}()},
+\code{\link{subsetRuntime}()},
+\code{\link{subsetSeason}()},
+\code{\link{subsetSpatial}()},
+\code{\link{subsetStation}()},
+\code{\link{subsetYears}()}
 }
 \author{
 J. Bedia

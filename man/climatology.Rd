@@ -4,9 +4,14 @@
 \alias{climatology}
 \title{Compute a grid climatology}
 \usage{
-climatology(grid, clim.fun = list(FUN = "mean", na.rm = TRUE),
-  by.member = TRUE, parallel = FALSE, max.ncores = 16,
-  ncores = NULL)
+climatology(
+  grid,
+  clim.fun = list(FUN = "mean", na.rm = TRUE),
+  by.member = TRUE,
+  parallel = FALSE,
+  max.ncores = 16,
+  ncores = NULL
+)
 }
 \arguments{
 \item{grid}{Input grid}

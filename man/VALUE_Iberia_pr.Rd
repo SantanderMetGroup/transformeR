@@ -4,7 +4,11 @@
 \name{VALUE_Iberia_pr}
 \alias{VALUE_Iberia_pr}
 \title{Station data containing VALUE (ECA-D) daily data of precipitation for the Iberian Peninsula (DJF, 1983-2002).}
-\format{Station data}
+\format{
+Station data
+
+Station data
+}
 \source{
 \url{http://www.meteo.unican.es/udg-tap}
 

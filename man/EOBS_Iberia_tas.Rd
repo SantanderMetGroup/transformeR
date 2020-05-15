@@ -4,7 +4,9 @@
 \name{EOBS_Iberia_tas}
 \alias{EOBS_Iberia_tas}
 \title{Grid containing E-OBS daily data of mean temperature for the Iberian Peninsula (DJF, 1983-2002).}
-\format{A grid}
+\format{
+A grid
+}
 \source{
 \url{http://www.meteo.unican.es/udg-tap}
 }

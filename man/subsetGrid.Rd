@@ -4,9 +4,20 @@
 \alias{subsetGrid}
 \title{Select an arbitrary subset from a grid or multigrid along one or more of its dimensions}
 \usage{
-subsetGrid(grid, var = NULL, cluster = NULL, runtime = NULL,
-  members = NULL, years = NULL, season = NULL, lonLim = NULL,
-  latLim = NULL, outside = FALSE, station.id = NULL, drop = TRUE)
+subsetGrid(
+  grid,
+  var = NULL,
+  cluster = NULL,
+  runtime = NULL,
+  members = NULL,
+  years = NULL,
+  season = NULL,
+  lonLim = NULL,
+  latLim = NULL,
+  outside = FALSE,
+  station.id = NULL,
+  drop = TRUE
+)
 }
 \arguments{
 \item{grid}{The input grid or station data to be subset. This is either a grid (or station data), as 
@@ -124,16 +135,21 @@ VALUE_Iberia_pr$Metadata
 }
 }
 \seealso{
-Other subsetting: \code{\link{getTemporalIntersection}},
-  \code{\link{intersectGrid.spatial}},
-  \code{\link{intersectGrid.time}},
-  \code{\link{intersectGrid}}, \code{\link{limitArea}},
-  \code{\link{subsetCluster}},
-  \code{\link{subsetDimension}},
-  \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
-  \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetStation}}, \code{\link{subsetVar}},
-  \code{\link{subsetYears}}
+Other subsetting: 
+\code{\link{getTemporalIntersection}()},
+\code{\link{intersectGrid.spatial}()},
+\code{\link{intersectGrid.time}()},
+\code{\link{intersectGrid}()},
+\code{\link{limitArea}()},
+\code{\link{subsetCluster}()},
+\code{\link{subsetDimension}()},
+\code{\link{subsetMembers}()},
+\code{\link{subsetRuntime}()},
+\code{\link{subsetSeason}()},
+\code{\link{subsetSpatial}()},
+\code{\link{subsetStation}()},
+\code{\link{subsetVar}()},
+\code{\link{subsetYears}()}
 }
 \author{
 J. Bedia, M. Iturbide, J. A. Fernandez

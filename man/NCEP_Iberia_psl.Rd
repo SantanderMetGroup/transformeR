@@ -4,7 +4,9 @@
 \alias{NCEP_Iberia_psl}
 \title{Grid containing NCEP-ENCAR reanalysis1 data of daily sea level pressure for the 
 Iberian Peninsula (DJF, 1983-2002).}
-\format{A grid}
+\format{
+A grid
+}
 \source{
 \url{http://www.meteo.unican.es/ecoms-udg}
 }
