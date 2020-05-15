@@ -112,10 +112,10 @@ dataSplit <- function(x, y, f = 3/4, type = "random") {
             indT <- setdiff(1:length(f), z)
             range <- c()
             for (i in indT) range <- c(range, f[[i]])
-            train <- list("x" = subsetGrid(x,years = range),
-                          "y" = subsetGrid(y,years = range))
-            test  <- list("x" = subsetGrid(x,years = f[[z]]),
-                          "y" = subsetGrid(y,years = f[[z]]))
+            train <- list("x" = subsetGrid(x,years = range, drop = FALSE),
+                          "y" = subsetGrid(y,years = range, drop = FALSE))
+            test  <- list("x" = subsetGrid(x,years = f[[z]], drop = FALSE),
+                          "y" = subsetGrid(y,years = f[[z]], drop = FALSE))
             return(list("train" = train, "test" = test))
         })
     }

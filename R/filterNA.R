@@ -35,9 +35,8 @@
 #' getShape(na.filtered)
 
 filterNA <- function(grid) {
-        grid <- grid %>% redim(drop = TRUE)
-        if (!is.na(getShape(grid,"member"))) stop("No multimember objects allowed due to possible temporal inconsistencies")
-        if (!is.na(getShape(grid,"var"))) stop("No multigrid objects allowed due to possible temporal inconsistencies")
+    if (!is.na(getShape(grid,"member"))) stop("No multimember objects allowed due to possible temporal inconsistencies")
+    if (!is.na(getShape(grid,"var"))) stop("No multigrid objects allowed due to possible temporal inconsistencies")
     if (!anyNA(grid$Data)) {
         message("NOTE: No missing values were found in the input grid")
     } else {
