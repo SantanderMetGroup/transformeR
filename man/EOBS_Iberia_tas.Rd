@@ -10,6 +10,9 @@ A grid
 \source{
 \url{http://www.meteo.unican.es/udg-tap}
 }
+\usage{
+EOBS_Iberia_tas
+}
 \description{
 This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 log in is requiered, 
@@ -31,14 +34,6 @@ see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loa
                                       lonLim = lonLim, 
                                       latLim = latLim, 
                                       season = season)}\cr
-}
-\examples{
-data("EOBS_Iberia_tas")
-plotClimatology(climatology(EOBS_Iberia_tas),
-                backdrop.theme = "countries", scales = list(draw = TRUE))
-}
-\seealso{
-\code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
 }
 \keyword{Gridded}
 \keyword{observations}

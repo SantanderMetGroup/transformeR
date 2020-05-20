@@ -15,6 +15,11 @@ Station data
 Subset of VALUE (ECA-D) station data. Full dataset is accessible 
 for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
 }
+\usage{
+VALUE_Iberia_pr
+
+VALUE_Iberia_pr
+}
 \description{
 This R data object was obtained by means of function \code{\link[loadeR]{loadStationData}} 
 (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
@@ -30,13 +35,6 @@ var = "precip", years = years, lonLim = lonLim, latLim = latLim, season = season
 
 Station data from the VALUE (ECA-D) dataset containing daily precipitation for stations in the Iberian Peninsula.
 }
-\examples{
-data("VALUE_Iberia_pr")
-plotClimatology(climatology(VALUE_Iberia_pr),
-                backdrop.theme = "countries", scales = list(draw = TRUE))
-}
-\seealso{
-\code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-}
 \keyword{Station}
 \keyword{data}
+\keyword{datasets}

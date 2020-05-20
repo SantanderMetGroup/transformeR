@@ -10,6 +10,9 @@ A grid object.
 \source{
 \url{https://www.esrl.noaa.gov/psd/data/gridded/data.ncep.reanalysis.html} and \url{http://www.meteo.unican.es/udg-tap}.
 }
+\usage{
+NCEP_slp_2001_2010
+}
 \description{
 This exemplary grid contains daily mean data of sea level pressure from NCEP renalysis, for the period 2001-2010, for a domain in the North-Atlantic.
 This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
@@ -29,6 +32,4 @@ visualizeR::spatialPlot(transformeR::climatology(NCEP_slp_2001_2010),
 backdrop.theme = "coastline")
 }
 }
-\seealso{
-\code{\link[loadeR]{loadGridData}}
-}
+\keyword{datasets}

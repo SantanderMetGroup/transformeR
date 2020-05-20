@@ -10,6 +10,9 @@ A grid
 \source{
 \url{http://www.meteo.unican.es/udg-tap}
 }
+\usage{
+CMIP5_Iberia_psl
+}
 \description{
 This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 log in is requiered, 
@@ -28,14 +31,6 @@ see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loa
 \code{CMIP5_Iberia_psl <- loadGridData(dataset = "http://meteo.unican.es/tds5/dodsC/cmip5/CNRM-CERFACS/CNRM-CM5/historical/day/cnrm-cerfacs_cnrm-cm5_historical_r1i1p1.ncml",
                     var = "psl", years = years, lonLim = lonLim, latLim = latLim, season = season,
                      time = "DD", aggr.d = "mean")}\cr
-}
-\examples{
-data("CMIP5_Iberia_psl")
-plotClimatology(climatology(CMIP5_Iberia_psl),
-                backdrop.theme = "countries", scales = list(draw = TRUE))
-}
-\seealso{
-\code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
 }
 \keyword{Gridded}
 \keyword{projections}

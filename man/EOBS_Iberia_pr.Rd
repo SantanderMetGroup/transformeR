@@ -10,6 +10,9 @@ A grid
 \source{
 \url{http://www.meteo.unican.es/udg-tap}
 }
+\usage{
+EOBS_Iberia_pr
+}
 \description{
 This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap},
 log in is requiered, 
@@ -31,18 +34,6 @@ see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loa
                                       lonLim = lonLim, 
                                       latLim = latLim, 
                                       season = season)}\cr
-}
-\examples{
-data("EOBS_Iberia_pr")
-total.precip.annual <- aggregateGrid(EOBS_Iberia_pr,
-                                     aggr.m = list(FUN = sum),
-                                     aggr.y = list(FUN = sum))
-plotClimatology(climatology(total.precip.annual), 
-                backdrop.theme = "countries", scales = list(draw = TRUE),
-                main = "Mean Total DJF precip (mm) 1998-2000")
-}
-\seealso{
-\code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
 }
 \keyword{Gridded}
 \keyword{observations}

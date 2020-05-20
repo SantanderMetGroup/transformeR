@@ -10,33 +10,26 @@ A grid
 \source{
 \url{http://www.meteo.unican.es/udg-tap}
 }
+\usage{
+CORDEX_Iberia_tas.rcp85
+}
 \description{
 This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 log in is requiered, 
 see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
 (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
 
-
 \code{years <- 2081:2100}\cr 
 \code{season <- c(12,1,2)}\cr 
 \code{lonLim <- c(-10, 4)}\cr 
 \code{latLim <- c(35, 44)}\cr 
-
-
+ 
 \code{loginUDG("username", "pasword")}\cr 
  
 \code{CORDEX_Iberia_tas.rcp85 <- loadGridData(dataset = "http://www.meteo.unican.es/tds5/dodsC/cordex/EUR-44/KNMI/ICHEC-EC-EARTH_rcp85_r1i1p1_RACMO22E_v1_day.ncml",
 var = "tas", years = years, lonLim = lonLim, latLim = latLim, season = season)}\cr
 \code{CORDEX_Iberia_tas.rcp85$Data <- CORDEX_Iberia_tas.rcp85$Data - 273.15}\cr 
 \code{attr(CORDEX_Iberia_tas.rcp85$Variable, "units") <- "Celsius"}\cr
-}
-\examples{
-data("CORDEX_Iberia_tas.rcp85")
-plotClimatology(climatology(CORDEX_Iberia_tas.rcp85),
-                backdrop.theme = "countries", scales = list(draw = TRUE))
-}
-\seealso{
-\code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
 }
 \keyword{Gridded}
 \keyword{observations}

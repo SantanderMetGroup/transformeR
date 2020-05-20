@@ -10,6 +10,9 @@ A grid
 \source{
 \url{http://www.meteo.unican.es/udg-tap}
 }
+\usage{
+CORDEX_Iberia_pr.rcp85
+}
 \description{
 This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
 log in is requiered, 
@@ -29,14 +32,6 @@ see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loa
 var = "pr", years = years, lonLim = lonLim, latLim = latLim, season = season)}\cr
 \code{CORDEX_Iberia_pr.rcp85$Data <- CORDEX_Iberia_pr.rcp85$Data * 86400}\cr 
 \code{attr(CORDEX_Iberia_pr.rcp85$Variable, "units") <- "mm"}\cr
-}
-\examples{
-data("CORDEX_Iberia_pr.rcp85")
-plotClimatology(climatology(CORDEX_Iberia_pr.rcp85),
-                backdrop.theme = "countries", scales = list(draw = TRUE))
-}
-\seealso{
-\code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
 }
 \keyword{Gridded}
 \keyword{observations}

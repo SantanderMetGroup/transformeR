@@ -4,13 +4,11 @@
 #' see \code{\link[loadeR]{loginUDG}}) by means of function \code{\link[loadeR]{loadGridData}} 
 #' (package \href{https://github.com/SantanderMetGroup/loadeR}{\code{loadeR}}) in the following manner:
 #' 
-#' 
 #' \code{years <- 2081:2100}\cr 
 #' \code{season <- c(12,1,2)}\cr 
 #' \code{lonLim <- c(-10, 4)}\cr 
 #' \code{latLim <- c(35, 44)}\cr 
-#' 
-#' 
+#'  
 #' \code{loginUDG("username", "pasword")}\cr 
 #'  
 #' \code{CORDEX_Iberia_tas.rcp85 <- loadGridData(dataset = "http://www.meteo.unican.es/tds5/dodsC/cordex/EUR-44/KNMI/ICHEC-EC-EARTH_rcp85_r1i1p1_RACMO22E_v1_day.ncml",
@@ -23,12 +21,7 @@
 #' @docType data
 #' @keywords Gridded observations
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CORDEX_Iberia_tas.rcp85")
-#' plotClimatology(climatology(CORDEX_Iberia_tas.rcp85),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CORDEX_Iberia_tas.rcp85"
 
 
 #' @title Grid containing CORDEX data (model KNMI-RACMO22E) of daily precipitation for the RCP8.5 scenario and for the Iberian Peninsula (DJF, 2081-2100).
@@ -56,12 +49,7 @@ NULL
 #' @docType data
 #' @keywords Gridded observations
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CORDEX_Iberia_pr.rcp85")
-#' plotClimatology(climatology(CORDEX_Iberia_pr.rcp85),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CORDEX_Iberia_pr.rcp85"
 
 
 
@@ -90,12 +78,7 @@ NULL
 #' @docType data
 #' @keywords Gridded observations
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CORDEX_Iberia_pr")
-#' plotClimatology(climatology(CORDEX_Iberia_pr),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CORDEX_Iberia_pr"
 
 #' @title Grid containing historical CORDEX data (model KNMI-RACMO22E) of daily mean temperature for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
@@ -122,12 +105,7 @@ NULL
 #' @docType data
 #' @keywords Gridded observations
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CORDEX_Iberia_tas")
-#' plotClimatology(climatology(CORDEX_Iberia_tas),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CORDEX_Iberia_tas"
 
 
 #' @title Station data containing VALUE (ECA-D) daily data of precipitation for the Iberian Peninsula (DJF, 1983-2002).
@@ -148,12 +126,7 @@ NULL
 #' @docType data
 #' @keywords Station data
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("VALUE_Iberia_pr")
-#' plotClimatology(climatology(VALUE_Iberia_pr),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"VALUE_Iberia_pr"
 
 
 
@@ -174,12 +147,7 @@ NULL
 #' @name VALUE_Iberia_tas
 #' @docType data
 #' @keywords Station data
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("VALUE_Iberia_tas")
-#' plotClimatology(climatology(VALUE_Iberia_tas),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"VALUE_Iberia_tas"
 
 #' @title Grid containing historical CMIP5 data (model CNRM-CM5) of daily sea level pressure for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
@@ -204,12 +172,7 @@ NULL
 #' @docType data
 #' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CMIP5_Iberia_psl")
-#' plotClimatology(climatology(CMIP5_Iberia_psl),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CMIP5_Iberia_psl"
 
 #' @title Grid containing historical CMIP5 data (model CNRM-CM5) of daily air temperature at 850mb for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
@@ -234,12 +197,7 @@ NULL
 #' @docType data
 #' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CMIP5_Iberia_ta850")
-#' plotClimatology(climatology(CMIP5_Iberia_ta850),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CMIP5_Iberia_ta850"
 
 
 
@@ -266,12 +224,7 @@ NULL
 #' @docType data
 #' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CMIP5_Iberia_hus850")
-#' plotClimatology(climatology(CMIP5_Iberia_hus850),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CMIP5_Iberia_hus850"
 
 
 
@@ -301,12 +254,7 @@ NULL
 #' @docType data
 #' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CMIP5_Iberia_pr")
-#' plotClimatology(climatology(CMIP5_Iberia_pr),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CMIP5_Iberia_pr"
 
 #' @title Grid containing historical CMIP5 data (model CNRM-CM5) of daily mean temperature for the Iberian Peninsula (DJF, 1983-2002).
 #' @description This R data object was obtained from the UDG server (\url{http://www.meteo.unican.es/udg-tap}, 
@@ -334,12 +282,7 @@ NULL
 #' @docType data
 #' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CMIP5_Iberia_tas")
-#' plotClimatology(climatology(CMIP5_Iberia_tas),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CMIP5_Iberia_tas"
 
 
 
@@ -367,12 +310,7 @@ NULL
 #' @docType data
 #' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CMIP5_Iberia_psl.rcp85")
-#' plotClimatology(climatology(CMIP5_Iberia_psl.rcp85),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CMIP5_Iberia_psl.rcp85"
 
 
 
@@ -401,12 +339,7 @@ NULL
 #' @docType data
 #' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CMIP5_Iberia_ta850.rcp85")
-#' plotClimatology(climatology(CMIP5_Iberia_ta850.rcp85),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CMIP5_Iberia_ta850.rcp85"
 
 
 
@@ -433,13 +366,7 @@ NULL
 #' @docType data
 #' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CMIP5_Iberia_hus850.rcp85")
-#' plotClimatology(climatology(CMIP5_Iberia_hus850.rcp85),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
-
+"CMIP5_Iberia_hus850.rcp85"
 
 
 
@@ -469,12 +396,7 @@ NULL
 #' @docType data
 #' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CMIP5_Iberia_pr.rcp85")
-#' plotClimatology(climatology(CMIP5_Iberia_pr.rcp85),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CMIP5_Iberia_pr.rcp85"
 
 
 
@@ -505,12 +427,7 @@ NULL
 #' @docType data
 #' @keywords Gridded projections
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("CMIP5_Iberia_tas.rcp85")
-#' plotClimatology(climatology(CMIP5_Iberia_tas.rcp85),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"CMIP5_Iberia_tas.rcp85"
 
 
 
@@ -542,11 +459,7 @@ NULL
 #' @references 
 #' Saha, S. \emph{et al.}, 2013. The NCEP Climate Forecast System Version 2. J Clim 130925135638001. doi:10.1175/JCLI-D-12-00823.1
 #' @name CFS_Iberia_psl
-#' @examples
-#' data(CFS_Iberia_psl)
-#' plotClimatology(climatology(CFS_Iberia_psl, clim.fun = list(FUN = sum)),
-#'                 backdrop.theme = "coastline")
-NULL
+"CFS_Iberia_psl"
 
 
 
@@ -577,11 +490,7 @@ NULL
 #' @references 
 #' Saha, S. \emph{et al.}, 2013. The NCEP Climate Forecast System Version 2. J Clim 130925135638001. doi:10.1175/JCLI-D-12-00823.1
 #' @name CFS_Iberia_hus850
-#' @examples
-#' data(CFS_Iberia_hus850)
-#' plotClimatology(climatology(CFS_Iberia_hus850, clim.fun = list(FUN = sum)),
-#'                 backdrop.theme = "coastline")
-NULL
+"CFS_Iberia_hus850"
 
 #' @title Multimember grid containing CFSv2 seasonal forecast data of daily precipitation for
 #' the Iberian Peninsula (DJF, 1983-2002).
@@ -597,6 +506,7 @@ NULL
 #' \code{lonLim <- c(-10, 4)}\cr 
 #' \code{latLim <- c(35, 44)}\cr 
 #' 
+#' 
 #' \code{loginUDG("username", "pasword")}\cr 
 #' 
 #' \code{CFS_Iberia_pr <- loadECOMS(dataset = "CFSv2_seasonal",
@@ -609,11 +519,7 @@ NULL
 #' @references 
 #' Saha, S. \emph{et al.}, 2013. The NCEP Climate Forecast System Version 2. J Clim 130925135638001. doi:10.1175/JCLI-D-12-00823.1
 #' @name CFS_Iberia_pr
-#' @examples
-#' data(CFS_Iberia_pr)
-#' plotClimatology(climatology(CFS_Iberia_pr, clim.fun = list(FUN = sum)),
-#'                 backdrop.theme = "coastline")
-NULL
+"CFS_Iberia_pr"
 
 #' @title Multimember grid containing CFSv2 seasonal forecast data of daily mean temperature for
 #' the Iberian Peninsula (DJF, 1983-2002).
@@ -641,11 +547,7 @@ NULL
 #' @references 
 #' Saha, S. \emph{et al.}, 2013. The NCEP Climate Forecast System Version 2. J Clim 130925135638001. doi:10.1175/JCLI-D-12-00823.1
 #' @name CFS_Iberia_tas
-#' @examples
-#' data(CFS_Iberia_tas)
-#' plotClimatology(climatology(CFS_Iberia_tas, clim.fun = list(FUN = sum)),
-#'                 backdrop.theme = "coastline")
-NULL
+"CFS_Iberia_tas"
 
 
 #' @title Grid containing NCEP-ENCAR reanalysis1 data of daily air temperature at 850mb for the 
@@ -673,11 +575,7 @@ NULL
 #' @format A grid
 #' @source \url{http://www.meteo.unican.es/ecoms-udg}
 #' @name NCEP_Iberia_ta850
-#' @examples
-#' data(NCEP_Iberia_ta850)
-#' plotClimatology(climatology(NCEP_Iberia_ta850),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"NCEP_Iberia_ta850"
 
 
 #' @title Grid containing NCEP-ENCAR reanalysis1 data of daily specific humidity at 850mb for the 
@@ -705,11 +603,7 @@ NULL
 #' @format A grid
 #' @source \url{http://www.meteo.unican.es/ecoms-udg}
 #' @name NCEP_Iberia_hus850
-#' @examples
-#' data(NCEP_Iberia_hus850)
-#' plotClimatology(climatology(NCEP_Iberia_hus850),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"NCEP_Iberia_hus850"
 
 
 
@@ -738,11 +632,7 @@ NULL
 #' @format A grid
 #' @source \url{http://www.meteo.unican.es/ecoms-udg}
 #' @name NCEP_Iberia_psl
-#' @examples
-#' data(NCEP_Iberia_psl)
-#' plotClimatology(climatology(NCEP_Iberia_psl),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"NCEP_Iberia_psl"
 
 
 
@@ -771,11 +661,7 @@ NULL
 #' @format A grid
 #' @source \url{http://www.meteo.unican.es/ecoms-udg}
 #' @name NCEP_Iberia_tas
-#' @examples
-#' data(NCEP_Iberia_tas)
-#' plotClimatology(climatology(NCEP_Iberia_tas),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"NCEP_Iberia_tas"
 
 #' @title Grid containing NCEP-ENCAR reanalysis1 data of daily precipitation for the 
 #' Iberian Peninsula (DJF, 1983-2002).
@@ -802,11 +688,7 @@ NULL
 #' @format A grid
 #' @source \url{http://www.meteo.unican.es/ecoms-udg}
 #' @name NCEP_Iberia_pr
-#' @examples
-#' data(NCEP_Iberia_pr)
-#' plotClimatology(climatology(NCEP_Iberia_pr),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"NCEP_Iberia_pr"
 
 
 
@@ -838,12 +720,7 @@ NULL
 #' @docType data
 #' @keywords Gridded observations
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("EOBS_Iberia_tas")
-#' plotClimatology(climatology(EOBS_Iberia_tas),
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE))
-NULL
+"EOBS_Iberia_tas"
 
 
 
@@ -876,16 +753,7 @@ NULL
 #' @docType data
 #' @keywords Gridded observations
 #' @source  \url{http://www.meteo.unican.es/udg-tap}
-#' @seealso \code{\link{makeMultiGrid}}, \code{\link[loadeR]{loadGridData}}
-#' @examples 
-#' data("EOBS_Iberia_pr")
-#' total.precip.annual <- aggregateGrid(EOBS_Iberia_pr,
-#'                                      aggr.m = list(FUN = sum),
-#'                                      aggr.y = list(FUN = sum))
-#' plotClimatology(climatology(total.precip.annual), 
-#'                 backdrop.theme = "countries", scales = list(draw = TRUE),
-#'                 main = "Mean Total DJF precip (mm) 1998-2000")
-NULL
+"EOBS_Iberia_pr"
 
 
 
@@ -904,7 +772,7 @@ NULL
 #' @docType data
 #' @source  Subset of VALUE (ECA-D) station data. Full dataset is accessible 
 #' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
-NULL
+"VALUE_Iberia_pr"
 
 #' @title Station mean temperature dataset
 #' @description Station data from the VALUE_ECA_86_v2 dataset containing daily mean temperature for for stations in the Iberian Peninsula.
@@ -913,7 +781,7 @@ NULL
 #' @docType data
 #' @source  Subset of VALUE (ECA-D) station data. Full dataset is accessible 
 #' for download in \url{http://meteo.unican.es/work/downscaler/data/VALUE_ECA_86_v2.tar.gz}.
-NULL
+"VALUE_Iberia_tas"
 
 
 #' @title Exemplary data for \code{clusterGrid.R}
@@ -932,12 +800,10 @@ NULL
 #' @name NCEP_slp_2001_2010 
 #' @docType data 
 #' @source \url{https://www.esrl.noaa.gov/psd/data/gridded/data.ncep.reanalysis.html} and \url{http://www.meteo.unican.es/udg-tap}.
-#' @seealso \code{\link[loadeR]{loadGridData}}
 #' @examples \dontrun{
 #' data("NCEP_slp_2001_2010")
 #' # Plot in longlat projection
 #' visualizeR::spatialPlot(transformeR::climatology(NCEP_slp_2001_2010), 
 #' backdrop.theme = "coastline")
 #' }
-NULL
-
+"NCEP_slp_2001_2010" 
