@@ -17,8 +17,8 @@ fillGridDates <- function(grid, tz = ""){
   if (day.step >= 1) formato <- "%Y-%m-%d"
   start <- as.POSIXlt(start, format = formato, tz = tz)
   end <- as.POSIXlt(end, format = formato, tz = tz)
-  xs <- as.POSIXlt(as.character(seq.POSIXt(start[1], start[length(start)], by= day.step)), format = formato, tz = tz)
-  xe <- as.POSIXlt(as.character(seq.POSIXt(end[1], end[length(end)], by= day.step)), format = formato, tz = tz)
+  xs <- as.POSIXlt(as.character(seq.POSIXt(start[1], start[length(start)], by= day.step*24*60*60)), format = formato, tz = tz)
+  xe <- as.POSIXlt(as.character(seq.POSIXt(end[1], end[length(end)], by= day.step*24*60*60)), format = formato, tz = tz)
   test <- data.frame("date" = start, "wh" = TRUE)
   result <- merge(data.frame("date" = xs), test, by.y = "date", by.x = "date", all.x = TRUE)
   ind <- which(result[, "wh"])
@@ -27,6 +27,7 @@ fillGridDates <- function(grid, tz = ""){
   arr <- array(data = NA, dim = sh)
   arr[,,, ind ,,] <- grid[["Data"]] 
   grid[["Data"]] <- arr
+  arr <- NULL
   attr(grid[["Data"]], "dimensions") <- names(sh)
   grid[["Dates"]][["start"]] <- strftime(xs, format = formato, tz = tz, usetz = TRUE)
   grid[["Dates"]][["end"]] <- strftime(xe, format = formato, tz = tz, usetz = TRUE)
