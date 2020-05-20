@@ -11,7 +11,7 @@ fillGridDates <- function(grid, tz = ""){
   grid <- redim(grid, runtime = TRUE, var = TRUE)
   start <- grid$Dates$start
   end <- grid$Dates$end
-  day.step <- min(unlist(lapply(1:(length(start)-1), function(s) difftime(start[s+1], start[s], units = "days"))))
+  day.step <- min(difftime(c(start, NA), c(NA, start)), na.rm = TRUE)
   message("Time difference of ", day.step, " days")
   formato <- "%Y-%m-%d %H:%M:%S"
   if (day.step >= 1) formato <- "%Y-%m-%d"
