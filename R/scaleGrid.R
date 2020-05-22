@@ -80,7 +80,8 @@
 #' @return A locally scaled grid
 #' @author J. Bedia
 #' @export
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets) 
 #' ## ANOMALIES
 #' data("NCEP_Iberia_psl")
 #' # Define average aggregation function
@@ -154,12 +155,13 @@
 #' mg <- makeMultiGrid(climatology(grid, clim.fun = fun),
 #'                     climatology(base, clim.fun = fun),
 #'                     climatology(ref, clim.fun = fun), skip.temporal.check = TRUE)
-#' plotClimatology(mg, names.attr = c("input_grid", "base", "ref"))
+#' require(visualizeR)
+#' spatialPlot(mg, names.attr = c("input_grid", "base", "ref"))
 #' # Note that for precipitation we use a scaling factor rather than an addition:
 #' grid.corr <- scaleGrid(grid = grid, base = base, ref = ref,
 #'                           time.frame = "monthly", type = "ratio")
 #' mg.corr <- makeMultiGrid(climatology(grid, clim.fun = fun), climatology(grid.corr, clim.fun = fun))
-#' plotClimatology(mg.corr, at = seq(0,350,10), names.attr = c("Raw","Scaled"))
+#' spatialPlot(mg.corr, at = seq(0,350,10), names.attr = c("Raw","Scaled"))
 #' # An example using the "standardize" type:
 #' data("EOBS_Iberia_pr")
 #' grid <- subsetGrid(EOBS_Iberia_pr, years = 1999)
@@ -169,6 +171,7 @@
 #'                        type = "standardize")
 #' head(apply(grid.corr$Data,MARGIN = c(3,4),mean))
 #' head(apply(grid.corr$Data,MARGIN = c(3,4),sd))
+#' }
                      
 
 

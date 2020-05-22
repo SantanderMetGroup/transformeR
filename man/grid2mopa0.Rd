@@ -28,7 +28,8 @@ with the \code{mopa} package.
 data("CFS_Iberia_tas")
 # Aggregate all members and compute climatology
 t.clim <- climatology(CFS_Iberia_tas, by.member = FALSE)
-plotClimatology(t.clim)
+require(visualizeR)
+spatialPlot(t.clim)
 t.ras <- grid2mopa0(t.clim)
 # require(sp)
 # spplot(t.ras)

@@ -20,6 +20,8 @@ A (short-)named vector with the vertical levels of the (multi)grid variable(s)
 A helper function that returns a vector of the variable(s) vertical levels
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 data("CFS_Iberia_hus850")
 getGridVerticalLevels(CFS_Iberia_hus850)
 # Surface variables usually have an undefined vertical level <NA>
@@ -36,6 +38,7 @@ getGridVerticalLevels(mg)
 getGridVerticalLevels(mg, var.index = c("hus@850","ta@850"))
 # ... or by index position in the multigrid
 getGridVerticalLevels(mg, var.index = c(1,3))
+}
 }
 \seealso{
 Other get.helpers: 

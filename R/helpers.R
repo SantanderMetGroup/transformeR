@@ -29,7 +29,8 @@
 #' @importFrom utils tail
 #' @family get.helpers
 #' @author S. Herrera and J. Bedia 
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' # Regular grid
 #' data("NCEP_Iberia_hus850")
 #' str(getGrid(NCEP_Iberia_hus850))
@@ -45,15 +46,17 @@
 #' data("CFS_Iberia_pr")
 #' NCEP_interpolated <- interpGrid(NCEP_Iberia_hus850, getGrid(CFS_Iberia_pr), "bilinear")
 #' # Note the warnings because of the non-overlapping domain extents (longitudes)
-#' plotClimatology(climatology(NCEP_Iberia_hus850), backdrop.theme = "countries")
-#' plotClimatology(climatology(NCEP_interpolated), backdrop.theme = "countries")
+#' require(visualizeR)
+#' spatialPlot(climatology(NCEP_Iberia_hus850), backdrop.theme = "countries")
+#' spatialPlot(climatology(NCEP_interpolated), backdrop.theme = "countries")
 #' str(getGrid(NCEP_interpolated))
 #' str(getGrid(CFS_Iberia_pr))
 #' 
 #' # The other way round, using nearest neighbour interpolation:
 #' CFS_interpolated <- interpGrid(CFS_Iberia_pr, getGrid(NCEP_Iberia_hus850))
-#' plotClimatology(climatology(CFS_interpolated), backdrop.theme = "countries")
+#' spatialPlot(climatology(CFS_interpolated), backdrop.theme = "countries")
 #' # In this case, the mismatch in domain extent occurs in the longitudes and latitudes
+#' }
  
 
 getGrid <- function(gridData) {
@@ -109,7 +112,8 @@ getGrid <- function(gridData) {
 #' @family get.helpers
 #' @author J. Bedia 
 #' @export
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' # Regular grid
 #' data("NCEP_Iberia_hus850")
 #' str(getCoordinates(NCEP_Iberia_hus850))
@@ -120,6 +124,7 @@ getGrid <- function(gridData) {
 #' # Station data
 #' data("VALUE_Iberia_tas")
 #' str(getCoordinates(VALUE_Iberia_tas))
+#' }
 
 
 getCoordinates <- function(obj) {
@@ -149,9 +154,11 @@ getCoordinates <- function(obj) {
 #' @author J. Bedia 
 #' @family get.helpers
 #' @export
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data("NCEP_Iberia_hus850")
 #' getSeason(NCEP_Iberia_hus850) # Boreal winter (DJF)
+#' }
 
 getSeason <- function(obj) {
       if ("season" %in% names(attributes(obj$Dates))) {
@@ -184,7 +191,8 @@ getSeason <- function(obj) {
 #' @family get.helpers
 #' @author J. Bedia 
 #' @export
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data("NCEP_Iberia_hus850")
 #' getSeason(NCEP_Iberia_hus850)
 #' # Winter 1983-2002
@@ -210,6 +218,7 @@ getSeason <- function(obj) {
 #' #Station data:
 #' data("VALUE_Iberia_tas")
 #' getYearsAsINDEX(VALUE_Iberia_tas)
+#' }
 
 
 getYearsAsINDEX <- function(obj) {
@@ -246,13 +255,15 @@ getYearsAsINDEX <- function(obj) {
 #' @family get.helpers
 #' @export
 #' @author J. Bedia
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' #Station data:
 #' data("VALUE_Iberia_tas")
 #' getDim(VALUE_Iberia_tas)
 #' #Regular grid
 #' data("NCEP_Iberia_hus850")
 #' getDim(NCEP_Iberia_hus850)
+#' }
 
 getDim <- function(obj) {
       attr(obj[["Data"]], "dimensions")
@@ -266,13 +277,15 @@ getDim <- function(obj) {
 #' @keywords internal
 #' @export
 #' @author J. Bedia
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' #Station data:
 #' data("VALUE_Iberia_tas")
 #' getShape(VALUE_Iberia_tas)
 #' #Regular grid
 #' data("NCEP_Iberia_hus850")
 #' getShape(NCEP_Iberia_hus850)
+#' }
 
 getShape <- function(obj, dimension = NULL) {
       dimNames <- getDim(obj)
@@ -343,13 +356,15 @@ which.leap <- function(years) {
 #' @family get.helpers
 #' @export
 #' @author J. Bedia
-#' @examples
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' #Station data:
 #' data("VALUE_Iberia_tas")
 #' str(getRefDates(VALUE_Iberia_tas))
 #' #Regular grid
 #' data("NCEP_Iberia_hus850")
 #' str(getRefDates(NCEP_Iberia_hus850, which = "end"))
+#' }
 
 getRefDates <- function(obj, which = "start") {
     which <- match.arg(which, choices = c("start", "end"))
@@ -427,7 +442,8 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
 #' @export
 #' @family check.helpers
 #' @author J Bedia
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data("VALUE_Iberia_tas")
 #' data("VALUE_Iberia_pr")
 #' checkDim(VALUE_Iberia_tas, VALUE_Iberia_pr) # ok, go on
@@ -439,6 +455,7 @@ selectPar.pplyFun <- function(parallel.pars, .pplyFUN = c("apply", "lapply", "sa
 #' data("CFS_Iberia_tas")
 #' try(checkDim(NCEP_Iberia_psl, CFS_Iberia_tas, dimensions = "member")) 
 #' checkDim(VALUE_Iberia_tas, VALUE_Iberia_pr) # ok, go on
+#' }
 
 
 checkDim <- function(..., dimensions = c("var", "member", "time", "lat", "lon")) {
@@ -463,15 +480,14 @@ checkDim <- function(..., dimensions = c("var", "member", "time", "lat", "lon"))
 #' @keywords internal
 #' @family check.helpers
 #' @export
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data("EOBS_Iberia_tas")
 #' data("EOBS_Iberia_pr")
 #' grid1 <- subsetGrid(EOBS_Iberia_tas, season = 1)
 #' grid2 <- subsetGrid(EOBS_Iberia_pr, season = 1)
 #' checkSeason(grid1, grid2) # ok, go on
-#' \donttest{
 #' try(checkSeason(grid1, grid2, EOBS_Iberia_tas)) # oops
-#' }
 #' # However note that it is insensitive to the level of temporal aggregation:
 #' agg <- aggregateGrid(EOBS_Iberia_tas, aggr.m = list(FUN = "mean", na.rm = TRUE))
 #' identical(getSeason(agg), getSeason(EOBS_Iberia_tas))
@@ -481,6 +497,7 @@ checkDim <- function(..., dimensions = c("var", "member", "time", "lat", "lon"))
 #' data("VALUE_Iberia_tas")
 #' data("VALUE_Iberia_pr")
 #' checkSeason(VALUE_Iberia_tas, VALUE_Iberia_pr)
+#' }
 
 
 checkSeason <- function(...) {
@@ -504,12 +521,11 @@ checkSeason <- function(...) {
 #' @keywords internal
 #' @family check.helpers
 #' @export
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
 #' #' # Testing grids that contain different variables:
-#' \donttest{
 #' try(checkVarNames(NCEP_Iberia_hus850, NCEP_Iberia_psl))
-#' }
 #' # Testing multigrid contents:
 #' mg <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 #' mg1 <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_ta850, NCEP_Iberia_psl)
@@ -517,7 +533,6 @@ checkSeason <- function(...) {
 #' # The input grids contains the same variables, but their ordering is different:
 #' checkVarNames(mg, mg1, mg2, check.order = FALSE) # OK
 #' # If we do check.order = TRUE (the default), it gives an error:
-#' \donttest{
 #' try(checkVarNames(mg, mg1, mg2, check.order = TRUE)) # Error
 #' }
 
@@ -607,12 +622,14 @@ checkTemporalConsistency <- function(...) {
 #' @family is.helpers
 #' @seealso typeofGrid, for a character representation of the type of grid
 #' @export
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data("EOBS_Iberia_tas")
 #' isRegular(EOBS_Iberia_tas)
 #' isRegular(getGrid(EOBS_Iberia_tas))
 #' data("VALUE_Iberia_tas")
 #' isRegular(VALUE_Iberia_tas)
+#' }
 
 isRegular <- function(grid) {
     gr <- tryCatch({getGrid(grid)}, error = function(err) {grid})
@@ -656,13 +673,15 @@ isRegular <- function(grid) {
 #' @keywords internal
 #' @family get.helpers
 #' @export
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data("EOBS_Iberia_tas")
 #' getTimeResolution(EOBS_Iberia_tas)
 #' monthly.grid <- aggregateGrid(EOBS_Iberia_tas, aggr.m = list(FUN = "mean", na.rm = TRUE))
 #' stopifnot(identical(getTimeResolution(monthly.grid), "MM"))
 #' annual.grid <- aggregateGrid(monthly.grid, aggr.y = list(FUN = "mean", na.rm = TRUE))
 #' stopifnot(identical(getTimeResolution(annual.grid), "YY"))
+#' }
 
 getTimeResolution <- function(grid) {
     aux <- getRefDates(grid) 
@@ -776,7 +795,8 @@ array3Dto2Dmat.stations <- function(array3D) {
 #' @keywords internal
 #' @family get.helpers
 #' @export
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data("CFS_Iberia_pr")
 #' getVarNames(CFS_Iberia_pr)
 #' grid <- CFS_Iberia_pr
@@ -794,6 +814,7 @@ array3Dto2Dmat.stations <- function(array3D) {
 #' data("VALUE_Iberia_tas")
 #' ## The long name is an optional attribute, and might be undefined:
 #' getVarNames(VALUE_Iberia_tas, "long")
+#' }
 
 getVarNames <- function(grid, type = c("short", "long"), append.level = TRUE) {
     stopifnot(is.logical(append.level))
@@ -828,7 +849,8 @@ getVarNames <- function(grid, type = c("short", "long"), append.level = TRUE) {
 #' @keywords internal
 #' @export
 #' @family get.helpers
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data("CFS_Iberia_hus850")
 #' getGridVerticalLevels(CFS_Iberia_hus850)
 #' # Surface variables usually have an undefined vertical level <NA>
@@ -845,6 +867,7 @@ getVarNames <- function(grid, type = c("short", "long"), append.level = TRUE) {
 #' getGridVerticalLevels(mg, var.index = c("hus@@850","ta@@850"))
 #' # ... or by index position in the multigrid
 #' getGridVerticalLevels(mg, var.index = c(1,3))
+#' }
 
 getGridVerticalLevels <- function(grid, var.index = NULL) {
     var.names <- getVarNames(grid)
@@ -1022,7 +1045,8 @@ isMultigrid <- function(grid) {
 #' @export
 #' @author J Bedia
 #' @family get.helpers unit.helpers
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data(NCEP_Iberia_ta850)
 #' getGridUnits(NCEP_Iberia_ta850)
 #' data(NCEP_Iberia_hus850)
@@ -1034,6 +1058,7 @@ isMultigrid <- function(grid) {
 #' getVarNames(mf)
 #' getGridUnits(mf, "hus@850")
 #' getGridUnits(mf, var = c("hus@850", "ta@850"))
+#' }
 
 getGridUnits <- function(grid, var = NULL) {
     uds <- attr(grid$Variable, "units") %>% gsub(pattern = "\\\"", replacement = "")
@@ -1068,7 +1093,8 @@ getGridUnits <- function(grid, var = NULL) {
 #' @export
 #' @author J Bedia
 #' @family get.helpers unit.helpers
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data(NCEP_Iberia_hus850)
 #' getGridUnits(NCEP_Iberia_hus850)
 #' data(NCEP_Iberia_psl)
@@ -1081,6 +1107,7 @@ getGridUnits <- function(grid, var = NULL) {
 #' getVarNames(mf)
 #' mf3 <- setGridUnits(mf, unit.string = c("1", "Pa"), var = c("hus@850", "psl"))
 #' getGridUnits(mf3)
+#' }
 
 setGridUnits <- function(grid, unit.string, var = NULL) {
     stopifnot(isGrid(grid))
@@ -1116,13 +1143,15 @@ setGridUnits <- function(grid, unit.string, var = NULL) {
 #' @export
 #' @author J Bedia
 #' @family get.helpers 
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data(NCEP_Iberia_hus850)
 #' getGridProj(NCEP_Iberia_hus850)
 #' # We introduce the standard definition of WGS84 lat-lon projection
 #' NCEP_Iberia_hus850 <- setGridProj(NCEP_Iberia_hus850,
 #'                                   proj= "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
-#' getGridProj(NCEP_Iberia_hus850)                                   
+#' getGridProj(NCEP_Iberia_hus850)                 
+#' }                  
 
 setGridProj <- function(grid, proj = NULL) {
   stopifnot(isGrid(grid))

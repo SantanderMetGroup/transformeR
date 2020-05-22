@@ -105,6 +105,11 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * Changed the default behaviour of subsetGrid along year-crossing seasons, consistent with loadGridData specifications.
  * Minor bug fix in date subsetting on multigrids
  * Documentation updates
- 
- 
- 
+
+## 2.0.0 (22 May 2020)
+ * Built-in datasets have been moved to the new package climate4R.datasets
+ * New helper `fillGridDates` for filling dataset missing dates
+ * `plotClimatology` no longer exists
+ * `plotEOF` moved to visualizeR (to be defunct)
+ * Updated examples
+ * Other minor documentation updates

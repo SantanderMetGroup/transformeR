@@ -22,12 +22,15 @@ Set the \code{"projection"} attribute of a climate4R grid
 The projection string format is free, although usually a valid epsg code or proj4 string is introduced here.
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 data(NCEP_Iberia_hus850)
 getGridProj(NCEP_Iberia_hus850)
 # We introduce the standard definition of WGS84 lat-lon projection
 NCEP_Iberia_hus850 <- setGridProj(NCEP_Iberia_hus850,
                                   proj= "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
-getGridProj(NCEP_Iberia_hus850)                                   
+getGridProj(NCEP_Iberia_hus850)                 
+}                  
 }
 \seealso{
 Other get.helpers: 

@@ -38,6 +38,8 @@ The function does not handle multigrids (i.e. \code{"var"} dimension).
  Thus, multigrids need to be subsetted along \code{"var"} prior to redimensioning via \code{\link{subsetGrid}}.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 data("EOBS_Iberia_tas")
 getShape(EOBS_Iberia_tas)
 a <- redim(EOBS_Iberia_tas)
@@ -59,6 +61,7 @@ getShape(VALUE_Iberia_pr)
 getShape(redim(VALUE_Iberia_pr, member = TRUE))
 # Use the argument 'loc=TRUE' to avoid this behaviour:
 getShape(redim(VALUE_Iberia_pr, member = TRUE, loc = TRUE))
+}
 }
 \seealso{
 Other internal.helpers: 

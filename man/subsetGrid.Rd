@@ -100,6 +100,7 @@ seasons. For example, assume a dataset encompassing a full-year season (i.e., \c
 }
 \examples{
 \dontrun{
+require(climate4R.datasets)
 # Example 1 - Spatial / member subset
 data("CFS_Iberia_tas")
 # Selection of a smaller domain over the Iberian Peninsula and members 3 and 7

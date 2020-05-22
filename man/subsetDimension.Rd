@@ -28,13 +28,17 @@ along the selected dimension.
 The attribute \code{subset} will be added taking the value of the \code{dimension} parameter.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 # Example - Member subset
 data("CFS_Iberia_tas")
 # Selection of members 3 and 7
 sub <- subsetDimension(CFS_Iberia_tas,
-                   dimension = "member",
-                   indices = 1:2)
-plotClimatology(climatology(sub), backdrop.theme = "coastline")
+                       dimension = "member",
+                       indices = 1:2)
+require(visualizeR)
+spatialPlot(climatology(sub), backdrop.theme = "coastline")
+}
 }
 \seealso{
 Other subsetting: 

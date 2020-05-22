@@ -17,12 +17,15 @@ A character representation of the time resolution. Current possible values are:
 Get the time resolution of the input grid as a character
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 data("EOBS_Iberia_tas")
 getTimeResolution(EOBS_Iberia_tas)
 monthly.grid <- aggregateGrid(EOBS_Iberia_tas, aggr.m = list(FUN = "mean", na.rm = TRUE))
 stopifnot(identical(getTimeResolution(monthly.grid), "MM"))
 annual.grid <- aggregateGrid(monthly.grid, aggr.y = list(FUN = "mean", na.rm = TRUE))
 stopifnot(identical(getTimeResolution(annual.grid), "YY"))
+}
 }
 \seealso{
 Other get.helpers: 

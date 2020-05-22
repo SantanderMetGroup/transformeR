@@ -89,6 +89,8 @@ The \code{ref} usually corresponds to the control (historical, 20C3M...) run of 
 or the hindcast data for the training period in s2d applications. Note that by default \code{ref = NULL}.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 ## ANOMALIES
 data("NCEP_Iberia_psl")
 # Define average aggregation function
@@ -162,12 +164,14 @@ fun <- list(FUN = "sum")
 mg <- makeMultiGrid(climatology(grid, clim.fun = fun),
                     climatology(base, clim.fun = fun),
                     climatology(ref, clim.fun = fun), skip.temporal.check = TRUE)
-plotClimatology(mg, names.attr = c("input_grid", "base", "ref"))
+require(visualizeR)
+spatialPlot(mg, names.attr = c("input_grid", "base", "ref"))
 # Note that for precipitation we use a scaling factor rather than an addition:
 grid.corr <- localScaling(grid = grid, base = base, ref = ref,
                           time.frame = "monthly", type = "ratio")
 mg.corr <- makeMultiGrid(climatology(grid, clim.fun = fun), climatology(grid.corr, clim.fun = fun))
-plotClimatology(mg.corr, at = seq(0,350,10), names.attr = c("Raw","Scaled"))
+spatialPlot(mg.corr, at = seq(0,350,10), names.attr = c("Raw","Scaled"))
+}
 }
 \author{
 J. Bedia

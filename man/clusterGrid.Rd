@@ -66,6 +66,8 @@ The Lamb Weather Typing algorithm is implemented in the function \code{\link{lam
 A default of 26 types is calculated, following Trigo and daCamara (2000)
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 #Example of K-means clustering: 
 data(NCEP_Iberia_psl, package = "transformeR")
 clusters<- clusterGrid(NCEP_Iberia_psl, type="kmeans", centers=10, iter.max=1000)
@@ -79,6 +81,7 @@ clusters<- clusterGrid(NCEP_Iberia_psl, type="som", centers = c(10,1))
 #Example of lamb clustering:
 data(NCEP_slp_2001_2010)
 clusters <- clusterGrid(grid = NCEP_slp_2001_2010, type = "lamb")
+}
 }
 \references{
 Trigo, R.M., DaCamara, C.C., 2000. Circulation weather types and their influence on the precipitation regime in Portugal. 

@@ -29,6 +29,8 @@ Warning:
 The function should no be used to extract the vector of actual date years
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 data("NCEP_Iberia_hus850")
 getSeason(NCEP_Iberia_hus850)
 # Winter 1983-2002
@@ -54,6 +56,7 @@ par(mfrow = c(1,1))
 #Station data:
 data("VALUE_Iberia_tas")
 getYearsAsINDEX(VALUE_Iberia_tas)
+}
 }
 \seealso{
 Other get.helpers: 

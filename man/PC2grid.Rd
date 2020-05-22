@@ -37,6 +37,8 @@ The XY coordinates correspond to the centroid of the window used for the PCA ana
  Currently, only the start days are returned. The end dates are not returned by the \code{prinComp} output.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 data("CFS_Iberia_psl")
 pc <- prinComp(CFS_Iberia_psl, v.exp = .95)
 # Convert to grid the PC of the leading EOF (pc.idx = 1):
@@ -54,11 +56,11 @@ psl.index.inv <- aggregateGrid(psl.index.inv, aggr.m = aggr.fun, aggr.y = aggr.f
                            aggr.mem = aggr.fun)
 lines(as.Date(getRefDates(psl.index.inv)), psl.index.inv$Data, ty = "o", col = "red")
 }
+}
 \seealso{
 Other pca: 
 \code{\link{grid2PCs}()},
 \code{\link{gridFromPCA}()},
-\code{\link{plotEOF}()},
 \code{\link{prinComp}()}
 }
 \author{

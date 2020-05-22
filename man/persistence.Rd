@@ -64,7 +64,7 @@ Parallel computing is currently not available for Windows machines.
 }
 
 \seealso{
-\code{\link{plotClimatology}}, for conveniently plotting persistence climatology maps.
+\code{\link[visualizeR]{spatialPlot}}, for conveniently plotting persistence climatology maps.
 }
 \author{
 J Bedia

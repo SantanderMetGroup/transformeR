@@ -108,6 +108,8 @@ It is therefore advisable to avoid the use of this option for large datasets, an
 multimember grids instead.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
 multigrid <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 # In this example, we retain the PCs explaining the 99\\% of the variance
@@ -151,6 +153,7 @@ mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
 # Use different n.eofs for each variable:
 pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(3,5))
 }
+}
 \references{
 Gutierrez, J.M., R. Ancell, A. S. Cofiño and C. Sordo (2004). Redes Probabilisticas
  y Neuronales en las Ciencias Atmosfericas. MIMAM, Spain. 279 pp.
@@ -160,8 +163,7 @@ Gutierrez, J.M., R. Ancell, A. S. Cofiño and C. Sordo (2004). Redes Probabilist
 Other pca: 
 \code{\link{PC2grid}()},
 \code{\link{grid2PCs}()},
-\code{\link{gridFromPCA}()},
-\code{\link{plotEOF}()}
+\code{\link{gridFromPCA}()}
 }
 \author{
 J. Bedia, M. de Felice

@@ -33,6 +33,9 @@ Atomic function for (linear) trend analysis
 The function can be conveniently wrapped using \code{climatology}. See examples.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
+require(visualizeR)
 # Simulate a positive trend
 set.seed(1)
 ts <- runif(min = 21, max = 23.5, n = 100) + seq(.1, .15, length.out = 100) * 10
@@ -46,16 +49,17 @@ data("EOBS_Iberia_tas")
 dates <- getRefDates(EOBS_Iberia_tas)
 tau.estimate <- climatology(EOBS_Iberia_tas,
                             clim.fun = list(FUN = "trend.1D", dates = dates, method = "kendall"))
-plotClimatology(tau.estimate)
+spatialPlot(tau.estimate, backdrop.theme = "coastline")
 # Adding significant trend points is usually needed: 
 pval.estimate <- climatology(EOBS_Iberia_tas,
                              clim.fun = list(FUN = "trend.1D",
                                              dates = dates,
                                              method = "kendall",
                                              return.pvalue = TRUE))
-sig.points <- transformeR:::map.stippling(clim = pval.estimate, threshold = 0.05, condition = "LT", 
-                            pch = 19, cex = .25, col = "purple")
-plotClimatology(tau.estimate, sp.layout = list(sig.points))
+sig.points <- visualizeR::map.stippling(clim = pval.estimate, threshold = 0.05, condition = "LT", 
+                                        pch = 19, cex = .25, col = "purple")
+spatialPlot(tau.estimate, backdrop.theme = "coastline", sp.layout = list(sig.points))
+}
 }
 \seealso{
 \code{\link{climatology}}, for computing climatological trend maps from grids

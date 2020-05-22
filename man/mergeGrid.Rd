@@ -26,6 +26,8 @@ The aggregation functions are specified in the form of a named list of the type 
 internally passes to \code{\link{tapply}}. Note that the name of the function is indicated as a character string.
 }
 \examples{
+\donttest{
+require(climate4R.indices)
 # We load the dataset (temperature)
 library(visualizeR)
 data("CFS_Iberia_tas")
@@ -40,6 +42,7 @@ spatialPlot(climatology(region2),backdrop.theme = "coastline")
 # We merge the regions and apply the mean function to the intersection
 merged <- mergeGrid(region1,region2,aggr.fun = list(FUN = "mean", na.rm = TRUE))
 spatialPlot(climatology(merged),backdrop.theme = "coastline")
+}
 }
 \author{
 J. Baño-Medina, M. Iturbide

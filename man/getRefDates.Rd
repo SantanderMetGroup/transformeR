@@ -26,12 +26,15 @@ It takes into account the particular case when \code{\link{redim}} is applied to
  distinguish multigrids from redim-ed grids is the shape of the array.
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 #Station data:
 data("VALUE_Iberia_tas")
 str(getRefDates(VALUE_Iberia_tas))
 #Regular grid
 data("NCEP_Iberia_hus850")
 str(getRefDates(NCEP_Iberia_hus850, which = "end"))
+}
 }
 \seealso{
 Other get.helpers: 

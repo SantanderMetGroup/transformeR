@@ -16,8 +16,11 @@ An integer vector with the season
 Retrieves the season encompassed by a station or grid object
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 data("NCEP_Iberia_hus850")
 getSeason(NCEP_Iberia_hus850) # Boreal winter (DJF)
+}
 }
 \seealso{
 Other get.helpers: 

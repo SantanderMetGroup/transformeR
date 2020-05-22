@@ -34,6 +34,7 @@ Transform a climate4R pattern into a climate4R grid.
 }
 \examples{
 \dontrun{ 
+require(climate4R.indices)
 data(NCEP_hgt500_2001_2010)
 cpc <- indicesCPC(grid=NCEP_hgt500_2001_2010, index.code = c("NAO", "EA","PNA"), season=1)
 cpc2plot <- pattern2grid(cpc, index.code="NAO", coords =NCEP_hgt500_2001_2010$xyCoords,

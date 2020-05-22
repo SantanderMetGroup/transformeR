@@ -65,15 +65,18 @@ Parallel computing is currently not available for Windows machines.
 }
 
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 # Station data:
 # Mean surface temperature
 data("VALUE_Iberia_tas")
 st_mean_clim <- climatology(VALUE_Iberia_tas)
 str(st_mean_clim)
-plotClimatology(st_mean_clim, backdrop.theme = "coastline")
+require(visualizeR)
+spatialPlot(st_mean_clim, backdrop.theme = "coastline")
 # Standard deviation of surface temperature
 st_sd_clim <- climatology(VALUE_Iberia_tas, clim.fun = list(FUN = sd, na.rm = TRUE))
-plotClimatology(st_sd_clim, backdrop.theme = "coastline")
+spatialPlot(st_sd_clim, backdrop.theme = "coastline")
 
 # July surface temp forecast climatology
 data("CFS_Iberia_tas")
@@ -89,8 +92,9 @@ t_mean_9mem.clim <- climatology(CFS_Iberia_tas,
 str(t_mean_9mem.clim$Data)
 # 9 different climatologies, one for each member
 }
+}
 \seealso{
-\code{\link{plotClimatology}}, for plotting climatologies.
+\code{\link[visualizeR]{spatialPlot}}, for plotting climatologies.
 \code{\link{persistence}}, for a special case in which the temporal autocorrelation function is applied.
 }
 \author{

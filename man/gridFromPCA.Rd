@@ -20,6 +20,11 @@ Reconstructs a grid of a climatic variable from the outputs of a
 principal components analysis
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
+data(NCEP_Iberia_hus850)
+data(NCEP_Iberia_ta850)
+data(NCEP_Iberia_psl)
 # Multigrid constructor:
 multigrid <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_ta850, NCEP_Iberia_psl)
 # In this example, we retain the first 10 PCs
@@ -33,14 +38,13 @@ str(psl2)
 attributes(psl2)
 multigrid$Variable$varName
 # psl is the 3rd one
-
+require(visualizeR)
 # An example of multimember reconstruction from a multimember PC analysis:
-data("NCEP_Iberia_psl")
-plotClimatology(climatology(NCEP_Iberia_psl), backdrop.theme = "coastline",
+spatialPlot(climatology(NCEP_Iberia_psl), backdrop.theme = "coastline",
                 main = "DJF Mean Sea-level Pressure (1983-2002)")
 pca2 <- prinComp(NCEP_Iberia_psl, n.eofs = 1)
 psl_recovered <- gridFromPCA(pca2)
-plotClimatology(climatology(psl_recovered), backdrop.theme = "coastline", 
+spatialPlot(climatology(psl_recovered), backdrop.theme = "coastline", 
                 main = "DJF Mean Sea-level Pressure (1983-2002)\n-Reconstructed from first EOF-")
 # The mean field is similar, but there are (small) differences in temporal variability:
 plot(NCEP_Iberia_psl$Data[,3,3], ty = 'l', ylab = "psl")
@@ -50,11 +54,11 @@ legend("top", c("original", "reconstructed"), lty = 1, col = c(1,2), bty = "n")
 # The 1st EOF captures 85\% of total MSLP field variance:
 attributes(psl_recovered)$'explained_variance'
 }
+}
 \seealso{
 Other pca: 
 \code{\link{PC2grid}()},
 \code{\link{grid2PCs}()},
-\code{\link{plotEOF}()},
 \code{\link{prinComp}()}
 }
 \author{

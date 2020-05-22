@@ -57,6 +57,8 @@ The \code{"time"} dimension will be always returned in ascending order, regardle
 The internal helper \code{\link{sortDim.time}} is applied to this aim.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 ## Binding along the member dimension:
 data("CFS_Iberia_tas")
 # We first diaggregate in various grids with different members
@@ -75,10 +77,10 @@ mem1 <- subsetGrid(CFS_points, members = 1)
 mem5 <- subsetGrid(CFS_points, members = 5)
 CFS_points_2mem <- bindGrid(mem1, mem5, dimension = "member")
 getShape(CFS_points_2mem)
-\dontrun{
+
 require(visualizeR)
 spatialPlot(climatology(bindedGrid), backdrop.theme = "coastline", rev.colors = TRUE)
-}
+
 ## Binding along time:
 data("EOBS_Iberia_tas")
 eobs.1998 <- subsetGrid(EOBS_Iberia_tas, years = 1998)
@@ -96,6 +98,7 @@ grid.list <- lapply(year.list, function(x) {
 }) 
 eobs3 <- do.call("bindGrid", c(grid.list, dimension = "time"))
 identical(eobs1, eobs3)
+}
 }
 \seealso{
 \code{\link{subsetGrid}}, for the reverse operation. \code{\link{makeMultiGrid}} is somehow related, although 

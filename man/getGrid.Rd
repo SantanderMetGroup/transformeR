@@ -23,6 +23,8 @@ In case of irregular grid definitions, the function forces the grid to regularit
 The returned grid object inherits the attributes from the input \code{xyCoords} definition.
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 # Regular grid
 data("NCEP_Iberia_hus850")
 str(getGrid(NCEP_Iberia_hus850))
@@ -38,15 +40,17 @@ str(getGrid(VALUE_Iberia_tas))
 data("CFS_Iberia_pr")
 NCEP_interpolated <- interpGrid(NCEP_Iberia_hus850, getGrid(CFS_Iberia_pr), "bilinear")
 # Note the warnings because of the non-overlapping domain extents (longitudes)
-plotClimatology(climatology(NCEP_Iberia_hus850), backdrop.theme = "countries")
-plotClimatology(climatology(NCEP_interpolated), backdrop.theme = "countries")
+require(visualizeR)
+spatialPlot(climatology(NCEP_Iberia_hus850), backdrop.theme = "countries")
+spatialPlot(climatology(NCEP_interpolated), backdrop.theme = "countries")
 str(getGrid(NCEP_interpolated))
 str(getGrid(CFS_Iberia_pr))
 
 # The other way round, using nearest neighbour interpolation:
 CFS_interpolated <- interpGrid(CFS_Iberia_pr, getGrid(NCEP_Iberia_hus850))
-plotClimatology(climatology(CFS_interpolated), backdrop.theme = "countries")
+spatialPlot(climatology(CFS_interpolated), backdrop.theme = "countries")
 # In this case, the mismatch in domain extent occurs in the longitudes and latitudes
+}
 }
 \seealso{
 Other get.helpers: 

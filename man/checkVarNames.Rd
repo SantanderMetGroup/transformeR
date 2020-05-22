@@ -21,11 +21,11 @@ of the current expression, with an error message.
 Check the consistency of variable (short)names across grids/multigrids
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
 #' # Testing grids that contain different variables:
-\donttest{
 try(checkVarNames(NCEP_Iberia_hus850, NCEP_Iberia_psl))
-}
 # Testing multigrid contents:
 mg <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 mg1 <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_ta850, NCEP_Iberia_psl)
@@ -33,7 +33,6 @@ mg2 <- makeMultiGrid(NCEP_Iberia_ta850, NCEP_Iberia_psl, NCEP_Iberia_hus850)
 # The input grids contains the same variables, but their ordering is different:
 checkVarNames(mg, mg1, mg2, check.order = FALSE) # OK
 # If we do check.order = TRUE (the default), it gives an error:
-\donttest{
 try(checkVarNames(mg, mg1, mg2, check.order = TRUE)) # Error
 }
 }

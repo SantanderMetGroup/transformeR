@@ -33,7 +33,8 @@
 #' @author J. Baño-Medina, M. Iturbide
 #' @export
 #' @importFrom magrittr %<>% 
-#' @examples 
+#' @examples \donttest{
+#' require(climate4R.indices)
 #' # We load the dataset (temperature)
 #' library(visualizeR)
 #' data("CFS_Iberia_tas")
@@ -48,6 +49,8 @@
 #' # We merge the regions and apply the mean function to the intersection
 #' merged <- mergeGrid(region1,region2,aggr.fun = list(FUN = "mean", na.rm = TRUE))
 #' spatialPlot(climatology(merged),backdrop.theme = "coastline")
+#' }
+
 mergeGrid <- function(...,aggr.fun = list(FUN = "mean", na.rm = TRUE)) {
   grid.list <- list(...)
   if (!isGrid(grid.list[[1]])) grid.list <- unlist(grid.list, recursive = FALSE)

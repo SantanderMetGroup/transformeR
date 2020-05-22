@@ -30,6 +30,7 @@
 #' @author M. Iturbide 
 #' @export
 #' @examples \dontrun{
+#' require(climate4R.datasets)
 #' data("EOBS_Iberia_pr")
 #' library(visualizeR)
 #' spatialPlot(climatology(EOBS_Iberia_pr))

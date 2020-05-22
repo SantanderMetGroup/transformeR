@@ -16,6 +16,8 @@ A list with x and y components
 Returns the coordinates of a climate data object, either stations or grid
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 # Regular grid
 data("NCEP_Iberia_hus850")
 str(getCoordinates(NCEP_Iberia_hus850))
@@ -26,6 +28,7 @@ str(getCoordinates(CORDEX_Iberia_tas))
 # Station data
 data("VALUE_Iberia_tas")
 str(getCoordinates(VALUE_Iberia_tas))
+}
 }
 \seealso{
 Other get.helpers: 

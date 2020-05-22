@@ -16,12 +16,15 @@ A character vector with the dimensions attribute of the object's \code{Data} com
 Retrieve dimensions attribute
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 #Station data:
 data("VALUE_Iberia_tas")
 getDim(VALUE_Iberia_tas)
 #Regular grid
 data("NCEP_Iberia_hus850")
 getDim(NCEP_Iberia_hus850)
+}
 }
 \seealso{
 Other get.helpers: 

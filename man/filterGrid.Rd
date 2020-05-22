@@ -67,6 +67,8 @@ Parallel computing is currently not available for Windows machines.
 }
 
 \examples{
+\donttest{
+require(climate4R.datasets)
 data(NCEP_Iberia_ta850)
 plot(NCEP_Iberia_ta850[["Data"]][,3,3], ty = 'l')
 # Apply a moving average considering 2 different window widths of 30 and 90 days
@@ -75,6 +77,7 @@ lines(fgrid30[["Data"]][,3,3], col = 'red')
 fgrid90 <- filterGrid(NCEP_Iberia_ta850, method = "convolution", window.width = 90, sides = 1)
 lines(fgrid90[["Data"]][,3,3], col = 'green')
 legend("top", c("raw","30-day MA", "90-day MA"), lty = 1, col = c(1,2,3), ncol = 3)
+}
 }
 \author{
 J Bedia
