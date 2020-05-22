@@ -117,3 +117,6 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
  * Exports EOF2clim (formerly an internal), for the spatial representation of EOFs via visualizeR::spatialPlot
  * New helper `fillGridDates` for filling dataset missing dates
  * Other minor bug fixes, documentation updates and enhancements
+
+## 2.0.1 (in devel)
+ * Removed draw.world.lines internal utility and associated vector layer (moved to visualizeR)
