@@ -62,28 +62,31 @@
 #' @author M. Iturbide, M. de Felice, J. Bedia 
 #' @export
 #' @importFrom magrittr %<>% 
-#' @examples 
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' data("CFS_Iberia_tas")
 #' ## Aggregating members
 #' # Ensemble mean
 #' mn <- aggregateGrid(grid = CFS_Iberia_tas, aggr.mem = list(FUN = "mean", na.rm = TRUE))
-#' plotClimatology(climatology(mn, by.member = FALSE),
+#' require(visualizeR)
+#' spatialPlot(climatology(mn, by.member = FALSE),
 #'                 backdrop.theme = "coastline", main = "Ensemble mean tmax climatology")
 #' # Ensemble 90th percentile
 #'  ens90 <- aggregateGrid(grid = CFS_Iberia_tas,
 #'                         aggr.mem = list(FUN = quantile, probs = 0.9, na.rm = TRUE))
-#' plotClimatology(climatology(ens90, by.member = FALSE),
+#' spatialPlot(climatology(ens90, by.member = FALSE),
 #'                 backdrop.theme = "coastline", main = "Ensemble 90th percentile tmax climatology")
 #' 
 #' ## Monthly aggregation
 #' monthly.mean <- aggregateGrid(CFS_Iberia_tas, aggr.m = list(FUN = mean, na.rm = TRUE))
-#' plotClimatology(climatology(monthly.mean), backdrop.theme = "coastline",
+#' spatialPlot(climatology(monthly.mean), backdrop.theme = "coastline",
 #'                 main = "Mean tmax climatology")
 #'
 #' ## Several dimensions ca be aggregated in one go:
 #' mm.mean <- aggregateGrid(CFS_Iberia_tas,
 #'                          aggr.mem = list(FUN = "mean", na.rm = TRUE),
 #'                          aggr.m = list(FUN = "mean", na.rm = TRUE))
+#' }
 
 
 aggregateGrid <- function(grid,

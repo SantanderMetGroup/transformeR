@@ -27,14 +27,16 @@ The function is insensitive to the dimension ordering of the input data array
 \seealso{
 \code{\link{mat2Dto3Darray}}, which performs the inverse operation
 
-Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
-  \code{\link{bindGrid.member}},
-  \code{\link{bindGrid.spatial}},
-  \code{\link{bindGrid.time}},
-  \code{\link{grid3Dto2Dmatrix}},
-  \code{\link{mat2Dto3Darray.stations}},
-  \code{\link{redim}}, \code{\link{sortDim.spatial}},
-  \code{\link{sortDim.time}}
+Other internal.helpers: 
+\code{\link{array3Dto2Dmat.stations}()},
+\code{\link{bindGrid.member}()},
+\code{\link{bindGrid.spatial}()},
+\code{\link{bindGrid.time}()},
+\code{\link{grid3Dto2Dmatrix}()},
+\code{\link{mat2Dto3Darray.stations}()},
+\code{\link{redim}()},
+\code{\link{sortDim.spatial}()},
+\code{\link{sortDim.time}()}
 }
 \author{
 M. de Felice, J Bedia

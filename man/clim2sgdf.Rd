@@ -31,6 +31,7 @@ Note that the function can be only applied to \dQuote{climatological} climate4R 
 }
 \examples{
 \donttest{
+require(climate4R.datasets) 
 data("CFS_Iberia_tas")
 # Climatology is computed:
 clim <- climatology(CFS_Iberia_tas, by.member = TRUE)

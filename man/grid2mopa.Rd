@@ -27,6 +27,8 @@ time dimension length is 12 (e.g. monthly data), a RasterStack of 12 rasters is 
 allow to operate over the grids in order to obtain the desired temporal means (etc.) at the desired temporal resolution.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 # A raster stack from a multigrid
 data("EOBS_Iberia_tas")
 data("EOBS_Iberia_pr")
@@ -35,6 +37,7 @@ multigridaggr <- aggregateGrid(multigrid, aggr.y = list(FUN = "mean"))
 ras <- grid2mopa(multigridaggr)
 require(sp)
 spplot(ras$rr)
+}
 }
 \seealso{
 \code{\link[transformeR]{climatology}}; \code{\link[loadeR]{loadGridData}}

@@ -26,14 +26,16 @@ Flexible binding of (spatiotemporally consistent) grids by their member dimensio
  useful to handle sets of predictors as a single block.
 }
 \seealso{
-Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
-  \code{\link{array3Dto2Dmat}},
-  \code{\link{bindGrid.spatial}},
-  \code{\link{bindGrid.time}},
-  \code{\link{grid3Dto2Dmatrix}},
-  \code{\link{mat2Dto3Darray.stations}},
-  \code{\link{redim}}, \code{\link{sortDim.spatial}},
-  \code{\link{sortDim.time}}
+Other internal.helpers: 
+\code{\link{array3Dto2Dmat.stations}()},
+\code{\link{array3Dto2Dmat}()},
+\code{\link{bindGrid.spatial}()},
+\code{\link{bindGrid.time}()},
+\code{\link{grid3Dto2Dmatrix}()},
+\code{\link{mat2Dto3Darray.stations}()},
+\code{\link{redim}()},
+\code{\link{sortDim.spatial}()},
+\code{\link{sortDim.time}()}
 }
 \author{
 J Bedia

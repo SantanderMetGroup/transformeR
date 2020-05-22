@@ -4,8 +4,13 @@
 \alias{convert2bin}
 \title{Convert grid values to a binary variable}
 \usage{
-convert2bin(x, threshold = NULL, partial = FALSE, ref.obs = NULL,
-  ref.pred = NULL)
+convert2bin(
+  x,
+  threshold = NULL,
+  partial = FALSE,
+  ref.obs = NULL,
+  ref.pred = NULL
+)
 }
 \arguments{
 \item{x}{The input grid to be converted to binary. It can be an object or a matrix/array.}
@@ -38,8 +43,9 @@ ybin2 <- convert2bin(VALUE_Iberia_pr,threshold = 1, partial = TRUE)
 head(ybin2$Data)
 }
 \seealso{
-Other downscaling.helpers: \code{\link{filterNA}},
-  \code{\link{makeMultiGrid}}
+Other downscaling.helpers: 
+\code{\link{filterNA}()},
+\code{\link{makeMultiGrid}()}
 }
 \author{
 J. Bano-Medina

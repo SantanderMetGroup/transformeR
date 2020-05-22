@@ -33,7 +33,8 @@
 #' @author M. Iturbide
 #' @seealso \code{\link[transformeR]{climatology}}; \code{\link[loadeR]{loadGridData}}
 #' @export
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' # A raster stack from a multigrid
 #' data("EOBS_Iberia_tas")
 #' data("EOBS_Iberia_pr")
@@ -42,6 +43,7 @@
 #' ras <- grid2mopa(multigridaggr)
 #' require(sp)
 #' spplot(ras$rr)
+#' }
 
 
 grid2mopa <- function(grid, crs = NA){
@@ -88,7 +90,8 @@ grid2mopa <- function(grid, crs = NA){
 #' data("CFS_Iberia_tas")
 #' # Aggregate all members and compute climatology
 #' t.clim <- climatology(CFS_Iberia_tas, by.member = FALSE)
-#' plotClimatology(t.clim)
+#' require(visualizeR)
+#' spatialPlot(t.clim)
 #' t.ras <- grid2mopa0(t.clim)
 #' # require(sp)
 #' # spplot(t.ras)
