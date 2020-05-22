@@ -25,15 +25,15 @@ Suggests:
 Type: Package
 Title: A climate4R package for general climate data manipulation and transformation
 Version: 2.0.0
-Date: 2020-05-21
+Date: 2020-05-22
 Authors@R: c(person("Bedia", "Joaquín", email = "bediaj@unican.es", role = c("aut","cre"), comment = c(ORCID = "0000-0001-6219-4312")),
-             person("Jorge", "Baño Medina", email = "bmedina@ifca.unican.es", role = "ctb"),
-             person("Ana", "Casanueva", email = "ana.casanueva@unican.es", role = "ctb"),
+             person("Jorge", "Baño Medina", email = "bmedina@ifca.unican.es", role = "aut"),
+             person("Ana", "Casanueva", email = "ana.casanueva@unican.es", role = "aut"),
              person("Matteo", "De Felice", email = "matteo.defelice@enea.it", role = "ctb"),
-             person("José Manuel", "Gutiérrez", email = "gutierjm@unican.es", role = "ctb"),
-             person("Sixto", "Herrera", email = "herreras@unican.es", role = "ctb"),
+             person("José Manuel", "Gutiérrez", email = "gutierjm@unican.es", role = "aut"),
+             person("Sixto", "Herrera", email = "herreras@unican.es", role = "aut"),
              person("Maialen", "Iturbide", email = "miturbide@ifca.unican.es", role = "aut", comment = c(ORCID = "0000-0002-5048-0941")), 
-             person("Juan A.", "Fernández", email = "juan.fernandez@unican.es", role = "ctb"))
+             person("Juan A.", "Fernández", email = "juan.fernandez@unican.es", role = "aut"))
 BugReports: https://github.com/SantanderMetGroup/transformeR/issues
 URL: http://www.meteo.unican.es/climate4r
 Encoding: UTF-8
