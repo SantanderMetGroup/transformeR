@@ -4,8 +4,14 @@
 \alias{sp2grid}
 \title{Convert a SpatialGridDataFrame to a C4R grid}
 \usage{
-sp2grid(sp, member = FALSE, varName = NULL, level = NULL,
-  dates = list(start = NULL, end = NULL), metadata = NULL)
+sp2grid(
+  sp,
+  member = FALSE,
+  varName = NULL,
+  level = NULL,
+  dates = list(start = NULL, end = NULL),
+  metadata = NULL
+)
 }
 \arguments{
 \item{sp}{A SpatialGridDataFrame, as returned by function \code{gdalwarp} (package \pkg{gdalUtils}).

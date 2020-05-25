@@ -28,8 +28,9 @@ anyNA(na.filtered$Data)
 getShape(na.filtered)
 }
 \seealso{
-Other downscaling.helpers: \code{\link{convert2bin}},
-  \code{\link{makeMultiGrid}}
+Other downscaling.helpers: 
+\code{\link{convert2bin}()},
+\code{\link{makeMultiGrid}()}
 }
 \author{
 J. Bano-Medina, J. Bedia

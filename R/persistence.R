@@ -38,7 +38,7 @@
 #'  
 #' @template templateParallel
 #' 
-#' @seealso \code{\link{plotClimatology}}, for conveniently plotting persistence climatology maps.
+#' @seealso \code{\link[visualizeR]{spatialPlot}}, for conveniently plotting persistence climatology maps.
 #' 
 #' @importFrom stats acf qnorm
 #' @importFrom utils tail

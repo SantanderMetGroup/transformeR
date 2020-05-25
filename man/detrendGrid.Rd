@@ -4,8 +4,13 @@
 \alias{detrendGrid}
 \title{Linear detrending}
 \usage{
-detrendGrid(grid, grid2 = NULL, parallel = FALSE, max.ncores = 16,
-  ncores = NULL)
+detrendGrid(
+  grid,
+  grid2 = NULL,
+  parallel = FALSE,
+  max.ncores = 16,
+  ncores = NULL
+)
 }
 \arguments{
 \item{grid}{Input grid (possibly multimember)}
@@ -54,6 +59,8 @@ Parallel computing is currently not available for Windows machines.
 }
 
 \examples{
+ \donttest{
+require(climate4R.datasets) 
 data("NCEP_Iberia_ta850")
 monthly <- aggregateGrid(NCEP_Iberia_ta850, aggr.m = list(FUN = "mean"))
 plot(monthly$Data[,4,2], ty = 'l')
@@ -69,6 +76,7 @@ grid <- subsetGrid(monthly, years = 1991:2001)
 grid2 <- subsetGrid(monthly, years = 2002)
 det2 <- detrendGrid(grid, grid2, parallel = FALSE)
 # det2 is the grid2 (year 2002) corrected according to the linear trend computed for 1991-2001
+}
 }
 \author{
 J Bedia, J Fernandez, M.D. Frias

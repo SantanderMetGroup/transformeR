@@ -84,6 +84,7 @@
 #' @export
 #' @family subsetting
 #' @examples \dontrun{
+#' require(climate4R.datasets)
 #' # Example 1 - Spatial / member subset
 #' data("CFS_Iberia_tas")
 #' # Selection of a smaller domain over the Iberian Peninsula and members 3 and 7
@@ -613,14 +614,17 @@ subsetStation <- function(grid, station.id = NULL) {
 #' @keywords internal
 #' @export
 #' @family subsetting
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' # Example - Member subset
 #' data("CFS_Iberia_tas")
 #' # Selection of members 3 and 7
 #' sub <- subsetDimension(CFS_Iberia_tas,
-#'                    dimension = "member",
-#'                    indices = 1:2)
-#' plotClimatology(climatology(sub), backdrop.theme = "coastline")
+#'                        dimension = "member",
+#'                        indices = 1:2)
+#' require(visualizeR)
+#' spatialPlot(climatology(sub), backdrop.theme = "coastline")
+#' }
 
 subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
     if (is.null(indices)) {

@@ -4,9 +4,15 @@
 \alias{sgdf2clim}
 \title{Conversion from SpatialGridDataFrame-class objects to climate4R climatology grids}
 \usage{
-sgdf2clim(sp, member = FALSE, varName = NULL, level = NULL,
-  dates = list(start = NULL, end = NULL), season = NULL,
-  attr.list = NULL)
+sgdf2clim(
+  sp,
+  member = FALSE,
+  varName = NULL,
+  level = NULL,
+  dates = list(start = NULL, end = NULL),
+  season = NULL,
+  attr.list = NULL
+)
 }
 \arguments{
 \item{sp}{A SpatialGridDataFrame-class object, as returned by function \code{gdalwarp} (package \pkg{gdalUtils}).

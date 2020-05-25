@@ -4,8 +4,7 @@
 \alias{makeMultiGrid}
 \title{Multigrid constructor}
 \usage{
-makeMultiGrid(..., spatial.tolerance = 0.001,
-  skip.temporal.check = FALSE)
+makeMultiGrid(..., spatial.tolerance = 0.001, skip.temporal.check = FALSE)
 }
 \arguments{
 \item{...}{Input grids to form the multigrid. These must be compatible in time and space (see details). 
@@ -18,7 +17,7 @@ This value is passed to the \code{\link{identical}} function to check for spatia
 \item{skip.temporal.check}{Logical. Should temporal matching check of input fields be skipped?
 Default to \code{FALSE}. This option can be useful in order to construct multigrids 
 from grids of different temporal characteristics. See details.
- (e.g., a multi-seasonal multifield), to be passed to \code{\link{plotClimatology}}}
+ (e.g., a multi-seasonal multifield), to be passed to \code{\link[visualizeR]{spatialPlot}}}
 }
 \value{
 A (multimember) multigrid object encompassing the different input (multimember) grids
@@ -58,6 +57,8 @@ A multigrid can not be passed to the interpolator \code{\link{interpGrid}} direc
 multimember grids should be interpolated individually prior to multigrid construction.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 # Creation of a multigrid from three different grids:
 data(NCEP_Iberia_ta850)
 data(NCEP_Iberia_hus850)
@@ -85,15 +86,17 @@ mm.mf <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_hus850, CFS_Iberia_pr)
 # their units are compatible.
 # subsetGrid and visualizeR::spatialPlot can be used to this aim, if needed.
 # For instance:
-# tas <- subsetGrid(mm.mf, var = "tas")
-# require(visualizeR)
-# spatialPlot(climatology(tas), backdrop.theme = "coastline", rev.colors = TRUE)
+tas <- subsetGrid(mm.mf, var = "tas")
+require(visualizeR)
+spatialPlot(climatology(tas), backdrop.theme = "coastline", rev.colors = TRUE)
+}
 }
 \seealso{
 \code{\link{interpGrid}} for spatial consistency of input grids.
 
-Other downscaling.helpers: \code{\link{convert2bin}},
-  \code{\link{filterNA}}
+Other downscaling.helpers: 
+\code{\link{convert2bin}()},
+\code{\link{filterNA}()}
 }
 \author{
 J. Bedia

@@ -24,6 +24,8 @@ This subset grid of clusters is ready to be plotted with C4R plotting tools, e.g
 This function allows to prepare a grid of clusters (included in 'time' dimension) for plotting. A subset of a variable and/or member is also performed in multimember or multigrid objects.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 #Example 1: 'cluster' is a 3D grid of clusters.
 data(NCEP_Iberia_psl, package = "transformeR")
 clusters<- clusterGrid(NCEP_Iberia_psl, type = "kmeans", centers = 10)
@@ -32,7 +34,7 @@ require(visualizeR)
 spatialPlot(mg, backdrop.theme = "coastline", rev.colors = TRUE,
             layout = c(2,ceiling(attr(clusters, "centers")/2)),
              as.table = TRUE)
-
+}
 }
 \seealso{
 \link[transformeR]{makeMultiGrid}, \link[transformeR]{subsetGrid}, \link[transformeR]{subsetDimension}.

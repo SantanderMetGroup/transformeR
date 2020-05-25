@@ -4,8 +4,15 @@
 \alias{binaryGrid}
 \title{Convert grid values to a binary variable}
 \usage{
-binaryGrid(x, condition = "GE", threshold = NULL, partial = FALSE,
-  ref.obs = NULL, ref.pred = NULL, values = c(0, 1))
+binaryGrid(
+  x,
+  condition = "GE",
+  threshold = NULL,
+  partial = FALSE,
+  ref.obs = NULL,
+  ref.pred = NULL,
+  values = c(0, 1)
+)
 }
 \arguments{
 \item{x}{The input grid to be converted to binary. It can be an object or a matrix/array.}

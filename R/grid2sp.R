@@ -11,7 +11,8 @@
 #'@export
 #'@importFrom sp GridTopology SpatialGridDataFrame is.projected CRS
 #'@importFrom abind abind
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' library(sp)
 #' # Climatologies of different members:
 #' data("CFS_Iberia_tas")
@@ -24,6 +25,7 @@
 #' 
 #' x <- grid2sp(EOBS_Iberia_tas)
 #' plot(x[1]) # Plot the first day
+#' }
 
 grid2sp <- function(grid) {
       grid <- redim(grid, drop = FALSE)

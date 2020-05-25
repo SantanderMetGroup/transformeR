@@ -4,8 +4,20 @@
 \alias{gridScale.}
 \title{Local scaling internal}
 \usage{
-gridScale.(grid, base, ref, clim.fun, by.member, type, parallel,
-  max.ncores, ncores, spatial.frame, skip.season.check, targets = NULL)
+gridScale.(
+  grid,
+  base,
+  ref,
+  clim.fun,
+  by.member,
+  type,
+  parallel,
+  max.ncores,
+  ncores,
+  spatial.frame,
+  skip.season.check,
+  targets = NULL
+)
 }
 \description{
 Internal workhorse for local scaling
