@@ -48,6 +48,9 @@ Convert a real variable into a binary variable (i.e., 0 or 1) filtering by a thr
 The function works for regular and irregular grids as downloaded from \pkg{loadeR}).
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
+data(VALUE_Iberia_pr$Data)
 # Take a look at the data:
 head(VALUE_Iberia_pr$Data)
 # Convert to complete binary variable:
@@ -60,6 +63,7 @@ head(ybin2$Data)
 dat <- gridArithmetics(ybin,0.5) # to build a dataset with probabilities
 ybin3 <- binaryGrid(dat,simulate = TRUE)
 head(ybin3$Data)
+}
 }
 \author{
 J. Bano-Medina
