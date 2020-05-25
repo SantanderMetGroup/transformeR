@@ -11,7 +11,8 @@ binaryGrid(
   partial = FALSE,
   ref.obs = NULL,
   ref.pred = NULL,
-  values = c(0, 1)
+  values = c(0, 1),
+  simulate = FALSE
 )
 }
 \arguments{
@@ -33,6 +34,9 @@ For example, if condition = "GT" and threshold = 1 then every value lower than 1
 \item{values}{A vector of length 2. For example, values = c(0,1), which is the DEFAULT. Then every sample satisfying the condition is 
 equal to the second element of 'values' (i.e., in our example would be equal to 1), whereas if a sample does 
 not satisfy the condition then takes the first element (i.e., in our example would be equal to 0).}
+
+\item{simulate}{A logical value. If TRUE then the output is an stochastic sample for given the probability of rain 'p'. 
+Therefore only where the input grid 'x' is a grid of probabilities (e.g., for example coming from a logistic regression).}
 }
 \value{
 A new grid object with binary values
@@ -52,6 +56,10 @@ head(ybin$Data)
 # Convert to partial binary variable:
 ybin2 <- binaryGrid(VALUE_Iberia_pr,threshold = 1, partial = TRUE)
 head(ybin2$Data)
+# Convert to binary simulating:
+dat <- gridArithmetics(ybin,0.5) # to build a dataset with probabilities
+ybin3 <- binaryGrid(dat,simulate = TRUE)
+head(ybin3$Data)
 }
 \author{
 J. Bano-Medina
