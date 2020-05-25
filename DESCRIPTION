@@ -13,7 +13,6 @@ Imports:
     sp,
     stats,
     utils,
-    raster,
     kohonen
 Suggests:
     downscaleR,  
