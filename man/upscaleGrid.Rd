@@ -26,6 +26,7 @@ The development of a more eficient and fast version of the function is planned.
 }
 \examples{
 \dontrun{
+require(climate4R.datasets)
 data("EOBS_Iberia_pr")
 library(visualizeR)
 spatialPlot(climatology(EOBS_Iberia_pr))

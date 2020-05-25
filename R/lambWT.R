@@ -54,6 +54,7 @@
 #' }
 #' @export
 #' @examples \dontrun{
+#' require(climate4R.indices)
 #' data(NCEP_slp_2001_2010)
 #' lamb.wt <- lambWT(grid = NCEP_slp_2001_2010)
 #' }
@@ -67,69 +68,69 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
   
   suppressMessages(members <- getShape(grid, dimension = "member"))
   if (is.na(members)) {
-    grid<-redim(grid)
+    grid <- redim(grid)
     members <- getShape(grid, dimension = "member")
   }
   
   wt[[1]] <- c(wt[[1]], vector("list", members)) 
-  if(members>1) names(wt[[1]]) <- paste0("Member_", 1:members)
+  if (members > 1) names(wt[[1]]) <- paste0("Member_", 1:members)
   
-  for (x in 1:members){
+  for (x in 1:members) {
     grid.member <- subsetGrid(grid, members = x)
     memb <- vector("list", 1)
     
     #  *** LAMB WT CALCULATIONS *** 
     #Inicialization of variables:
-    n<-getShape(grid.member, dimension = "time")
-    wtseries<-vector(mode = "numeric",n[[1]]) #Inicialize vector with size = lenght of "time" dimension
-    dirdeg<-vector(mode = "numeric",n[[1]])
-    d<-vector(mode = "numeric",n[[1]])
+    n <- getShape(grid.member, dimension = "time")
+    wtseries <- vector(mode = "numeric", n[[1]]) #Inicialize vector with size = lenght of "time" dimension
+    dirdeg <- vector(mode = "numeric",n[[1]])
+    d <- vector(mode = "numeric",n[[1]])
     
     #Units conversion:
     slp.units <- c("Pascals", "Pa")
-    if (!(attr(grid.member$Variable, "units") %in% slp.units)){ 
+    if (!(attr(grid.member$Variable, "units") %in% slp.units)) { 
       stop("The grid variable must have Sea Level Pressure units in 'Pascals' (Pa).\nSee function convertR::udConvertGrid for unit conversion.")
     }
     
     #Preparing the input of lamb WT
-    centerlon<-center.point[1]
-    centerlat<-center.point[2]
+    centerlon <- center.point[1]
+    centerlat <- center.point[2]
     
-    lon.array <- rep(centerlon, times=16)+c(-5, 5, -15, -5, 5, 15, -15, -5, 5, 15, -15, -5, 5, 15, -5, 5)
-    lat.array <- rep(centerlat, times=16)+c(10, 10, 5, 5, 5, 5, 0, 0, 0, 0, -5, -5, -5, -5, -10, -10)
+    lon.array <- rep(centerlon, times = 16) + c(-5, 5, -15, -5, 5, 15, -15, -5, 5, 15, -15, -5, 5, 15, -5, 5)
+    lat.array <- rep(centerlat, times = 16) + c(10, 10, 5, 5, 5, 5, 0, 0, 0, 0, -5, -5, -5, -5, -10, -10)
     
     grid.inter <- interpGrid(grid.member, new.coordinates = list(x = lon.array, y = lat.array), method = "nearest")
     X <- grid.inter$Data
     
-    sf.const<-1/cospi(centerlat/180)
-    zw.const1<-sinpi(centerlat/180)/sinpi((centerlat-5)/180)
-    zw.const2<-sinpi(centerlat/180)/sinpi((centerlat+5)/180)
-    zs.const<-1/(2*cospi(centerlat/180)^2)
+    sf.const <- 1/cospi(centerlat/180)
+    zw.const1 <- sinpi(centerlat/180)/sinpi((centerlat - 5)/180)
+    zw.const2 <- sinpi(centerlat/180)/sinpi((centerlat + 5)/180)
+    zs.const <- 1/(2*cospi(centerlat/180)^2)
     
     ##FORTRAN code from Colin Harpham, CRU
-    w <- 0.005*((X[ , 12]+X[ , 13])-(X[ , 4]+X[ , 5]))
+    w <- 0.005*((X[ , 12] + X[ , 13]) - (X[ , 4] + X[ , 5]))
     s <- (sf.const*0.0025) * (X[ , 5] + 2*X[ , 9] + X[ , 13] - X[ , 4] - 2*X[ , 8] - X[ , 12])
     
     ind <- which(abs(w) > 0 & !is.na(w))
-    dirdeg[ind]<-(atan(s[ind]/w[ind]))*180/pi
+    dirdeg[ind] <- (atan(s[ind]/w[ind]))*180/pi
     ind <- which(w == 0 & !is.na(w))
     ind1 <- intersect(ind, which(s > 0 & !is.na(s))) 
     dirdeg[ind1] <- 90
     ind1 <- intersect(ind, which(s < 0 & !is.na(s))) 
     dirdeg[ind1] <- -90  
-    d[which(w >= 0 & !is.na(w))]<-270-dirdeg[which(w >= 0 & !is.na(w))] #SW & NW quadrant
-    d[which(w < 0 & !is.na(w))]<-90-dirdeg[which(w < 0 & !is.na(w))] #SE & NE quadrant
+    d[which(w >= 0 & !is.na(w))] <- 270 - dirdeg[which(w >= 0 & !is.na(w))] #SW & NW quadrant
+    d[which(w < 0 & !is.na(w))] <- 90 - dirdeg[which(w < 0 & !is.na(w))] #SE & NE quadrant
     
     #westerly shear vorticity
-    zw <- (zw.const1*0.005) * ((X[ , 15]+X[ , 16])-(X[ , 8]+X[ , 9])) - (zw.const2*0.005) * ((X[ , 8]+X[ , 9])-(X[ , 1]+X[ , 2]))
+    zw <- (zw.const1*0.005) * ((X[ , 15] + X[ , 16]) - (X[ , 8] + X[ , 9])) - (zw.const2*0.005) * ((X[ , 8] + X[ , 9]) - (X[ , 1] + X[ , 2]))
     
     #southerly shear vorticity  
-    zs <- (zs.const*0.0025) * (X[ , 6]+2*X[ , 10] + X[ , 14]-X[ , 5] - 2*X[ , 9]-X[ , 13]) - (zs.const*0.0025) * (X[ , 4]+2*X[ , 8] + X[ , 12]-X[ , 3] - 2*X[ , 7]-X[ , 11])
+    zs <- (zs.const*0.0025) * (X[ , 6] + 2*X[ , 10] + X[ , 14] - X[ , 5] - 2*X[ , 9] - X[ , 13]) - (zs.const*0.0025) * (X[ , 4] + 2*X[ , 8] + X[ , 12] - X[ , 3] - 2*X[ , 7] - X[ , 11])
     
     #total shear vorticity
     z <- zw + zs
     # resultant flow
-    f <- sqrt(w^2+s^2)
+    f <- sqrt(w^2 + s^2)
     
     #define direction sectors form 1 to 8, definition like on http://www.cru.uea.ac.uk/cru/data/hulme/uk/lamb.htm 
     neind <- which(d > 22.5 & d <= 67.5) #NE
@@ -159,18 +160,18 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
     hyb <- which(abs(z) >= f & abs(z) < (2*f)) #hybrid type
     hybant <- intersect(hyb, which(z < 0)) #anticyclonic
     hybcyc <- intersect(hyb, which(z >= 0)) #cyclonic
-    for (i in 10:17){
+    for (i in 10:17) {
       #directional anticyclonic
-      wtseries[intersect(hybant, which(d == i))] <- i-8
+      wtseries[intersect(hybant, which(d == i))] <- i - 8
       #mixed cyclonic
-      wtseries[intersect(hybcyc, which(d == i))] <- i+9
-      if(i == 10){names(wtseries)[intersect(hybant, which(d == i))] <- "ANE"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CNE"}
-      else if(i == 11){names(wtseries)[intersect(hybant, which(d == i))] <- "AE"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CE"}
-      else if(i == 12){names(wtseries)[intersect(hybant, which(d == i))] <- "ASE"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CSE"}
-      else if(i == 13){names(wtseries)[intersect(hybant, which(d == i))] <- "AS"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CS"}
-      else if(i == 14){names(wtseries)[intersect(hybant, which(d == i))] <- "ASW"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CSW"}
-      else if(i == 15){names(wtseries)[intersect(hybant, which(d == i))] <- "AW"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CW"}
-      else if(i == 16){names(wtseries)[intersect(hybant, which(d == i))] <- "ANW"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CNW"}
+      wtseries[intersect(hybcyc, which(d == i))] <- i + 9
+      if (i == 10) {names(wtseries)[intersect(hybant, which(d == i))] <- "ANE"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CNE"}
+      else if (i == 11) {names(wtseries)[intersect(hybant, which(d == i))] <- "AE"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CE"}
+      else if (i == 12) {names(wtseries)[intersect(hybant, which(d == i))] <- "ASE"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CSE"}
+      else if (i == 13) {names(wtseries)[intersect(hybant, which(d == i))] <- "AS"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CS"}
+      else if (i == 14) {names(wtseries)[intersect(hybant, which(d == i))] <- "ASW"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CSW"}
+      else if (i == 15) {names(wtseries)[intersect(hybant, which(d == i))] <- "AW"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CW"}
+      else if (i == 16) {names(wtseries)[intersect(hybant, which(d == i))] <- "ANW"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CNW"}
       else {names(wtseries)[intersect(hybant, which(d == i))] <- "AN"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CN"}
     }
     #indFlow <- which(abs(z) < 6 & f < 6)     
@@ -182,7 +183,7 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
       lamb.pattern <- which(wtseries.2 == y)
       #We subset the desired point from slp dataset: 
       grid.wt <- subsetDimension(grid.member, dimension = "time", indices = lamb.pattern)
-      suppressMessages(clim<- climatology(grid.wt))
+      suppressMessages(clim <- climatology(grid.wt))
       return(clim)
     })
     

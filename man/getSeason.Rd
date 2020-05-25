@@ -16,20 +16,30 @@ An integer vector with the season
 Retrieves the season encompassed by a station or grid object
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 data("NCEP_Iberia_hus850")
 getSeason(NCEP_Iberia_hus850) # Boreal winter (DJF)
 }
+}
 \seealso{
-Other get.helpers: \code{\link{get2DmatCoordinates}},
-  \code{\link{getCoordinates}}, \code{\link{getDim}},
-  \code{\link{getGridProj}},
-  \code{\link{getGridVerticalLevels}},
-  \code{\link{getGrid}}, \code{\link{getRefDates}},
-  \code{\link{getShape}}, \code{\link{getStationID}},
-  \code{\link{getTimeResolution}},
-  \code{\link{getVarNames}}, \code{\link{getWT}},
-  \code{\link{getYearsAsINDEX}}, \code{\link{setGridProj}},
-  \code{\link{typeofGrid}}, \code{\link{which.leap}}
+Other get.helpers: 
+\code{\link{get2DmatCoordinates}()},
+\code{\link{getCoordinates}()},
+\code{\link{getDim}()},
+\code{\link{getGridProj}()},
+\code{\link{getGridVerticalLevels}()},
+\code{\link{getGrid}()},
+\code{\link{getRefDates}()},
+\code{\link{getShape}()},
+\code{\link{getStationID}()},
+\code{\link{getTimeResolution}()},
+\code{\link{getVarNames}()},
+\code{\link{getWT}()},
+\code{\link{getYearsAsINDEX}()},
+\code{\link{setGridProj}()},
+\code{\link{typeofGrid}()},
+\code{\link{which.leap}()}
 }
 \author{
 J. Bedia

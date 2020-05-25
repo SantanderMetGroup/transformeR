@@ -26,9 +26,11 @@ lower temporal units (days, hours).
 \seealso{
 \code{\link{checkSeason}}, for a more specific -less strict- type of check
 
-Other check.helpers: \code{\link{checkDim}},
-  \code{\link{checkGrid}}, \code{\link{checkSeason}},
-  \code{\link{checkVarNames}}
+Other check.helpers: 
+\code{\link{checkDim}()},
+\code{\link{checkGrid}()},
+\code{\link{checkSeason}()},
+\code{\link{checkVarNames}()}
 }
 \author{
 J Bedia

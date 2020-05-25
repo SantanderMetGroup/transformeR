@@ -17,7 +17,8 @@
 #' @importFrom magrittr %<>%
 #' @author M. Iturbide, J. Bedia
 #' @family internal.helpers
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' data("EOBS_Iberia_tas")
 #' getShape(EOBS_Iberia_tas)
 #' a <- redim(EOBS_Iberia_tas)
@@ -39,6 +40,7 @@
 #' getShape(redim(VALUE_Iberia_pr, member = TRUE))
 #' # Use the argument 'loc=TRUE' to avoid this behaviour:
 #' getShape(redim(VALUE_Iberia_pr, member = TRUE, loc = TRUE))
+#' }
 
 redim <- function(grid,
                   member = TRUE,

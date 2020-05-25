@@ -62,7 +62,8 @@
 #'@references Trigo, R.M., DaCamara, C.C., 2000. Circulation weather types and their influence on the precipitation regime in Portugal. 
 #'Int. J. Climatol. 23. https://doi.org/10.1002/1097-0088(20001115)20:13%3C1559::AID-JOC555%3E3.0.CO;2-5
 
-#'@examples 
+#'@examples \donttest{
+#'require(climate4R.datasets)
 #'#Example of K-means clustering: 
 #'data(NCEP_Iberia_psl, package = "transformeR")
 #'clusters<- clusterGrid(NCEP_Iberia_psl, type="kmeans", centers=10, iter.max=1000)
@@ -76,6 +77,7 @@
 #'#Example of lamb clustering:
 #'data(NCEP_slp_2001_2010)
 #'clusters <- clusterGrid(grid = NCEP_slp_2001_2010, type = "lamb")
+#'}
 
 
 clusterGrid <- function(grid, 
@@ -87,9 +89,9 @@ clusterGrid <- function(grid,
  
   type <- match.arg(type, choices = c("kmeans", "hierarchical", "som", "lamb"))
   
-  if (is.null(newdata)){
+  if (is.null(newdata)) {
     #Checking grid dimensions
-    if (!is.na(suppressMessages(getShape(grid, "member"))) && getShape(grid, "member") > 1){
+    if (!is.na(suppressMessages(getShape(grid, "member"))) && getShape(grid, "member") > 1) {
       message("Clustering analysis will be done after Ensemble mean...")
       grid <- suppressMessages(aggregateGrid(grid = grid, aggr.mem = list(FUN = "mean", na.rm = TRUE)))
     }
@@ -98,10 +100,10 @@ clusterGrid <- function(grid,
     
     ### Circulation types
     #Special case: Lamb WT
-    if (type == "lamb"){
+    if (type == "lamb") {
       grid <- redim(grid, var = TRUE)
       n.var <- getShape(grid, "var")
-      if ((n.var) != 1){
+      if ((n.var) != 1) {
         stop("For lamb, only 'psl' variable is required Use subsetGrid to extract it")
       }
       if (!is.null(centers)) {
@@ -117,7 +119,7 @@ clusterGrid <- function(grid,
       #} 
     } else { #Rest of clustering algorithms
       #Scaling and combining data from all variables:
-      if (!(is.na(n.var))){
+      if (!(is.na(n.var))) {
         data.combined <- comb.vars(grid = grid, base = NULL, ref = NULL, var.names = var.names)
       }else {
         n.var <- 1
@@ -135,7 +137,7 @@ clusterGrid <- function(grid,
     }
     
     ### Weather types
-    if (is.null(y)){ 
+    if (is.null(y)) { 
       out.grid <- grid
     } else {
       checkTemporalConsistency(grid, y)
@@ -155,49 +157,49 @@ clusterGrid <- function(grid,
     }
   } else {
     #Clustering Analysis of 'newdata':
-    if(is.null(attr(grid, "wt.index"))){
+    if (is.null(attr(grid, "wt.index"))){
       stop("'grid' is not a clustering object.")
     }
-    if (!is.na(suppressMessages(getShape(newdata, "member"))) && getShape(newdata, "member") > 1){
+    if (!is.na(suppressMessages(getShape(newdata, "member"))) && getShape(newdata, "member") > 1) {
       message("Clustering analysis will be done after Ensemble mean...")
       newdata <- suppressMessages(aggregateGrid(grid = newdata, aggr.mem = list(FUN = "mean", na.rm = TRUE)))
     }
     #Checking consistency among input grids
     checkVarNames(newdata, grid)
-    if (getGridUnits(grid) != getGridUnits(newdata)){
+    if (getGridUnits(grid) != getGridUnits(newdata)) {
       stop("Inconsistent variable units among 'grid' and 'newdata'")
     }
     checkDim(newdata, grid, dimensions = c("var", "lat", "lon"))
     checkSeason(grid, newdata)
-    if (getTimeResolution(grid) != getTimeResolution(newdata)){
+    if (getTimeResolution(grid) != getTimeResolution(newdata)) {
       stop("Inconsistent time resolution among 'grid' and 'newdata'")
     }
     n.var <- suppressMessages(getShape(grid, "var")) 
     arg.list <- list(...)
     base <- arg.list[["base"]]
-    if (!is.null(base)){ 
-      if (!is.na(suppressMessages(getShape(base, "member"))) && getShape(base, "member") > 1){
+    if (!is.null(base)) { 
+      if (!is.na(suppressMessages(getShape(base, "member"))) && getShape(base, "member") > 1) {
         base <- suppressMessages(aggregateGrid(grid = base, aggr.mem = list(FUN = "mean", na.rm = TRUE)))
       }
       checkVarNames(newdata, base)
-      if (getGridUnits(base) != getGridUnits(newdata)){
+      if (getGridUnits(base) != getGridUnits(newdata)) {
         stop("Inconsistent variable units among 'base' and 'newdata'")
       }
       checkDim(newdata, base, dimensions = c("var", "lat", "lon"))
       checkSeason(base, newdata)
-      if (getTimeResolution(base) != getTimeResolution(newdata)){
+      if (getTimeResolution(base) != getTimeResolution(newdata)) {
         stop("Inconsistent time resolution among 'base' and 'newdata'")
       }
     }
     #Pre-processing in order to do clustering to ref CT's: 
-    if (n.var != 1){
+    if (n.var != 1) {
       mat.newdata <- comb.vars(grid = newdata, base = base, ref = NULL, var.names = getVarNames(newdata))
     } else {
       mat.newdata <- comb.vars(grid = newdata, base = base, ref = newdata, var.names = getVarNames(newdata))
     }
     dist.mat <- rdist(mat.newdata, attr(grid, "centroids"))
-    wt.index <- apply(dist.mat, MARGIN = 1, FUN ="which.min")
-    if (is.null(y)){
+    wt.index <- apply(dist.mat, MARGIN = 1, FUN = "which.min")
+    if (is.null(y)) {
       out.grid <- newdata
     } else {
       checkTemporalConsistency(newdata, y)
@@ -271,7 +273,7 @@ clusterGrid_2D <- function(grid.2D, type, centers, ...){
     arg.list[["x"]] <- grid.2D
     kmModel <- do.call("kmeans", arg.list)
     Y <- kmModel$centers
-    attr(Y, "dimnames")<- NULL
+    attr(Y, "dimnames") <- NULL
     attr(Y, "index") <- kmModel$cluster
     attr(Y, "withinss") <- kmModel$withinss
     attr(Y, "betweenss") <- kmModel$betweenss

@@ -31,6 +31,8 @@ If we would like to evaluate an expression such as A/(B + C), \code{gridArithmet
 must be applied two times (see examples).
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 data("CMIP5_Iberia_pr")
 data("EOBS_Iberia_pr")
 cmip5 <- interpGrid(CMIP5_Iberia_pr, getGrid(EOBS_Iberia_pr))
@@ -44,6 +46,7 @@ relative.delta <- gridArithmetics(A, B, B, C,
 # More than one step needed to evaluate an expression of the type B/(A - B):
 grid1 <- gridArithmetics(A, B, operator = "-")
 newgrid <- gridArithmetics(B, grid1, operator = "/")
+}
 }
 \author{
 M. Iturbide

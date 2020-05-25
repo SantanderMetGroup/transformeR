@@ -41,19 +41,21 @@
 #' @importFrom stats na.omit
 #' @importFrom utils tail
 #' @author J. Bedia
-#' @seealso \code{\link{plotClimatology}}, for plotting climatologies.
+#' @seealso \code{\link[visualizeR]{spatialPlot}}, for plotting climatologies.
 #' \code{\link{persistence}}, for a special case in which the temporal autocorrelation function is applied.
 #' @export
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' # Station data:
 #' # Mean surface temperature
 #' data("VALUE_Iberia_tas")
 #' st_mean_clim <- climatology(VALUE_Iberia_tas)
 #' str(st_mean_clim)
-#' plotClimatology(st_mean_clim, backdrop.theme = "coastline")
+#' require(visualizeR)
+#' spatialPlot(st_mean_clim, backdrop.theme = "coastline")
 #' # Standard deviation of surface temperature
 #' st_sd_clim <- climatology(VALUE_Iberia_tas, clim.fun = list(FUN = sd, na.rm = TRUE))
-#' plotClimatology(st_sd_clim, backdrop.theme = "coastline")
+#' spatialPlot(st_sd_clim, backdrop.theme = "coastline")
 #' 
 #' # July surface temp forecast climatology
 #' data("CFS_Iberia_tas")
@@ -68,6 +70,7 @@
 #'                                 by.member = TRUE)
 #' str(t_mean_9mem.clim$Data)
 #' # 9 different climatologies, one for each member
+#' }
 
 climatology <- function(grid,
                         clim.fun = list(FUN = "mean", na.rm = TRUE),
@@ -127,7 +130,9 @@ climatology <- function(grid,
 #' @importFrom stats cor.test
 #' @author J Bedia
 #' @seealso \code{\link{climatology}}, for computing climatological trend maps from grids
-#' @examples 
+#' @examples \donttest{
+#' require(climate4R.datasets)
+#' require(visualizeR)
 #' # Simulate a positive trend
 #' set.seed(1)
 #' ts <- runif(min = 21, max = 23.5, n = 100) + seq(.1, .15, length.out = 100) * 10
@@ -141,16 +146,17 @@ climatology <- function(grid,
 #' dates <- getRefDates(EOBS_Iberia_tas)
 #' tau.estimate <- climatology(EOBS_Iberia_tas,
 #'                             clim.fun = list(FUN = "trend.1D", dates = dates, method = "kendall"))
-#' plotClimatology(tau.estimate)
+#' spatialPlot(tau.estimate, backdrop.theme = "coastline")
 #' # Adding significant trend points is usually needed: 
 #' pval.estimate <- climatology(EOBS_Iberia_tas,
 #'                              clim.fun = list(FUN = "trend.1D",
 #'                                              dates = dates,
 #'                                              method = "kendall",
 #'                                              return.pvalue = TRUE))
-#' sig.points <- transformeR:::map.stippling(clim = pval.estimate, threshold = 0.05, condition = "LT", 
-#'                             pch = 19, cex = .25, col = "purple")
-#' plotClimatology(tau.estimate, sp.layout = list(sig.points))
+#' sig.points <- visualizeR::map.stippling(clim = pval.estimate, threshold = 0.05, condition = "LT", 
+#'                                         pch = 19, cex = .25, col = "purple")
+#' spatialPlot(tau.estimate, backdrop.theme = "coastline", sp.layout = list(sig.points))
+#' }
 
 trend.1D <- function(ts, dates, method = c("pearson","spearman","kendall"),
                      return.pvalue = FALSE, conf.level = 0.95) {

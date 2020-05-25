@@ -48,7 +48,8 @@
 #' @author J Bedia
 #' @export
 #' @seealso \code{\link{filterGrid}} for the application of moving averages to grids.
-#' @examples 
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' data("EOBS_Iberia_tas")
 #' 
 #' ## DAILY CYCLE (example with winter EOBS mean temperature)
@@ -103,6 +104,7 @@
 #' attributes(mcyc$Variable)$'temporal.cycle::time.frame'
 #' # aggregation function:
 #' attributes(mcyc$Variable)$'temporal.cycle::fun'
+#' }
 
 temporalCycleGrid <- function(grid, time.frame = c("daily", "monthly"),
                           clim.fun = "mean", ...,
