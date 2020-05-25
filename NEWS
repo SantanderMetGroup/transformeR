@@ -120,4 +120,5 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
 
 ## 2.0.1 (in devel)
  * Removed draw.world.lines internal utility and associated vector layer (moved to visualizeR)
+ * Removed dependency from 'raster' (grid2mopa moved to mopa pkg)
  * Added 'simulate' parameter in binaryGrid function
