@@ -50,7 +50,7 @@ The function works for regular and irregular grids as downloaded from \pkg{loade
 \examples{
 \donttest{
 require(climate4R.datasets)
-data(VALUE_Iberia_pr$Data)
+data(VALUE_Iberia_pr)
 # Take a look at the data:
 head(VALUE_Iberia_pr$Data)
 # Convert to complete binary variable:
