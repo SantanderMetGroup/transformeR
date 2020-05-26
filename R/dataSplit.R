@@ -28,7 +28,8 @@
 #' @return A list of folds containing the x and y splitted.
 #' @author J. Bano-Medina
 #' @export
-#' @examples 
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' x <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 #' y <- VALUE_Iberia_pr
 #' ### Split the data in train and test (f < 1)###
@@ -62,7 +63,8 @@
 #' str(data.splitted[[2]]$train$y$Dates) # 2 folds out of 3 for train  
 #' str(data.splitted[[2]]$test$y$Dates)  # 1 fold out of 3 for test
 #' str(data.splitted[[3]]$train$y$Dates) # 2 folds out of 3 for train  
-#' str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test
+#' str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test 
+#' }
 
 dataSplit <- function(x, y, f = 3/4, type = "random") {
     if (is.numeric(f)) {
