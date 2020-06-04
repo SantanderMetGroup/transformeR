@@ -535,7 +535,7 @@ checkVarNames <- function(..., check.order = TRUE) {
 }
 
 #' @title Temporal consistency check across input grids
-#' @description Check the consistency of temporal aspects acroos input climate4R objects
+#' @description Check the consistency of temporal aspects across input climate4R objects
 #' @param ... Input grids to be compared. Either as a list, or comma sepparated
 #' @return In case of inconsistency of any of the inputs grids, the function stops the execution 
 #' of the current expression, with an error message.
