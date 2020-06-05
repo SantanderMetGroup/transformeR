@@ -125,3 +125,9 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
  * Added 'simulate' parameter in `binaryGrid` function
  * Force nearest-neighbour application among non-overlapping domains in `interpGrid`
  * Other minor documentation updates
+
+## 2.0.2 (in devel)
+
+ * Minor changes and documentation updates
+
+
