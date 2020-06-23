@@ -14,7 +14,7 @@ In case of inconsistency of any of the inputs grids, the function stops the exec
 of the current expression, with an error message.
 }
 \description{
-Check the consistency of temporal aspects acroos input climate4R objects
+Check the consistency of temporal aspects across input climate4R objects
 }
 \details{
 The function takes into account the temporal resolution of the input grids via 

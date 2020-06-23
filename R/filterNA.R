@@ -25,7 +25,8 @@
 #' @author J. Bano-Medina, J. Bedia
 #' @family downscaling.helpers
 #' @export
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' # Check if the dataset contains missing values (YES):
 #' anyNA(VALUE_Iberia_pr$Data)
 #' getShape(VALUE_Iberia_pr)
@@ -33,11 +34,11 @@
 #' # Check if the dataset contains missing values (NO):
 #' anyNA(na.filtered$Data)
 #' getShape(na.filtered)
+#' }
 
 filterNA <- function(grid) {
-        grid <- grid %>% redim(drop = TRUE)
-        if (!is.na(getShape(grid,"member"))) stop("No multimember objects allowed due to possible temporal inconsistencies")
-        if (!is.na(getShape(grid,"var"))) stop("No multigrid objects allowed due to possible temporal inconsistencies")
+    if (!is.na(getShape(grid,"member"))) stop("No multimember objects allowed due to possible temporal inconsistencies")
+    if (!is.na(getShape(grid,"var"))) stop("No multigrid objects allowed due to possible temporal inconsistencies")
     if (!anyNA(grid$Data)) {
         message("NOTE: No missing values were found in the input grid")
     } else {

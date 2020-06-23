@@ -118,5 +118,10 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
  * New helper `fillGridDates` for filling dataset missing dates
  * Other minor bug fixes, documentation updates and enhancements
 
-## 2.0.1 (in devel)
+## 2.0.1 (04 Jun 2020)
+
  * Removed draw.world.lines internal utility and associated vector layer (moved to visualizeR)
+ * Removed dependency from 'raster' (grid2mopa moved to mopa pkg)
+ * Added 'simulate' parameter in `binaryGrid` function
+ * Force nearest-neighbour application among non-overlapping domains in `interpGrid`
+ * Other minor documentation updates
