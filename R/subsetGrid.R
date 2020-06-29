@@ -183,6 +183,7 @@ subsetGrid <- function(grid,
 
 subsetVar <- function(grid, var) {
     varnames <- getVarNames(grid)
+    levelnames <- grid[["Variable"]][["level"]]
     if (length(varnames) == 1) {
         message("NOTE: Variable subsetting was ignored: Input grid is not a multigrid object")
         return(grid)
@@ -197,14 +198,12 @@ subsetVar <- function(grid, var) {
     # Recovering attributes
     dimNames <- getDim(grid)
     var.dim <- grep("var", dimNames)
-    grid$Data <- asub(grid$Data, idx = var.idx, dims = var.dim, drop = FALSE)                  
-    grid$Variable$varName <- grid$Variable$varName[var.idx]
-    grid$Variable$level <- grid$Variable$level[var.idx]
+    grid$Data <- asub(grid$Data, idx = var.idx, dims = var.dim, drop = FALSE)   
     attrs <- attributes(grid$Variable)
-    add.attr <- attrs[which(names(attrs) == "names")]
-    attrs <- attrs[setdiff(1:length(attrs),which(names(attrs) == "names"))]
-    attr.ind <- which(sapply(attrs, "length") == length(varnames))
-    attributes(grid$Variable) <- c(lapply(attrs[attr.ind], "[", var.idx), add.attr)
+    attrs.aux <- lapply(attrs, "[", var.idx)
+    grid$Variable <- list(varName = varnames[var.idx], level = levelnames[var.idx])
+    for(x in 1:length(attrs.aux)) attr(grid[["Variable"]], names(attrs.aux)[x]) <- attrs.aux[[x]]
+    names(grid$Variable) <- c("varName", "level")
     grid$Dates <- if (length(var.idx) > 1L) {
         grid$Dates[var.idx]
     } else {
