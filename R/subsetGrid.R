@@ -83,6 +83,7 @@
 #' @export
 #' @family subsetting
 #' @examples \dontrun{
+#' require(climate4R.datasets)
 #' # Example 1 - Spatial / member subset
 #' data("CFS_Iberia_tas")
 #' # Selection of a smaller domain over the Iberian Peninsula and members 3 and 7
@@ -181,6 +182,7 @@ subsetGrid <- function(grid,
 
 subsetVar <- function(grid, var) {
     varnames <- getVarNames(grid)
+    levelnames <- grid[["Variable"]][["level"]]
     if (length(varnames) == 1) {
         message("NOTE: Variable subsetting was ignored: Input grid is not a multigrid object")
         return(grid)
@@ -195,13 +197,12 @@ subsetVar <- function(grid, var) {
     # Recovering attributes
     dimNames <- getDim(grid)
     var.dim <- grep("var", dimNames)
-    grid$Data <- asub(grid$Data, idx = var.idx, dims = var.dim, drop = FALSE)                  
-    grid$Variable$varName <- grid$Variable$varName[var.idx]
-    grid$Variable$level <- grid$Variable$level[var.idx]
+    grid$Data <- asub(grid$Data, idx = var.idx, dims = var.dim, drop = FALSE)   
     attrs <- attributes(grid$Variable)
-    attr.ind <- which(sapply(attrs, "length") == length(varnames))
-    add.attr <- attrs[setdiff(1:length(attrs), attr.ind)]
-    attributes(grid$Variable) <- c(lapply(attrs[attr.ind], "[", var.idx), add.attr)
+    attrs.aux <- lapply(attrs, "[", var.idx)
+    grid$Variable <- list(varName = varnames[var.idx], level = levelnames[var.idx])
+    for(x in 1:length(attrs.aux)) attr(grid[["Variable"]], names(attrs.aux)[x]) <- attrs.aux[[x]]
+    names(grid$Variable) <- c("varName", "level")
     grid$Dates <- if (length(var.idx) > 1L) {
         grid$Dates[var.idx]
     } else {
@@ -574,9 +575,9 @@ subsetStation <- function(grid, station.id = NULL) {
       if (!all(station.id %in% station0)) stop("Station ID selection does not exist in the data")      
       id.ind <- sapply(1:length(station.id),FUN = function(z) {which(station0 == station.id[z])})
       grid %<>% subsetDimension(dimension = "loc", indices = id.ind)
-      if ("Metadata" %in% names(grid)) {
-        grid$Metadata %<>% lapply(FUN = "[", id.ind)
-      }      
+      # if ("Metadata" %in% names(grid)) {
+      #   grid$Metadata %<>% lapply(FUN = "[", id.ind)
+      # }      
       return(grid)
 }
 
@@ -603,14 +604,17 @@ subsetStation <- function(grid, station.id = NULL) {
 #' @keywords internal
 #' @export
 #' @family subsetting
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' # Example - Member subset
 #' data("CFS_Iberia_tas")
 #' # Selection of members 3 and 7
 #' sub <- subsetDimension(CFS_Iberia_tas,
-#'                    dimension = "member",
-#'                    indices = 1:2)
-#' plotClimatology(climatology(sub), backdrop.theme = "coastline")
+#'                        dimension = "member",
+#'                        indices = 1:2)
+#' require(visualizeR)
+#' spatialPlot(climatology(sub), backdrop.theme = "coastline")
+#' }
 
 subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
     if (is.null(indices)) {

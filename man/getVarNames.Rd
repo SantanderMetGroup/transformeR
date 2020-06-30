@@ -37,6 +37,8 @@ The long name is an optional attribute of a grid (not so the short name), and it
 In this case, the function returns \code{NULL}.
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 data("CFS_Iberia_pr")
 getVarNames(CFS_Iberia_pr)
 grid <- CFS_Iberia_pr
@@ -55,17 +57,25 @@ data("VALUE_Iberia_tas")
 ## The long name is an optional attribute, and might be undefined:
 getVarNames(VALUE_Iberia_tas, "long")
 }
+}
 \seealso{
-Other get.helpers: \code{\link{get2DmatCoordinates}},
-  \code{\link{getCoordinates}}, \code{\link{getDim}},
-  \code{\link{getGridProj}},
-  \code{\link{getGridVerticalLevels}},
-  \code{\link{getGrid}}, \code{\link{getRefDates}},
-  \code{\link{getSeason}}, \code{\link{getShape}},
-  \code{\link{getStationID}},
-  \code{\link{getTimeResolution}}, \code{\link{getWT}},
-  \code{\link{getYearsAsINDEX}}, \code{\link{setGridProj}},
-  \code{\link{typeofGrid}}, \code{\link{which.leap}}
+Other get.helpers: 
+\code{\link{get2DmatCoordinates}()},
+\code{\link{getCoordinates}()},
+\code{\link{getDim}()},
+\code{\link{getGridProj}()},
+\code{\link{getGridVerticalLevels}()},
+\code{\link{getGrid}()},
+\code{\link{getRefDates}()},
+\code{\link{getSeason}()},
+\code{\link{getShape}()},
+\code{\link{getStationID}()},
+\code{\link{getTimeResolution}()},
+\code{\link{getWT}()},
+\code{\link{getYearsAsINDEX}()},
+\code{\link{setGridProj}()},
+\code{\link{typeofGrid}()},
+\code{\link{which.leap}()}
 }
 \author{
 J Bedia

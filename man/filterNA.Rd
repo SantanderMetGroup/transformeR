@@ -19,6 +19,8 @@ Removes the dates for all grid points whenever there exists missing values (i.e.
 The function also takes care of adjusting dates and other relevant metadata (via the internal \code{\link{subsetDimension}}).
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 # Check if the dataset contains missing values (YES):
 anyNA(VALUE_Iberia_pr$Data)
 getShape(VALUE_Iberia_pr)
@@ -27,9 +29,11 @@ na.filtered <- filterNA(VALUE_Iberia_pr)
 anyNA(na.filtered$Data)
 getShape(na.filtered)
 }
+}
 \seealso{
-Other downscaling.helpers: \code{\link{convert2bin}},
-  \code{\link{makeMultiGrid}}
+Other downscaling.helpers: 
+\code{\link{convert2bin}()},
+\code{\link{makeMultiGrid}()}
 }
 \author{
 J. Bano-Medina, J. Bedia

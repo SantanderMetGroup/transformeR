@@ -4,8 +4,17 @@
 \alias{gridScale.type}
 \title{Local scaling type internal}
 \usage{
-gridScale.type(clim, n.times, ind.time, Xc, Xref, type, lapply_fun,
-  base.std, ref.std)
+gridScale.type(
+  clim,
+  n.times,
+  ind.time,
+  Xc,
+  Xref,
+  type,
+  lapply_fun,
+  base.std,
+  ref.std
+)
 }
 \description{
 Internal for center/standardize/ratio local scaling

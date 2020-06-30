@@ -30,6 +30,8 @@
 #' @param bilin.method Algorithm chosen for bilinear interpolation. Two options available: \code{"akima"} uses \code{\link[akima]{interp}} and
 #' \code{"fields"} (default) the \code{\link[fields]{interp.surface.grid}} algorithm. In case any missing values exist in the input data matrix, 
 #' the \code{"fields"} option, able to handle missing values, need to be used. Otherwise, the \code{"akima"} option performs much faster.
+#' @param force.non.overlapping Optional logical flag for \code{method = "nearest"} (otherwise ignored). If set to \code{TRUE},
+#' the nerest neighbour interpolation will be applied over non-overlapping grid domains (See the Note below). Default to \code{FALSE}. 
 #' @template templateParallelParams 
 #' @return An interpolated object preserving the structure of the input
 #' @details  The output has special attributes in the \code{xyCoords} element that indicate that the object
@@ -41,20 +43,23 @@
 #' @param ... Further arguments for bilinear interpolation that are passed to function \code{\link[akima]{interp}} 
 #' from package \pkg{\link[akima]{akima}}.
 #' @note To avoid unnecessary NA values, the function will not extrapolate using a new grid outside the
-#' current extent of the dataset, returning an error message.
+#' current extent of the dataset, returning an error message. This behaviour can be overriden with the \code{force.non.overlapping} 
+#' option when using the nearest-neighbor method. 
 #' @author J. Bedia, S. Herrera, M. de Felice, M. Iturbide
 #' @export
-#' @examples 
+#' @examples \donttest{
+#' require(climate4R.datasets)
+#' require(visualizeR)
 #' # boreal winter (DJF) precipitation data for the Iberian Peninsula and the period 1983-2002
 #' data(EOBS_Iberia_pr)
-#' plotClimatology(climatology(EOBS_Iberia_pr))
+#' spatialPlot(climatology(EOBS_Iberia_pr))
 #' # Bilinear interpolation to a regular grid of 0.5 degree 
 #' # resolution centered in the Iberian Peninsula
 #' t1 <- interpGrid(EOBS_Iberia_pr, new.coordinates = list(x = seq(-10,5,.5),
 #'                                                         y = seq(36,44,.5)),
 #'                  method = "bilinear",
 #'                  bilin.method = "akima")
-#' plotClimatology(climatology(t1), backdrop.theme = "countries")
+#' spatialPlot(climatology(t1), backdrop.theme = "countries")
 #' # New attributes indicate that the data have been interpolated:
 #' attributes(t1$xyCoords)
 #' 
@@ -62,34 +67,36 @@
 #' data(NCEP_Iberia_pr)
 #' t2 <- interpGrid(EOBS_Iberia_pr, new.coordinates = getGrid(NCEP_Iberia_pr),
 #'                  method = "nearest")
-#' plotClimatology(climatology(t2), backdrop.theme = "countries")
+#' spatialPlot(climatology(t2), backdrop.theme = "countries")
 #' 
 #' #From station data to grid
 #' data(VALUE_Iberia_pr)
-#' plotClimatology(climatology(VALUE_Iberia_pr), backdrop.theme = "countries")
+#' spatialPlot(climatology(VALUE_Iberia_pr), backdrop.theme = "countries")
 #' t3 <- interpGrid(VALUE_Iberia_pr, new.coordinates = getGrid(EOBS_Iberia_pr),
 #'                  method = "bilinear")
-#' plotClimatology(climatology(t3), backdrop.theme = "countries")
+#' spatialPlot(climatology(t3), backdrop.theme = "countries")
 #' 
 #' #From grid to station data
 #' t4 <- interpGrid(EOBS_Iberia_pr, new.coordinates = getGrid(VALUE_Iberia_pr),
 #'                  method = "nearest")
-#' plotClimatology(climatology(t4), backdrop.theme = "countries")
+#' spatialPlot(climatology(t4), backdrop.theme = "countries")
 #' t5 <- interpGrid(EOBS_Iberia_pr, 
-#'                new.coordinates = list(x = c(-6.7, -4.5, 2.5), 
-#'                                       y = c(41.8, 40, 39)))
-#' plotClimatology(climatology(t5), backdrop.theme = "countries")
+#'                  new.coordinates = list(x = c(-6.7, -4.5, 2.5), 
+#'                                         y = c(41.8, 40, 39)))
+#' spatialPlot(climatology(t5), backdrop.theme = "countries")
 #' 
 #' #From grid to a single point or station
 #' t6 <- interpGrid(grid = EOBS_Iberia_pr, 
 #'                  new.coordinates = list(x = -6.7, y = 41.8))
 #' str(t6$Data)
+#' }
 
 
 interpGrid <- function(grid,
                        new.coordinates = list(x = NULL, y = NULL),
-                       method = c("nearest", "bilinear"),
+                       method = "nearest",
                        bilin.method = "fields",
+                       force.non.overlapping = FALSE,
                        parallel = FALSE,
                        max.ncores = 16,
                        ncores = NULL,
@@ -101,6 +108,9 @@ interpGrid <- function(grid,
       method <- match.arg(method, choices = c("nearest", "bilinear"))
       if (method == "nearest" & !is.null(bilin.method)) message("NOTE: argument 'bilin.method' ignored for nearest neighbour interpolation")
       if (method == "bilinear") bilin.method <- match.arg(bilin.method, choices = c("akima", "fields"))
+      stopifnot(is.logical(force.non.overlapping))
+      if (method != "nearest") force.non.overlapping <- FALSE
+      if (isTRUE(force.non.overlapping)) warning("Nearest-neighbour method applied over non-overlapping domains")
       parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
       # redim object
       grid <- redim(grid, runtime = FALSE)
@@ -109,19 +119,19 @@ interpGrid <- function(grid,
       time.ind <- grep("^time", getDim(grid))
       n.times <- getShape(grid, "time")
       lon.ind <- grep("^lon", getDim(grid))
-      lat.ind <- grep("^lat", getDim(grid))
+      # lat.ind <- grep("^lat", getDim(grid))
       coords <- getCoordinates(grid)
       #Old coordinates
-      if(is.data.frame(coords)){
+      if (is.data.frame(coords)) {
             x <- coords[,1]
             y <- coords[,2]
             bilin.method <- "akima"
             message("NOTE: Input data corresponds to an irregular grid, bilin.method = 'akima'")
             mess <- TRUE
-      }else if("lon" %in% names(coords) & !"lon" %in% names(new.coordinates)){
+      } else if ("lon" %in% names(coords) & !"lon" %in% names(new.coordinates)) {
             x <- coords$lon
             y <- coords$lat
-      }else if(!is.data.frame(coords)){
+      } else if (!is.data.frame(coords)) {
             x <- list(x = outer(coords$y*0, coords$x, FUN = "+"),
                       y = outer(coords$y, coords$x*0, FUN = "+"))$x
             y <- list(x = outer(coords$y*0, coords$x, FUN = "+"),
@@ -130,8 +140,8 @@ interpGrid <- function(grid,
       #New coordinates
       if (is.null(new.coordinates)) {
             new.coordinates <- getGrid(grid)
-      } else if (!isRegular(new.coordinates)){
-            if(mess && method == "bilinear") stop("Both original and new coordinates are irregular: bilinear method is not implemented for this case")
+      } else if (!isRegular(new.coordinates)) {
+            if (mess && method == "bilinear") stop("Both original and new coordinates are irregular: bilinear method is not implemented for this case")
             dimNames.ref <- c("member", "time", "loc")
             tab <- c("member", "time", "level", "loc")
             output.coords <- setNames(data.frame(cbind("x" = new.coordinates$x, "y" = new.coordinates$y)), nm = c("x", "y"))
@@ -147,13 +157,20 @@ interpGrid <- function(grid,
                   if (length(new.coordinates$x) != 2 | new.coordinates$x[2] < new.coordinates$x[1]) {
                         stop("Invalid grid definition in X")
                   }
-                  if ((max(c(new.coordinates$x[1],new.coordinates$x[2])) < min(x)) | (min(c(new.coordinates$x[1],new.coordinates$x[2])) > max(x))) {
+                  if (((max(c(new.coordinates$x[1],
+                             new.coordinates$x[2])) < min(x)) | (min(c(new.coordinates$x[1],
+                                                                       new.coordinates$x[2])) > max(x))) & (!force.non.overlapping)) {
                         stop("The input and output grids do not overlap\nCheck the input and output grid definitions")
                   }
                   if (new.coordinates$x[1] < floor(min(x)) | new.coordinates$x[2] > ceiling(max(x))) {
                         warning("The new longitudes are outside the data extent")
                   }
-                  new.coordinates$x <- do.call("seq", as.list(c(new.coordinates$x, attr(new.coordinates, 'resX'))))
+                  if (length(unique(new.coordinates$x)) == 1L) { # Single pixel width latitudinal band
+                        res <- 0 
+                  } else {
+                        res <- attr(new.coordinates, 'resX')
+                  }
+                  new.coordinates$x <- do.call("seq", as.list(c(new.coordinates$x, res)))
             } else {
                   new.coordinates$x <- new.coordinates$x
             }
@@ -177,13 +194,20 @@ interpGrid <- function(grid,
                   if (length(new.coordinates$y) != 2 | new.coordinates$y[2] < new.coordinates$y[1]) {
                         stop("Invalid grid definition in Y")
                   }
-                  if ((max(c(new.coordinates$y[1],new.coordinates$y[2])) < min(y)) | (min(c(new.coordinates$y[1],new.coordinates$y[2])) > max(y))) {
+                  if (((max(c(new.coordinates$y[1],
+                             new.coordinates$y[2])) < min(y)) | (min(c(new.coordinates$y[1],
+                                                                       new.coordinates$y[2])) > max(y))) & (!force.non.overlapping)) {
                         stop("The input and output grids do not overlap\nCheck the input and output grid definitions")
                   }
                   if (new.coordinates$y[1] < floor(min(y)) | new.coordinates$y[2] > ceiling(max(y))) {
                         warning("The new latitudes are outside the data extent")
                   }
-                  new.coordinates$y <- do.call("seq", as.list(c(new.coordinates$y, attr(new.coordinates, 'resY'))))
+                  if (length(unique(new.coordinates$y)) == 1L) { # Single pixel height longitudinal band
+                        res <- 0 
+                  } else {
+                        res <- attr(new.coordinates, 'resY')
+                  } 
+                  new.coordinates$y <- do.call("seq", as.list(c(new.coordinates$y, res)))
             } else {
                   new.coordinates$y <- new.coordinates$y
             } 
@@ -217,28 +241,28 @@ interpGrid <- function(grid,
             ind.NN.x <- matrix(nrow = length(new.coordinates$x), ncol = length(new.coordinates$y))
             ind.NN.y <- ind.NN.x
             for (k in 1:length(new.coordinates$x)) {
-                  if(isRegular(new.coordinates)){
+                  if (isRegular(new.coordinates)) {
                         for (l in 1:length(new.coordinates$y)) {
                               distK <- sqrt((x - new.coordinates$x[k]) ^ 2 + (y - new.coordinates$y[l]) ^ 2)
                               aux.ind <- which(distK == min(distK), arr.ind = TRUE)
-                              if(!is.data.frame(coords)){
+                              if (!is.data.frame(coords)) {
                                     aux.ind <- matrix(aux.ind, ncol = 2)
                                     ind.NN.x[k,l] <- aux.ind[1,2]
                                     ind.NN.y[k,l] <- aux.ind[1,1] 
-                              }else{
+                              } else {
                                     ind.NN.x[k,l] <- 1
                                     ind.NN.y[k,l] <- aux.ind
                               }
                               
                         }
-                  }else{
+                  } else {
                         distK <- sqrt((x - new.coordinates$x[k]) ^ 2 + (y - new.coordinates$y[k]) ^ 2)
                         aux.ind <- which(distK == min(distK), arr.ind = TRUE)
                         # if(nrow(aux.ind))
-                        if(!is.data.frame(coords)){
+                        if (!is.data.frame(coords)) {
                               ind.NN.x[k,k] <- aux.ind[1,2]
                               ind.NN.y[k,k] <- aux.ind[1,1] 
-                        }else{
+                        } else {
                               ind.NN.x[k,k] <- 1
                               ind.NN.y[k,k] <- aux.ind[1]
                         }
@@ -247,7 +271,7 @@ interpGrid <- function(grid,
       }
       message("[", Sys.time(), "] Performing ", method, " interpolation... may take a while")
       aux.list <- list()
-      any_is_NA_or_NAN <- any(!is.finite(grid$Data))
+      # any_is_NA_or_NAN <- any(!is.finite(grid$Data))
       # if (any_is_NA_or_NAN && bilin.method == "akima") message("The input grid contains missing values\nConsider using 'bilin.method=\"fields\"' instead")
       for (i in 1:n.members) {
             if (n.members > 1) message("[", Sys.time(), "] Interpolating member ", i, " out of ", n.members)
@@ -258,17 +282,17 @@ interpGrid <- function(grid,
                               int[,l,k] <- grid$Data[i,,ind.NN.y[k,l],ind.NN.x[k,l]]
                         }
                   }
-                  if(!isRegular(new.coordinates)) int <- array3Dto2Dmat.stations(int)
+                  if (!isRegular(new.coordinates)) int <- array3Dto2Dmat.stations(int)
                   aux.list[[i]] <- int
                   int <- NULL
             }
             if (method == "bilinear") {
-                  if(isRegular(new.coordinates)) dimNames.ref <- c("member", "time", "lon", "lat")
-                  if(!isRegular(grid) && bilin.method == "fields"){
+                  if (isRegular(new.coordinates)) dimNames.ref <- c("member", "time", "lon", "lat")
+                  if (!isRegular(grid) && bilin.method == "fields") {
                         irr.data <- adrop(asub(grid$Data, idx = i, dims = mem.ind, drop = FALSE), drop = lon.ind)
                         z.mem <- mat2Dto3Darray.stations(asub(irr.data, idx = i, dims = mem.ind), x, y)
                         z.mem <- unname(abind(z.mem, along = 0))
-                  }else{
+                  } else {
                         z.mem <- asub(grid$Data, idx = i, dims = mem.ind, drop = FALSE)
                   }
                   interp.list <- apply_fun(1:n.times, function(j) { # iterates in time (inefficient!, to be changed)
@@ -283,10 +307,10 @@ interpGrid <- function(grid,
                               # if (!any_is_NA_or_NAN & i == 1 & j == 1) message("NOTE: No missing values present in the input grid\nConsider using the option bilin.method=\"akima\" for improved speed")
                               arg.list.fields <- list()
                               arg.list.fields$obj <- list("x" = coords$x, "y" = coords$y, "z" = t(z))
-                              if(!isRegular(new.coordinates)){
+                              if (!isRegular(new.coordinates)) {
                                     arg.list.fields$loc <- cbind(new.coordinates$x, new.coordinates$y)
                                     int <- do.call("interp.surface", arg.list.fields)
-                              }else{
+                              } else {
                                     arg.list.fields$grid.list <- list(x = new.coordinates$x, y = new.coordinates$y)
                                     int <- do.call("interp.surface.grid", arg.list.fields)$z  
                               }

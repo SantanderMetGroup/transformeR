@@ -27,7 +27,7 @@
 #' @param skip.temporal.check Logical. Should temporal matching check of input fields be skipped?
 #' Default to \code{FALSE}. This option can be useful in order to construct multigrids 
 #' from grids of different temporal characteristics. See details.
-#'  (e.g., a multi-seasonal multifield), to be passed to \code{\link{plotClimatology}}
+#'  (e.g., a multi-seasonal multifield), to be passed to \code{\link[visualizeR]{spatialPlot}}
 #' @return A (multimember) multigrid object encompassing the different input (multimember) grids
 #' @details The function makes a number of checks in order to test the spatiotemporal compatibility of the input multi-member grids.
 #'  Regarding the temporal concordance, it can be skipped by setting the argument \code{skip.temporal.check} to \code{TRUE}.
@@ -63,7 +63,8 @@
 #' @author J. Bedia 
 #' @seealso \code{\link{interpGrid}} for spatial consistency of input grids.
 #' 
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' # Creation of a multigrid from three different grids:
 #' data(NCEP_Iberia_ta850)
 #' data(NCEP_Iberia_hus850)
@@ -91,9 +92,10 @@
 #' # their units are compatible.
 #' # subsetGrid and visualizeR::spatialPlot can be used to this aim, if needed.
 #' # For instance:
-#' # tas <- subsetGrid(mm.mf, var = "tas")
-#' # require(visualizeR)
-#' # spatialPlot(climatology(tas), backdrop.theme = "coastline", rev.colors = TRUE)
+#' tas <- subsetGrid(mm.mf, var = "tas")
+#' require(visualizeR)
+#' spatialPlot(climatology(tas), backdrop.theme = "coastline", rev.colors = TRUE)
+#' }
 
 makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = FALSE) {
     field.list <- list(...)
@@ -112,7 +114,7 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
             # field.list[[1]]$Dates <- list(field.list[[1]]$Dates)
         } else {
             ## Climatologies ----------
-            field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], drop = TRUE))
+            # field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], drop = TRUE))
             field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], var = TRUE))
             ### check var dimension position
             varind <- unique(vapply(1:length(field.list), FUN.VALUE = integer(1), function(x) which(getDim(field.list[[x]]) == "var")))

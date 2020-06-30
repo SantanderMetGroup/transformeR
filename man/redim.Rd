@@ -4,8 +4,14 @@
 \alias{redim}
 \title{Complete missing dimensions of Grid objects}
 \usage{
-redim(grid, member = TRUE, runtime = FALSE, var = FALSE,
-  loc = FALSE, drop = FALSE)
+redim(
+  grid,
+  member = TRUE,
+  runtime = FALSE,
+  var = FALSE,
+  loc = FALSE,
+  drop = FALSE
+)
 }
 \arguments{
 \item{member}{logical. Add 'member' dimension (default = TRUE)}
@@ -32,6 +38,8 @@ The function does not handle multigrids (i.e. \code{"var"} dimension).
  Thus, multigrids need to be subsetted along \code{"var"} prior to redimensioning via \code{\link{subsetGrid}}.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 data("EOBS_Iberia_tas")
 getShape(EOBS_Iberia_tas)
 a <- redim(EOBS_Iberia_tas)
@@ -54,15 +62,18 @@ getShape(redim(VALUE_Iberia_pr, member = TRUE))
 # Use the argument 'loc=TRUE' to avoid this behaviour:
 getShape(redim(VALUE_Iberia_pr, member = TRUE, loc = TRUE))
 }
+}
 \seealso{
-Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
-  \code{\link{array3Dto2Dmat}},
-  \code{\link{bindGrid.member}},
-  \code{\link{bindGrid.spatial}},
-  \code{\link{bindGrid.time}},
-  \code{\link{grid3Dto2Dmatrix}},
-  \code{\link{mat2Dto3Darray.stations}},
-  \code{\link{sortDim.spatial}}, \code{\link{sortDim.time}}
+Other internal.helpers: 
+\code{\link{array3Dto2Dmat.stations}()},
+\code{\link{array3Dto2Dmat}()},
+\code{\link{bindGrid.member}()},
+\code{\link{bindGrid.spatial}()},
+\code{\link{bindGrid.time}()},
+\code{\link{grid3Dto2Dmatrix}()},
+\code{\link{mat2Dto3Darray.stations}()},
+\code{\link{sortDim.spatial}()},
+\code{\link{sortDim.time}()}
 }
 \author{
 M. Iturbide, J. Bedia

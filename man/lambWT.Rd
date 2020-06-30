@@ -73,6 +73,7 @@ W, NW, N, C and A) and 16 hybrid types (8 for each C and A hybrid).
 }
 \examples{
 \dontrun{
+require(climate4R.indices)
 data(NCEP_slp_2001_2010)
 lamb.wt <- lambWT(grid = NCEP_slp_2001_2010)
 }

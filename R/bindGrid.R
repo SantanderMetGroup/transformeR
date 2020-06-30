@@ -55,7 +55,8 @@
 #' The \code{"time"} dimension will be always returned in ascending order, regardless of the ordering of the input grids.
 #' The internal helper \code{\link{sortDim.time}} is applied to this aim.
 #'
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' ## Binding along the member dimension:
 #' data("CFS_Iberia_tas")
 #' # We first diaggregate in various grids with different members
@@ -74,10 +75,10 @@
 #' mem5 <- subsetGrid(CFS_points, members = 5)
 #' CFS_points_2mem <- bindGrid(mem1, mem5, dimension = "member")
 #' getShape(CFS_points_2mem)
-#' \dontrun{
+#'
 #' require(visualizeR)
 #' spatialPlot(climatology(bindedGrid), backdrop.theme = "coastline", rev.colors = TRUE)
-#' }
+#' 
 #' ## Binding along time:
 #' data("EOBS_Iberia_tas")
 #' eobs.1998 <- subsetGrid(EOBS_Iberia_tas, years = 1998)
@@ -95,6 +96,7 @@
 #' }) 
 #' eobs3 <- do.call("bindGrid", c(grid.list, dimension = "time"))
 #' identical(eobs1, eobs3)
+#' }
 #' @importFrom abind abind
 #' @seealso \code{\link{subsetGrid}}, for the reverse operation. \code{\link{makeMultiGrid}} is somehow related, although 
 #' envisaged to bind grids of different variables along a new dimension \code{"var"} (variable), mainly for the construction of predictor sets in
@@ -236,66 +238,69 @@ bindGrid.member <- function(..., tol, attr.) {
 
 
 bindGrid.spatial <- function(..., dimn, tol) {
-      # dimension <- match.arg(dimension, choices = c("lat", "lon"))
-      grid.list <- list(...)
-      if (length(grid.list) == 1) {
-            grid.list <- unlist(grid.list, recursive = FALSE)
+   # dimension <- match.arg(dimension, choices = c("lat", "lon"))
+   grid.list <- list(...)
+   if (length(grid.list) == 1) {
+      grid.list <- unlist(grid.list, recursive = FALSE)
+   }
+   if (length(grid.list) < 2) {
+      stop("The input must be a list of at least two grids")
+   }
+   dimsort <- "y"
+   loc <- FALSE
+   coordfun <- c
+   if (dimn == "lon") {
+      dimsort <- "x"
+   } else if (dimn == "loc") {
+      dimsort <- c("x", "y")
+      loc <- TRUE
+      coordfun <- rbind
+      station_id <- unlist(unname(lapply(grid.list, function(x) x$Metadata$station_id)))
+      station_name <- unlist(unname(lapply(grid.list, function(x) x$Metadata$name)))
+   }
+   grid.list <- lapply(grid.list, "redim", var = TRUE, loc = loc)
+   for (i in 2:length(grid.list)) {
+      # Temporal test
+      if (!isTRUE(all.equal(grid.list[[1]]$Dates, grid.list[[i]]$Dates, check.attributes = FALSE, tolerance = tol))) {
+         stop("Input data is not temporally consistent")
       }
-      if (length(grid.list) < 2) {
-            stop("The input must be a list of at least two grids")
+      # Member
+      if (getShape(grid.list[[1]])[match('member', getDim(grid.list[[1]]))] != getShape(grid.list[[i]])[match('member', getDim(grid.list[[i]]))]) {
+         stop("Member dimension is not consistent")
       }
-      dimsort <- "y"
-      loc <- FALSE
-      coordfun <- c
-      if (dimn == "lon") {
-            dimsort <- "x"
-      } else if (dimn == "loc") {
-            dimsort <- c("x", "y")
-            loc <- TRUE
-            coordfun <- rbind
-            station_id <- unlist(unname(lapply(grid.list, function(x) x$Metadata$station_id)))
-            station_name <- unlist(unname(lapply(grid.list, function(x) x$Metadata$name)))
-      }
-      grid.list <- lapply(grid.list, "redim", var = TRUE, loc = loc)
-      for (i in 2:length(grid.list)) {
-            # Temporal test
-            if (!isTRUE(all.equal(grid.list[[1]]$Dates, grid.list[[i]]$Dates, check.attributes = FALSE, tolerance = tol))) {
-                  stop("Input data is not temporally consistent")
-            }
-            # Member
-            if (getShape(grid.list[[1]])[match('member', getDim(grid.list[[1]]))] != getShape(grid.list[[i]])[match('member', getDim(grid.list[[i]]))]) {
-                  stop("Member dimension is not consistent")
-            }
-      }
-      
-      lat <- lapply(grid.list, FUN = function(x) {
-            getCoordinates(x)[dimsort]
-      })
-      lat <- unname(lat)
-      lats <- do.call(coordfun, lat)
-      if (class(lats) == "list") lats <- unlist(lats) %>% unname()
+   }
+   
+   
+   lat <- lapply(grid.list, FUN = function(x) {
+      getCoordinates(x)[dimsort]
+   })
+   lat <- unname(lat)
+   lats <- do.call(coordfun, lat)
+   if (class(lats) == "list") lats <- unlist(lats) %>% unname()
+   if (dimn != "loc"){
       indLats <- sapply(1:length(lats), FUN = function(z) which(sort(lats)[z] == lats))
       lats <- sort(lats)
       grid.list <- grid.list[indLats]
-      ref <- grid.list[[1]]
-      dimNames <- getDim(ref) 
-      dim.bind <- grep(dimn, dimNames)
-      data.list <- lapply(grid.list, FUN = "[[", "Data")
-      ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
-      attr(ref[["Data"]], "dimensions") <- dimNames
-      grid.list <- data.list <- NULL
-      # n.vars <- getShape(ref, "var")
-      #if (n.vars > 1) lats <- rep(list(lats), n.vars)
-      if (dimn == "loc") {
-            ref[["xyCoords"]] <- lats  
-            ref[["Metadata"]][["station_id"]] <- station_id
-            ref[["Metadata"]][["name"]] <- station_name
-      } else {
-            ref[["xyCoords"]][[dimsort]] <- lats
-      }
-      # ref %<>% sortDim.spatial()
-      redim(ref, drop = TRUE)
-      return(ref)
+   } 
+   ref <- grid.list[[1]]
+   dimNames <- getDim(ref) 
+   dim.bind <- grep(dimn, dimNames)
+   data.list <- lapply(grid.list, FUN = "[[", "Data")
+   ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
+   attr(ref[["Data"]], "dimensions") <- dimNames
+   grid.list <- data.list <- NULL
+   # n.vars <- getShape(ref, "var")
+   #if (n.vars > 1) lats <- rep(list(lats), n.vars)
+   if (dimn == "loc") {
+      ref[["xyCoords"]] <- lats  
+      ref[["Metadata"]][["station_id"]] <- station_id
+      ref[["Metadata"]][["name"]] <- station_name
+   } else {
+      ref[["xyCoords"]][[dimsort]] <- lats
+   }
+   # ref %<>% sortDim.spatial()
+   redim(ref, drop = TRUE)
+   return(ref)
 }
 #end
 

@@ -4,9 +4,17 @@
 \alias{prinComp}
 \title{Principal Component Analysis of Grids}
 \usage{
-prinComp(grid, n.eofs = NULL, v.exp = NULL, which.combine = NULL,
-  scaling = "gridbox", keep.orig = FALSE, rot = FALSE,
-  quiet = FALSE, imputation = "mean")
+prinComp(
+  grid,
+  n.eofs = NULL,
+  v.exp = NULL,
+  which.combine = NULL,
+  scaling = "gridbox",
+  keep.orig = FALSE,
+  rot = FALSE,
+  quiet = FALSE,
+  imputation = "mean"
+)
 }
 \arguments{
 \item{grid}{A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object}
@@ -100,9 +108,11 @@ It is therefore advisable to avoid the use of this option for large datasets, an
 multimember grids instead.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
 multigrid <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
-# In this example, we retain the PCs explaining the 99\\\% of the variance
+# In this example, we retain the PCs explaining the 99\\% of the variance
 pca <- prinComp(multigrid, v.exp = c(.95,0.90,.90), keep.orig = FALSE)
 # The output is a named list with the PC's and EOFs (plus additional atttributes) for each variable
 # within the input grid:
@@ -143,14 +153,17 @@ mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
 # Use different n.eofs for each variable:
 pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(3,5))
 }
+}
 \references{
 Gutierrez, J.M., R. Ancell, A. S. Cofiño and C. Sordo (2004). Redes Probabilisticas
  y Neuronales en las Ciencias Atmosfericas. MIMAM, Spain. 279 pp.
   \url{http://www.meteo.unican.es/en/books/dataMiningMeteo}
 }
 \seealso{
-Other pca: \code{\link{PC2grid}}, \code{\link{grid2PCs}},
-  \code{\link{gridFromPCA}}, \code{\link{plotEOF}}
+Other pca: 
+\code{\link{PC2grid}()},
+\code{\link{grid2PCs}()},
+\code{\link{gridFromPCA}()}
 }
 \author{
 J. Bedia, M. de Felice

@@ -90,6 +90,7 @@ sgdf2clim <- function(sp, member = FALSE, varName = NULL, level = NULL,
 #' @importFrom sp GridTopology SpatialGridDataFrame
 #' @seealso \code{sgdf2clim}, to perform the reverse operation
 #' @examples \donttest{
+#' require(climate4R.datasets) 
 #' data("CFS_Iberia_tas")
 #' # Climatology is computed:
 #' clim <- climatology(CFS_Iberia_tas, by.member = TRUE)
