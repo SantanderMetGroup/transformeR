@@ -39,15 +39,35 @@
 #' \itemize{
 #' \item index: vector with the corresponding weather type from each point of the series, that is defined as follows:
 #'
-#' purely anticyclonic = 1
+#'\tabular{cccc}{
+#' \tab purely anticyclonic:  \tab 1 \tab "A" \cr 
+#' \tab anticyclonic northeasterly:  \tab  2  \tab "ANE" \cr 
+#' \tab anticyclonic easterly: \tab 3 \tab "AE" \cr
+#' \tab anticyclonic southeasterly: \tab 4 \tab "ASE" \cr
+#' \tab anticyclonic southerly: \tab 5 \tab "AS" \cr
+#' \tab anticyclonic southwesterly: \tab 6 \tab "ASW" \cr
+#' \tab anticyclonic westerly: \tab 7 \tab "AW" \cr
+#' \tab anticyclonic northwesterly: \tab 8 \tab "ANW" \cr
+#' \tab anticyclonic northerly: \tab 9 \tab "AN" \cr
+#' \tab northeasterly: \tab 10 \tab "NE" \cr
+#' \tab easterly: \tab 11 \tab "E" \cr
+#' \tab southeasterly:\tab 12 \tab "SE" \cr
+#' \tab southerly: \tab 13 \tab "S" \cr
+#' \tab southwesterly: \tab 14 \tab "SW" \cr
+#' \tab westerly: \tab 15 \tab "W" \cr
+#' \tab northwesterly: \tab 16 \tab "NW" \cr
+#' \tab northerly: \tab 17 \tab "N" \cr
+#' \tab purely cyclonic:  \tab 18 \tab "C" \cr 
+#' \tab cyclonic northeasterly:  \tab  19  \tab "CNE" \cr 
+#' \tab cyclonic easterly: \tab 20 \tab "CE" \cr
+#' \tab cyclonic southeasterly: \tab 21 \tab "CSE" \cr
+#' \tab cyclonic southerly: \tab 22 \tab "CS" \cr
+#' \tab cyclonic southwesterly: \tab 23 \tab "CSW" \cr
+#' \tab cyclonic westerly: \tab 24 \tab "CW" \cr
+#' \tab cyclonic northwesterly: \tab 25 \tab "CNW" \cr
+#' \tab cyclonic northerly: \tab 26 \tab "CN" \cr 
+#' }
 #' 
-#' directional anticyclonic from NE to N = 2 to 9
-#' 
-#' purely directional from NE to N = 10 to 17
-#' 
-#' purely cyclonic = 18
-#' 
-#' directional cyclonic from NE to N = 19 to 26.
 #' \item pattern: Array with the spatial pattern of the 26 weather types obtained.
 #' \item dates and coordinates.
 #' \item further arguments related to the Lamb WT index.
