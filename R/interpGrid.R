@@ -115,24 +115,20 @@ interpGrid <- function(grid,
     bilin.method <- match.arg(bilin.method, choices = c("akima", "fields"))
     if (!is.null(mask)) warning("mask ignored for bilinear interpolation.")
   } else {
-    if (is.null(mask)) {
-      mask <- climatology(grid)
-      mask$Data[which(is.na(mask$Data))] <- 1
-      mask <- gridArithmetics(mask, 0, 1, operator = c("*", "+"))
+    if (!is.null(mask)) {
+      stopifnot(isGrid(mask))
+      grid <- redim(grid)
+      gm <- intersectGrid(grid, mask, type = "spatial", which.return = 1:2)
+      mask <- redim(gm[[2]], drop = TRUE)
+      if (!is.na(suppressMessages(getShape(mask, "time")))) stop("The input mask is not a static grid (time dimension has length > 1)")
+      if (length(attr(mask$Data, "dimensions")) == 0) attr(mask$Data, "dimensions") <- "lat"
+      mask <- redim(mask, member = FALSE, time = FALSE)
+      grid <- redim(gm[[1]])
     }
   }
   stopifnot(is.logical(force.non.overlapping))
   # Mask preprocessing
-  if (!is.null(mask)) {
-    stopifnot(isGrid(mask))
-    grid <- redim(grid)
-    gm <- intersectGrid(grid, mask, type = "spatial", which.return = 1:2)
-    mask <- redim(gm[[2]], drop = TRUE)
-    if (!is.na(suppressMessages(getShape(mask, "time")))) stop("The input mask is not a static grid (time dimension has length > 1)")
-    if (length(attr(mask$Data, "dimensions")) == 0) attr(mask$Data, "dimensions") <- "lat"
-    mask <- redim(mask, member = FALSE, time = FALSE)
-    grid <- redim(gm[[1]])
-  }
+  
   if (method != "nearest") force.non.overlapping <- FALSE
   if (isTRUE(force.non.overlapping)) warning("Nearest-neighbour method applied over non-overlapping domains")
   parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
@@ -267,8 +263,10 @@ interpGrid <- function(grid,
   # nearest indices
   if (method == "nearest") {
     # Apply mask
-    x[mask$Data == 0] <- NA 
-    y[mask$Data == 0] <- NA 
+    if (!is.null(mask)) {
+      x[mask$Data == 0] <- NA 
+      y[mask$Data == 0] <- NA 
+    }
     if (parallel.pars$hasparallel) {
       message("NOTE: parallel option skipped for nearest method")
     }
