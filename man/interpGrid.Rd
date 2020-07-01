@@ -10,6 +10,7 @@ interpGrid(
   method = "nearest",
   bilin.method = "fields",
   force.non.overlapping = FALSE,
+  mask = NULL,
   parallel = FALSE,
   max.ncores = 16,
   ncores = NULL,
@@ -32,6 +33,10 @@ the \code{"fields"} option, able to handle missing values, need to be used. Othe
 
 \item{force.non.overlapping}{Optional logical flag for \code{method = "nearest"} (otherwise ignored). If set to \code{TRUE},
 the nerest neighbour interpolation will be applied over non-overlapping grid domains (See the Note below). Default to \code{FALSE}.}
+
+\item{mask}{Optional. It applies for the \code{"nearest"} method only. A static C4R grid (i.e., time dimension has length one or does not exist), 
+in which the \strong{zero values} indicate grid-cells that are not used in the nearest-neighbour search. This can be useful for selecting
+land/sea points for example in downscaling exercises or climate index calculation.}
 
 \item{parallel}{Logical. Should parallel execution be used?}
 
