@@ -125,10 +125,11 @@ interpGrid <- function(grid,
    # Mask preprocessing
    if (!is.null(mask)) {
       stopifnot(isGrid(mask))
+      grid <- redim(grid)
       gm <- intersectGrid(grid, mask, type = "spatial", which.return = 1:2)
       mask <- redim(gm[[2]], drop = TRUE)
       if (!is.na(suppressMessages(getShape(mask, "time")))) stop("The input mask is not a static grid (time dimension has length > 1)")
-      grid <- gm[[1]]
+      grid <- redim(gm[[1]])
       
    }
    if (method != "nearest") force.non.overlapping <- FALSE
