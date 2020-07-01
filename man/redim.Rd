@@ -9,6 +9,7 @@ redim(
   member = TRUE,
   runtime = FALSE,
   var = FALSE,
+  time = TRUE,
   loc = FALSE,
   drop = FALSE
 )

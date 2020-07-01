@@ -46,6 +46,7 @@ redim <- function(grid,
                   member = TRUE,
                   runtime = FALSE,
                   var = FALSE,
+                  time = TRUE,
                   loc = FALSE,
                   drop = FALSE) {
       stopifnot(is.logical(member) | is.logical(runtime) | is.logical(drop))
@@ -89,7 +90,7 @@ redim <- function(grid,
                   attr(grid$Data, "dimensions") <- dimNames
             }
             # Add singleton 'time' dimension 
-            if (!("time" %in% dimNames)) {
+            if (!("time" %in% dimNames) & isTRUE(time)) {
                   dimNames <- c("time", dimNames)
                   grid$Data <- unname(abind(grid$Data, NULL, along = 0))
                   attr(grid$Data, "dimensions") <- dimNames
@@ -125,9 +126,9 @@ redim <- function(grid,
                   dimNames <- dimNames[-(which(!is.na(match(shp, 1))))]
                   grid$Data <- drop(grid$Data)
                   attr(grid$Data, "dimensions") <- dimNames
-                  if ("lat" %in% dimNames & !("lon" %in% dimNames)) {
-                        attr(grid$Data, "dimensions")[attr(grid$Data, "dimensions") == "lat"] <- "loc"
-                  }
+                  # if ("lat" %in% dimNames & !("lon" %in% dimNames)) {
+                  #       attr(grid$Data, "dimensions")[attr(grid$Data, "dimensions") == "lat"] <- "loc"
+                  # }
             }
       }
       if (is.null(dim(grid$Data))) grid$Data %<>% as.array()
