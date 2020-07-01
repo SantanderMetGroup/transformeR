@@ -111,13 +111,25 @@ interpGrid <- function(grid,
    mess <- FALSE
    method <- match.arg(method, choices = c("nearest", "bilinear"))
    # if (method == "nearest" & !is.null(bilin.method)) message("NOTE: argument 'bilin.method' ignored for nearest neighbour interpolation")
-   if (method == "bilinear") bilin.method <- match.arg(bilin.method, choices = c("akima", "fields"))
+   if (method == "bilinear") {
+     bilin.method <- match.arg(bilin.method, choices = c("akima", "fields"))
+     if (!is.null(mask)) warning("mask ignored for bilinear interpolation.")
+   } else {
+     if (is.null(mask)) {
+       mask <- climatology(grid)
+       mask$Data[which(is.na(mask$Data))] <- 1
+       mask <- gridArithmetics(mask, 0, 1, operator = c("*", "+"))
+     }
+   }
    stopifnot(is.logical(force.non.overlapping))
    # Mask preprocessing
    if (!is.null(mask)) {
       stopifnot(isGrid(mask))
-      mask <- redim(mask, member = FALSE)
-      if (getShape(mask, "time") != 1L) stop("The input mask is not a static grid (time dimension has length > 1)")
+      gm <- intersectGrid(grid, mask, type = "spatial", which.return = 1:2)
+      mask <- redim(gm[[2]], drop = TRUE)
+      if (!is.na(suppressMessages(getShape(mask, "time")))) stop("The input mask is not a static grid (time dimension has length > 1)")
+      grid <- gm[[1]]
+      
    }
    if (method != "nearest") force.non.overlapping <- FALSE
    if (isTRUE(force.non.overlapping)) warning("Nearest-neighbour method applied over non-overlapping domains")
@@ -238,14 +250,9 @@ interpGrid <- function(grid,
       new.resY <- abs(new.coordinates$y[2] - new.coordinates$y[1]) 
       output.coords <- list("x" = new.coordinates$x, "y" = new.coordinates$y)
    }
-   
-   browser()
-   
-   # Check output coordinates of mask
-   getGrid(mask)
-   
-   
-   
+   # Apply mask
+   x[mask$Data == 0] <- NA 
+   y[mask$Data == 0] <- NA 
    # function for lapply 
    apply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "lapply")
    if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
@@ -261,7 +268,7 @@ interpGrid <- function(grid,
          if (isRegular(new.coordinates)) {
             for (l in 1:length(new.coordinates$y)) {
                distK <- sqrt((x - new.coordinates$x[k]) ^ 2 + (y - new.coordinates$y[l]) ^ 2)
-               aux.ind <- which(distK == min(distK), arr.ind = TRUE)
+               aux.ind <- which(distK == min(distK, na.rm = TRUE), arr.ind = TRUE)
                if (!is.data.frame(coords)) {
                   aux.ind <- matrix(aux.ind, ncol = 2)
                   ind.NN.x[k,l] <- aux.ind[1,2]
@@ -274,7 +281,7 @@ interpGrid <- function(grid,
             }
          } else {
             distK <- sqrt((x - new.coordinates$x[k]) ^ 2 + (y - new.coordinates$y[k]) ^ 2)
-            aux.ind <- which(distK == min(distK), arr.ind = TRUE)
+            aux.ind <- which(distK == min(distK, na.rm = TRUE), arr.ind = TRUE)
             # if(nrow(aux.ind))
             if (!is.data.frame(coords)) {
                ind.NN.x[k,k] <- aux.ind[1,2]
