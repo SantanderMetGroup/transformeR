@@ -26,7 +26,7 @@
 #' @param verifun Optional. Character string indicating the value of the \code{verifun} argument. Just for 
 #' a better traceability and metadata completeness. 
 #' @return A climatological grid.
-#' @seealso \code{\link{climatology}}, \code{\link{plotClimatology}}.
+#' @seealso \code{\link{climatology}}, \code{\link[visualizeR]{spatialPlot}}.
 #' @family easyVerification.bridges
 #' @export
 #' 
@@ -56,13 +56,13 @@ easyVeri2grid <- function(easyVeri.mat, obs.grid, verifun = NULL) {
 #' @param cl Confidence level. Default to 0.95
 #' @return A easyVerification-like binary matrix (1 significant / 0 non-significant).
 #'  Ready to be passed to \code{\link{easyVeri2grid}} for climatological grid conversion, 
-#'  and possibly to \code{\link{map.stippling}} after that, to depict significant points in a verification map.
+#'  and possibly to \code{\link[visualizeR]{map.stippling}} after that, to depict significant points in a verification map.
 #' @importFrom stats qnorm
 #' @family easyVerification.bridges 
 #' @author J Bedia
 #' @export
 #' @seealso \code{\link{easyVeri2grid}}, for conversion of verification matrices into climatological grids.
-#'  Also, \code{\link{map.stippling}}, to draw significant points on verification maps.
+#'  Also, \code{\link[visualizeR]{map.stippling}}, to draw significant points on verification maps.
 
 easyVeri.signif <- function(ref.mean, est.mean, sigma, cl = 0.95) {
     adj <- est.mean - ref.mean

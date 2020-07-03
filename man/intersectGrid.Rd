@@ -20,22 +20,32 @@ The grids indicated in \code{which.return}, encompassing the overlapping time pe
 Takes multiple input grids and crops the overlapping part
 }
 \examples{
+\donttest{
+require(climate4R.datasets) 
 data("EOBS_Iberia_tas")
 a <- subsetGrid(EOBS_Iberia_tas, lonLim = c(-8,-1), latLim = c(37, 40))
 b <- subsetGrid(EOBS_Iberia_tas, lonLim = c(-4,3), latLim = c(39, 43))
 z <- intersectGrid(a, b, type = "spatial", which.return = 1)
 }
+}
 \seealso{
 \code{\link{subsetGrid}}
 
-Other subsetting: \code{\link{getTemporalIntersection}},
-  \code{\link{intersectGrid.spatial}},
-  \code{\link{intersectGrid.time}},
-  \code{\link{limitArea}}, \code{\link{subsetDimension}},
-  \code{\link{subsetGrid}}, \code{\link{subsetMembers}},
-  \code{\link{subsetRuntime}}, \code{\link{subsetSeason}},
-  \code{\link{subsetSpatial}}, \code{\link{subsetStation}},
-  \code{\link{subsetVar}}, \code{\link{subsetYears}}
+Other subsetting: 
+\code{\link{getTemporalIntersection}()},
+\code{\link{intersectGrid.spatial}()},
+\code{\link{intersectGrid.time}()},
+\code{\link{limitArea}()},
+\code{\link{subsetCluster}()},
+\code{\link{subsetDimension}()},
+\code{\link{subsetGrid}()},
+\code{\link{subsetMembers}()},
+\code{\link{subsetRuntime}()},
+\code{\link{subsetSeason}()},
+\code{\link{subsetSpatial}()},
+\code{\link{subsetStation}()},
+\code{\link{subsetVar}()},
+\code{\link{subsetYears}()}
 }
 \author{
 M Iturbide

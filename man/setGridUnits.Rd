@@ -28,6 +28,8 @@ The length of the \code{unit.string} vector should match the number of variables
  getVarNames(grid) or the length of \code{var}, in case the latter is used.
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 data(NCEP_Iberia_hus850)
 getGridUnits(NCEP_Iberia_hus850)
 data(NCEP_Iberia_psl)
@@ -41,8 +43,10 @@ getVarNames(mf)
 mf3 <- setGridUnits(mf, unit.string = c("1", "Pa"), var = c("hus@850", "psl"))
 getGridUnits(mf3)
 }
+}
 \seealso{
-Other get.helpers unit.helpers: \code{\link{getGridUnits}}
+Other get.helpers unit.helpers: 
+\code{\link{getGridUnits}()}
 }
 \author{
 J Bedia

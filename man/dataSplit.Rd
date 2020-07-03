@@ -14,7 +14,8 @@ dataSplit(x, y, f = 3/4, type = "random")
 \item{f}{Could be a fraction, value between (0,1) indicating the fraction of the data that will define the train set, 
 or an integer indicating the number of folds. It can also be a list of folds indicating the years of each fold.}
 
-\item{type}{A string, c("random","chronological"), indicating if the splits should be random or in a chronological order. 
+\item{type}{A string. Indicates if the splitting should be random (type = "random"),
+chronological (type = "chronological") or specified by the user (type = NULL). Default is "random". 
 Default is "random".}
 }
 \value{
@@ -25,6 +26,8 @@ Split data into two different sets by a specific fraction. Splitting data is
 normally used to obtain a train and a validation set.
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 x <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 y <- VALUE_Iberia_pr
 ### Split the data in train and test (f < 1)###
@@ -57,7 +60,8 @@ str(data.splitted[[1]]$test$y$Dates)  # 1 fold out of 3 for test
 str(data.splitted[[2]]$train$y$Dates) # 2 folds out of 3 for train  
 str(data.splitted[[2]]$test$y$Dates)  # 1 fold out of 3 for test
 str(data.splitted[[3]]$train$y$Dates) # 2 folds out of 3 for train  
-str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test 
+}
 }
 \author{
 J. Bano-Medina

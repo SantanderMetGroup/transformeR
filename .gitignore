@@ -1,4 +1,12 @@
 .Rproj.user
 .Rhistory
 .RData
+<<<<<<< HEAD
 transformeR.Rproj
+=======
+.Ruserdata
+transformeR.Rproj
+ignore
+.Rprofile
+
+>>>>>>> 6f6725b2a8182cd526302ddd57d751d4eb0b27eb

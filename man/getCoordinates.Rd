@@ -16,6 +16,8 @@ A list with x and y components
 Returns the coordinates of a climate data object, either stations or grid
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 # Regular grid
 data("NCEP_Iberia_hus850")
 str(getCoordinates(NCEP_Iberia_hus850))
@@ -27,16 +29,25 @@ str(getCoordinates(CORDEX_Iberia_tas))
 data("VALUE_Iberia_tas")
 str(getCoordinates(VALUE_Iberia_tas))
 }
+}
 \seealso{
-Other get.helpers: \code{\link{get2DmatCoordinates}},
-  \code{\link{getDim}},
-  \code{\link{getGridVerticalLevels}},
-  \code{\link{getGrid}}, \code{\link{getRefDates}},
-  \code{\link{getSeason}}, \code{\link{getShape}},
-  \code{\link{getStationID}},
-  \code{\link{getTimeResolution}},
-  \code{\link{getVarNames}}, \code{\link{getYearsAsINDEX}},
-  \code{\link{typeofGrid}}, \code{\link{which.leap}}
+Other get.helpers: 
+\code{\link{get2DmatCoordinates}()},
+\code{\link{getDim}()},
+\code{\link{getGridProj}()},
+\code{\link{getGridVerticalLevels}()},
+\code{\link{getGrid}()},
+\code{\link{getRefDates}()},
+\code{\link{getSeason}()},
+\code{\link{getShape}()},
+\code{\link{getStationID}()},
+\code{\link{getTimeResolution}()},
+\code{\link{getVarNames}()},
+\code{\link{getWT}()},
+\code{\link{getYearsAsINDEX}()},
+\code{\link{setGridProj}()},
+\code{\link{typeofGrid}()},
+\code{\link{which.leap}()}
 }
 \author{
 J. Bedia

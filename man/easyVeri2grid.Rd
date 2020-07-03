@@ -23,9 +23,10 @@ A climatological grid.
 Convert a xyz-type verification matrix as returned by \code{veriApply} to a climatological grid
 }
 \seealso{
-\code{\link{climatology}}, \code{\link{plotClimatology}}.
+\code{\link{climatology}}, \code{\link[visualizeR]{spatialPlot}}.
 
-Other easyVerification.bridges: \code{\link{easyVeri.signif}}
+Other easyVerification.bridges: 
+\code{\link{easyVeri.signif}()}
 }
 \author{
 J. Bedia

@@ -17,6 +17,8 @@ A character representation of the time resolution. Current possible values are:
 Get the time resolution of the input grid as a character
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 data("EOBS_Iberia_tas")
 getTimeResolution(EOBS_Iberia_tas)
 monthly.grid <- aggregateGrid(EOBS_Iberia_tas, aggr.m = list(FUN = "mean", na.rm = TRUE))
@@ -24,15 +26,25 @@ stopifnot(identical(getTimeResolution(monthly.grid), "MM"))
 annual.grid <- aggregateGrid(monthly.grid, aggr.y = list(FUN = "mean", na.rm = TRUE))
 stopifnot(identical(getTimeResolution(annual.grid), "YY"))
 }
+}
 \seealso{
-Other get.helpers: \code{\link{get2DmatCoordinates}},
-  \code{\link{getCoordinates}}, \code{\link{getDim}},
-  \code{\link{getGridVerticalLevels}},
-  \code{\link{getGrid}}, \code{\link{getRefDates}},
-  \code{\link{getSeason}}, \code{\link{getShape}},
-  \code{\link{getStationID}}, \code{\link{getVarNames}},
-  \code{\link{getYearsAsINDEX}}, \code{\link{typeofGrid}},
-  \code{\link{which.leap}}
+Other get.helpers: 
+\code{\link{get2DmatCoordinates}()},
+\code{\link{getCoordinates}()},
+\code{\link{getDim}()},
+\code{\link{getGridProj}()},
+\code{\link{getGridVerticalLevels}()},
+\code{\link{getGrid}()},
+\code{\link{getRefDates}()},
+\code{\link{getSeason}()},
+\code{\link{getShape}()},
+\code{\link{getStationID}()},
+\code{\link{getVarNames}()},
+\code{\link{getWT}()},
+\code{\link{getYearsAsINDEX}()},
+\code{\link{setGridProj}()},
+\code{\link{typeofGrid}()},
+\code{\link{which.leap}()}
 }
 \author{
 J Bedia

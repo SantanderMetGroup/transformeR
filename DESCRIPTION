@@ -1,6 +1,6 @@
 Package: transformeR
 Depends:
-    R(>= 3.5.0)
+    R(>= 3.5.0) 
 Imports:
     abind,
     akima,
@@ -13,29 +13,30 @@ Imports:
     sp,
     stats,
     utils,
-    raster
+    kohonen
 Suggests:
-    downscaleR,      
+    downscaleR,  
+    climate4R.datasets,
+    climate4R.indices,
     loadeR,
     loadeR.ECOMS,
     visualizeR
 Type: Package
 Title: A climate4R package for general climate data manipulation and transformation
-Version: 1.5.1
-Date: 2019-07-13
-Authors@R: as.person(c(
-    "Santander Meteorology Group <http://meteo.unican.es> [cph]",
-    "Jorge Baño Medina <bmedina@ifca.unican.es> [ctb]",
-    "Joaquín Bedia <bediaj@unican.es> [aut, cre]",
-    "Ana Casanueva <ana.casanueva@unican.es> [ctb]",
-    "Matteo De Felice <matteo.defelice@enea.it> [ctb]",
-    "José Manuel Gutiérrez <gutierjm@unican.es> [ctb]",
-    "Sixto Herrera <sixto@predictia.es> [ctb]",
-    "Maialen Iturbide <miturbide@ifca.unican.es> [aut]"))
+Version: 2.0.2
+Date: 2020-06-29
+Authors@R: c(person("Bedia", "Joaquín", email = "bediaj@unican.es", role = c("aut","cre"), comment = c(ORCID = "0000-0001-6219-4312")),
+             person("Jorge", "Baño Medina", email = "bmedina@ifca.unican.es", role = "aut"),
+             person("Ana", "Casanueva", email = "ana.casanueva@unican.es", role = "aut"),
+             person("Matteo", "De Felice", email = "matteo.defelice@enea.it", role = "ctb"),
+             person("José Manuel", "Gutiérrez", email = "gutierjm@unican.es", role = "aut"),
+             person("Sixto", "Herrera", email = "herreras@unican.es", role = "aut"),
+             person("Maialen", "Iturbide", email = "miturbide@ifca.unican.es", role = "aut", comment = c(ORCID = "0000-0002-5048-0941")), 
+             person("Juan A.", "Fernández", email = "juan.fernandez@unican.es", role = "aut"))
 BugReports: https://github.com/SantanderMetGroup/transformeR/issues
 URL: http://www.meteo.unican.es/climate4r
 Encoding: UTF-8
-Description: Tools for climate data analysis, visualization and manipulation. A building block of the climate4R Framework <http://www.meteo.unican.es/climate4R>). 
+Description: Tools for climate data analysis, visualization and manipulation. A building block of the climate4R Framework <http://www.meteo.unican.es/climate4R>. 
 License: file LICENSE
-LazyData: true
-RoxygenNote: 6.1.1
+LazyData: false 
+RoxygenNote: 7.1.0

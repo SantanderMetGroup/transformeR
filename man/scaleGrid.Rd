@@ -4,11 +4,21 @@
 \alias{scaleGrid}
 \title{Grid scaling}
 \usage{
-scaleGrid(grid, base = NULL, ref = NULL, clim.fun = list(FUN =
-  "mean", na.rm = TRUE), by.member = TRUE, time.frame = c("none",
-  "monthly", "daily"), spatial.frame = c("gridbox", "field"),
-  type = "center", window.width = NULL, parallel = FALSE,
-  max.ncores = 16, ncores = NULL, skip.season.check = FALSE)
+scaleGrid(
+  grid,
+  base = NULL,
+  ref = NULL,
+  clim.fun = list(FUN = "mean", na.rm = TRUE),
+  by.member = TRUE,
+  time.frame = c("none", "monthly", "daily"),
+  spatial.frame = c("gridbox", "field"),
+  type = "center",
+  window.width = NULL,
+  parallel = FALSE,
+  max.ncores = 16,
+  ncores = NULL,
+  skip.season.check = FALSE
+)
 }
 \arguments{
 \item{grid}{Input grid to be rescaled}
@@ -89,6 +99,8 @@ The \code{ref} usually corresponds to the control (historical, 20C3M...) run of 
 or the hindcast data for the training period in s2d applications. Note that by default \code{ref = NULL}.
 }
 \examples{
+\donttest{
+require(climate4R.datasets) 
 ## ANOMALIES
 data("NCEP_Iberia_psl")
 # Define average aggregation function
@@ -162,12 +174,13 @@ fun <- list(FUN = "sum")
 mg <- makeMultiGrid(climatology(grid, clim.fun = fun),
                     climatology(base, clim.fun = fun),
                     climatology(ref, clim.fun = fun), skip.temporal.check = TRUE)
-plotClimatology(mg, names.attr = c("input_grid", "base", "ref"))
+require(visualizeR)
+spatialPlot(mg, names.attr = c("input_grid", "base", "ref"))
 # Note that for precipitation we use a scaling factor rather than an addition:
 grid.corr <- scaleGrid(grid = grid, base = base, ref = ref,
                           time.frame = "monthly", type = "ratio")
 mg.corr <- makeMultiGrid(climatology(grid, clim.fun = fun), climatology(grid.corr, clim.fun = fun))
-plotClimatology(mg.corr, at = seq(0,350,10), names.attr = c("Raw","Scaled"))
+spatialPlot(mg.corr, at = seq(0,350,10), names.attr = c("Raw","Scaled"))
 # An example using the "standardize" type:
 data("EOBS_Iberia_pr")
 grid <- subsetGrid(EOBS_Iberia_pr, years = 1999)
@@ -177,6 +190,7 @@ grid.corr <- scaleGrid(grid = grid, base = NULL, ref = NULL,
                        type = "standardize")
 head(apply(grid.corr$Data,MARGIN = c(3,4),mean))
 head(apply(grid.corr$Data,MARGIN = c(3,4),sd))
+}
 }
 \author{
 J. Bedia

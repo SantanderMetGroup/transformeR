@@ -29,7 +29,8 @@ The function checks if package parallel is available. Then, it is checked whethe
 can be initialized
 }
 \seealso{
-Other parallel.helpers: \code{\link{selectPar.pplyFun}}
+Other parallel.helpers: 
+\code{\link{selectPar.pplyFun}()}
 }
 \author{
 J. Bedia, with contributions by J. Bhend and M. de Felice

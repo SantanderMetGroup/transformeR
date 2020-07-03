@@ -19,9 +19,11 @@ objects is returned (each slot in the list is a member).
 Convert a grid to a SpatialGridDataFrame object from package sp
 }
 \details{
-This function was built based on function \code{\link[visualizeR]{clim2sgdf}}
+This function was built based on function \code{\link[transformeR]{clim2sgdf}}
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 library(sp)
 # Climatologies of different members:
 data("CFS_Iberia_tas")
@@ -34,6 +36,7 @@ plot(x[[1]][1]) # Plot the first day of the first member
 
 x <- grid2sp(EOBS_Iberia_tas)
 plot(x[1]) # Plot the first day
+}
 }
 \seealso{
 \code{\link{sp2grid}}

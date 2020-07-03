@@ -46,14 +46,21 @@ checkDim(predictor.adj, predictand.adj, dimensions = "time") # perfect
 \seealso{
 \code{\link{checkDim}}, \code{\link{checkSeason}}, \code{\link{getYearsAsINDEX}}, \code{\link{getSeason}}, for other time dimension helpers
 
-Other subsetting: \code{\link{intersectGrid.spatial}},
-  \code{\link{intersectGrid.time}},
-  \code{\link{intersectGrid}}, \code{\link{limitArea}},
-  \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
-  \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
-  \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetStation}}, \code{\link{subsetVar}},
-  \code{\link{subsetYears}}
+Other subsetting: 
+\code{\link{intersectGrid.spatial}()},
+\code{\link{intersectGrid.time}()},
+\code{\link{intersectGrid}()},
+\code{\link{limitArea}()},
+\code{\link{subsetCluster}()},
+\code{\link{subsetDimension}()},
+\code{\link{subsetGrid}()},
+\code{\link{subsetMembers}()},
+\code{\link{subsetRuntime}()},
+\code{\link{subsetSeason}()},
+\code{\link{subsetSpatial}()},
+\code{\link{subsetStation}()},
+\code{\link{subsetVar}()},
+\code{\link{subsetYears}()}
 }
 \author{
 J Bedia

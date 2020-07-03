@@ -3,17 +3,14 @@
 See the [Releases section](https://github.com/SantanderMetGroup/transformeR/releases) for older version changes
 
 ## v1.4.0 (8 Jun 2018)
-
 * New function `intersectGrid`, for calculating spatiotemporal intersections among grids
 * Optional flag to skip seasonal check in `scaleGrid`
 
 ## v1.4.1 (11 Jun 2018)
-
 * Update built-in data units attribute (for compatibility with udunits parseable strings)
 * New helper `getGridUnits` and `setGridUnits`, to handle grid units
 
 ## v1.4.2 (21 Jun 2018)
-
 * Minor changes in `makeMultiGrid` (preserves the original input structure when one single grid is given as input, for internal programming convenience). Improved attribute definition.
 * Modified behaviour of `getVarNames` to append vertical level in short name definition
 * Do nothing (but a warning) when attempting to bind one single grid along member dimension
@@ -21,14 +18,12 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
 * Other minor changes and documentation example updates
 
 ## v1.4.3 (19 Jul 2018)
-
  * Allow for updating the dataset attribute when constructing multimodels via `bindGrid` (enhancement [#18](https://github.com/SantanderMetGroup/transformeR/issues/18))
  * New helper for checking temporal consistency among grids (`checkTemporalConsistency`)
  * Allow missing data in PCA analysis (enhancement (#13)[https://github.com/SantanderMetGroup/transformeR/issues/13])
  * Other minor changes and documentation updates
 
 ## v1.4.4 (15 Aug 2018)
-
  * Allow for binding the loc dimension in `bindGrid` (for point data)
  * Bug fix in `interpGrid` when interpolating from and to point data
  * Other minor changes and documentation updates
@@ -64,4 +59,69 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
  * New helper  `matchStations` for consistent reordering of station datasets
  * Improvement in `subsetGrid` for preservation of all station metadata
  
+## 1.6.0 (04 Oct 2019)
+ * New function for clustering/weather typing: `clusterGrid.R`
+ * New internal helpers `cluster2plot.R` and `pattern2grid`
+ * New helper `getGridProj` for proj string retrieval
  
+## 1.6.1 (01 Nov 2019)
+ * Changes on `clusterGrid.R` output. 
+ * New weather type in `clusterGrid.R`: lamb WT. 
+ * New utility `sgdf2clim` for sp-class spatialGridDataFrames to climatological grids
+ * Other minor changes and documentation updates
+
+## 1.6.2 (06 Jan 2020)
+ * New Seasonal aggregation option in `aggregateGrid`
+ * Other minor changes and documentation updates
+
+## 1.7.0 (30 Jan 2020)
+ * Changes in `clusterGrid` structure to allow for flexible prediction
+ * Add subsetting by cluster in `subsetGrid`
+ * Other minor bug fixes and documentation updates
+
+## 1.7.1 (5 Feb 2020)
+ * Allow type = NULL in `dataSplit' function.
+ * Add zenodo badge in documentation
+ * Other minor documentation issues.
+
+## 1.7.2 (14 Feb 2020)
+ * Update longname attribute in cluster-type grids
+ * Other minor changes
+ 
+## 1.7.3 (28 Feb 2020)
+ * Bug fix in Lamb cross definition
+ * Drop singleton 'var' dimension from `clusterGrid` outputs
+ * New helper `getWT` to retrieve the wt.index attribute
+ * Other minor bug fixes and documentation updates
+
+## 1.7.4 (23 Mar 2020)
+ * Update the wt.index attribute after time-dimension subsetting
+ * New function: mergeGrid --> Merge multiple grids in space (latitude and longitude)
+ * Changed the default behaviour of subsetGrid along year-crossing seasons, consistent with loadGridData specifications.
+ * Minor bug fix in date subsetting on multigrids
+ * Documentation updates
+
+## 2.0.0 (22 May 2020)
+
+This release of transformeR does not ensure backwards compatibility. Some deprecated functions have been finally removed, and some other moved to visualizeR. Please note that running most of the documentation examples will require from now on to install the new package climate4R.datasets, containing all the climate4R example datasets. The main benefit is that transformeR is now a lightweight package.
+
+ * Built-in datasets have been moved to the new package climate4R.datasets
+ * `plotClimatology` no longer exists
+ * `plotEOF` moved to visualizeR (to be defunct)
+ * Updated examples
+ * Exports EOF2clim (formerly an internal), for the spatial representation of EOFs via visualizeR::spatialPlot
+ * New helper `fillGridDates` for filling dataset missing dates
+ * Other minor bug fixes, documentation updates and enhancements
+
+## 2.0.1 (04 Jun 2020)
+ * Removed draw.world.lines internal utility and associated vector layer (moved to visualizeR)
+ * Removed dependency from 'raster' (grid2mopa moved to mopa pkg)
+ * Added 'simulate' parameter in `binaryGrid` function
+ * Force nearest-neighbour application among non-overlapping domains in `interpGrid`
+ * Other minor documentation updates
+
+## 2.0.2 (in devel)
+ * Bug fix in subsetVar attributes
+ * Minor changes and documentation updates
+
+

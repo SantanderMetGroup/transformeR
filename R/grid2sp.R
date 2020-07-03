@@ -6,12 +6,13 @@
 #'\code{\link[sp]{SpatialPointsDataFrame}} (Depending on the input grid).
 #'If the inpurt grid contains members (member dimension) a list of Spatial*
 #'objects is returned (each slot in the list is a member). 
-#'@details This function was built based on function \code{\link[visualizeR]{clim2sgdf}}
+#'@details This function was built based on function \code{\link[transformeR]{clim2sgdf}}
 #'@author M. Iturbide
 #'@export
 #'@importFrom sp GridTopology SpatialGridDataFrame is.projected CRS
 #'@importFrom abind abind
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' library(sp)
 #' # Climatologies of different members:
 #' data("CFS_Iberia_tas")
@@ -24,6 +25,7 @@
 #' 
 #' x <- grid2sp(EOBS_Iberia_tas)
 #' plot(x[1]) # Plot the first day
+#' }
 
 grid2sp <- function(grid) {
       grid <- redim(grid, drop = FALSE)

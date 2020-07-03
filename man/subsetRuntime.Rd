@@ -22,14 +22,21 @@ Retrieves a grid that is a logical subset of a multiruntime grid along its 'runt
 An attribute 'subset' with value 'subsetRuntime' is added to the Runtime slot of the output subset.
 }
 \seealso{
-Other subsetting: \code{\link{getTemporalIntersection}},
-  \code{\link{intersectGrid.spatial}},
-  \code{\link{intersectGrid.time}},
-  \code{\link{intersectGrid}}, \code{\link{limitArea}},
-  \code{\link{subsetDimension}}, \code{\link{subsetGrid}},
-  \code{\link{subsetMembers}}, \code{\link{subsetSeason}},
-  \code{\link{subsetSpatial}}, \code{\link{subsetStation}},
-  \code{\link{subsetVar}}, \code{\link{subsetYears}}
+Other subsetting: 
+\code{\link{getTemporalIntersection}()},
+\code{\link{intersectGrid.spatial}()},
+\code{\link{intersectGrid.time}()},
+\code{\link{intersectGrid}()},
+\code{\link{limitArea}()},
+\code{\link{subsetCluster}()},
+\code{\link{subsetDimension}()},
+\code{\link{subsetGrid}()},
+\code{\link{subsetMembers}()},
+\code{\link{subsetSeason}()},
+\code{\link{subsetSpatial}()},
+\code{\link{subsetStation}()},
+\code{\link{subsetVar}()},
+\code{\link{subsetYears}()}
 }
 \author{
 M. Iturbide

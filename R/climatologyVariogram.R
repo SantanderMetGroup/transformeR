@@ -33,16 +33,18 @@
 #' @importFrom sp coordinates spDists
 #' @importFrom graphics abline plot text grid
 #' @importFrom stats var
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets) 
 #' data("EOBS_Iberia_pr")
 #' # We compute the mean annual DJF precipitation
 #' aggr.fun <- list(FUN = "sum")
 #' annual.tp <- aggregateGrid(EOBS_Iberia_pr, aggr.m = aggr.fun, aggr.y = aggr.fun)
 #' # Now the winter precipitation climatology is computed
 #' tp.clim <- climatology(annual.tp)
-#' plotClimatology(tp.clim,
-#'                 backdrop.theme = "countries",
-#'                 main = "mean DJF precip (1983-2002)")
+#' require(visualizeR)
+#' spatialPlot(tp.clim,
+#'             backdrop.theme = "countries",
+#'             main = "mean DJF precip (1983-2002)")
 #' # Visual assessment of normality                
 #' par(mfrow = c(1,2))
 #' hist(tp.clim$Data, main = "raw field")
@@ -53,6 +55,7 @@
 #' climatologyVariogram(clim = tp.clim, n.classes = 20, do.log = TRUE)
 #' # The number of paris of points within each distance class is
 #' # indicated by the figures on the line
+#' }
 
 climatologyVariogram <- function(clim, n.classes = 20, do.log = FALSE) {
     spatdf <- clim2sgdf(clim, set.max = NULL, set.min = NULL)

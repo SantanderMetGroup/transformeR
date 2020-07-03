@@ -30,6 +30,7 @@
 #' @author M. Iturbide 
 #' @export
 #' @examples \dontrun{
+#' require(climate4R.datasets)
 #' data("EOBS_Iberia_pr")
 #' library(visualizeR)
 #' spatialPlot(climatology(EOBS_Iberia_pr))
@@ -40,12 +41,12 @@
 #' }
 
 
-upscaleGrid <- function(grid, times = 2,
+upscaleGrid <- function(grid, times = 5,
                         aggr.fun = list(FUN = max, na.rm = TRUE)) {
       x <- grid$xyCoords$x
       fac <- rep(1:floor(length(x)/times), each = times)
       indfac <- length(x) - length(fac)
-      fac[(length(x) - indfac + 1):length(x)] <- rep(fac[length(fac)], indfac)
+      fac <- c(fac, rep(max(fac) + 1, indfac))
       coords <- lapply(split(x, fac), function(k) range(k))
       newcoords <- unlist(lapply(split(x, fac), function(k) mean(k)))
       grid.list <- lapply(coords, function(k) subsetGrid(grid, lonLim = k))
@@ -57,7 +58,7 @@ upscaleGrid <- function(grid, times = 2,
       y <- grid$xyCoords$y
       fac <- rep(1:floor(length(y)/times), each = times)
       indfac <- length(y) - length(fac)
-      fac[(length(y) - indfac + 1):length(y)] <- rep(fac[length(fac)], indfac)
+      fac <- c(fac, rep(max(fac) + 1, indfac))
       coords <- lapply(split(y, fac), function(k) range(k))
       newcoords <- unlist(lapply(split(y, fac), function(k) mean(k)))
       grid.list <- lapply(coords, function(k) subsetGrid(grid, latLim = k))
@@ -66,6 +67,8 @@ upscaleGrid <- function(grid, times = 2,
       ))
       grid <- bindGrid(grid.list.lat, dimension = "lat")
       grid$xyCoords$y <- newcoords
+      attr(grid$xyCoords, "resX") <- attr(grid$xyCoords, "resX") * times
+      attr(grid$xyCoords, "resY") <- attr(grid$xyCoords, "resY") * times
       return(grid)
 }
 

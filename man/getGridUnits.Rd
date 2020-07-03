@@ -20,6 +20,8 @@ Returns the \code{"units"} attribute
 Get the \code{"units"} attribute of a grid
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 data(NCEP_Iberia_ta850)
 getGridUnits(NCEP_Iberia_ta850)
 data(NCEP_Iberia_hus850)
@@ -32,8 +34,10 @@ getVarNames(mf)
 getGridUnits(mf, "hus@850")
 getGridUnits(mf, var = c("hus@850", "ta@850"))
 }
+}
 \seealso{
-Other get.helpers unit.helpers: \code{\link{setGridUnits}}
+Other get.helpers unit.helpers: 
+\code{\link{setGridUnits}()}
 }
 \author{
 J Bedia

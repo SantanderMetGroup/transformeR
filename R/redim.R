@@ -17,7 +17,8 @@
 #' @importFrom magrittr %<>%
 #' @author M. Iturbide, J. Bedia
 #' @family internal.helpers
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' data("EOBS_Iberia_tas")
 #' getShape(EOBS_Iberia_tas)
 #' a <- redim(EOBS_Iberia_tas)
@@ -39,11 +40,13 @@
 #' getShape(redim(VALUE_Iberia_pr, member = TRUE))
 #' # Use the argument 'loc=TRUE' to avoid this behaviour:
 #' getShape(redim(VALUE_Iberia_pr, member = TRUE, loc = TRUE))
+#' }
 
 redim <- function(grid,
                   member = TRUE,
                   runtime = FALSE,
                   var = FALSE,
+                  time = TRUE,
                   loc = FALSE,
                   drop = FALSE) {
       stopifnot(is.logical(member) | is.logical(runtime) | is.logical(drop))
@@ -87,7 +90,7 @@ redim <- function(grid,
                   attr(grid$Data, "dimensions") <- dimNames
             }
             # Add singleton 'time' dimension 
-            if (!("time" %in% dimNames)) {
+            if (!("time" %in% dimNames) & isTRUE(time)) {
                   dimNames <- c("time", dimNames)
                   grid$Data <- unname(abind(grid$Data, NULL, along = 0))
                   attr(grid$Data, "dimensions") <- dimNames
@@ -123,9 +126,9 @@ redim <- function(grid,
                   dimNames <- dimNames[-(which(!is.na(match(shp, 1))))]
                   grid$Data <- drop(grid$Data)
                   attr(grid$Data, "dimensions") <- dimNames
-                  if ("lat" %in% dimNames & !("lon" %in% dimNames)) {
-                        attr(grid$Data, "dimensions")[attr(grid$Data, "dimensions") == "lat"] <- "loc"
-                  }
+                  # if ("lat" %in% dimNames & !("lon" %in% dimNames)) {
+                  #       attr(grid$Data, "dimensions")[attr(grid$Data, "dimensions") == "lat"] <- "loc"
+                  # }
             }
       }
       if (is.null(dim(grid$Data))) grid$Data %<>% as.array()

@@ -31,6 +31,8 @@ Note that the function is not currently implemented to deal with decadal predict
  (i.e., 'runtime' dimension is not handled)
 }
 \examples{
+\donttest{
+require(climate4R.datasets) 
 # Obtain the Sea-level pressure PCs of CFSv2 forecast using the NCEP reanalysis EOF:
 data("NCEP_Iberia_psl")
 NCEP_psl_PCAobject <- prinComp(NCEP_Iberia_psl, v.exp = .95)
@@ -41,12 +43,14 @@ CFS_psl_grid <- interpGrid(CFS_Iberia_psl, new.coordinates = getGrid(NCEP_Iberia
 CFSv2_PCs <- grid2PCs(NCEP_psl_PCAobject, grid = CFS_psl_grid)
 str(CFSv2_PCs)
 }
+}
 \seealso{
 \code{\link{prinComp}} for EOF analysis.
 
-Other pca: \code{\link{PC2grid}},
-  \code{\link{gridFromPCA}}, \code{\link{plotEOF}},
-  \code{\link{prinComp}}
+Other pca: 
+\code{\link{PC2grid}()},
+\code{\link{gridFromPCA}()},
+\code{\link{prinComp}()}
 }
 \author{
 J Bedia
