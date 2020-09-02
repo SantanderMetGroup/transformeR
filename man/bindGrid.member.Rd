@@ -4,7 +4,7 @@
 \alias{bindGrid.member}
 \title{Grid binding by member dimension}
 \usage{
-bindGrid.member(..., tol, attr.)
+bindGrid.member(..., tol, attr., skip.temporal.check)
 }
 \arguments{
 \item{...}{Input grids to bind by their member dimension. These must be compatible in time and space (see details).
@@ -20,6 +20,9 @@ is used only when binding grids along the \code{"member"} dimension, in case mul
 so the new dataset attribute reflects this. Note that the default behaviour is retaining the \code{"dataset"} 
 attribute of the first grid given, resulting in a misleading metadata information if this is the case. Default to \code{NULL},
 and ignored.}
+
+\item{skip.temporal.check}{If set to \code{TRUE}, it skips the temporal consistency checks when binding along the member dimension.
+For internal usage only, better not to use.}
 }
 \description{
 Flexible binding of (spatiotemporally consistent) grids by their member dimension

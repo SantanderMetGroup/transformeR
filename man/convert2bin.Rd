@@ -21,7 +21,7 @@ convert2bin(
 
 \item{ref.obs}{Grid of observations. It is used to determine the number of days where there is no event (or value equal to 0).}
 
-\item{ref.pred}{Grid of predictions- It is used to calculate the threshold that will further be used to convert to binary the grid x.}
+\item{ref.pred}{Grid of predictions. It is used to calculate the threshold that will further be used to convert the grid  \code{x} to binary.}
 }
 \value{
 A new grid object with binary values
@@ -33,14 +33,18 @@ Convert a real variable into a binary variable (i.e., 0 or 1) filtering by a thr
 The function only works for a vector of observations/predictands downloaded from \pkg{loadeR}).
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
+data(VALUE_Iberia_pr)
 # Take a look at the data:
 head(VALUE_Iberia_pr$Data)
 # Convert to complete binary variable:
 ybin <- convert2bin(VALUE_Iberia_pr,threshold = 1)
 head(ybin$Data)
 # Convert to partial binary variable:
-ybin2 <- convert2bin(VALUE_Iberia_pr,threshold = 1, partial = TRUE)
+ybin2 <- convert2bin(VALUE_Iberia_pr, threshold = 1, partial = TRUE)
 head(ybin2$Data)
+}
 }
 \seealso{
 Other downscaling.helpers: 

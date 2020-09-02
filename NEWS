@@ -122,6 +122,7 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
 
 ## 2.0.2 (in devel)
  * Bug fix in subsetVar attributes
+ * Internal falg in bindGrid.member to skip temporal checks
  * Minor changes and documentation updates
 
 
