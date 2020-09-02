@@ -1,6 +1,6 @@
 ##     convert2bin.R Convert grid values to a binary variable
 ##
-##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
+##     Copyright (C) 2020 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
 ##     This program is free software: you can redistribute it and/or modify
 ##     it under the terms of the GNU General Public License as published by
@@ -21,22 +21,25 @@
 #' @param threshold Upon or equal the threshold the grid values turn to 1, whereas below it turns to 0. This can be a single value or a vector. In case it is a vector it will apply a different threshold on each station. If threshold is NULL, then the data is converted to binary by a value that makes the ref.pred to have the same number of 0 values than those in the ref.obs. Default is NULL. 
 #' @param partial If TRUE, only values below the threshold will turn to 0 and the others will remain with their original grid real value. Default is FALSE.
 #' @param ref.obs Grid of observations. It is used to determine the number of days where there is no event (or value equal to 0).
-#' @param ref.pred Grid of predictions- It is used to calculate the threshold that will further be used to convert to binary the grid x.
+#' @param ref.pred Grid of predictions. It is used to calculate the threshold that will further be used to convert the grid  \code{x} to binary.
 #' @return A new grid object with binary values
 #' @details The function only works for a vector of observations/predictands downloaded from \pkg{loadeR}).
 #' @author J. Bano-Medina
 #' @importFrom stats quantile
 #' @export
 #' @family downscaling.helpers
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets)
+#' data(VALUE_Iberia_pr)
 #' # Take a look at the data:
 #' head(VALUE_Iberia_pr$Data)
 #' # Convert to complete binary variable:
 #' ybin <- convert2bin(VALUE_Iberia_pr,threshold = 1)
 #' head(ybin$Data)
 #' # Convert to partial binary variable:
-#' ybin2 <- convert2bin(VALUE_Iberia_pr,threshold = 1, partial = TRUE)
+#' ybin2 <- convert2bin(VALUE_Iberia_pr, threshold = 1, partial = TRUE)
 #' head(ybin2$Data)
+#' }
 
 convert2bin <- function(x, threshold = NULL, partial = FALSE, ref.obs = NULL, ref.pred = NULL) {
   dimNames <- getDim(x)
