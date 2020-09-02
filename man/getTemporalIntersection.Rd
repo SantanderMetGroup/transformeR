@@ -27,7 +27,7 @@ range(getRefDates(NCEP_Iberia_psl))
 data("EOBS_Iberia_tas")
 range(getRefDates(EOBS_Iberia_tas))
 # Assume NCEP's sea-level pressure is the predictor, 
-# and VALUE observations are the predictand,
+# and EOBS observations are the predictand,
 # encompassing both datasets different temporal periods:
 predictor <- subsetGrid(NCEP_Iberia_psl, years = 1987:2001, season = 1)
 getSeason(predictor) # January
