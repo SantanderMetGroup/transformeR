@@ -4,8 +4,14 @@
 \alias{clusterGrid}
 \title{Cluster analysis}
 \usage{
-clusterGrid(grid, type = "kmeans", centers = NULL, newdata = NULL,
-  y = NULL, ...)
+clusterGrid(
+  grid,
+  type = "kmeans",
+  centers = NULL,
+  newdata = NULL,
+  y = NULL,
+  ...
+)
 }
 \arguments{
 \item{grid}{A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object}
@@ -51,7 +57,7 @@ range of the heights vector, as determined by \code{\link[stats]{cutree}}.
 \strong{som}
 
 While using the SOM (self-organizing maps) algorithm (check \code{\link[kohonen]{som}} for further information), the argument \code{centers} is provided as
-a two-element vector, indicating the dimensions \code{xdim,ydim} of the grid (see \link[kohonen]{somgrid}).
+a two-element vector, indicating the dimensions \code{xdim,ydim} of the grid (see \code{\link[kohonen]{somgrid}}).
 By default, a rectangular topology (8x6) of 48 clusters is obtained. 
 
 \strong{Lamb}
@@ -60,6 +66,8 @@ The Lamb Weather Typing algorithm is implemented in the function \code{\link{lam
 A default of 26 types is calculated, following Trigo and daCamara (2000)
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 #Example of K-means clustering: 
 data(NCEP_Iberia_psl, package = "transformeR")
 clusters<- clusterGrid(NCEP_Iberia_psl, type="kmeans", centers=10, iter.max=1000)
@@ -74,12 +82,13 @@ clusters<- clusterGrid(NCEP_Iberia_psl, type="som", centers = c(10,1))
 data(NCEP_slp_2001_2010)
 clusters <- clusterGrid(grid = NCEP_slp_2001_2010, type = "lamb")
 }
+}
 \references{
 Trigo, R.M., DaCamara, C.C., 2000. Circulation weather types and their influence on the precipitation regime in Portugal. 
 Int. J. Climatol. 23. https://doi.org/10.1002/1097-0088(20001115)20:13%3C1559::AID-JOC555%3E3.0.CO;2-5
 }
 \seealso{
-\link[stats]{kmeans}, \link[stats]{hclust}, \link[kohonen]{som}.
+\code{\link[stats]{kmeans}}, \code{\link[stats]{hclust}}, \code{\link[kohonen]{som}}.
 }
 \author{
 J. A. Fernández

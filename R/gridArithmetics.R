@@ -16,7 +16,8 @@
 #' @return A grid
 #' @author M. Iturbide
 #' @export
-#' @examples 
+#' @examples \donttest{ 
+#' require(climate4R.datasets)
 #' data("CMIP5_Iberia_pr")
 #' data("EOBS_Iberia_pr")
 #' cmip5 <- interpGrid(CMIP5_Iberia_pr, getGrid(EOBS_Iberia_pr))
@@ -30,6 +31,7 @@
 #' # More than one step needed to evaluate an expression of the type B/(A - B):
 #' grid1 <- gridArithmetics(A, B, operator = "-")
 #' newgrid <- gridArithmetics(B, grid1, operator = "/")
+#' }
 
 
 

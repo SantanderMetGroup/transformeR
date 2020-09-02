@@ -16,10 +16,11 @@ Diagnostic message
 Check the structure of the grid
 }
 \seealso{
-Other check.helpers: \code{\link{checkDim}},
-  \code{\link{checkSeason}},
-  \code{\link{checkTemporalConsistency}},
-  \code{\link{checkVarNames}}
+Other check.helpers: 
+\code{\link{checkDim}()},
+\code{\link{checkSeason}()},
+\code{\link{checkTemporalConsistency}()},
+\code{\link{checkVarNames}()}
 }
 \author{
 M. Iturbide

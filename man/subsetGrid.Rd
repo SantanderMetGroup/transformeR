@@ -4,9 +4,20 @@
 \alias{subsetGrid}
 \title{Select an arbitrary subset from a grid or multigrid along one or more of its dimensions}
 \usage{
-subsetGrid(grid, var = NULL, cluster = NULL, runtime = NULL,
-  members = NULL, years = NULL, season = NULL, lonLim = NULL,
-  latLim = NULL, outside = FALSE, station.id = NULL, drop = TRUE)
+subsetGrid(
+  grid,
+  var = NULL,
+  cluster = NULL,
+  runtime = NULL,
+  members = NULL,
+  years = NULL,
+  season = NULL,
+  lonLim = NULL,
+  latLim = NULL,
+  outside = FALSE,
+  station.id = NULL,
+  drop = TRUE
+)
 }
 \arguments{
 \item{grid}{The input grid or station data to be subset. This is either a grid (or station data), as 
@@ -16,7 +27,8 @@ multigrid, as returned by \code{makeMultiGrid}, or other types of multimember gr
 
 \item{var}{Character vector indicating the variables(s) to be extracted. (Used for multigrid subsetting). See details.}
 
-\item{cluster}{An integer vector indicating \strong{the clusters} to be subset.}
+\item{cluster}{For Lamb WTs (clusters): Character vector indicating \strong{the cluster(s)} to be subset. For the rest of clustering algorithms: 
+An integer vector indicating the cluster(s) to be subset.}
 
 \item{runtime}{An integer vector indicating \strong{the position} of the runtimes to be subset.}
 
@@ -51,15 +63,24 @@ The attribute \code{subset} will be added to the different slots corresponding t
 the value of the subroutine called in each case (e.g.: attribute subset will have the value \code{subsetSpatial}
 in the xyCoords slot after spatial subsetting...).
 
-\strong{Time slicing by years}
+\strong{Time slicing}
 
 In case of year-crossing seasons (e.g. boreal winter (DJF), \code{season = c(12,1,2)}),
 the season is assigned to the years of January and February 
 (i.e., winter of year 2000 corresponds to Dec 1999, Jan 2000 and Feb 2000). Thus, 
 the \code{years} argument must be introduced accordingly (See e.g. \code{\link{getYearsAsINDEX}}
-function for details).
+function for details). Hence, when subsetting along \code{season}, some data might be lost when using year-crossing
+seasons. For example, assume a dataset encompassing a full-year season (i.e., \code{season=1:12}) for the period 1981-2010
+ (i.e., \code{years=1981:2010}). When performing a subset on boreal winter (DJF, \code{season = c(12,1,2)}),
+ the first available winter will be \dQuote{winter 1982}, encompassing Dec 1981 and Jan and Feb 1982. Thus, all data corresponding to
+ Jan and Feb 1981 are discarded from the subset (i.e., only complete \dQuote{winters} will be returned). Similarly,
+ December 2010 will be lost (because it belongs to winter 2011, beyond the temporal extent of the dataset),
+ and the last data provided will correspond to winter 2009. To override this default behaviour and retaining all
+ January, February and December records strictly within the period 1981-2010, 
+ the non-standard \code{season=c(1,2,12)} can be specified (although this is rarely needed).
 
- \strong{Spatial slicing}
+ 
+\strong{Spatial slicing}
  
  Spatial subset definition is done via the \code{lonLim} and \code{latLim} arguments, in the same way as
   for instance the \code{loadGridData} function, from package \pkg{loadeR}, with the exception that several checks are undertaken
@@ -79,6 +100,7 @@ function for details).
 }
 \examples{
 \dontrun{
+require(climate4R.datasets)
 # Example 1 - Spatial / member subset
 data("CFS_Iberia_tas")
 # Selection of a smaller domain over the Iberian Peninsula and members 3 and 7
@@ -114,16 +136,21 @@ VALUE_Iberia_pr$Metadata
 }
 }
 \seealso{
-Other subsetting: \code{\link{getTemporalIntersection}},
-  \code{\link{intersectGrid.spatial}},
-  \code{\link{intersectGrid.time}},
-  \code{\link{intersectGrid}}, \code{\link{limitArea}},
-  \code{\link{subsetCluster}},
-  \code{\link{subsetDimension}},
-  \code{\link{subsetMembers}}, \code{\link{subsetRuntime}},
-  \code{\link{subsetSeason}}, \code{\link{subsetSpatial}},
-  \code{\link{subsetStation}}, \code{\link{subsetVar}},
-  \code{\link{subsetYears}}
+Other subsetting: 
+\code{\link{getTemporalIntersection}()},
+\code{\link{intersectGrid.spatial}()},
+\code{\link{intersectGrid.time}()},
+\code{\link{intersectGrid}()},
+\code{\link{limitArea}()},
+\code{\link{subsetCluster}()},
+\code{\link{subsetDimension}()},
+\code{\link{subsetMembers}()},
+\code{\link{subsetRuntime}()},
+\code{\link{subsetSeason}()},
+\code{\link{subsetSpatial}()},
+\code{\link{subsetStation}()},
+\code{\link{subsetVar}()},
+\code{\link{subsetYears}()}
 }
 \author{
 J. Bedia, M. Iturbide, J. A. Fernandez

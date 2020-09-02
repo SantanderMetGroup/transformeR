@@ -4,9 +4,15 @@
 \alias{temporalCycleGrid}
 \title{Temporal cycle calculation}
 \usage{
-temporalCycleGrid(grid, time.frame = c("daily", "monthly"),
-  clim.fun = "mean", ..., parallel = FALSE, max.ncores = 16,
-  ncores = NULL)
+temporalCycleGrid(
+  grid,
+  time.frame = c("daily", "monthly"),
+  clim.fun = "mean",
+  ...,
+  parallel = FALSE,
+  max.ncores = 16,
+  ncores = NULL
+)
 }
 \arguments{
 \item{grid}{Input grid. This must be a daily or monthly grid, depending on the next argument choice. See details}
@@ -66,6 +72,8 @@ Parallel computing is currently not available for Windows machines.
 }
 
 \examples{
+\donttest{
+require(climate4R.datasets)
 data("EOBS_Iberia_tas")
 
 ## DAILY CYCLE (example with winter EOBS mean temperature)
@@ -120,6 +128,7 @@ axis(1, at = 1:3, labels = month.abb[c(12,1,2)])
 attributes(mcyc$Variable)$'temporal.cycle::time.frame'
 # aggregation function:
 attributes(mcyc$Variable)$'temporal.cycle::fun'
+}
 }
 \seealso{
 \code{\link{filterGrid}} for the application of moving averages to grids.

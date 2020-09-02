@@ -105,7 +105,8 @@
 #'  y Neuronales en las Ciencias Atmosfericas. MIMAM, Spain. 279 pp.
 #'   \url{http://www.meteo.unican.es/en/books/dataMiningMeteo}
 #' @author J. Bedia, M. de Felice 
-#' @examples 
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
 #' multigrid <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 #' # In this example, we retain the PCs explaining the 99\% of the variance
@@ -148,6 +149,7 @@
 #' mm.multigrid <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
 #' # Use different n.eofs for each variable:
 #' pca.mm.mf <- prinComp(mm.multigrid, n.eofs = c(3,5))
+#' }
 
 prinComp <- function(grid,
                      n.eofs = NULL,

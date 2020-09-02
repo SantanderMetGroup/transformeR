@@ -18,16 +18,17 @@ easyVeri.signif(ref.mean, est.mean, sigma, cl = 0.95)
 \value{
 A easyVerification-like binary matrix (1 significant / 0 non-significant).
  Ready to be passed to \code{\link{easyVeri2grid}} for climatological grid conversion, 
- and possibly to \code{\link{map.stippling}} after that, to depict significant points in a verification map.
+ and possibly to \code{\link[visualizeR]{map.stippling}} after that, to depict significant points in a verification map.
 }
 \description{
 Two-tailed hypothesis testing for \pkg{easyVerification} sigma outputs
 }
 \seealso{
 \code{\link{easyVeri2grid}}, for conversion of verification matrices into climatological grids.
- Also, \code{\link{map.stippling}}, to draw significant points on verification maps.
+ Also, \code{\link[visualizeR]{map.stippling}}, to draw significant points on verification maps.
 
-Other easyVerification.bridges: \code{\link{easyVeri2grid}}
+Other easyVerification.bridges: 
+\code{\link{easyVeri2grid}()}
 }
 \author{
 J Bedia

@@ -37,7 +37,8 @@
 #' @importFrom magrittr %>% extract2
 #' @seealso \code{\link{prinComp}} for EOF analysis.
 #' @family pca
-#' @examples 
+#' @examples \donttest{
+#' require(climate4R.datasets) 
 #' # Obtain the Sea-level pressure PCs of CFSv2 forecast using the NCEP reanalysis EOF:
 #' data("NCEP_Iberia_psl")
 #' NCEP_psl_PCAobject <- prinComp(NCEP_Iberia_psl, v.exp = .95)
@@ -47,6 +48,7 @@
 #' # Need to have the same short name of the variable
 #' CFSv2_PCs <- grid2PCs(NCEP_psl_PCAobject, grid = CFS_psl_grid)
 #' str(CFSv2_PCs)
+#' }
 
 grid2PCs <- function(prinCompObj, grid, n.pcs = NULL) {
     gridName <- getVarNames(grid)

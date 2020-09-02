@@ -16,6 +16,8 @@ A character vector with the dimensions attribute of the object's \code{Data} com
 Retrieve dimensions attribute
 }
 \examples{
+\donttest{ 
+require(climate4R.datasets)
 #Station data:
 data("VALUE_Iberia_tas")
 getDim(VALUE_Iberia_tas)
@@ -23,17 +25,25 @@ getDim(VALUE_Iberia_tas)
 data("NCEP_Iberia_hus850")
 getDim(NCEP_Iberia_hus850)
 }
+}
 \seealso{
-Other get.helpers: \code{\link{get2DmatCoordinates}},
-  \code{\link{getCoordinates}}, \code{\link{getGridProj}},
-  \code{\link{getGridVerticalLevels}},
-  \code{\link{getGrid}}, \code{\link{getRefDates}},
-  \code{\link{getSeason}}, \code{\link{getShape}},
-  \code{\link{getStationID}},
-  \code{\link{getTimeResolution}},
-  \code{\link{getVarNames}}, \code{\link{getYearsAsINDEX}},
-  \code{\link{setGridProj}}, \code{\link{typeofGrid}},
-  \code{\link{which.leap}}
+Other get.helpers: 
+\code{\link{get2DmatCoordinates}()},
+\code{\link{getCoordinates}()},
+\code{\link{getGridProj}()},
+\code{\link{getGridVerticalLevels}()},
+\code{\link{getGrid}()},
+\code{\link{getRefDates}()},
+\code{\link{getSeason}()},
+\code{\link{getShape}()},
+\code{\link{getStationID}()},
+\code{\link{getTimeResolution}()},
+\code{\link{getVarNames}()},
+\code{\link{getWT}()},
+\code{\link{getYearsAsINDEX}()},
+\code{\link{setGridProj}()},
+\code{\link{typeofGrid}()},
+\code{\link{which.leap}()}
 }
 \author{
 J. Bedia

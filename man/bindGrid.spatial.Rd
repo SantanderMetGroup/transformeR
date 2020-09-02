@@ -20,14 +20,16 @@ This value is passed to the \code{\link{identical}} function to check for spatia
 Flexible binding of (spatially/member consistent) grids by their longitude or latitude dimension
 }
 \seealso{
-Other internal.helpers: \code{\link{array3Dto2Dmat.stations}},
-  \code{\link{array3Dto2Dmat}},
-  \code{\link{bindGrid.member}},
-  \code{\link{bindGrid.time}},
-  \code{\link{grid3Dto2Dmatrix}},
-  \code{\link{mat2Dto3Darray.stations}},
-  \code{\link{redim}}, \code{\link{sortDim.spatial}},
-  \code{\link{sortDim.time}}
+Other internal.helpers: 
+\code{\link{array3Dto2Dmat.stations}()},
+\code{\link{array3Dto2Dmat}()},
+\code{\link{bindGrid.member}()},
+\code{\link{bindGrid.time}()},
+\code{\link{grid3Dto2Dmatrix}()},
+\code{\link{mat2Dto3Darray.stations}()},
+\code{\link{redim}()},
+\code{\link{sortDim.spatial}()},
+\code{\link{sortDim.time}()}
 }
 \author{
 M Iturbide

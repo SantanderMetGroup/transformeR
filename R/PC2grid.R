@@ -33,7 +33,8 @@
 #' @author J. Bedia
 #' @importFrom abind abind
 #' @importFrom stats median
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' data("CFS_Iberia_psl")
 #' pc <- prinComp(CFS_Iberia_psl, v.exp = .95)
 #' # Convert to grid the PC of the leading EOF (pc.idx = 1):
@@ -50,6 +51,7 @@
 #' psl.index.inv <- aggregateGrid(psl.index.inv, aggr.m = aggr.fun, aggr.y = aggr.fun,
 #'                            aggr.mem = aggr.fun)
 #' lines(as.Date(getRefDates(psl.index.inv)), psl.index.inv$Data, ty = "o", col = "red")
+#' }
 
 PC2grid <- function(prinCompObj,
                     var = names(prinCompObj)[1],
