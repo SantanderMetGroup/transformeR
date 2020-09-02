@@ -151,6 +151,12 @@ interpGrid <- function(grid,
   } else if ("lon" %in% names(coords) & !"lon" %in% names(new.coordinates)) {
     x <- coords$lon
     y <- coords$lat
+    if (class(x) != "matrix" & class(y) != "matrix") {
+      dim1 <- getShape(grid, dimension = "lat")
+      dim2 <- getShape(grid, dimension = "lon")  
+      x <- matrix(x, nrow = dim1, ncol = dim2)
+      y <- matrix(y, nrow = dim1, ncol = dim2)
+    }
   } else if (!is.data.frame(coords)) {
     x <- list(x = outer(coords$y*0, coords$x, FUN = "+"),
               y = outer(coords$y, coords$x*0, FUN = "+"))$x
@@ -315,7 +321,11 @@ interpGrid <- function(grid,
       int <- array(dim = c(n.times, length(new.coordinates$y), length(new.coordinates$x)))
       for (k in 1:length(new.coordinates$x)) {
         for (l in 1:length(new.coordinates$y)) {
-          int[,l,k] <- grid$Data[i,,ind.NN.y[k,l],ind.NN.x[k,l]]
+          if (is.na(ind.NN.y[k,l]) | is.na(ind.NN.x[k,l])){
+            int[,l,k] <- NA
+          } else { 
+            int[,l,k] <- grid$Data[i,,ind.NN.y[k,l],ind.NN.x[k,l]]
+          }
         }
       }
       if (!isRegular(new.coordinates)) int <- array3Dto2Dmat.stations(int)
