@@ -30,6 +30,8 @@
 #' @family downscaling.helpers
 #' @examples
 #' # Take a look at the data:
+#' require(climate4R.datasets)
+#' data("VALUE_Iberia_pr")
 #' head(VALUE_Iberia_pr$Data)
 #' # Convert to complete binary variable:
 #' ybin <- convert2bin(VALUE_Iberia_pr,threshold = 1)

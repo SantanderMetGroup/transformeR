@@ -20,9 +20,11 @@ The grid indicated in \code{which.return}, encompassing the overlapping time per
 Takes two input grids and crops the overlapping part along time dimension
 }
 \examples{
+require(climate4R.datasets)
 data("NCEP_Iberia_psl")
 range(getRefDates(NCEP_Iberia_psl))
 data("VALUE_Iberia_tas")
+data("EOBS_Iberia_tas")
 range(getRefDates(EOBS_Iberia_tas))
 # Assuming sea-level pressure field from NCEP is the predictor, 
 # and VALUE observations are the predictand,

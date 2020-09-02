@@ -680,9 +680,11 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
 #' @seealso \code{\link{checkDim}}, \code{\link{checkSeason}}, \code{\link{getYearsAsINDEX}}, \code{\link{getSeason}}, for other time dimension helpers
 #' @export
 #' @examples 
+#' require(climate4R.datasets)
 #' data("NCEP_Iberia_psl")
 #' range(getRefDates(NCEP_Iberia_psl))
 #' data("VALUE_Iberia_tas")
+#' data("EOBS_Iberia_tas")
 #' range(getRefDates(EOBS_Iberia_tas))
 #' # Assuming sea-level pressure field from NCEP is the predictor, 
 #' # and VALUE observations are the predictand,
