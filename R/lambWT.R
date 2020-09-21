@@ -204,6 +204,8 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
       #We subset the desired point from slp dataset: 
       grid.wt <- subsetDimension(grid.member, dimension = "time", indices = lamb.pattern)
       suppressMessages(clim <- climatology(grid.wt))
+      clim$Dates$start <- grid$Dates$start[1]
+      clim$Dates$end <- tail(grid$Dates$end, n=1)
       return(clim)
     })
     
