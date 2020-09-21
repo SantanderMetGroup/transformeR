@@ -679,14 +679,15 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
 #' @family subsetting
 #' @seealso \code{\link{checkDim}}, \code{\link{checkSeason}}, \code{\link{getYearsAsINDEX}}, \code{\link{getSeason}}, for other time dimension helpers
 #' @export
-#' @examples 
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' data("NCEP_Iberia_psl")
 #' range(getRefDates(NCEP_Iberia_psl))
-#' data("VALUE_Iberia_tas")
+#' data("EOBS_Iberia_tas")
 #' range(getRefDates(EOBS_Iberia_tas))
-#' # Assuming sea-level pressure field from NCEP is the predictor, 
-#' # and VALUE observations are the predictand,
-#' # suppose they have different temporal periods:
+#' # Assume NCEP's sea-level pressure is the predictor, 
+#' # and EOBS observations are the predictand,
+#' # encompassing both datasets different temporal periods:
 #' predictor <- subsetGrid(NCEP_Iberia_psl, years = 1987:2001, season = 1)
 #' getSeason(predictor) # January
 #' range(getYearsAsINDEX(predictor)) # period 1987-2001 
@@ -699,9 +700,10 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
 #' predictand.adj <- getTemporalIntersection(obs = predictand, prd = predictor, which.return = "obs")
 #' getSeason(predictand.adj) # January 
 #' range(getYearsAsINDEX(predictand.adj)) # 1987-2001 
-#' # In the same vein, it is often required to be done again on the predictor 
+#' # In the same vein, it is often required to do the same on the predictor 
 #' predictor.adj <- getTemporalIntersection(obs = predictand, prd = predictor, which.return = "prd")
 #' checkDim(predictor.adj, predictand.adj, dimensions = "time") # perfect
+#' }
 
 getTemporalIntersection <- function(obs, prd, which.return = c("obs", "prd")) {
     which.return <- match.arg(which.return, choices = c("obs", "prd"))

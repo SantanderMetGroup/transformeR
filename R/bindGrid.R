@@ -1,6 +1,6 @@
 #     bindGrid.R Grid binding along user-defined dimension
 #
-#     Copyright (C) 2018 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2020 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@
 #' so the new dataset attribute reflects this. Note that the default behaviour is retaining the \code{"dataset"} 
 #' attribute of the first grid given, resulting in a misleading metadata information if this is the case. Default to \code{NULL},
 #' and ignored.
+#' @param skip.temporal.check If set to \code{TRUE}, it skips the temporal consistency checks when binding along the member dimension.
+#' For internal usage only, better not to use.
 #' @details
 #' 
 #' \strong{Application}
@@ -106,10 +108,11 @@
 
 bindGrid <- function(..., dimension = c("member", "time", "lat", "lon", "loc"), 
                      spatial.tolerance = 1e-3,
-                     dataset.attr = NULL) {
+                     dataset.attr = NULL,
+                     skip.temporal.check = FALSE) {
       dimension <- match.arg(dimension, choices = c("member", "time", "lat", "lon", "loc"))
       if (dimension == "member") {
-            bindGrid.member(..., tol = spatial.tolerance, attr. = dataset.attr)
+            bindGrid.member(..., tol = spatial.tolerance, attr. = dataset.attr, skip.temporal.check = skip.temporal.check)
       } else if (dimension == "time") {
             bindGrid.time(..., tol = spatial.tolerance)
       } else if (dimension == "lat" | dimension == "lon" | dimension == "loc") {
@@ -132,11 +135,14 @@ bindGrid <- function(..., dimension = c("member", "time", "lat", "lon", "loc"),
 #' so the new dataset attribute reflects this. Note that the default behaviour is retaining the \code{"dataset"} 
 #' attribute of the first grid given, resulting in a misleading metadata information if this is the case. Default to \code{NULL},
 #' and ignored.
+#' @param skip.temporal.check If set to \code{TRUE}, it skips the temporal consistency checks when binding along the member dimension.
+#' For internal usage only, better not to use.
 #' @importFrom abind abind
 #' @family internal.helpers
 #' @author J Bedia
 
-bindGrid.member <- function(..., tol, attr.) {
+bindGrid.member <- function(..., tol, attr., skip.temporal.check) {
+      stopifnot(is.logical(skip.temporal.check))
       grid.list <- list(...)
       if (!is.null(attr.)) {
             stopifnot(is.character(attr.))
@@ -168,7 +174,7 @@ bindGrid.member <- function(..., tol, attr.) {
             }
             grid.list <- aux.list
             aux.list <- NULL
-            checkTemporalConsistency(grid.list)
+            if (!skip.temporal.check) checkTemporalConsistency(grid.list)
             for (i in 2:length(grid.list)) {
                   # Spatial test
                   if (!isTRUE(all.equal(grid.list[[1]]$xyCoords, grid.list[[i]]$xyCoords, check.attributes = FALSE, tolerance = tol))) {
