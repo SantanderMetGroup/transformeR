@@ -238,6 +238,7 @@ bindGrid.member <- function(..., tol, attr.) {
 
 
 bindGrid.spatial <- function(..., dimn, tol) {
+   
    # dimension <- match.arg(dimension, choices = c("lat", "lon"))
    grid.list <- list(...)
    if (length(grid.list) == 1) {
@@ -280,7 +281,7 @@ bindGrid.spatial <- function(..., dimn, tol) {
    if (dimn != "loc"){
       indLats <- sapply(1:length(lats), FUN = function(z) which(sort(lats)[z] == lats))
       lats <- sort(lats)
-      grid.list <- grid.list[indLats]
+      #grid.list <- grid.list[indLats]
    } 
    ref <- grid.list[[1]]
    dimNames <- getDim(ref) 
