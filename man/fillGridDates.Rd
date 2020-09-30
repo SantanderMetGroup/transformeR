@@ -9,10 +9,13 @@ fillGridDates(grid, tz = "")
 \arguments{
 \item{grid}{grid or station data}
 
-\item{tz}{Otptional. Time zone (by default CET is used, see e.g. \code{\{as.POSIXlt}).}
+\item{tz}{Optional. Time zone (by default CET is used, see e.g. \code{\{as.POSIXlt}).}
+}
+\value{
+A grid filled with NAs in the previously missing date positions
 }
 \description{
-fill with NA missing dates grids and station data
+fill with NA missing dates in grids and station datasets
 }
 \author{
 M Iturbide

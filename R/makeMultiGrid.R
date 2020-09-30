@@ -114,7 +114,7 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
             # field.list[[1]]$Dates <- list(field.list[[1]]$Dates)
         } else {
             ## Climatologies ----------
-            field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], drop = TRUE))
+            # field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], drop = TRUE))
             field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], var = TRUE))
             ### check var dimension position
             varind <- unique(vapply(1:length(field.list), FUN.VALUE = integer(1), function(x) which(getDim(field.list[[x]]) == "var")))

@@ -55,11 +55,15 @@
 #'
 #'\strong{Lamb}
 #'
-#'The Lamb Weather Typing algorithm is implemented in the function \code{\link{lambWT}}. The argument \code{centers} is not used.
+#'The Lamb Weather Typing algorithm (Lamb 1972) is implemented in the function \code{\link{lambWT}}. The argument \code{centers} is not used.
 #'A default of 26 types is calculated, following Trigo and daCamara (2000) 
 #'@author J. A. Fernández
 #'@export
-#'@references Trigo, R.M., DaCamara, C.C., 2000. Circulation weather types and their influence on the precipitation regime in Portugal. 
+#'@references 
+#'
+#'Lamb, H., 1972. British Isles weather types and a register of the daily sequence of circulation patterns.
+#'
+#'Trigo, R.M., DaCamara, C.C., 2000. Circulation weather types and their influence on the precipitation regime in Portugal. 
 #'Int. J. Climatol. 23. https://doi.org/10.1002/1097-0088(20001115)20:13%3C1559::AID-JOC555%3E3.0.CO;2-5
 
 #'@examples \donttest{

@@ -7,8 +7,10 @@
 interpGrid(
   grid,
   new.coordinates = list(x = NULL, y = NULL),
-  method = c("nearest", "bilinear"),
+  method = "nearest",
   bilin.method = "fields",
+  force.non.overlapping = FALSE,
+  mask = NULL,
   parallel = FALSE,
   max.ncores = 16,
   ncores = NULL,
@@ -28,6 +30,13 @@ for bilinear interpolation, and \code{"nearest"}, for nearest-neighbor interpola
 \item{bilin.method}{Algorithm chosen for bilinear interpolation. Two options available: \code{"akima"} uses \code{\link[akima]{interp}} and
 \code{"fields"} (default) the \code{\link[fields]{interp.surface.grid}} algorithm. In case any missing values exist in the input data matrix, 
 the \code{"fields"} option, able to handle missing values, need to be used. Otherwise, the \code{"akima"} option performs much faster.}
+
+\item{force.non.overlapping}{Optional logical flag for \code{method = "nearest"} (otherwise ignored). If set to \code{TRUE},
+the nerest neighbour interpolation will be applied over non-overlapping grid domains (See the Note below). Default to \code{FALSE}.}
+
+\item{mask}{Optional. It applies for the \code{"nearest"} method only. A static C4R grid (i.e., time dimension has length one or does not exist), 
+in which the \strong{zero values} indicate grid-cells that are not used in the nearest-neighbour search. This can be useful for selecting
+land/sea points for example in downscaling exercises or climate index calculation.}
 
 \item{parallel}{Logical. Should parallel execution be used?}
 
@@ -54,7 +63,8 @@ The output has special attributes in the \code{xyCoords} element that indicate t
 }
 \note{
 To avoid unnecessary NA values, the function will not extrapolate using a new grid outside the
-current extent of the dataset, returning an error message.
+current extent of the dataset, returning an error message. This behaviour can be overriden with the \code{force.non.overlapping} 
+option when using the nearest-neighbor method.
 }
 \section{Parallel Processing}{
 

@@ -23,8 +23,8 @@ Suggests:
     visualizeR
 Type: Package
 Title: A climate4R package for general climate data manipulation and transformation
-Version: 2.0.1
-Date: 2020-05-22
+Version: 2.0.2
+Date: 2020-09-02
 Authors@R: c(person("Bedia", "Joaquín", email = "bediaj@unican.es", role = c("aut","cre"), comment = c(ORCID = "0000-0001-6219-4312")),
              person("Jorge", "Baño Medina", email = "bmedina@ifca.unican.es", role = "aut"),
              person("Ana", "Casanueva", email = "ana.casanueva@unican.es", role = "aut"),
@@ -39,4 +39,4 @@ Encoding: UTF-8
 Description: Tools for climate data analysis, visualization and manipulation. A building block of the climate4R Framework <http://www.meteo.unican.es/climate4R>. 
 License: file LICENSE
 LazyData: false 
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1

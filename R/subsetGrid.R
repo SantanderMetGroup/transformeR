@@ -22,8 +22,7 @@
 #' multigrid, as returned by \code{makeMultiGrid}, or other types of multimember grids
 #' (possibly multimember grids) as returned e.g. by \code{loadeR.ECOMS::loadECOMS}.
 #' @param var Character vector indicating the variables(s) to be extracted. (Used for multigrid subsetting). See details.
-#' @param cluster For Lamb WTs (clusters): Character vector indicating \strong{the cluster(s)} to be subset. For the rest of clustering algorithms: 
-#' An integer vector indicating the cluster(s) to be subset.
+#' @inheritParams subsetCluster
 #' @param members An integer vector indicating \strong{the position} of the members to be subset.
 #' @param runtime An integer vector indicating \strong{the position} of the runtimes to be subset.
 #' @param years The years to be selected. Note that this can be either a continuous or discontinuous
@@ -183,6 +182,7 @@ subsetGrid <- function(grid,
 
 subsetVar <- function(grid, var) {
     varnames <- getVarNames(grid)
+    levelnames <- grid[["Variable"]][["level"]]
     if (length(varnames) == 1) {
         message("NOTE: Variable subsetting was ignored: Input grid is not a multigrid object")
         return(grid)
@@ -197,14 +197,12 @@ subsetVar <- function(grid, var) {
     # Recovering attributes
     dimNames <- getDim(grid)
     var.dim <- grep("var", dimNames)
-    grid$Data <- asub(grid$Data, idx = var.idx, dims = var.dim, drop = FALSE)                  
-    grid$Variable$varName <- grid$Variable$varName[var.idx]
-    grid$Variable$level <- grid$Variable$level[var.idx]
+    grid$Data <- asub(grid$Data, idx = var.idx, dims = var.dim, drop = FALSE)   
     attrs <- attributes(grid$Variable)
-    add.attr <- attrs[which(names(attrs) == "names")]
-    attrs <- attrs[setdiff(1:length(attrs),which(names(attrs) == "names"))]
-    attr.ind <- which(sapply(attrs, "length") == length(varnames))
-    attributes(grid$Variable) <- c(lapply(attrs[attr.ind], "[", var.idx), add.attr)
+    attrs.aux <- lapply(attrs, "[", var.idx)
+    grid$Variable <- list(varName = varnames[var.idx], level = levelnames[var.idx])
+    for(x in 1:length(attrs.aux)) attr(grid[["Variable"]], names(attrs.aux)[x]) <- attrs.aux[[x]]
+    names(grid$Variable) <- c("varName", "level")
     grid$Dates <- if (length(var.idx) > 1L) {
         grid$Dates[var.idx]
     } else {
@@ -223,8 +221,7 @@ subsetVar <- function(grid, var) {
 #'
 #' @param grid Input multimember grid to be subset (possibly a multimember multigrid). A grid resulting from \code{\link{clusterGrid}} 
 #' must be used here, otherwise the function will return an error message
-#' @param cluster For Lamb WTs (clusters): Character vector indicating \strong{the cluster(s)} to be subset. For the rest of clustering algorithms: 
-#' An integer vector indicating the cluster(s) to be subset.
+#' @param cluster An integer indicating \strong{the cluster} to be subset. For Lamb WTs subsetting, see \code{\link{lambWT}}.
 #' @return A grid (or multigrid) that is a logical subset of the input grid along its 'time' dimension based on the cluster index.
 #' @keywords internal
 #' @export
@@ -238,17 +235,10 @@ subsetCluster <- function(grid, cluster) {
             call. = FALSE)
     return(grid)
   }
-  if (attr(grid, "cluster.type") == "lamb") {
-    if (!all(cluster %in% names(attr(grid, "wt.index")))) {
-      stop("Lamb 'cluster' not found", call. = FALSE)
-    }
-    indices = which(!is.na(match(names(attr(grid, "wt.index")), cluster))) 
-  } else {
-    if (!all(cluster %in% attr(grid, "wt.index"))) {
-      stop("'cluster' index out of bounds", call. = FALSE)
-    }
-    indices = which(!is.na(match(attr(grid, "wt.index"), cluster))) 
+  if (!all(cluster %in% attr(grid, "wt.index"))) {
+    stop("'cluster' index out of bounds", call. = FALSE)
   }
+  indices = which(!is.na(match(attr(grid, "wt.index"), cluster))) 
   grid <- subsetDimension(grid, dimension = "time", indices = indices)
   attr(grid$Variable, "subset") <- "subsetCluster"
   return(grid)
@@ -689,14 +679,15 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
 #' @family subsetting
 #' @seealso \code{\link{checkDim}}, \code{\link{checkSeason}}, \code{\link{getYearsAsINDEX}}, \code{\link{getSeason}}, for other time dimension helpers
 #' @export
-#' @examples 
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' data("NCEP_Iberia_psl")
 #' range(getRefDates(NCEP_Iberia_psl))
-#' data("VALUE_Iberia_tas")
+#' data("EOBS_Iberia_tas")
 #' range(getRefDates(EOBS_Iberia_tas))
-#' # Assuming sea-level pressure field from NCEP is the predictor, 
-#' # and VALUE observations are the predictand,
-#' # suppose they have different temporal periods:
+#' # Assume NCEP's sea-level pressure is the predictor, 
+#' # and EOBS observations are the predictand,
+#' # encompassing both datasets different temporal periods:
 #' predictor <- subsetGrid(NCEP_Iberia_psl, years = 1987:2001, season = 1)
 #' getSeason(predictor) # January
 #' range(getYearsAsINDEX(predictor)) # period 1987-2001 
@@ -709,9 +700,10 @@ subsetDimension <- function(grid, dimension = NULL, indices = NULL) {
 #' predictand.adj <- getTemporalIntersection(obs = predictand, prd = predictor, which.return = "obs")
 #' getSeason(predictand.adj) # January 
 #' range(getYearsAsINDEX(predictand.adj)) # 1987-2001 
-#' # In the same vein, it is often required to be done again on the predictor 
+#' # In the same vein, it is often required to do the same on the predictor 
 #' predictor.adj <- getTemporalIntersection(obs = predictand, prd = predictor, which.return = "prd")
 #' checkDim(predictor.adj, predictand.adj, dimensions = "time") # perfect
+#' }
 
 getTemporalIntersection <- function(obs, prd, which.return = c("obs", "prd")) {
     which.return <- match.arg(which.return, choices = c("obs", "prd"))

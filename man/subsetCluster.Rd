@@ -10,8 +10,7 @@ subsetCluster(grid, cluster)
 \item{grid}{Input multimember grid to be subset (possibly a multimember multigrid). A grid resulting from \code{\link{clusterGrid}} 
 must be used here, otherwise the function will return an error message}
 
-\item{cluster}{For Lamb WTs (clusters): Character vector indicating \strong{the cluster(s)} to be subset. For the rest of clustering algorithms: 
-An integer vector indicating the cluster(s) to be subset.}
+\item{cluster}{An integer indicating \strong{the cluster} to be subset. For Lamb WTs subsetting, see \code{\link{lambWT}}.}
 }
 \value{
 A grid (or multigrid) that is a logical subset of the input grid along its 'time' dimension based on the cluster index.

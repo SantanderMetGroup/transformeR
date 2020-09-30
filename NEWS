@@ -3,17 +3,14 @@
 See the [Releases section](https://github.com/SantanderMetGroup/transformeR/releases) for older version changes
 
 ## v1.4.0 (8 Jun 2018)
-
 * New function `intersectGrid`, for calculating spatiotemporal intersections among grids
 * Optional flag to skip seasonal check in `scaleGrid`
 
 ## v1.4.1 (11 Jun 2018)
-
 * Update built-in data units attribute (for compatibility with udunits parseable strings)
 * New helper `getGridUnits` and `setGridUnits`, to handle grid units
 
 ## v1.4.2 (21 Jun 2018)
-
 * Minor changes in `makeMultiGrid` (preserves the original input structure when one single grid is given as input, for internal programming convenience). Improved attribute definition.
 * Modified behaviour of `getVarNames` to append vertical level in short name definition
 * Do nothing (but a warning) when attempting to bind one single grid along member dimension
@@ -21,14 +18,12 @@ See the [Releases section](https://github.com/SantanderMetGroup/transformeR/rele
 * Other minor changes and documentation example updates
 
 ## v1.4.3 (19 Jul 2018)
-
  * Allow for updating the dataset attribute when constructing multimodels via `bindGrid` (enhancement [#18](https://github.com/SantanderMetGroup/transformeR/issues/18))
  * New helper for checking temporal consistency among grids (`checkTemporalConsistency`)
  * Allow missing data in PCA analysis (enhancement (#13)[https://github.com/SantanderMetGroup/transformeR/issues/13])
  * Other minor changes and documentation updates
 
 ## v1.4.4 (15 Aug 2018)
-
  * Allow for binding the loc dimension in `bindGrid` (for point data)
  * Bug fix in `interpGrid` when interpolating from and to point data
  * Other minor changes and documentation updates
@@ -118,7 +113,16 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
  * New helper `fillGridDates` for filling dataset missing dates
  * Other minor bug fixes, documentation updates and enhancements
 
-## 2.0.1 (in devel)
+## 2.0.1 (04 Jun 2020)
  * Removed draw.world.lines internal utility and associated vector layer (moved to visualizeR)
  * Removed dependency from 'raster' (grid2mopa moved to mopa pkg)
- * Added 'simulate' parameter in binaryGrid function
+ * Added 'simulate' parameter in `binaryGrid` function
+ * Force nearest-neighbour application among non-overlapping domains in `interpGrid`
+ * Other minor documentation updates
+
+## 2.0.2 (in devel)
+ * Bug fix in subsetVar attributes
+ * Internal falg in bindGrid.member to skip temporal checks
+ * Minor changes and documentation updates
+
+
