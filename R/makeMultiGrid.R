@@ -105,6 +105,8 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
         field.list <- unlist(field.list, recursive = FALSE)
         checkgrid <- unlist(lapply(field.list, function(x) isGrid(x)))   
     }
+    loc <- FALSE
+    if (!isRegular(field.list[[1]])) loc <- TRUE
     if (any(!checkgrid)) {
         stop("Invalid input data")
     } else { 
@@ -115,7 +117,7 @@ makeMultiGrid <- function(..., spatial.tolerance = 1e-3, skip.temporal.check = F
         } else {
             ## Climatologies ----------
             # field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], drop = TRUE))
-            field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], var = TRUE))
+            field.list <- lapply(1:length(field.list), function(x) redim(field.list[[x]], var = TRUE, loc = loc))
             ### check var dimension position
             varind <- unique(vapply(1:length(field.list), FUN.VALUE = integer(1), function(x) which(getDim(field.list[[x]]) == "var")))
             if (length(varind) > 1) stop("Input grids have different dimensions")#hay que discutir esto
