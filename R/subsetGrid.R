@@ -201,6 +201,7 @@ subsetVar <- function(grid, var) {
     attrs <- attributes(grid$Variable)
     attrs.aux <- lapply(attrs, "[", var.idx)
     grid$Variable <- list(varName = varnames[var.idx], level = levelnames[var.idx])
+    attrs.aux$names <- NULL
     for(x in 1:length(attrs.aux)) attr(grid[["Variable"]], names(attrs.aux)[x]) <- attrs.aux[[x]]
     names(grid$Variable) <- c("varName", "level")
     grid$Dates <- if (length(var.idx) > 1L) {
