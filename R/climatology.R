@@ -108,7 +108,10 @@ climatology <- function(grid,
       attr(grid$Dates, "season") <- getSeason(grid)
       grid$Dates$start <- grid$Dates$start[1]
       grid$Dates$end <- tail(grid$Dates$end, 1)
-      grid <- redim(grid, drop = TRUE) %>% redim(member = FALSE, var = FALSE, drop = FALSE)
+      grid <- redim(grid, drop = TRUE) 
+      if (length(attr(grid$Data,"dimensions")) == 0) attr(grid$Data,"dimensions") <- "time"
+      grid <- redim(grid, member = FALSE, var = FALSE, drop = FALSE)
+    
       if(!isRegular(grid)) grid <- redim(grid, loc = TRUE, member = FALSE)
       attr(grid$Data, "climatology:fun") <- clim.fun[["FUN"]]
       return(grid)
