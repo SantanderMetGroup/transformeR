@@ -54,7 +54,7 @@ upscaleGrid <- function(grid, times = 5,
             grid.list.lon <- lapply(grid.list, function(k) aggregateGrid(k, aggr.lon = aggr.fun))
       ))
       grid <- bindGrid(grid.list.lon, dimension = "lon")
-      grid$xyCoords$x <- newcoords
+      grid$xyCoords$x <- unname(newcoords)
       y <- grid$xyCoords$y
       fac <- rep(1:floor(length(y)/times), each = times)
       indfac <- length(y) - length(fac)
@@ -66,9 +66,9 @@ upscaleGrid <- function(grid, times = 5,
             grid.list.lat <- lapply(grid.list, function(k) aggregateGrid(k, aggr.lat = aggr.fun, weight.by.lat = FALSE))
       ))
       grid <- bindGrid(grid.list.lat, dimension = "lat")
-      grid$xyCoords$y <- newcoords
-      attr(grid$xyCoords, "resX") <- attr(grid$xyCoords, "resX") * times
-      attr(grid$xyCoords, "resY") <- attr(grid$xyCoords, "resY") * times
+      grid$xyCoords$y <- unname(newcoords)
+      if(!is.null(attr(grid$xyCoords, "resX"))) attr(grid$xyCoords, "resX") <- attr(grid$xyCoords, "resX") * times
+      if(!is.null(attr(grid$xyCoords, "resY"))) attr(grid$xyCoords, "resY") <- attr(grid$xyCoords, "resY") * times
       return(grid)
 }
 

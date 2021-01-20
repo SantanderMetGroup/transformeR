@@ -299,6 +299,7 @@ interpGrid <- function(grid,
         }
       } else {
         distK <- sqrt((x - new.coordinates$x[k]) ^ 2 + (y - new.coordinates$y[k]) ^ 2)
+        if (any(!is.na(distK))) {
         aux.ind <- which(distK == min(distK, na.rm = TRUE), arr.ind = TRUE)
         # if(nrow(aux.ind))
         if (!is.data.frame(coords)) {
@@ -307,6 +308,9 @@ interpGrid <- function(grid,
         } else {
           ind.NN.x[k,k] <- 1
           ind.NN.y[k,k] <- aux.ind[1]
+        }
+        } else {
+          warning("There are not values to interpolate.")
         }
       }
     }

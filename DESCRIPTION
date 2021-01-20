@@ -1,6 +1,6 @@
 Package: transformeR
 Depends:
-    R(>= 3.5.0) 
+    R(>= 3.5.0)
 Imports:
     abind,
     akima,
