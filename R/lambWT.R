@@ -95,9 +95,9 @@ lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
   if (centerlat > 0){
     lwt.names <- lwt.names.N
   }else {
-    lwt.names <- c("C", "CSW", "CW", "CNW", "CN", "CNE", "CE", "CSE", "CS",
+    lwt.names <- c("A", "ASW", "AW", "ANW", "AN", "ANE", "AE", "ASE", "AS",
                    "SW", "W", "NW", "N", "NE", "E", "SE", "S", 
-                   "A", "ASW", "AW", "ANW", "AN", "ANE", "AE", "ASE", "AS")
+                   "C", "CSW", "CW", "CNW", "CN", "CNE", "CE", "CSE", "CS")
   }
   
   suppressMessages(members <- getShape(grid, dimension = "member"))
@@ -226,10 +226,10 @@ lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
     names(wtseries)[indFlow] <- "U";
   } 
     
+  if (centerlat < 0){
+    wtseries <- match(names(wtseries), lwt.names)
     names(wtseries) <- lwt.names[wtseries]
-    if (centerlat < 0){
-      wtseries <- match(names(wtseries), lwt.names.N)
-    }
+  }
     
     wtseries.2 <- wtseries[1:n[[1]]]
     
