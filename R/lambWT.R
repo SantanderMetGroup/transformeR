@@ -86,19 +86,8 @@ lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
   wt <- vector("list", 1)
   names(wt) <- "lamb"
   nWTs <- 26
-  lwt.names.N <- c("A", "ANE", "AE", "ASE", "AS", "ASW", "AW", "ANW", "AN",
-                 "NE",  "E", "SE",  "S",  "SW",  "W",  "NW",  "N", 
-                 "C", "CNE", "CE", "CSE", "CS", "CSW", "CW", "CNW", "CN", "U")
-  
   centerlon <- center.point[1]
   centerlat <- center.point[2]
-  if (centerlat > 0){
-    lwt.names <- lwt.names.N
-  }else {
-    lwt.names <- c("A", "ASW", "AW", "ANW", "AN", "ANE", "AE", "ASE", "AS",
-                   "SW", "W", "NW", "N", "NE", "E", "SE", "S", 
-                   "C", "CSW", "CW", "CNW", "CN", "CNE", "CE", "CSE", "CS")
-  }
   
   suppressMessages(members <- getShape(grid, dimension = "member"))
   if (is.na(members)) {
@@ -128,8 +117,12 @@ lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
     
     #Preparing the input of lamb WT
     lon.array <- rep(centerlon, times = 16) + c(-5, 5, -15, -5, 5, 15, -15, -5, 5, 15, -15, -5, 5, 15, -5, 5)
-    lat.array <- rep(centerlat, times = 16) + c(10, 10, 5, 5, 5, 5, 0, 0, 0, 0, -5, -5, -5, -5, -10, -10)
-    
+    if(centerlat > 0){
+      lat.array <- rep(centerlat, times = 16) + c(10, 10, 5, 5, 5, 5, 0, 0, 0, 0, -5, -5, -5, -5, -10, -10)
+    }else if(centerlat < 0){
+      lat.array <- rep(centerlat, times = 16) + c(-10,- 10, -5, -5, -5, -5, 0, 0, 0, 0, 5, 5, 5, 5, 10, 10)
+    }
+     
     if(abs(centerlon) >= 165){
       for (i in 1:length(lon.array)) {
         if(lon.array[i] > 180){
@@ -225,12 +218,7 @@ lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
     wtseries[indFlow] <- nWTs #Unclassified WT 'U'
     names(wtseries)[indFlow] <- "U";
   } 
-    
-  if (centerlat < 0){
-    wtseries <- match(names(wtseries), lwt.names)
-    names(wtseries) <- lwt.names[wtseries]
-  }
-    
+
     wtseries.2 <- wtseries[1:n[[1]]]
     
     lamb.list <- lapply(1:nWTs, function(y){
