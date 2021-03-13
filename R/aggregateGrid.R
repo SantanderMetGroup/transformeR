@@ -400,7 +400,7 @@ locAggregation <- function(grid, aggr.fun, weight.by.lat, parallel, max.ncores, 
 #' @keywords internal
 #' @author J Bedia
 
-spatialAggregation <- function(grid, aggr.fun, weight.by.lat) {
+spatialAggregation <- function(grid, aggr.fun, weight.by.lat, parallel, max.ncores, ncores) {
   stopifnot(is.logical(weight.by.lat))
   dimNames <- getDim(grid)
   if (!any(c("lon", "lat") %in% dimNames)) {

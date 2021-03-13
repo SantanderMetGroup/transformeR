@@ -4,7 +4,7 @@
 \alias{spatialAggregation}
 \title{Spatial Aggregation}
 \usage{
-spatialAggregation(grid, aggr.fun, weight.by.lat)
+spatialAggregation(grid, aggr.fun, weight.by.lat, parallel, max.ncores, ncores)
 }
 \arguments{
 \item{grid}{Input grid.}
