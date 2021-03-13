@@ -1,6 +1,6 @@
 #     aggregateGrid.R Flexible grid aggregation along selected dimensions
 #
-#     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2021 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -20,16 +20,19 @@
 #' @description Aggregates a grid along the target dimensions using user-defined functions.
 #' @param grid a grid or multigrid to be aggregated.
 #' @param aggr.d Daily aggregation function (for sub-daily data only). A list indicating the name of the
-#'  aggregation function in first place, and other optional arguments to be passed to the aggregation function. See the examples.
+#'  aggregation function in first place, and other optional arguments to be passed to the aggregation function.
+#'  To be on the safe side, the function in \code{FUN} should be always indicated as a character string. See the examples.
 #' @param aggr.m Same as \code{aggr.d}, but indicating the monthly aggregation function. 
 #' @param aggr.y Same as \code{aggr.d}, but indicating the annual aggregation function. 
 #' @param aggr.s Same as \code{aggr.d}, but indicating the seasonal aggregation function. The season can be indicated
 #' as shown in this example:  aggr.s = list(FUN = list("mean", na.rm = TRUE), season = c(12,1,2)) 
 #' @param aggr.mem Same as \code{aggr.d}, but indicating the function for computing the member aggregation.
-#' @param aggr.lat Same as \code{aggr.d}, indicating the aggregation function to be applied along latitude.
+#' @param aggr.spatial Same as \code{aggr.d}, but indicating the aggregation function in case of rectangular domains to be aggregated
+#' as a unique time series grid (or multimember time series grid.)
+#' @param aggr.lat Same as \code{aggr.d}, indicating the aggregation function to be applied along latitude only.
 #' @param weight.by.lat Logical. Should latitudinal averages be weighted by the cosine of latitude?.
-#' Default to \code{TRUE}. Ignored if no \code{aggr.lat} function is indicated, or a function different from \code{"mean"}
-#' is applied.
+#' Default to \code{TRUE}. Ignored if no \code{aggr.lat} or \code{aggr.spatial} function is indicated,
+#'  or a function different from \code{"mean"} is applied.
 #' @param aggr.lon Same as \code{aggr.lat}, but for longitude.
 #' @param aggr.loc Same as \code{aggr.d}, indicating the aggregation function to be applied along the loc dimension.
 #' @template templateParallelParams
@@ -95,6 +98,7 @@ aggregateGrid <- function(grid,
                           aggr.m = list(FUN = NULL),
                           aggr.y = list(FUN = NULL),
                           aggr.s = list(FUN = NULL, season = NULL),
+                          aggr.spatial = list(FUN = NULL),
                           aggr.lat = list(FUN = NULL),
                           weight.by.lat = TRUE,
                           aggr.lon = list(FUN = NULL),
@@ -123,6 +127,11 @@ aggregateGrid <- function(grid,
             subsetDimension(grid,dimension = "time", indices = (indCut[z]+1):(indCut[z+1])) %>%
                 climatology(clim.fun = aggr.s$FUN)  
         }) %>% bindGrid(dimension = "time")
+    }
+    if (!is.null(aggr.spatial$FUN)) {
+        grid <- spatialAggregation(grid, aggr.fun = aggr.spatial,
+                                   weight.by.lat = weight.by.lat,
+                                   parallel, max.ncores, ncores)
     }
     if (!is.null(aggr.lat$FUN)) {
         grid <- latAggregation(grid, aggr.lat, weight.by.lat, parallel, max.ncores, ncores)
@@ -275,6 +284,7 @@ timeAggregation <- function(grid, aggr.type = c("DD","MM","YY"), aggr.fun, paral
 
 
 latAggregation <- function(grid, aggr.fun, weight.by.lat, parallel, max.ncores, ncores) {
+    stopifnot(is.logical(weight.by.lat))
     dimNames <- getDim(grid)
     if (!"lat" %in% dimNames) {
         message("There is not lat dimension: 'aggr.lat' option was ignored.")
@@ -379,4 +389,49 @@ locAggregation <- function(grid, aggr.fun, weight.by.lat, parallel, max.ncores, 
             message("[", Sys.time(), "] - Done.")
       }
       return(grid)
+}
+
+#' @title Spatial Aggregation
+#' @description Spatial aggregation for rectangular domains. 
+#' @param grid Input grid. 
+#' @param aggr.fun Aggregation function
+#' @param weight.by.lat Logical flag
+#' @return A spatially averaged time series grid (possibly multimember)
+#' @keywords internal
+#' @author J Bedia
+
+spatialAggregation <- function(grid, aggr.fun, weight.by.lat) {
+  stopifnot(is.logical(weight.by.lat))
+  dimNames <- getDim(grid)
+  if (!any(c("lon", "lat") %in% dimNames)) {
+    message("\'lon\' and/or \'lat\' dimensions are missing in the input grid: 'aggr.spatial' option was ignored.")
+  } else {
+    if (isTRUE(weight.by.lat)) {
+      lat.weights <- latWeighting(grid)
+      weight.matrix <- matrix(lat.weights, nrow = getShape(grid, "lat"), ncol = getShape(grid, "lon"))
+      if (aggr.fun[["FUN"]] == "mean") {
+        message("Calculating areal weights...")
+        aggr.fun <- list(FUN = "weighted.mean", w = weight.matrix, na.rm = TRUE)
+      } else {
+        message("Spatial weighting skipped: It only applies to \'mean\' aggregation function")
+      }
+    }
+    parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
+    mar <- grep("lat|lon", dimNames, invert = TRUE)
+    aggr.fun[["MARGIN"]] <- mar
+    aggr.fun[["X"]] <- grid$Data
+    out <- if (parallel.pars$hasparallel) {
+      message("[", Sys.time(), "] - Aggregating lat dimension in parallel...")
+      on.exit(parallel::stopCluster(parallel.pars$cl))
+      aggr.fun[["cl"]] <- parallel.pars$cl
+      do.call("parApply", aggr.fun)
+    } else {
+      message("[", Sys.time(), "] - Aggregating spatially...")
+      do.call("apply", aggr.fun)
+    }
+    grid$Data <- out
+    attr(grid$Data, "dimensions") <- dimNames[mar]
+    message("[", Sys.time(), "] - Done.")
+  }
+  return(grid)
 }
