@@ -1,6 +1,6 @@
 #     bindGrid.R Grid binding along user-defined dimension
 #
-#     Copyright (C) 2020 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2021 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -354,51 +354,51 @@ sortDim.spatial <- function(grid, dimension = c("y", "x")) {
 #' @author M De Felice, J Bedia
 
 bindGrid.time <- function(..., tol) {
-  grid.list <- list(...)
-  if (length(grid.list) == 1) {
-    grid.list <- unlist(grid.list, recursive = FALSE)
-  }
-  if (length(grid.list) < 2) {
-    stop("The input must be a list of at least two grids")
-  }
-  grid.list <- lapply(grid.list, function(i){
-    loc <- !isRegular(i)
-    redim(i, loc = loc, var = TRUE)
-  })
-    for (i in 2:length(grid.list)) {
+   grid.list <- list(...)
+   if (length(grid.list) == 1) {
+      grid.list <- unlist(grid.list, recursive = FALSE)
+   }
+   if (length(grid.list) < 2) {
+      stop("The input must be a list of at least two grids")
+   }
+   grid.list <- lapply(grid.list, function(i){
+      loc <- !isRegular(i)
+      redim(i, loc = loc, var = TRUE)
+   })
+   for (i in 2:length(grid.list)) {
       # Spatial test
       if (!isTRUE(all.equal(grid.list[[1]]$xyCoords, grid.list[[i]]$xyCoords, check.attributes = FALSE, tolerance = tol))) {
-        stop("Input data is not spatially consistent")
+         stop("Input data is not spatially consistent")
       }
       # Member
       if (getShape(grid.list[[1]])[match('member', getDim(grid.list[[1]]))] != getShape(grid.list[[i]])[match('member', getDim(grid.list[[i]]))]) {
-        stop("Member dimension is not spatially consistent")
+         stop("Member dimension is not spatially consistent")
       }
-    }
-    ref <- grid.list[[1]]
-    dimNames <- getDim(ref) 
-    dim.bind <- grep("^time", dimNames)
-    data.list <- lapply(grid.list, FUN = "[[", "Data")
-    ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
-    data.list <- NULL
-    start.list <- lapply(grid.list, FUN = function(x) {
+   }
+   ref <- grid.list[[1]]
+   dimNames <- getDim(ref) 
+   dim.bind <- grep("^time", dimNames)
+   data.list <- lapply(grid.list, FUN = "[[", "Data")
+   ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
+   data.list <- NULL
+   start.list <- lapply(grid.list, FUN = function(x) {
       getRefDates(x)
-    })
-    end.list <- lapply(grid.list, FUN = function(x) {
+   })
+   end.list <- lapply(grid.list, FUN = function(x) {
       getRefDates(x, "end")
-    })
-    grid.list <- NULL
-    refdates <- list(start = do.call(c, start.list),
-                     end = do.call(c, end.list))
-    attr(ref[["Data"]], "dimensions") <- dimNames
-    n.vars <- getShape(ref, "var")
-    if (n.vars > 1) refdates <- rep(list(refdates), n.vars)
-    ref[["Dates"]] <- refdates
-    ref <- tryCatch({sortDim.time(ref)}, error = function(err) {
+   })
+   grid.list <- NULL
+   refdates <- list(start = do.call("c", start.list),
+                    end = do.call("c", end.list))
+   attr(ref[["Data"]], "dimensions") <- dimNames
+   n.vars <- getShape(ref, "var")
+   if (n.vars > 1) refdates <- rep(list(refdates), n.vars)
+   ref[["Dates"]] <- refdates
+   ref <- tryCatch({sortDim.time(ref)}, error = function(err) {
       warning("time dimension could not be sorted!")
       ref})
-    ref <- redim(ref, drop = TRUE)
-    return(ref)
+   ref <- redim(ref, drop = TRUE)
+   return(ref)
 }
 #end
 
