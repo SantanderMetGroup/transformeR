@@ -4,7 +4,7 @@
 \alias{lambWT}
 \title{Calculation of Lamb Weather types (WT).}
 \usage{
-lambWT(grid, center.point = c(-5, 55))
+lambWT(grid, center.point = c(-5, 55), typeU = FALSE)
 }
 \arguments{
 \item{grid}{A grid (gridded or station dataset), or multimember grid object of MSLP values.}
