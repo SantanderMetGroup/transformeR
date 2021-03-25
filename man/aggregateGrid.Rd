@@ -11,6 +11,7 @@ aggregateGrid(
   aggr.m = list(FUN = NULL),
   aggr.y = list(FUN = NULL),
   aggr.s = list(FUN = NULL, season = NULL),
+  aggr.spatial = list(FUN = NULL),
   aggr.lat = list(FUN = NULL),
   weight.by.lat = TRUE,
   aggr.lon = list(FUN = NULL),
@@ -26,7 +27,8 @@ aggregateGrid(
 \item{aggr.mem}{Same as \code{aggr.d}, but indicating the function for computing the member aggregation.}
 
 \item{aggr.d}{Daily aggregation function (for sub-daily data only). A list indicating the name of the
-aggregation function in first place, and other optional arguments to be passed to the aggregation function. See the examples.}
+aggregation function in first place, and other optional arguments to be passed to the aggregation function.
+To be on the safe side, the function in \code{FUN} should be always indicated as a character string. See the examples.}
 
 \item{aggr.m}{Same as \code{aggr.d}, but indicating the monthly aggregation function.}
 
@@ -35,11 +37,14 @@ aggregation function in first place, and other optional arguments to be passed t
 \item{aggr.s}{Same as \code{aggr.d}, but indicating the seasonal aggregation function. The season can be indicated
 as shown in this example:  aggr.s = list(FUN = list("mean", na.rm = TRUE), season = c(12,1,2))}
 
-\item{aggr.lat}{Same as \code{aggr.d}, indicating the aggregation function to be applied along latitude.}
+\item{aggr.spatial}{Same as \code{aggr.d}, but indicating the aggregation function in case of rectangular domains to be aggregated
+as a unique time series grid (or multimember time series grid.)}
+
+\item{aggr.lat}{Same as \code{aggr.d}, indicating the aggregation function to be applied along latitude only.}
 
 \item{weight.by.lat}{Logical. Should latitudinal averages be weighted by the cosine of latitude?.
-Default to \code{TRUE}. Ignored if no \code{aggr.lat} function is indicated, or a function different from \code{"mean"}
-is applied.}
+Default to \code{TRUE}. Ignored if no \code{aggr.lat} or \code{aggr.spatial} function is indicated,
+ or a function different from \code{"mean"} is applied.}
 
 \item{aggr.lon}{Same as \code{aggr.lat}, but for longitude.}
 

@@ -90,7 +90,7 @@ clusterGrid <- function(grid,
                         newdata = NULL, 
                         y = NULL,
                         ...) {
- 
+
   type <- match.arg(type, choices = c("kmeans", "hierarchical", "som", "lamb"))
   
   if (is.null(newdata)) {
@@ -111,15 +111,15 @@ clusterGrid <- function(grid,
         stop("For lamb, only 'psl' variable is required Use subsetGrid to extract it")
       }
       if (!is.null(centers)) {
-        message("Lamb WT was choosen, so the number of clusters will be forced to 26. Arg. 'centers' will be ignored.")
+        message("Lamb WT was choosen, so the number of clusters will be forced following Lamb specifications. Arg. 'centers' will be ignored.")
       }
-      centers <- 26
       arg.list <- list(...)
       arg.list[["grid"]] <- grid
       lamb.wt <- do.call("lambWT", arg.list)
       #clusters.list <- vector("list", n.mem)
       #for (m in 1:n.mem){
         clusters.list <- array3Dto2Dmat(lamb.wt[[1]][[1]][[1]]$pattern)
+        centers <- nrow(clusters.list)
       #} 
     } else { #Rest of clustering algorithms
       #Scaling and combining data from all variables:

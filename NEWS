@@ -120,9 +120,14 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
  * Force nearest-neighbour application among non-overlapping domains in `interpGrid`
  * Other minor documentation updates
 
-## 2.0.2 (in devel)
+## 2.1.0 (17 Mar 2021)
+ * Implementation of Lamb Weather Typing for southern hemisphere
+ * Inclusion of type 27 (unclassified) in Lamb WT
+ * New functionality for spatial aggregation of rectangular domains
+ * Bug fix in partially masked latitudinal weighted domain averages.
+ * New option to use masking in interpGrid
  * Bug fix in subsetVar attributes
- * Internal falg in bindGrid.member to skip temporal checks
- * Minor changes and documentation updates
+ * Internal flag in bindGrid.member to skip temporal checks
+ * Other minor changes and documentation updates
 
 
