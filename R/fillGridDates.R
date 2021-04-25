@@ -29,60 +29,28 @@
 
 
 fillGridDates <- function(grid, tz = "") {
-  station <- ("loc" %in% getDim(grid)) 
+  station <- ("loc" %in% getDim(grid))
+  grid <- setGridDates.asPOSIXlt(grid)
   grid <- redim(grid, runtime = TRUE, var = TRUE)
   start <- getRefDates(grid)
   end <- getRefDates(grid, which = "end")
-  day.step <- as.numeric(names(which.max(table(difftime(c(start, NA), c(NA, start), units = "days")))))
-  message("Time difference of ", day.step, " days")
-  formato <- "%Y-%m-%d %H:%M:%S"
-  dateclass <- class(start)
-  if (day.step > 1) {
-    formato <- "%Y-%m-%d"
-  }
-  
-  if (dateclass == "character") {
-    
-    if (nchar(start[1]) > ) ## Assume HH-MM-SS
-    
-    tz <- strsplit(start[1], split = "\\s")[[1]][3]
-    if (is.na(tz)) tz <- NULL
-  } else if (any(grepl("POSIXt", dateclass))) {
-  
-    a <- as.POSIXlt(start[1])
-    class(a)
-    a$zone
-    %>% extract2("zone")
-  
-  } else {
-    tz <- attr(start[1], "tzone")  
-  }
-  usetz <- TRUE
-  if (is.null(tz)) {
-    tz <- ""
-    usetz <- FALSE
-    warning("Undefined time zone")
-  }
-  start <- as.POSIXlt(start, format = formato, tz = tz)
-  end <- as.POSIXlt(end, format = formato, tz = tz)
-  xs <- seq.POSIXt(from = start[1], to = start[length(start)],
-                   by = day.step*24*60*60,
-                   format = formato, tz = tz)
-  xe <- seq.POSIXt(from = end[1], to = end[length(end)],
-                   by = day.step*24*60*60,
-                   format = formato, tz = tz)
-  # xs <- as.POSIXlt(as.character(seq.POSIXt(start[1], start[length(start)],
-  #                                          by = day.step*24*60*60)),
-  #                  format = formato, tz = tz)
-  # xe <- as.POSIXlt(as.character(seq.POSIXt(end[1], end[length(end)],
-  #                                          by = day.step*24*60*60)),
-  #                  format = formato, tz = tz)
+  timeres <- getTimeResolution(grid)
+  if (timeres == "unknown") stop("Unknown grid temporal resolution")
+  by <- switch(timeres,
+               "1h" = "hour",
+               "3h" = 3600*3,
+               "6h" = 3600*6,
+               "12h" = 3600*12,
+               "DD" = "day",
+               "MM" = "month",
+               "YY" = "year")
+  xs <- seq.POSIXt(from = start[1], to = start[length(start)], by = by)
+  xe <- seq.POSIXt(from = end[1], to = end[length(end)], by = by)
   end <- NULL
   test <- data.frame("date" = start, "wh" = TRUE)
   start <- NULL
-  result <- merge(data.frame("date" = xs), test,
-                  by.y = "date", by.x = "date", all.x = TRUE)
-  ind <- which(result[, "wh"])
+  result <- merge(data.frame("date" = xs), test, by.y = "date", by.x = "date", all.x = TRUE)
+  ind <- which(result[ , "wh"])
   sh <- getShape(grid)
   sh[names(sh) == "time"] <- nrow(result)
   result <- NULL
@@ -91,17 +59,13 @@ fillGridDates <- function(grid, tz = "") {
   grid[["Data"]] <- arr
   arr <- NULL
   attr(grid[["Data"]], "dimensions") <- names(sh)
-  # grid[["Dates"]][["start"]] <- strftime(xs, format = formato, tz = tz, usetz = usetz)
-  # grid[["Dates"]][["end"]] <- strftime(xe, format = formato, tz = tz, usetz = usetz)
   grid[["Dates"]][["start"]] <- xs
   grid[["Dates"]][["end"]] <- xe
   xs <- xe <- NULL
   grid <- redim(grid, drop = TRUE, loc = station)
   return(grid)
 }
-
 # end
-  
 
 
 #' @description Internal utility for date format conversion to POSIX.lt
@@ -136,7 +100,6 @@ fillGridDates <- function(grid, tz = "") {
 #' c <- setGridDates.asPOSIXlt(CMIP5_Iberia_hus850.rcp85, tz = "UTC")
 #' range(getRefDates(c))
 #' }
-
 
 
 setGridDates.asPOSIXlt <- function(grid, tz = "") {
@@ -190,7 +153,7 @@ setGridDates.asPOSIXlt <- function(grid, tz = "") {
         warning("[", Sys.time(), "] Time zone unknown. It was set to the current auto-detected time zone (",
                 as.POSIXlt(Sys.time())$zone,")")
       } else {
-        message("[", Sys.time(), "] Time zone set to ", tz)
+        message("[", Sys.time(), "] Time zone identified and set to ", tz, "\nSee \'setGridDates.asPOSIXlt\' to change the time zone")
       }
     }
     grid$Dates$start <- as.POSIXlt.character(ds, tz = tz, format = format)
@@ -216,6 +179,7 @@ setGridDates.asPOSIXlt <- function(grid, tz = "") {
 getFirstChar <- function(x) {
   strsplit(x, split = "[[:punct:]]|[[:space:]]")[[1]][1]
 }
+
 
 #' @description Is alphabetic character
 #' @param x Character string
