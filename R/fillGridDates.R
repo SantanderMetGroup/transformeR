@@ -98,8 +98,8 @@ fillGridDates <- function(grid, tz = "") {
 #' # (i.e.: it will alter the actual times):
 #' b <- setGridDates.asPOSIXlt(CMIP5_Iberia_hus850.rcp85, tz = "Europe/Madrid")
 #' range(getRefDates(b))
-#' # Therefore, tz should be used ONLY when the time zone is not specified in the 
-#' # input grid and we are sure that the actual TZ of our data
+#' # Therefore, tz should be used ONLY when the time zone is missing or wrongly specified in the 
+#' # input grid and we are sure about the actual TZ of our data
 #' # It may also be used to change the representation of the time zone, e.g., changing 
 #' # the denomination GMT to the equivalent UTC:
 #' c <- setGridDates.asPOSIXlt(CMIP5_Iberia_hus850.rcp85, tz = "UTC")
