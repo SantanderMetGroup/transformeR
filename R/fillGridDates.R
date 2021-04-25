@@ -68,6 +68,7 @@ fillGridDates <- function(grid, tz = "") {
 # end
 
 
+#' @title Set Grid dates as POSIXlt (possibly with user-defined time zone)
 #' @description Internal utility for date format conversion to POSIX.lt
 #' @details The function attempts to identify the format of the grid dates and 
 #' to perform an adequate conversion to POSIXlt-class, including the time zone identification.
@@ -83,6 +84,7 @@ fillGridDates <- function(grid, tz = "") {
 #' @return The C4R grid with transformed dates
 #' @keywords internal
 #' @author J Bedia
+#' @family dateutils
 #' @examples \dontrun{
 #' library(climate4R.datasets)
 #' data("CMIP5_Iberia_hus850.rcp85")
@@ -92,11 +94,14 @@ fillGridDates <- function(grid, tz = "") {
 #' a <- setGridDates.asPOSIXlt(CMIP5_Iberia_hus850.rcp85)
 #' range(getRefDates(a))
 #' class(getRefDates(a))
-#' ## WARNING: Forcing a time zone will change the tz attribute, but not the time (i.e.: it will alter the actual times):
+#' ## WARNING: Forcing a time zone will change the tz attribute, but not the time
+#' # (i.e.: it will alter the actual times):
 #' b <- setGridDates.asPOSIXlt(CMIP5_Iberia_hus850.rcp85, tz = "Europe/Madrid")
 #' range(getRefDates(b))
-#' # Therefore, tz should be used ONLY when the time zone is not specified in the input grid and we are sure that the actual TZ of our data
-#' # It may also be used to change the representation of the time zone, e.g., changing the denomination GMT to the equivalent UTC:
+#' # Therefore, tz should be used ONLY when the time zone is not specified in the 
+#' # input grid and we are sure that the actual TZ of our data
+#' # It may also be used to change the representation of the time zone, e.g., changing 
+#' # the denomination GMT to the equivalent UTC:
 #' c <- setGridDates.asPOSIXlt(CMIP5_Iberia_hus850.rcp85, tz = "UTC")
 #' range(getRefDates(c))
 #' }
@@ -170,18 +175,20 @@ setGridDates.asPOSIXlt <- function(grid, tz = "") {
 #' @keywords internal
 #' @author J Bedia
 #' @family dateutils
-#' @examples 
+#' @examples \dontrun{ 
 #'  getFirstChar("2008 Feb 12")
 #'  getFirstChar("2008-02-12")
 #'  getFirstChar("12:00:00 GMT")
 #'  getFirstChar("Etc/UTC")
+#'  }
 
 getFirstChar <- function(x) {
   strsplit(x, split = "[[:punct:]]|[[:space:]]")[[1]][1]
 }
 
 
-#' @description Is alphabetic character
+#' @title Is alphabetic character
+#' @description Is alphabetic character? Internal utility for parsing dates
 #' @param x Character string
 #' @return Logical
 #' @keywords internal

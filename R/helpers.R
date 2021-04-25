@@ -648,7 +648,7 @@ isRegular <- function(grid) {
 #' \code{"1h", "3h", "6h", "12h", "DD", "MM", "YY"}. If none of these matches, \code{"unknown"} is returned 
 #' @author J Bedia
 #' @keywords internal
-#' @family get.helpers
+#' @family get.helpers dateutils
 #' @export
 #' @examples \donttest{ 
 #' require(climate4R.datasets)
