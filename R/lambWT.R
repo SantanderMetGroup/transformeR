@@ -1,6 +1,6 @@
 #     lambWT.R Calculation of the Weather types (WT) circulation indices from grid
 #
-#     Copyright (C) 2019 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2021 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #' @param grid A grid (gridded or station dataset), or multimember grid object of MSLP values.
 #' @param center.point A two value vector that must include lon and lat from a location that will work as center point for the Lamb WT.
 #' See details. 
+#' @param typeU Logical. Should "Unclassified" type be included in the output. Default to \code{FALSE}, so the closest is assigned.
 #' @details According to Trigo and daCamara (2000), Int J Climatol, Lamb WT is only applied on North Atlantic domain. 
 #' The input grid units must be Pa, not hPa/mbar. If it is not in Pa, the units must be converted.
 #' A center location point must be specified by the user. Then, the function calculates from left to right and from first to 16st 
