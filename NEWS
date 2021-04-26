@@ -130,4 +130,5 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
  * Internal flag in bindGrid.member to skip temporal checks
  * Other minor changes and documentation updates
 
-
+## 2.1.1 (on-implementation)
+ * New function `fillGrid` that groups functions `fillGridSpatial` and previous `fillGridDates`
