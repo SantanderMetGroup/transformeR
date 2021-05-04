@@ -162,7 +162,7 @@ interpGrid <- function(grid,
               y = outer(coords$y, coords$x*0, FUN = "+"))$x
     y <- list(x = outer(coords$y*0, coords$x, FUN = "+"),
               y = outer(coords$y, coords$x*0, FUN = "+"))$y
-    if ((length(x) == 1) | (length(y) == 1)){
+    if ((length(coords$x) == 1) | (length(coords$y) == 1)){
       if ((length(x) != getShape(grid,"lon")) & (isRegular(getGrid(grid)))){
         x <- coords$x
       }    
