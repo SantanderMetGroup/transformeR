@@ -162,6 +162,12 @@ interpGrid <- function(grid,
               y = outer(coords$y, coords$x*0, FUN = "+"))$x
     y <- list(x = outer(coords$y*0, coords$x, FUN = "+"),
               y = outer(coords$y, coords$x*0, FUN = "+"))$y
+    if (length(x) != getShape(grid,"lon")){
+      x <- coords$x
+    }
+    if (length(y) != getShape(grid,"lat")){
+      y <- coords$y
+    }    
   }
   # New coordinates
   if (is.null(new.coordinates)) {
