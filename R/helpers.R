@@ -78,9 +78,13 @@ getGrid <- function(gridData) {
             if ("lon" %in% names(gridData$xyCoords)) rot <- TRUE
             if (length(gridData$xyCoords$x) > 1){
                   grid.x <- c(gridData$xyCoords$x[1], tail(gridData$xyCoords$x, 1))
+            }else{
+                  grid.x <- gridData$xyCoords$x
             }
             if (length(gridData$xyCoords$y) > 1){
                   grid.y <- c(gridData$xyCoords$y[1], tail(gridData$xyCoords$y, 1))
+            }else{
+                  grid.y <- gridData$xyCoords$y
             }
             ## grid.x <- c(gridData$xyCoords$x[1], tail(gridData$xyCoords$x, 1))
             ## grid.y <- c(gridData$xyCoords$y[1], tail(gridData$xyCoords$y, 1))
