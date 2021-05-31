@@ -44,8 +44,8 @@ fillGridDates <- function(grid, tz = "") {
                "DD" = "day",
                "MM" = "month",
                "YY" = "year")
-  xs <- seq.POSIXt(from = start[1], to = start[length(start)], by = by)
-  xe <- seq.POSIXt(from = end[1], to = end[length(end)], by = by)
+  xs <- seq.POSIXt(from = as.POSIXct(start[1]), to = as.POSIXct(start[length(start)]), by = by)
+  xe <- seq.POSIXt(from = as.POSIXct(end[1]), to = as.POSIXct(end[length(end)]), by = by)
   end <- NULL
   test <- data.frame("date" = start, "wh" = TRUE)
   start <- NULL
