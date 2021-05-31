@@ -44,8 +44,8 @@ fillGridDates <- function(grid, tz = "") {
                "DD" = "day",
                "MM" = "month",
                "YY" = "year")
-  xs <- seq.POSIXt(from = as.POSIXct(start[1]), to = as.POSIXct(start[length(start)]), by = by)
-  xe <- seq.POSIXt(from = as.POSIXct(end[1]), to = as.POSIXct(end[length(end)]), by = by)
+  xs <- seq.POSIXt(from = start[1], to = start[length(start)], by = by)
+  xe <- seq.POSIXt(from = end[1], to = end[length(end)], by = by)
   end <- NULL
   test <- data.frame("date" = start, "wh" = TRUE)
   start <- NULL
@@ -126,7 +126,7 @@ setGridDates.asPOSIXlt <- function(grid, tz = "") {
     grid$Dates$start <- as.POSIXlt.POSIXct(ds, tz = tz, format = format)
     grid$Dates$end <- as.POSIXlt.POSIXct(de, tz = tz, format = format)
     
-  } else if (dateclass == "character") {
+  } else if (dateclass == "character" | dateclass == "array") {
     if (tz == "") {# Try to guess
       message("[", Sys.time(), "] Trying to determine the time zone...")
       # If dates are defined as a character string, somehow we need to "guess" the format
