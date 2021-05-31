@@ -1,7 +1,7 @@
 #' @title Fill missing dates and extend the latitude-longitude domain of a given grid.
 #' @description fill with NA missing dates in grids and station datasets
 #' @param grid grid or station data. The lonLim and latLim arguments are only valid for gridded data.
-#' @param tz Optional. Time zone (by default CET is used, see e.g. \code{\{as.POSIXlt}). Set to NULL to skip this argument.
+#' @param tz Optional. Time zone. See Details in \code{\link{fillGridDates}}.
 #' @param lonLim Optional. A vector with the minimum and maximum longitude boundaries to be filled with NAs. Default to lonLim = c(-180,180).
 #' @param latLim Optional. A vector with the minimum and maximum latitude boundaries to be filled with NAs. Default to latLim = c(-90,90).
 #' @return A grid filled with NAs in the previously missing date positions and/or in the latitude-longitude domain indicated.
@@ -25,7 +25,8 @@ fillGrid <- function(grid, tz = "", lonLim = c(-180,180), latLim = c(-90,90)) {
 #' @title Fill missing dates
 #' @description fill with NA missing dates in grids and station datasets
 #' @param grid grid or station data
-#' @param tz Optional. Time zone (by default CET is used, see e.g. \code{\{as.POSIXlt}).
+#' @param lonLim Optional. A vector with the minimum and maximum longitude boundaries to be filled with NAs. Default to lonLim = c(-180,180).
+#' @param latLim Optional. A vector with the minimum and maximum latitude boundaries to be filled with NAs. Default to latLim = c(-90,90).
 #' @return A grid filled with NAs in the previously missing date positions
 #' @author J. Baño-Medina
 #' @export
