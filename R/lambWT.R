@@ -1,6 +1,6 @@
 #     lambWT.R Calculation of the Weather types (WT) circulation indices from grid
 #
-#     Copyright (C) 2019 Santander Meteorology Group (http://www.meteo.unican.es)
+#     Copyright (C) 2021 Santander Meteorology Group (http://www.meteo.unican.es)
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #' @param grid A grid (gridded or station dataset), or multimember grid object of MSLP values.
 #' @param center.point A two value vector that must include lon and lat from a location that will work as center point for the Lamb WT.
 #' See details. 
+#' @param typeU Logical. Should "Unclassified" type be included in the output. Default to \code{FALSE}, so the closest is assigned.
 #' @details According to Trigo and daCamara (2000), Int J Climatol, Lamb WT is only applied on North Atlantic domain. 
 #' The input grid units must be Pa, not hPa/mbar. If it is not in Pa, the units must be converted.
 #' A center location point must be specified by the user. Then, the function calculates from left to right and from first to 16st 
@@ -80,11 +81,14 @@
 #' }
 
 
-lambWT <- function(grid, center.point = c(-5, 55)) {
+lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
   
   #  *** PREPARE OUTPUT GRID *** 
   wt <- vector("list", 1)
   names(wt) <- "lamb"
+  nWTs <- 26
+  centerlon <- center.point[1]
+  centerlat <- center.point[2]
   
   suppressMessages(members <- getShape(grid, dimension = "member"))
   if (is.na(members)) {
@@ -113,18 +117,32 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
     }
     
     #Preparing the input of lamb WT
-    centerlon <- center.point[1]
-    centerlat <- center.point[2]
-    
     lon.array <- rep(centerlon, times = 16) + c(-5, 5, -15, -5, 5, 15, -15, -5, 5, 15, -15, -5, 5, 15, -5, 5)
-    lat.array <- rep(centerlat, times = 16) + c(10, 10, 5, 5, 5, 5, 0, 0, 0, 0, -5, -5, -5, -5, -10, -10)
+    if(centerlat > 0){
+      lat.array <- rep(centerlat, times = 16) + c(10, 10, 5, 5, 5, 5, 0, 0, 0, 0, -5, -5, -5, -5, -10, -10)
+    }else if(centerlat < 0){
+      lat.array <- rep(centerlat, times = 16) + c(-10,- 10, -5, -5, -5, -5, 0, 0, 0, 0, 5, 5, 5, 5, 10, 10)
+    }
+     
+    if(abs(centerlon) >= 165){
+      for (i in 1:length(lon.array)) {
+        if(lon.array[i] > 180){
+          lon.array[i] <- lon.array[i] %% -180
+        } else if (lon.array[i] < -180){
+          lon.array[i] <- lon.array[i] %% 180
+        } else if (lon.array[i] == -180){
+          lon.array[i] <- 180
+        }
+      }
+    }
     
     grid.inter <- interpGrid(grid.member, new.coordinates = list(x = lon.array, y = lat.array), method = "nearest")
     X <- grid.inter$Data
     
     sf.const <- 1/cospi(centerlat/180)
-    zw.const1 <- sinpi(centerlat/180)/sinpi((centerlat - 5)/180)
-    zw.const2 <- sinpi(centerlat/180)/sinpi((centerlat + 5)/180)
+    latshift <- ifelse(centerlat > 0, -5, 5)
+    zw.const1 <- sinpi(centerlat/180)/sinpi((centerlat + latshift)/180)
+    zw.const2 <- sinpi(centerlat/180)/sinpi((centerlat - latshift)/180)
     zs.const <- 1/(2*cospi(centerlat/180)^2)
     
     ##FORTRAN code from Colin Harpham, CRU
@@ -194,12 +212,17 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
       else if (i == 16) {names(wtseries)[intersect(hybant, which(d == i))] <- "ANW"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CNW"}
       else {names(wtseries)[intersect(hybant, which(d == i))] <- "AN"; names(wtseries)[intersect(hybcyc, which(d == i))] <- "CN"}
     }
-    #indFlow <- which(abs(z) < 6 & f < 6)     
-    #wtseries[indFlow] <- 27 #indeterminate 
     
+  if (typeU == TRUE){
+    nWTs <- 27
+    indFlow <- which(abs(z) < 6 & f < 6)
+    wtseries[indFlow] <- nWTs #Unclassified WT 'U'
+    names(wtseries)[indFlow] <- "U";
+  } 
+
     wtseries.2 <- wtseries[1:n[[1]]]
     
-    lamb.list <- lapply(1:26, function(y){
+    lamb.list <- lapply(1:nWTs, function(y){
       lamb.pattern <- which(wtseries.2 == y)
       #We subset the desired point from slp dataset: 
       grid.wt <- subsetDimension(grid.member, dimension = "time", indices = lamb.pattern)
@@ -209,14 +232,14 @@ lambWT <- function(grid, center.point = c(-5, 55)) {
       return(clim)
     })
     
-    lamb <- bindGrid(lamb.list, dimension = "time")
+    lamb <- suppressWarnings(bindGrid(lamb.list, dimension = "time"))
     
     memb[[1]]$index <- wtseries.2
     memb[[1]]$pattern <- lamb$Data
     attr(memb[[1]], "season") <- getSeason(grid)
     attr(memb[[1]], "dates_start") <- grid.member$Dates$start
     attr(memb[[1]], "dates_end") <- grid.member$Dates$end
-    attr(memb[[1]], "centers") <- 26
+    attr(memb[[1]], "centers") <- nWTs
     wt[[1]][[x]] <- memb
   }
   

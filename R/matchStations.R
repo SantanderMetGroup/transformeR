@@ -29,6 +29,6 @@ matchStations <- function(obj,ref) {
   ind <- match(ref$Metadata$station_id,obj$Metadata$station_id)
   nStations <- dim(obj$Data)[which(getDim(obj) == "loc")]
   out <- lapply(1:nStations, FUN = function(z) {
-    subsetDimension(obj,dimension="loc",indices=ind[z])
+    subsetGrid(obj,station.id = ind[z])
   }) %>% bindGrid(dimension = "loc") %>% redim(drop = TRUE)
 }

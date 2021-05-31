@@ -72,7 +72,7 @@ binaryGrid <- function(x,
         if (isRegular(x)) {
           xx <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(x,members = j), member = FALSE)$Data))
         } else {
-          xx <- x$Data[j,,]
+          xx <- x$Data[j,,] %>% as.matrix()
         }
         s <- matrix(runif(nrow(xx)*ncol(xx),min = 0,max = 1),nrow = nrow(xx), ncol = ncol(xx))
         xbin <- (xx > s)*1
@@ -83,9 +83,9 @@ binaryGrid <- function(x,
           xx.obs <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(ref.obs,members = 1),member = FALSE)$Data))
           if (is.null(ref.pred)) {xx.pred <- xx} else {xx.pred <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(ref.pred,members = 1), member = FALSE)$Data))}
         } else {
-          xx <- x$Data[j,,]
-          xx.obs <- ref.obs$Data[1,,]
-          if (is.null(ref.pred)) {xx.pred <- xx} else {xx.pred <- redim(ref.pred, loc = loc)$Data[1,,]}
+          xx <- (subsetGrid(x,members = j) %>% redim(member = FALSE,loc = loc))$Data
+          xx.obs <- (subsetGrid(ref.obs,members = 1) %>% redim(member = FALSE,loc = loc))$Data
+          if (is.null(ref.pred)) {xx.pred <- xx} else {xx.pred <- (subsetGrid(redim(ref.pred, loc = loc),members = 1) %>% redim(member = FALSE,loc = loc))$Data}
         }
         
         frec <- apply(X = xx.obs, MARGIN = 2, function(X) {
