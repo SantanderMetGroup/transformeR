@@ -291,7 +291,7 @@ interpGrid <- function(grid,
               ind.NN.y[k,l] <- aux.ind[1,1] 
             } else {
               ind.NN.x[k,l] <- 1
-              ind.NN.y[k,l] <- aux.ind
+              ind.NN.y[k,l] <- aux.ind[1]
             }
           } else {
             warning("There are not values to interpolate.")
