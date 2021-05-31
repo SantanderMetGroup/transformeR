@@ -21,6 +21,13 @@ fill with NA missing dates in grids and station datasets
 The function attempts to recover the time zone of the input grid when this is correctly defined.
 Otherwise, the function will leave it as unknown. See \code{\link{timezones}} for more details.
 }
+\seealso{
+Other dateutils: 
+\code{\link{getFirstChar}()},
+\code{\link{isAlphaCharacter}()},
+\code{\link{setGridDates.asPOSIXlt}()}
+}
 \author{
 M Iturbide
 }
+\concept{dateutils}

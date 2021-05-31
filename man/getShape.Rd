@@ -37,7 +37,6 @@ Other get.helpers:
 \code{\link{getRefDates}()},
 \code{\link{getSeason}()},
 \code{\link{getStationID}()},
-\code{\link{getTimeResolution}()},
 \code{\link{getVarNames}()},
 \code{\link{getWT}()},
 \code{\link{getYearsAsINDEX}()},
