@@ -130,6 +130,6 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
  * Internal flag in bindGrid.member to skip temporal checks
  * Other minor changes and documentation updates
 
-## 2.1.1 (25 Abr 2021)
+## 2.1.1 (31 May 2021)
  * New dateutils-family helper functions for consistent date-time class handling (including time-zone defs)
  * Consistent treatment of multiple time resolutions in fillGridDates 
