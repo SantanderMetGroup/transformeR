@@ -133,3 +133,6 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
 ## 2.1.1 (31 May 2021)
  * New dateutils-family helper functions for consistent date-time class handling (including time-zone defs)
  * Consistent treatment of multiple time resolutions in fillGridDates 
+
+## 2.1.2 (22 Jun 2021)
+ * Allow for non-rescaled EOF recovery in EOF2clim
