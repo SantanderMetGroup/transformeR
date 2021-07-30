@@ -50,7 +50,7 @@ upscaleGrid <- function(grid, times = 5,
       fac <- c(fac0, rep(indfac, nfac))
       coords <- lapply(split(x, fac), function(k) range(k))
       newcoords <- unlist(lapply(split(x, fac), function(k) mean(k)))
-      newcoords[indfac] <- newcoords[(indfac - 1)] + (newcoords[(indfac - 1)] - newcoords[(indfac - 2)])
+      if (nfac != 0)  newcoords[indfac] <- newcoords[(indfac - 1)] + (newcoords[(indfac - 1)] - newcoords[(indfac - 2)])
       grid.list <- lapply(coords, function(k) subsetGrid(grid, lonLim = k))
       suppressMessages(suppressWarnings(
             grid.list.lon <- lapply(grid.list, function(k) aggregateGrid(k, aggr.lon = aggr.fun))
@@ -64,7 +64,7 @@ upscaleGrid <- function(grid, times = 5,
       fac <- c(fac0, rep(indfac, nfac))
       coords <- lapply(split(y, fac), function(k) range(k))
       newcoords <- unlist(lapply(split(y, fac), function(k) mean(k)))
-      newcoords[indfac] <- newcoords[(indfac - 1)] + (newcoords[(indfac - 1)] - newcoords[(indfac - 2)])
+      if (nfac != 0)  newcoords[indfac] <- newcoords[(indfac - 1)] + (newcoords[(indfac - 1)] - newcoords[(indfac - 2)])
       grid.list <- lapply(coords, function(k) subsetGrid(grid, latLim = k))
       suppressMessages(suppressWarnings(
             grid.list.lat <- lapply(grid.list, function(k) aggregateGrid(k, aggr.lat = aggr.fun, weight.by.lat = FALSE))
