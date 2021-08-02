@@ -69,7 +69,7 @@
 #'@examples \donttest{
 #'require(climate4R.datasets)
 #'#Example of K-means clustering: 
-#'data(NCEP_Iberia_psl, package = "transformeR")
+#'data(NCEP_Iberia_psl)
 #'clusters<- clusterGrid(NCEP_Iberia_psl, type="kmeans", centers=10, iter.max=1000)
 #'
 #'#Example of hierarchical clustering: 
@@ -136,6 +136,7 @@ clusterGrid <- function(grid,
     }
     if (type == "lamb") {
       wt.index <- lamb.wt[[1]][[1]][[1]]$index
+      wt.params <- lamb.wt[[1]][[1]][[1]]$params
     } else {
       wt.index <- attr(clusters.list, "index")
     }
@@ -149,7 +150,8 @@ clusterGrid <- function(grid,
     }
     attr(out.grid, "cluster.type") <- type
     attr(out.grid, "centers") <- centers
-    attr(out.grid, "wt.index") <- wt.index
+    attr(out.grid, "wt.index") <- as.integer(wt.index)
+    attr(out.grid, "wt.params") <- wt.params
     attr(out.grid, "centroids") <- clusters.list[ , ]
     if (type == "kmeans") {
         attr(out.grid, "withinss") <- attr(clusters.list, "withinss")

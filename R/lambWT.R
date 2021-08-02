@@ -81,7 +81,7 @@
 
 
 lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
-  
+
   #  *** PREPARE OUTPUT GRID *** 
   wt <- vector("list", 1)
   names(wt) <- "lamb"
@@ -105,7 +105,7 @@ lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
     #  *** LAMB WT CALCULATIONS *** 
     #Inicialization of variables:
     n <- getShape(grid.member, dimension = "time")
-    wtseries <- vector(mode = "numeric", n[[1]]) #Inicialize vector with size = lenght of "time" dimension
+    wtseries <- vector(mode = "integer", n[[1]]) #Inicialize vector with size = lenght of "time" dimension
     dirdeg <- vector(mode = "numeric",n[[1]])
     d <- vector(mode = "numeric",n[[1]])
     
@@ -117,11 +117,11 @@ lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
     
     #Preparing the input of lamb WT
     lon.array <- rep(centerlon, times = 16) + c(-5, 5, -15, -5, 5, 15, -15, -5, 5, 15, -15, -5, 5, 15, -5, 5)
-    if(centerlat > 0){
+    #if(centerlat > 0){
       lat.array <- rep(centerlat, times = 16) + c(10, 10, 5, 5, 5, 5, 0, 0, 0, 0, -5, -5, -5, -5, -10, -10)
-    }else if(centerlat < 0){
-      lat.array <- rep(centerlat, times = 16) + c(-10,- 10, -5, -5, -5, -5, 0, 0, 0, 0, 5, 5, 5, 5, 10, 10)
-    }
+   # }else if(centerlat < 0){
+   #   lat.array <- rep(centerlat, times = 16) + c(-10,- 10, -5, -5, -5, -5, 0, 0, 0, 0, 5, 5, 5, 5, 10, 10)
+   # }
      
     if(abs(centerlon) >= 165){
       for (i in 1:length(lon.array)) {
@@ -137,6 +137,7 @@ lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
     
     grid.inter <- interpGrid(grid.member, new.coordinates = list(x = lon.array, y = lat.array), method = "nearest")
     X <- grid.inter$Data
+    gc()
     
     sf.const <- 1/cospi(centerlat/180)
     latshift <- ifelse(centerlat > 0, -5, 5)
@@ -144,9 +145,14 @@ lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
     zw.const2 <- sinpi(centerlat/180)/sinpi((centerlat - latshift)/180)
     zs.const <- 1/(2*cospi(centerlat/180)^2)
     
-    ##FORTRAN code from Colin Harpham, CRU
-    w <- 0.005*((X[ , 12] + X[ , 13]) - (X[ , 4] + X[ , 5]))
-    s <- (sf.const*0.0025) * (X[ , 5] + 2*X[ , 9] + X[ , 13] - X[ , 4] - 2*X[ , 8] - X[ , 12])
+      ##FORTRAN code from Colin Harpham, CRU
+    if(centerlat > 0){
+      w <- 0.005*((X[ , 12] + X[ , 13]) - (X[ , 4] + X[ , 5]))
+      s <- (sf.const*0.0025) * (X[ , 5] + 2*X[ , 9] + X[ , 13] - X[ , 4] - 2*X[ , 8] - X[ , 12])
+    } else if(centerlat < 0){
+      w <- 0.005*((X[ , 4] + X[ , 5]) - (X[ , 12] + X[ , 13]))
+      s <- (sf.const*0.0025) * (X[ , 4] + 2*X[ , 8] + X[ , 12] - X[ , 5] - 2*X[ , 9] - X[ , 13])
+    }
     
     ind <- which(abs(w) > 0 & !is.na(w))
     dirdeg[ind] <- (atan(s[ind]/w[ind]))*180/pi
@@ -158,12 +164,19 @@ lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
     d[which(w >= 0 & !is.na(w))] <- 270 - dirdeg[which(w >= 0 & !is.na(w))] #SW & NW quadrant
     d[which(w < 0 & !is.na(w))] <- 90 - dirdeg[which(w < 0 & !is.na(w))] #SE & NE quadrant
     
-    #westerly shear vorticity
-    zw <- (zw.const1*0.005) * ((X[ , 15] + X[ , 16]) - (X[ , 8] + X[ , 9])) - (zw.const2*0.005) * ((X[ , 8] + X[ , 9]) - (X[ , 1] + X[ , 2]))
-    
-    #southerly shear vorticity  
-    zs <- (zs.const*0.0025) * (X[ , 6] + 2*X[ , 10] + X[ , 14] - X[ , 5] - 2*X[ , 9] - X[ , 13]) - (zs.const*0.0025) * (X[ , 4] + 2*X[ , 8] + X[ , 12] - X[ , 3] - 2*X[ , 7] - X[ , 11])
-    
+    if(centerlat > 0){
+      #westerly shear vorticity
+      zw <- (zw.const1*0.005) * ((X[ , 15] + X[ , 16]) - (X[ , 8] + X[ , 9])) - (zw.const2*0.005) * ((X[ , 8] + X[ , 9]) - (X[ , 1] + X[ , 2]))
+      
+      #southerly shear vorticity  
+      zs <- (zs.const*0.0025) * (X[ , 6] + 2*X[ , 10] + X[ , 14] - X[ , 5] - 2*X[ , 9] - X[ , 13]) - (zs.const*0.0025) * (X[ , 4] + 2*X[ , 8] + X[ , 12] - X[ , 3] - 2*X[ , 7] - X[ , 11])
+    }else if(centerlat < 0){
+      #westerly shear vorticity
+      zw <- (zw.const1*0.005) * ((X[ , 1] + X[ , 2]) - (X[ , 8] + X[ , 9])) - (zw.const2*0.005) * ((X[ , 8] + X[ , 9]) - (X[ , 15] + X[ , 16]))
+      
+      #southerly shear vorticity  
+      zs <- (zs.const*0.0025) * (X[ , 3] + 2*X[ , 7] + X[ , 11] - X[ , 4] - 2*X[ , 8] - X[ , 12]) - (zs.const*0.0025) * (X[ , 5] + 2*X[ , 9] + X[ , 13] - X[ , 6] - 2*X[ , 10] - X[ , 14])
+    }
     #total shear vorticity
     z <- zw + zs
     # resultant flow
@@ -233,8 +246,9 @@ lambWT <- function(grid, center.point = c(-5, 55), typeU = FALSE) {
     
     lamb <- suppressWarnings(bindGrid(lamb.list, dimension = "time"))
     
-    memb[[1]]$index <- wtseries.2
+    memb[[1]]$index <- as.integer(wtseries.2)
     memb[[1]]$pattern <- lamb$Data
+    memb[[1]]$params <- rbind(w,s,f,zw,zs,z)
     attr(memb[[1]], "season") <- getSeason(grid)
     attr(memb[[1]], "dates_start") <- grid.member$Dates$start
     attr(memb[[1]], "dates_end") <- grid.member$Dates$end
