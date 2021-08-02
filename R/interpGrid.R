@@ -162,6 +162,14 @@ interpGrid <- function(grid,
               y = outer(coords$y, coords$x*0, FUN = "+"))$x
     y <- list(x = outer(coords$y*0, coords$x, FUN = "+"),
               y = outer(coords$y, coords$x*0, FUN = "+"))$y
+    if ((length(coords$x) == 1) | (length(coords$y) == 1)){
+      if ((length(x) != getShape(grid,"lon")) & (isRegular(getGrid(grid)))){
+        x <- coords$x
+      }    
+      if ((length(y) != getShape(grid,"lat")) & (isRegular(getGrid(grid)))){
+        y <- coords$y
+      }
+    }
   }
   # New coordinates
   if (is.null(new.coordinates)) {
@@ -291,7 +299,7 @@ interpGrid <- function(grid,
               ind.NN.y[k,l] <- aux.ind[1,1] 
             } else {
               ind.NN.x[k,l] <- 1
-              ind.NN.y[k,l] <- aux.ind
+              ind.NN.y[k,l] <- aux.ind[1]
             }
           } else {
             warning("There are not values to interpolate.")

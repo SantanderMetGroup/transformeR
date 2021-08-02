@@ -44,11 +44,13 @@
 upscaleGrid <- function(grid, times = 5,
                         aggr.fun = list(FUN = max, na.rm = TRUE)) {
       x <- grid$xyCoords$x
-      fac <- rep(1:floor(length(x)/times), each = times)
-      indfac <- length(x) - length(fac)
-      fac <- c(fac, rep(max(fac) + 1, indfac))
+      fac0 <- rep(1:floor(length(x)/times), each = times)
+      nfac <- length(x) - length(fac0)
+      indfac <- max(fac0) + 1
+      fac <- c(fac0, rep(indfac, nfac))
       coords <- lapply(split(x, fac), function(k) range(k))
       newcoords <- unlist(lapply(split(x, fac), function(k) mean(k)))
+      if (nfac != 0)  newcoords[indfac] <- newcoords[(indfac - 1)] + (newcoords[(indfac - 1)] - newcoords[(indfac - 2)])
       grid.list <- lapply(coords, function(k) subsetGrid(grid, lonLim = k))
       suppressMessages(suppressWarnings(
             grid.list.lon <- lapply(grid.list, function(k) aggregateGrid(k, aggr.lon = aggr.fun))
@@ -56,19 +58,21 @@ upscaleGrid <- function(grid, times = 5,
       grid <- bindGrid(grid.list.lon, dimension = "lon")
       grid$xyCoords$x <- unname(newcoords)
       y <- grid$xyCoords$y
-      fac <- rep(1:floor(length(y)/times), each = times)
-      indfac <- length(y) - length(fac)
-      fac <- c(fac, rep(max(fac) + 1, indfac))
+      fac0 <- rep(1:floor(length(y)/times), each = times)
+      nfac <- length(y) - length(fac0)
+      indfac <- max(fac0) + 1
+      fac <- c(fac0, rep(indfac, nfac))
       coords <- lapply(split(y, fac), function(k) range(k))
       newcoords <- unlist(lapply(split(y, fac), function(k) mean(k)))
+      if (nfac != 0)  newcoords[indfac] <- newcoords[(indfac - 1)] + (newcoords[(indfac - 1)] - newcoords[(indfac - 2)])
       grid.list <- lapply(coords, function(k) subsetGrid(grid, latLim = k))
       suppressMessages(suppressWarnings(
             grid.list.lat <- lapply(grid.list, function(k) aggregateGrid(k, aggr.lat = aggr.fun, weight.by.lat = FALSE))
       ))
       grid <- bindGrid(grid.list.lat, dimension = "lat")
       grid$xyCoords$y <- unname(newcoords)
-      if(!is.null(attr(grid$xyCoords, "resX"))) attr(grid$xyCoords, "resX") <- attr(grid$xyCoords, "resX") * times
-      if(!is.null(attr(grid$xyCoords, "resY"))) attr(grid$xyCoords, "resY") <- attr(grid$xyCoords, "resY") * times
+      if (!is.null(attr(grid$xyCoords, "resX"))) attr(grid$xyCoords, "resX") <- attr(grid$xyCoords, "resX") * times
+      if (!is.null(attr(grid$xyCoords, "resY"))) attr(grid$xyCoords, "resY") <- attr(grid$xyCoords, "resY") * times
       return(grid)
 }
 

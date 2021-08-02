@@ -72,7 +72,7 @@ binaryGrid <- function(x,
         if (isRegular(x)) {
           xx <- suppressWarnings(array3Dto2Dmat(redim(subsetGrid(x,members = j), member = FALSE)$Data))
         } else {
-          xx <- x$Data[j,,]
+          xx <- x$Data[j,,] %>% as.matrix()
         }
         s <- matrix(runif(nrow(xx)*ncol(xx),min = 0,max = 1),nrow = nrow(xx), ncol = ncol(xx))
         xbin <- (xx > s)*1

@@ -4,13 +4,15 @@
 \alias{lambWT}
 \title{Calculation of Lamb Weather types (WT).}
 \usage{
-lambWT(grid, center.point = c(-5, 55))
+lambWT(grid, center.point = c(-5, 55), typeU = FALSE)
 }
 \arguments{
 \item{grid}{A grid (gridded or station dataset), or multimember grid object of MSLP values.}
 
 \item{center.point}{A two value vector that must include lon and lat from a location that will work as center point for the Lamb WT.
 See details.}
+
+\item{typeU}{Logical. Should "Unclassified" type be included in the output. Default to \code{FALSE}, so the closest is assigned.}
 }
 \value{
 The Lamb WT circulation index (and members, if applicable) with:
