@@ -69,7 +69,7 @@ A default of 26 types is calculated, following Trigo and daCamara (2000)
 \donttest{
 require(climate4R.datasets)
 #Example of K-means clustering: 
-data(NCEP_Iberia_psl, package = "transformeR")
+data(NCEP_Iberia_psl)
 clusters<- clusterGrid(NCEP_Iberia_psl, type="kmeans", centers=10, iter.max=1000)
 
 #Example of hierarchical clustering: 
