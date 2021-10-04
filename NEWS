@@ -142,5 +142,8 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
  * Bug fix in upscaleGrid
  * Include Lamb flow parameters in output
  * Other minor changes
+
+## 2.1.4 (04 Oct 2021) 
+ * Minor bug fix in clusterGrid
  
  
