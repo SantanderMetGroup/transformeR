@@ -151,12 +151,14 @@ clusterGrid <- function(grid,
     attr(out.grid, "cluster.type") <- type
     attr(out.grid, "centers") <- centers
     attr(out.grid, "wt.index") <- as.integer(wt.index)
-    attr(out.grid, "wt.params") <- wt.params
+    if (type == "lamb") {
+      attr(out.grid, "wt.params") <- wt.params  
+    }
     attr(out.grid, "centroids") <- clusters.list[ , ]
     if (type == "kmeans") {
         attr(out.grid, "withinss") <- attr(clusters.list, "withinss")
         attr(out.grid, "betweenss") <- attr(clusters.list, "betweenss")
-    }else if (type == "hierarchical") {
+    } else if (type == "hierarchical") {
         attr(out.grid, "height") <- attr(clusters.list, "height")
         attr(out.grid, "cutree.at.height") <- attr(clusters.list, "cutree.at.height")
         attr(out.grid, "diff.height.threshold") <- attr(clusters.list, "diff.height.threshold")
