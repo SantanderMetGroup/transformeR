@@ -671,29 +671,34 @@ isRegular <- function(grid) {
 #' }
 
 getTimeResolution <- function(grid) {
-    aux <- getRefDates(grid) 
-    if (length(aux) == 1) {
+    if("time_resolution" %in% names(attributes(grid$Variable))){
+      out <- attributes(grid$Variable)$time_resolution
+    }else{
+      aux <- getRefDates(grid) 
+      if (length(aux) == 1) {
         message("The input grid is a climatology: temporal resolution set to \'unknown\'")
         out <- "unknown"
-    } else {
+      } else {
         dft <- difftime(aux[2], aux[1], units = "hours") %>% as.numeric()
         out <- if (dft == 1) {
-            "1h"
+          "1h"
         } else if (dft == 3) {
-            "3h"    
+          "3h"    
         } else if (dft == 6) {
-            "6h"
+          "6h"
         } else if (dft == 12) {
-            "12h"
+          "12h"
         } else if (dft == 24) {
-            "DD"
+          "DD"
         } else if (dft >= 672 & dft <= 744) {
-            "MM"
+          "MM"
         } else if (dft >= 8640 & dft <= 8784) {
-            "YY"
+          "YY"
         } else {
-            "unknown"
+          "unknown"
         }
+      }
+      
     }
     return(out)
 }
