@@ -99,9 +99,9 @@ fillGridSpatial <- function(grid, lonLim = c(-180,180), latLim = c(-90,90)) {
 #' @export
 
 
-fillGridDates <- function(grid, tz = "") {
+fillGridDates <- function(grid, tz = "", wt = F, wt_start = "") {
   station <- ("loc" %in% getDim(grid))
-  grid <- setGridDates.asPOSIXlt(grid)
+  grid <- setGridDates.asPOSIXlt(grid, tz = "UTC")
   grid <- redim(grid, runtime = TRUE, var = TRUE)
   start <- getRefDates(grid)
   end <- getRefDates(grid, which = "end")
@@ -115,8 +115,17 @@ fillGridDates <- function(grid, tz = "") {
                "DD" = "day",
                "MM" = "month",
                "YY" = "year")
-  xs <- seq.POSIXt(from = start[1], to = start[length(start)], by = by)
-  xe <- seq.POSIXt(from = end[1], to = end[length(end)], by = by)
+  
+  if (wt){
+    xs <- seq.POSIXt(from = as.POSIXlt(wt_start,tz= "UTC"), to = start[length(start)], by = by)
+    xe <- seq.POSIXt(from = as.POSIXlt(wt_start,tz= "UTC"), to = end[length(end)], by = by) 
+  }else{
+    xs <- seq.POSIXt(from = as.POSIXlt(start[1],tz = "UTC"), to =  start[length(start)],
+                     by = by)
+    xe <- seq.POSIXt(from = as.POSIXlt(end[1],tz = "UTC"), to =  end[length(end)],
+                     by = by)
+  }
+  #con los xs y xe de la sintaxis comentada funciona el condicionamiento a WTs
   end <- NULL
   test <- data.frame("date" = start, "wh" = TRUE)
   start <- NULL
