@@ -18,7 +18,7 @@
 
  
 fillGrid <- function(grid, tz = "", lonLim = c(-180,180), latLim = c(-90,90)) {
-  if (!is.null(tz)) grid <- fillGridDates(tz = tz)
+  if (!is.null(tz)) grid <- fillGridDates(grid, tz = tz)
   if (!is.null(lonLim)) grid <- fillGridSpatial(grid, lonLim = lonLim, latLim = latLim)
   return(grid)
 }
@@ -100,41 +100,48 @@ fillGridSpatial <- function(grid, lonLim = c(-180,180), latLim = c(-90,90)) {
 
 
 fillGridDates <- function(grid, tz = "") {
-  station <- ("loc" %in% getDim(grid))
-  grid <- setGridDates.asPOSIXlt(grid)
-  grid <- redim(grid, runtime = TRUE, var = TRUE)
-  start <- getRefDates(grid)
-  end <- getRefDates(grid, which = "end")
-  timeres <- getTimeResolution(grid)
-  if (timeres == "unknown") stop("Unknown grid temporal resolution")
-  by <- switch(timeres,
-               "1h" = "hour",
-               "3h" = 3600*3,
-               "6h" = 3600*6,
-               "12h" = 3600*12,
-               "DD" = "day",
-               "MM" = "month",
-               "YY" = "year")
-  xs <- seq.POSIXt(from = start[1], to = start[length(start)], by = by)
-  xe <- seq.POSIXt(from = end[1], to = end[length(end)], by = by)
-  end <- NULL
-  test <- data.frame("date" = start, "wh" = TRUE)
-  start <- NULL
-  result <- merge(data.frame("date" = xs), test, by.y = "date", by.x = "date", all.x = TRUE)
-  ind <- which(result[ , "wh"])
-  sh <- getShape(grid)
-  sh[names(sh) == "time"] <- nrow(result)
-  result <- NULL
-  arr <- array(data = NA, dim = sh)
-  arr[,,, ind ,,] <- grid[["Data"]] 
-  grid[["Data"]] <- arr
-  arr <- NULL
-  attr(grid[["Data"]], "dimensions") <- names(sh)
-  grid[["Dates"]][["start"]] <- xs
-  grid[["Dates"]][["end"]] <- xe
-  xs <- xe <- NULL
-  grid <- redim(grid, drop = TRUE, loc = station)
-  return(grid)
+    station <- ("loc" %in% getDim(grid))
+    grid <- setGridDates.asPOSIXlt(grid)
+    grid <- redim(grid, runtime = TRUE, var = TRUE)
+    start <- getRefDates(grid)
+    end <- getRefDates(grid, which = "end")
+    timeres <- getTimeResolution(grid)
+    if (timeres == "unknown") stop("Unknown grid temporal resolution")
+    by <- switch(timeres,
+                 "1h" = "hour",
+                 "3h" = 3600*3,
+                 "6h" = 3600*6,
+                 "12h" = 3600*12,
+                 "DD" = "day",
+                 "MM" = "month",
+                 "YY" = "year")
+    xs <- seq.POSIXt(from = start[1], to = start[length(start)], by = by)
+    xe <- seq.POSIXt(from = end[1], to = end[length(end)], by = by)
+    end <- NULL
+    test <- data.frame("date" = start, "wh" = TRUE)
+    # start <- NULL
+    
+    # Find the indices of the elements in dates vector 'xs' that are missing in the input dates vector 'start'
+    ind.insert <- which(!as.Date(xs) %in% as.Date(start))
+    if (length(ind.insert) == 0L) {# The input vector is already complete, no need to fill missing records
+        message("[", Sys.time(), "] Already complete date record. Nothing was done")
+    } else {
+        result <- merge(data.frame("date" = xs), test, by.y = "date", by.x = "date", all.x = TRUE)
+        ind <- which(result[ , "wh"])
+        sh <- getShape(grid)
+        sh[names(sh) == "time"] <- nrow(result)
+        result <- NULL
+        arr <- array(data = NA, dim = sh)
+        arr[,,,ind,,] <- grid[["Data"]]
+        grid[["Data"]] <- arr
+        arr <- NULL
+        attr(grid[["Data"]], "dimensions") <- names(sh)
+        grid[["Dates"]][["start"]] <- xs
+        grid[["Dates"]][["end"]] <- xe
+        xs <- xe <- NULL
+        grid <- redim(grid, drop = TRUE, loc = station)
+    }
+    return(grid)
 }
 # end
 
@@ -181,7 +188,7 @@ fillGridDates <- function(grid, tz = "") {
 
 setGridDates.asPOSIXlt <- function(grid, tz = "") {
   ds <- getRefDates(grid)
-  de <- getRefDates(grid)
+  de <- getRefDates(grid, "end")
   dateclass <- class(ds)
   ref <- ds[1]
   format <- "%Y-%m-%d %H:%M:%S"
@@ -203,7 +210,7 @@ setGridDates.asPOSIXlt <- function(grid, tz = "") {
       message("[", Sys.time(), "] Trying to determine the time zone...")
       # If dates are defined as a character string, somehow we need to "guess" the format
       # This is done by counting the number of empty spaces between character strings assuming 
-      # Year:Month:day Time TimeZone
+      # Year:Month:day Hour:minute:second TimeZone
       split.string <- strsplit(ref, split = "\\s")[[1]]
       # First character of the first part of the date string (should be ALWAYS a number)
       if (isAlphaCharacter(getFirstChar(split.string[1]))) {
