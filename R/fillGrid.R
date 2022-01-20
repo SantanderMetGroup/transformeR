@@ -18,7 +18,7 @@
 
  
 fillGrid <- function(grid, tz = "", lonLim = c(-180,180), latLim = c(-90,90)) {
-  if (!is.null(tz)) grid <- fillGridDates(tz = tz)
+  if (!is.null(tz)) grid <- fillGridDates(grid, tz = tz)
   if (!is.null(lonLim)) grid <- fillGridSpatial(grid, lonLim = lonLim, latLim = latLim)
   return(grid)
 }
