@@ -15,7 +15,7 @@
 #' @importFrom abind abind
 #' @importFrom magrittr %>%
 
-sgdf2clim <- function(sp, member = FALSE, varName = NULL, level = NULL,
+sgdf2clim <- function(sp, varName = NULL, level = NULL,
                       dates = list(start = NULL, end = NULL),
                       season = NULL,
                       attr.list = NULL) {
@@ -46,13 +46,14 @@ sgdf2clim <- function(sp, member = FALSE, varName = NULL, level = NULL,
         aux <- sp@data[ind, i, drop = TRUE] # Re-ordered vector following mat2Dto3Darray ordering
         arr <- matrix(aux,
                       ncol = length(x),
-                      nrow = length(y)) %>% t() %>% abind(along = -1L) %>% aperm(perm = c(1,3,2))
+                      nrow = length(y)) %>% t() %>% abind(along = -1L) %>% aperm(perm = c(1,3,2)) %>% unname()
         attr(arr, "dimensions") <- c("time", "lat", "lon")
         grid[["Data"]] <- arr
+        attr(grid$Data, "climatology:fun") <- "transformeR::sgdf2clim"
         grid[["xyCoords"]] <- list("x" = x, "y" = y)
-        attr(grid[["xyCoords"]], "projection") <-  sp@proj4string
-        attr(grid[["xyCoords"]], "resX") <- sp@grid@cellsize[1]
-        attr(grid[["xyCoords"]], "resY") <- sp@grid@cellsize[2]
+        attr(grid[["xyCoords"]], "projection") <-  sp@proj4string@projargs
+        attr(grid[["xyCoords"]], "resX") <- sp@grid@cellsize[1] %>% unname()
+        attr(grid[["xyCoords"]], "resY") <- sp@grid@cellsize[2] %>% unname()
         grid[["Dates"]] <- dates
         attr(grid$Dates, "season") <- season
         return(grid)
