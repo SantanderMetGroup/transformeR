@@ -44,7 +44,7 @@ The function makes a number of checks in order to test the spatiotemporal compat
   values when loading the grids, or using the \code{\link{interpGrid}} interpolator in conjuntion with the \code{\link{getGrid}}
   method.
   
- Strong{Variable names} 
+ \strong{Variable names} 
  
  When a vertical level of the variable is defined (i.e., is not \code{NA}), 
  the short name of the variable is modified to the standard format \code{"var@level"} 
