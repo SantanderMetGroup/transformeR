@@ -6,7 +6,6 @@
 \usage{
 sgdf2clim(
   sp,
-  member = FALSE,
   varName = NULL,
   level = NULL,
   dates = list(start = NULL, end = NULL),

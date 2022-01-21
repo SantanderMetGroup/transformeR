@@ -145,6 +145,7 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
 
 ## 2.1.4 (in devel) 
  * Minor bug fix in clusterGrid
+ * Minor attribute fixes in 'sgdf2clim'
  * Bug fix and other internal changes in fillGridDates
  
  
