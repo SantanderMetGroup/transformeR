@@ -192,6 +192,7 @@ setGridDates.asPOSIXlt <- function(grid, tz = "") {
   dateclass <- class(ds)
   ref <- ds[1]
   format <- "%Y-%m-%d %H:%M:%S"
+  if(length(strsplit(ref, "-")[[1]]) == 3) format <- "%Y-%m-%d"
   
   if(any(grepl("POSIXlt", dateclass))) {
     ## Retrieve tz from original data
