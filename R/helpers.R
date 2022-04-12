@@ -685,7 +685,7 @@ getTimeResolution <- function(grid) {
             "6h"
         } else if (dft == 12) {
             "12h"
-        } else if (dft == 24) {
+        } else if (dft >= 23 & dft <= 24) {
             "DD"
         } else if (dft >= 672 & dft <= 744) {
             "MM"
