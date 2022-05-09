@@ -28,7 +28,7 @@ Other dateutils:
 \code{\link{setGridDates.asPOSIXlt}()}
 }
 \author{
-M Iturbide
+J Bedia
 }
 \concept{dateutils}
 \keyword{internal}
