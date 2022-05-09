@@ -93,16 +93,16 @@ fillGridSpatial <- function(grid, lonLim = c(-180,180), latLim = c(-90,90)) {
 #' @details The function attempts to recover the time zone of the input grid when this is correctly defined.
 #' Otherwise, the function will leave it as unknown. See \code{\link{timezones}} for more details.
 #' @return A grid filled with NAs in the previously missing date positions
-#' @author M Iturbide
+#' @author J Bedia
 #' @family dateutils
 #' @keywords internal
 #' @export
 
 
 fillGridDates <- function(grid, tz = "") {
-    station <- ("loc" %in% getDim(grid))
+    station <- ("loc" %in% getDim(grid) | class(grid[["xyCoords"]]) == "data.frame")
     grid <- setGridDates.asPOSIXlt(grid)
-    grid <- redim(grid, runtime = TRUE, var = TRUE)
+    grid <- redim(grid, runtime = TRUE, var = TRUE, loc = station)
     start <- getRefDates(grid)
     end <- getRefDates(grid, which = "end")
     timeres <- getTimeResolution(grid)
@@ -115,8 +115,8 @@ fillGridDates <- function(grid, tz = "") {
                  "DD" = "day",
                  "MM" = "month",
                  "YY" = "year")
-    xs <- seq.POSIXt(from = start[1], to = start[length(start)], by = by)
-    xe <- seq.POSIXt(from = end[1], to = end[length(end)], by = by)
+    xs <- seq.POSIXt(from = start[1], to = start[length(start)], by = by) %>% as.POSIXlt()
+    xe <- seq.POSIXt(from = end[1], to = end[length(end)], by = by) %>% as.POSIXlt()
     end <- NULL
     test <- data.frame("date" = start, "wh" = TRUE)
     # start <- NULL
@@ -132,15 +132,20 @@ fillGridDates <- function(grid, tz = "") {
         sh[names(sh) == "time"] <- nrow(result)
         result <- NULL
         arr <- array(data = NA, dim = sh)
-        arr[,,,ind,,] <- grid[["Data"]]
+        if(station) {
+          arr[,,,ind,] <- grid[["Data"]]
+        } else {
+          arr[,,,ind,,] <- grid[["Data"]]
+        }
         grid[["Data"]] <- arr
         arr <- NULL
         attr(grid[["Data"]], "dimensions") <- names(sh)
         grid[["Dates"]][["start"]] <- xs
         grid[["Dates"]][["end"]] <- xe
         xs <- xe <- NULL
-        grid <- redim(grid, drop = TRUE, loc = station)
     }
+    grid <- redim(grid, drop = TRUE)
+    grid <- redim(grid, loc = station, member = FALSE)
     return(grid)
 }
 # end
