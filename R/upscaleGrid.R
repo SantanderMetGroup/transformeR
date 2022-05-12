@@ -125,7 +125,7 @@ upscaleData <- function(grid,
       grid.aux$xyCoords$x <- grid$xyCoords$y[indlon]
       aggr.list[["grid"]] <- grid.aux
       grid.aux <- NULL
-      fun <- transformeR:::spatialAggregation
+      fun <- spatialAggregation
       out$Data[,,i, j] <- suppressMessages(do.call("fun", aggr.list))$Data
       }
   }

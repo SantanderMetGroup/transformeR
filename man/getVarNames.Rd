@@ -49,6 +49,7 @@ mg <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 getVarNames(mg)
 # The level can be removed id needed:
 getVarNames(mg, append.level = FALSE)
+data("CFS_Iberia_tas", "CFS_Iberia_pr")
 mg <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
 getVarNames(mg)
 getVarNames(mg, "long")

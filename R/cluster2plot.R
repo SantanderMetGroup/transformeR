@@ -31,7 +31,7 @@
 #'@examples \donttest{
 #' require(climate4R.datasets)
 #' #Example 1: 'cluster' is a 3D grid of clusters.
-#' data(NCEP_Iberia_psl, package = "transformeR")
+#' data(NCEP_Iberia_psl)
 #' clusters<- clusterGrid(NCEP_Iberia_psl, type = "kmeans", centers = 10)
 #' mg <- cluster2plot(clusters)
 #' require(visualizeR)

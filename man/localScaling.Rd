@@ -126,6 +126,7 @@ legend("bottomright", c("by.member = FALSE", "by.member = TRUE"), lty = 1, col =
 # In this example, the anomalies are calculated using a different period specifying a "base".
 # Note that "base" could also be a grid of a different dataset, for instance a
 # reanalysisdata(EOBS_Iberia_tas)
+data("EOBS_Iberia_tas")
 grid <- subsetGrid(EOBS_Iberia_tas, years = 1999:2000)
 base <- subsetGrid(EOBS_Iberia_tas, years = 1998)
 lc <- localScaling(grid = grid, base = base)

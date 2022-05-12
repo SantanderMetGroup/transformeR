@@ -23,6 +23,7 @@
 #' x <- grid2sp(CFS_Iberia_tas)
 #' plot(x[[1]][1]) # Plot the first day of the first member
 #' 
+#' data("EOBS_Iberia_tas")
 #' x <- grid2sp(EOBS_Iberia_tas)
 #' plot(x[1]) # Plot the first day
 #' }

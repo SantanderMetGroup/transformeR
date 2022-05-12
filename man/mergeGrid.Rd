@@ -27,11 +27,11 @@ internally passes to \code{\link{tapply}}. Note that the name of the function is
 }
 \examples{
 \donttest{
-require(climate4R.indices)
+require(climate4R.datasets)
 # We load the dataset (temperature)
-library(visualizeR)
 data("CFS_Iberia_tas")
 # We take a look at the domain of the dataset
+library(visualizeR)
 spatialPlot(climatology(CFS_Iberia_tas),backdrop.theme = "coastline")
 getGrid(CFS_Iberia_tas)
 # We divide the dataset in 2 regions

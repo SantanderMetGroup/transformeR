@@ -794,6 +794,7 @@ array3Dto2Dmat.stations <- function(array3D) {
 #' getVarNames(mg)
 #' # The level can be removed id needed:
 #' getVarNames(mg, append.level = FALSE)
+#' data("CFS_Iberia_tas", "CFS_Iberia_pr")
 #' mg <- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
 #' getVarNames(mg)
 #' getVarNames(mg, "long")
@@ -1082,9 +1083,8 @@ getGridUnits <- function(grid, var = NULL) {
 #' @family get.helpers unit.helpers
 #' @examples \donttest{ 
 #' require(climate4R.datasets)
-#' data(NCEP_Iberia_hus850)
+#' data(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 #' getGridUnits(NCEP_Iberia_hus850)
-#' data(NCEP_Iberia_psl)
 #' getGridUnits(NCEP_Iberia_psl)
 #' mf <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 #' getGridUnits(mf)

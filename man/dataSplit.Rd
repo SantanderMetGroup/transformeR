@@ -28,6 +28,7 @@ normally used to obtain a train and a validation set.
 \examples{
 \donttest{
 require(climate4R.datasets)
+data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850", "VALUE_Iberia_pr")
 x <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 y <- VALUE_Iberia_pr
 ### Split the data in train and test (f < 1)###

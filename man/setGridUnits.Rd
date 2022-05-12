@@ -30,9 +30,8 @@ The length of the \code{unit.string} vector should match the number of variables
 \examples{
 \donttest{ 
 require(climate4R.datasets)
-data(NCEP_Iberia_hus850)
+data(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 getGridUnits(NCEP_Iberia_hus850)
-data(NCEP_Iberia_psl)
 getGridUnits(NCEP_Iberia_psl)
 mf <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
 getGridUnits(mf)

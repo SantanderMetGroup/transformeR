@@ -21,6 +21,7 @@ The function also takes care of adjusting dates and other relevant metadata (via
 \examples{
 \donttest{
 require(climate4R.datasets)
+data("VALUE_Iberia_pr")
 # Check if the dataset contains missing values (YES):
 anyNA(VALUE_Iberia_pr$Data)
 getShape(VALUE_Iberia_pr)
