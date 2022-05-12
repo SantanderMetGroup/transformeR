@@ -143,9 +143,11 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
  * Include Lamb flow parameters in output
  * Other minor changes
 
-## 2.1.4 (in devel) 
+## 2.1.4 (30 Mar 2022) 
  * Minor bug fix in clusterGrid
  * Minor attribute fixes in 'sgdf2clim'
  * Bug fix and other internal changes in fillGridDates
- 
- 
+
+## 2.1.5 (12 May 2022) 
+ * Bug fix and other internal changes
+ * Update of the examples in the help documentation.
