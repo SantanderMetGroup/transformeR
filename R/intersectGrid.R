@@ -4,6 +4,8 @@
 #' @param type Character. Options are "temporal" (default) or "spatial".
 #' @param which.return Integer of the index to specify which grids in "..." are to be returned.
 #' @return The grids indicated in \code{which.return}, encompassing the overlapping time period.
+#' @details If type = "members" the function directly loads the resulting objects to the global
+#' environment and argument which.return is ignored (see examples).
 #' @author M Iturbide
 #' @family subsetting
 #' @seealso \code{\link{subsetGrid}}
@@ -14,18 +16,22 @@
 #' a <- subsetGrid(EOBS_Iberia_tas, lonLim = c(-8,-1), latLim = c(37, 40))
 #' b <- subsetGrid(EOBS_Iberia_tas, lonLim = c(-4,3), latLim = c(39, 43))
 #' z <- intersectGrid(a, b, type = "spatial", which.return = 1)
+#'  data("CFS_Iberia_tas")
+#'  data("CFS_Iberia_pr")
+#'  intersectGrid(CFS_Iberia_tas, CFS_Iberia_pr, type = "members")
 #' }
 
-intersectGrid <- function(..., type = c("temporal", "spatial"), which.return = 1) {
-      type <- match.arg(type, choices = c("temporal", "spatial"))
+intersectGrid <- function(..., type = c("temporal", "spatial", "members"), which.return = 1) {
+      type <- match.arg(type, choices = c("temporal", "spatial", "members"))
       if (type == "temporal") {
-            outgrid <- intersectGrid.time(..., which.return = which.return)
+            intersectGrid.time(..., which.return = which.return)
       } else if (type == "spatial") {
-            outgrid <- intersectGrid.spatial(..., which.return = which.return)
+            intersectGrid.spatial(..., which.return = which.return)
+      } else if (type == "members") {
+            intersectGrid.members(...)
       } else {
             stop("Invalid option for argument 'type'.")
       }
-      return(outgrid)
 }
       
 #' @title Temporal intersection of multiple grids
@@ -120,3 +126,31 @@ intersectGrid.spatial <- function(..., which.return = 1) {
       if (length(out) == 1) out <- out[[1]]
       return(out)
 }
+
+#' @title Subset two or more grids to the common members.
+#' @description Subset two or more grids to the common members.
+#' @param ... Grids.
+#' @return input grids are updated in the global environment.
+#' @author M. Iturbide
+#' @export
+
+
+intersectGrid.members <- function(...){
+  grids <- list(...) %>% lapply(redim)
+  grids.members <- lapply(grids, "[[", "Members")
+  members <- do.call("intersect", grids.members)
+  if (is.character(members) & length(members) > 0) {
+    ind <- lapply(grids.members, function(m){
+      lapply(members, function(i) grep(i, m)) %>% unlist
+    })
+    out <- lapply(1:length(grids), function(x) subsetGrid(grids[[x]], members = ind[[x]]))
+    nmes <- as.character(as.list(substitute(list(...)))[-1L])
+    if (length(nmes) < length(grids)) nmes <- paste0(nmes, 1:length(grids))
+    names(out) <- nmes
+    lapply(1:length(out), function(en) .GlobalEnv[[names(out)[en]]] <- out[[en]])
+  } else {
+    stop("Check input grids. Ensure the member dimension exists.")
+  }
+}
+
+#end
