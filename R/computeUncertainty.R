@@ -24,7 +24,7 @@
 #' @author M. Iturbide
 #' @export
 
-gridUncertainty <- function(historical, anomaly){
+computeUncertainty <- function(historical, anomaly){
   si <- signal(historical, anomaly)
   uncer1 <- aggregateGrid(si, aggr.mem = list(FUN = signalAgreement, th = 66, condition = "GT"))
   uncer2 <- aggregateGrid(si, aggr.mem = list(FUN = signalAgreement, th = 66, condition = "LT"))
