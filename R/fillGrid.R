@@ -99,53 +99,6 @@ fillGridSpatial <- function(grid, lonLim = c(-180,180), latLim = c(-90,90)) {
 #' @export
 
 
-<<<<<<< HEAD
-fillGridDates <- function(grid, tz = "", wt = F, wt_start = "") {
-  station <- ("loc" %in% getDim(grid))
-  grid <- setGridDates.asPOSIXlt(grid, tz = "UTC")
-  grid <- redim(grid, runtime = TRUE, var = TRUE)
-  start <- getRefDates(grid)
-  end <- getRefDates(grid, which = "end")
-  timeres <- getTimeResolution(grid)
-  if (timeres == "unknown") stop("Unknown grid temporal resolution")
-  by <- switch(timeres,
-               "1h" = "hour",
-               "3h" = 3600*3,
-               "6h" = 3600*6,
-               "12h" = 3600*12,
-               "DD" = "day",
-               "MM" = "month",
-               "YY" = "year")
-  
-  if (wt){
-    xs <- seq.POSIXt(from = as.POSIXlt(wt_start,tz= "UTC"), to = start[length(start)], by = by)
-    xe <- seq.POSIXt(from = as.POSIXlt(wt_start,tz= "UTC"), to = end[length(end)], by = by) 
-  }else{
-    xs <- seq.POSIXt(from = as.POSIXlt(start[1],tz = "UTC"), to =  start[length(start)],
-                     by = by)
-    xe <- seq.POSIXt(from = as.POSIXlt(end[1],tz = "UTC"), to =  end[length(end)],
-                     by = by)
-  }
-  #con los xs y xe de la sintaxis comentada funciona el condicionamiento a WTs
-  end <- NULL
-  test <- data.frame("date" = start, "wh" = TRUE)
-  start <- NULL
-  result <- merge(data.frame("date" = xs), test, by.y = "date", by.x = "date", all.x = TRUE)
-  ind <- which(result[ , "wh"])
-  sh <- getShape(grid)
-  sh[names(sh) == "time"] <- nrow(result)
-  result <- NULL
-  arr <- array(data = NA, dim = sh)
-  arr[,,, ind ,,] <- grid[["Data"]] 
-  grid[["Data"]] <- arr
-  arr <- NULL
-  attr(grid[["Data"]], "dimensions") <- names(sh)
-  grid[["Dates"]][["start"]] <- xs
-  grid[["Dates"]][["end"]] <- xe
-  xs <- xe <- NULL
-  grid <- redim(grid, drop = TRUE, loc = station)
-  return(grid)
-=======
 fillGridDates <- function(grid, tz = "") {
     station <- ("loc" %in% getDim(grid))
     grid <- setGridDates.asPOSIXlt(grid)
@@ -171,7 +124,8 @@ fillGridDates <- function(grid, tz = "") {
     # Find the indices of the elements in dates vector 'xs' that are missing in the input dates vector 'start'
     ind.insert <- which(!as.Date(xs) %in% as.Date(start))
     if (length(ind.insert) == 0L) {# The input vector is already complete, no need to fill missing records
-        message("[", Sys.time(), "] Already complete date record. Nothing was done")
+      grid <- redim(grid, drop = TRUE, loc = station)
+      message("[", Sys.time(), "] Already complete date record. Nothing was done")
     } else {
         result <- merge(data.frame("date" = xs), test, by.y = "date", by.x = "date", all.x = TRUE)
         ind <- which(result[ , "wh"])
@@ -189,7 +143,6 @@ fillGridDates <- function(grid, tz = "") {
         grid <- redim(grid, drop = TRUE, loc = station)
     }
     return(grid)
->>>>>>> db16ac4005b004bec2b06fb0b21e3266de159146
 }
 # end
 
