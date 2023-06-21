@@ -151,3 +151,10 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
 ## 2.1.5 (12 May 2022) 
  * Bug fix and other internal changes
  * Update of the examples in the help documentation.
+
+## 2.2.0 (21 Jun 2023) 
+ * New function to compute the uncertainty of multi-model ensembles
+ * Minor bug fix in helpers
+ * Documentation update
+ * Adapt to new class denomination for matrix objects in R version 4.X
+
