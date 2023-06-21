@@ -151,7 +151,7 @@ interpGrid <- function(grid,
   } else if ("lon" %in% names(coords) & !"lon" %in% names(new.coordinates)) {
     x <- coords$lon
     y <- coords$lat
-    if (!"matrix" %in% class(x) & !"matrix" %in% class(y)) {
+    if (!is.matrix(x) & !is.matrix(y)) {
       dim1 <- getShape(grid, dimension = "lat")
       dim2 <- getShape(grid, dimension = "lon")  
       x <- matrix(x, nrow = dim1, ncol = dim2)
