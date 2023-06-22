@@ -158,3 +158,6 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
  * Documentation update
  * Adapt to new class denomination for matrix objects in R version 4.X
 
+## 2.2.1 (22 Jun 2023) 
+ * Update of the DESCRIPTION file
+
