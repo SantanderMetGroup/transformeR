@@ -4,12 +4,14 @@
 \alias{computeUncertainty}
 \title{Calculate the uncertainty of the climate change signal.}
 \usage{
-computeUncertainty(historical, anomaly)
+computeUncertainty(historical, anomaly, method = "simple")
 }
 \arguments{
 \item{historical}{A grid with annual historical data}
 
 \item{anomaly}{A grid (with time dimension = 1).}
+
+\item{method}{"simple" or "advanced".}
 }
 \value{
 A grid with three values (uncertainty categories); 0 = robust signal, 
