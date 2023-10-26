@@ -161,3 +161,8 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
 ## 2.2.1 (22 Jun 2023) 
  * Update of the DESCRIPTION file
 
+## 2.2.2 (26 Oct 2023) 
+ * Allow for both "simple" and "advanced" methods to compute uncertainty
+ 
+
+
