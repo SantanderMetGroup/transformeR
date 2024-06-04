@@ -100,7 +100,7 @@ fillGridSpatial <- function(grid, lonLim = c(-180,180), latLim = c(-90,90)) {
 
 
 fillGridDates <- function(grid, tz = "") {
-    station <- ("loc" %in% getDim(grid) | class(grid[["xyCoords"]]) == "data.frame")
+    station <- ("loc" %in% getDim(grid) | is.data.frame(grid[["xyCoords"]]))
     grid <- setGridDates.asPOSIXlt(grid)
     grid <- redim(grid, runtime = TRUE, var = TRUE, loc = station)
     start <- getRefDates(grid)

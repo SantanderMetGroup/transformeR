@@ -283,7 +283,7 @@ bindGrid.spatial <- function(..., dimn, tol) {
   })
   lat <- unname(lat)
   lats <- do.call(coordfun, lat)
-  if (class(lats) == "list") lats <- unlist(lats) %>% unname()
+  if (is.list(lats)) lats <- unlist(lats) %>% unname()
   if (dimn != "loc"){
     indLats <- sapply(1:length(lats), FUN = function(z) which(sort(lats)[z] == lats))
     lats <- sort(lats)

@@ -19,23 +19,29 @@
 #' @description Calculate the uncertainty of the climate change signal.
 #' @param historical A grid with annual historical data
 #' @param anomaly A grid (with time dimension = 1).
+#' @param method "simple" or "advanced".
 #' @return A grid with three values (uncertainty categories); 0 = robust signal, 
 #' 1 = no signal or no change, 2 = conflicting signals).
 #' @author M. Iturbide
 #' @export
 
-gridUncertainty <- function(historical, anomaly){
-  si <- signal(historical, anomaly)
-  uncer1 <- aggregateGrid(si, aggr.mem = list(FUN = signalAgreement, th = 66, condition = "GT"))
-  uncer2 <- aggregateGrid(si, aggr.mem = list(FUN = signalAgreement, th = 66, condition = "LT"))
+computeUncertainty <- function(historical, anomaly, method = "simple"){
+  method <- match.arg(method, c("simple", "advanced"))
   uncer3 <- aggregateGrid(anomaly, aggr.mem = list(FUN = modelAgreement, th = 80))
-  uncer23 <- binaryGrid(gridArithmetics(uncer2, uncer3, operator = "+"), "GT", 0)  
-  uncer.a.aux1 <- gridArithmetics(uncer1, 1, -1, operator = c("-", "*"))
-  uncer.a.aux2 <- gridArithmetics(uncer23, 1, -1, operator = c("-", "*"))
-  eval(parse(text = paste("uncer.a.aux2$Data[which(uncer.a.aux2$Data == 1)] <- 2")))
-  uncer.a.aux <- gridArithmetics(uncer.a.aux1, uncer.a.aux2, operator = c("+"))
-  eval(parse(text = paste("uncer.a.aux$Data[which(uncer.a.aux$Data > 1)] <- 2")))
-  uncer.a.aux
+  if(method == "advanced"){
+    si <- signal(historical, anomaly)
+    uncer1 <- aggregateGrid(si, aggr.mem = list(FUN = signalAgreement, th = 66, condition = "GT"))
+    uncer2 <- aggregateGrid(si, aggr.mem = list(FUN = signalAgreement, th = 66, condition = "LT"))
+    uncer23 <- binaryGrid(gridArithmetics(uncer2, uncer3, operator = "+"), "GT", 0)  
+    uncer.a.aux1 <- gridArithmetics(uncer1, 1, -1, operator = c("-", "*"))
+    uncer.a.aux2 <- gridArithmetics(uncer23, 1, -1, operator = c("-", "*"))
+    eval(parse(text = paste("uncer.a.aux2$Data[which(uncer.a.aux2$Data == 1)] <- 2")))
+    uncer.a.aux <- gridArithmetics(uncer.a.aux1, uncer.a.aux2, operator = c("+"))
+    eval(parse(text = paste("uncer.a.aux$Data[which(uncer.a.aux$Data > 1)] <- 2")))
+    uncer.a.aux
+  } else {
+    uncer3 
+  }
 }
 
 #' @title Calculate signal agreement.
