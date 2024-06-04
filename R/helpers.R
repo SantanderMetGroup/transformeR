@@ -74,26 +74,29 @@ getGrid <- function(gridData) {
             } else {
                   attr(out, "resY") <- attr(gridData$xyCoords, "resY")   
             }
-      }else{
+      } else {
             if ("lon" %in% names(gridData$xyCoords)) rot <- TRUE
-            if (length(gridData$xyCoords$x) > 1){
+            if (length(gridData$xyCoords$x) > 1) {
                   grid.x <- c(gridData$xyCoords$x[1], tail(gridData$xyCoords$x, 1))
-            }else{
+            } else {
                   grid.x <- gridData$xyCoords$x
             }
-            if (length(gridData$xyCoords$y) > 1){
+            if (length(gridData$xyCoords$y) > 1) {
                   grid.y <- c(gridData$xyCoords$y[1], tail(gridData$xyCoords$y, 1))
-            }else{
+            } else {
                   grid.y <- gridData$xyCoords$y
             }
             ## grid.x <- c(gridData$xyCoords$x[1], tail(gridData$xyCoords$x, 1))
             ## grid.y <- c(gridData$xyCoords$y[1], tail(gridData$xyCoords$y, 1))
             out <- list(x = grid.x, y = grid.y)
+            
             if (rot) {
                   out$lon <- gridData$xyCoords$lon 
                   out$lat <- gridData$xyCoords$lat
             }
-            attributes(out) <- attributes(gridData$xyCoords)
+            if (length(attributes(gridData$xyCoords)[["projection"]]) > 0) {
+                attr(out, "projection") <- attributes(gridData$xyCoords)[["projection"]]
+            }
             if (!exists("resX", attributes(gridData$xyCoords))) {
                   attr(out, "resX") <- (tail(gridData$xyCoords$x, 1) - gridData$xyCoords$x[1]) / (length(gridData$xyCoords$x) - 1)
             } else {
@@ -101,7 +104,6 @@ getGrid <- function(gridData) {
             }
             if (!exists("resY", attributes(gridData$xyCoords))) {
                   attr(out, "resY") <- (tail(gridData$xyCoords$y, 1) - gridData$xyCoords$y[1]) / (length(gridData$xyCoords$y) - 1)
-                  
             } else{ 
                   attr(out, "resY") <- attr(gridData$xyCoords, "resY")   
             }
