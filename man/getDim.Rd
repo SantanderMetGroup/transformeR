@@ -30,9 +30,9 @@ getDim(NCEP_Iberia_hus850)
 Other get.helpers: 
 \code{\link{get2DmatCoordinates}()},
 \code{\link{getCoordinates}()},
+\code{\link{getGrid}()},
 \code{\link{getGridProj}()},
 \code{\link{getGridVerticalLevels}()},
-\code{\link{getGrid}()},
 \code{\link{getRefDates}()},
 \code{\link{getSeason}()},
 \code{\link{getShape}()},

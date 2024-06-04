@@ -22,8 +22,8 @@ Takes multiple input grids and crops the overlapping part along time dimension
 
 Other subsetting: 
 \code{\link{getTemporalIntersection}()},
-\code{\link{intersectGrid.spatial}()},
 \code{\link{intersectGrid}()},
+\code{\link{intersectGrid.spatial}()},
 \code{\link{limitArea}()},
 \code{\link{subsetCluster}()},
 \code{\link{subsetDimension}()},

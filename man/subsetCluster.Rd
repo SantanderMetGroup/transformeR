@@ -22,9 +22,9 @@ Multimember multigrids are supported. Subroutine of \code{\link{subsetGrid}}.
 \seealso{
 Other subsetting: 
 \code{\link{getTemporalIntersection}()},
+\code{\link{intersectGrid}()},
 \code{\link{intersectGrid.spatial}()},
 \code{\link{intersectGrid.time}()},
-\code{\link{intersectGrid}()},
 \code{\link{limitArea}()},
 \code{\link{subsetDimension}()},
 \code{\link{subsetGrid}()},

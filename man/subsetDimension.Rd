@@ -43,9 +43,9 @@ spatialPlot(climatology(sub), backdrop.theme = "coastline")
 \seealso{
 Other subsetting: 
 \code{\link{getTemporalIntersection}()},
+\code{\link{intersectGrid}()},
 \code{\link{intersectGrid.spatial}()},
 \code{\link{intersectGrid.time}()},
-\code{\link{intersectGrid}()},
 \code{\link{limitArea}()},
 \code{\link{subsetCluster}()},
 \code{\link{subsetGrid}()},

@@ -19,8 +19,8 @@ so the user does not need to worry about the ordering of the input.
 }
 \seealso{
 Other internal.helpers: 
-\code{\link{array3Dto2Dmat.stations}()},
 \code{\link{array3Dto2Dmat}()},
+\code{\link{array3Dto2Dmat.stations}()},
 \code{\link{bindGrid.member}()},
 \code{\link{bindGrid.spatial}()},
 \code{\link{bindGrid.time}()},

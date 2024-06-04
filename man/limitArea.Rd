@@ -24,9 +24,9 @@ Limit the area in an object returned by function \code{\link{getGrid}}
 \seealso{
 Other subsetting: 
 \code{\link{getTemporalIntersection}()},
+\code{\link{intersectGrid}()},
 \code{\link{intersectGrid.spatial}()},
 \code{\link{intersectGrid.time}()},
-\code{\link{intersectGrid}()},
 \code{\link{subsetCluster}()},
 \code{\link{subsetDimension}()},
 \code{\link{subsetGrid}()},

@@ -30,8 +30,8 @@ Flexible binding of (spatiotemporally consistent) grids by their member dimensio
 }
 \seealso{
 Other internal.helpers: 
-\code{\link{array3Dto2Dmat.stations}()},
 \code{\link{array3Dto2Dmat}()},
+\code{\link{array3Dto2Dmat.stations}()},
 \code{\link{bindGrid.spatial}()},
 \code{\link{bindGrid.time}()},
 \code{\link{grid3Dto2Dmatrix}()},

@@ -21,8 +21,8 @@ Flexible binding of (spatially/member consistent) grids by their longitude or la
 }
 \seealso{
 Other internal.helpers: 
-\code{\link{array3Dto2Dmat.stations}()},
 \code{\link{array3Dto2Dmat}()},
+\code{\link{array3Dto2Dmat.stations}()},
 \code{\link{bindGrid.member}()},
 \code{\link{bindGrid.time}()},
 \code{\link{grid3Dto2Dmatrix}()},

@@ -163,6 +163,9 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
 
 ## 2.2.2 (26 Oct 2023) 
  * Allow for both "simple" and "advanced" methods to compute uncertainty
+
+## 2.2.3 (05 Jun 2024)
+ * Fix inheritance of grid attributes
  
 
 

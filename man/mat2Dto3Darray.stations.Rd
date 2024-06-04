@@ -28,8 +28,8 @@ The function is the inverse of \code{\link{array3Dto2Dmat.stations}}
 \code{\link{array3Dto2Dmat}}, which performs the inverse operation.
 
 Other internal.helpers: 
-\code{\link{array3Dto2Dmat.stations}()},
 \code{\link{array3Dto2Dmat}()},
+\code{\link{array3Dto2Dmat.stations}()},
 \code{\link{bindGrid.member}()},
 \code{\link{bindGrid.spatial}()},
 \code{\link{bindGrid.time}()},

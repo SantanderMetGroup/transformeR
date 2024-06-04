@@ -24,9 +24,9 @@ An attribute 'subset' with value 'subsetYears' is added to the Dates slot of the
 \seealso{
 Other subsetting: 
 \code{\link{getTemporalIntersection}()},
+\code{\link{intersectGrid}()},
 \code{\link{intersectGrid.spatial}()},
 \code{\link{intersectGrid.time}()},
-\code{\link{intersectGrid}()},
 \code{\link{limitArea}()},
 \code{\link{subsetCluster}()},
 \code{\link{subsetDimension}()},
