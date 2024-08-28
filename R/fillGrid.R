@@ -146,6 +146,7 @@ fillGridDates <- function(grid, tz = "") {
     }
     grid <- redim(grid, drop = TRUE)
     grid <- redim(grid, loc = station, member = FALSE)
+    if ("season" %in% names(attributes(grid$Dates))) attr(grid$Dates, "season") <- NULL
     return(grid)
 }
 # end
