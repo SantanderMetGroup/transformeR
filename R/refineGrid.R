@@ -1,4 +1,4 @@
-#     refineGrid.R Horizontal resolution upscaling
+#     refineGrid.R Horizontal resolution refining
 #
 #     Copyright (C) 2018 Santander Meteorology Group (http://www.meteo.unican.es)
 #
@@ -37,7 +37,7 @@
 #' }
 
 
-upscaleGrid <- function(grid, times = 5) {
+refineGrid <- function(grid, times = 5) {
   x <- grid$xyCoords$x
   res <- (x[2] - x[1]) / times
   new.x <- seq((x[1] - (res * (times - 1))), (rev(x)[1] + (res * (times - 1))), res)
