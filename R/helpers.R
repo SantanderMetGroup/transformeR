@@ -244,7 +244,7 @@ getYearsAsINDEX <- function(obj) {
                   yrs <- yrs + 1
             }
       } else {    
-            if (!identical(season, sort(season))) {
+            if (!identical(season, sort(season)) & season[1]==12) {
                   yy <- unique(yrs)[-1]
                   aux <- match(mon, season)
                   brks <- c(1, which(diff(aux) < 0) + 1, length(aux) + 1)
