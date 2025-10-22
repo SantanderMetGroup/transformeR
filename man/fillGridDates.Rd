@@ -4,12 +4,16 @@
 \alias{fillGridDates}
 \title{Fill missing dates}
 \usage{
-fillGridDates(grid, tz = "")
+fillGridDates(grid, tz = "", firstDate = NULL, lastDate = NULL)
 }
 \arguments{
 \item{grid}{grid or station data}
 
 \item{tz}{Optional. Time zone. See Details.}
+
+\item{firstDate}{Optional. Character of two elements defining the time boundary for the first start and end dates.}
+
+\item{lastDate}{Optional. Character of two elements defining the time boundary for the last start and end dates.}
 }
 \value{
 A grid filled with NAs in the previously missing date positions

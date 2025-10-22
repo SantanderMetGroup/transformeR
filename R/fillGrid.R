@@ -4,6 +4,12 @@
 #' @param tz Optional. Time zone. See Details in \code{\link{fillGridDates}}.
 #' @param lonLim Optional. A vector with the minimum and maximum longitude boundaries to be filled with NAs. Default to lonLim = c(-180,180).
 #' @param latLim Optional. A vector with the minimum and maximum latitude boundaries to be filled with NAs. Default to latLim = c(-90,90).
+#' @param firstDate Optional. Character of two elements defining the time boundary for the first start and end dates. 
+#' If NULL only dates within the date range of the input grid will be filled. 
+#' Use function \code{\link{subsetGrid}} first if the desired first and/or last dates are within the range of the input grid dates.
+#' @param lastDate Optional. Character of two elements defining the time boundary for the last start and end dates. 
+#' If NULL only dates within the date range of the input grid will be filled. 
+#' Use function \code{\link{subsetGrid}} first if the desired first and/or last dates are within the range of the input grid dates.
 #' @return A grid filled with NAs in the previously missing date positions and/or in the latitude-longitude domain indicated.
 #' @author J. Baño-Medina
 #' @export
@@ -17,7 +23,7 @@
 #' }
 
  
-fillGrid <- function(grid, tz = "", lonLim = c(-180,180), latLim = c(-90,90)) {
+fillGrid <- function(grid, tz = "", lonLim = c(-180,180), latLim = c(-90,90), firstDate = NULL, lastDate = NULL) {
   if (!is.null(tz)) grid <- fillGridDates(grid, tz = tz)
   if (!is.null(lonLim)) grid <- fillGridSpatial(grid, lonLim = lonLim, latLim = latLim)
   return(grid)
@@ -90,6 +96,8 @@ fillGridSpatial <- function(grid, lonLim = c(-180,180), latLim = c(-90,90)) {
 #' @description fill with NA missing dates in grids and station datasets
 #' @param grid grid or station data
 #' @param tz Optional. Time zone. See Details.
+#' @param firstDate Optional. Character of two elements defining the time boundary for the first start and end dates. 
+#' @param lastDate Optional. Character of two elements defining the time boundary for the last start and end dates. 
 #' @details The function attempts to recover the time zone of the input grid when this is correctly defined.
 #' Otherwise, the function will leave it as unknown. See \code{\link{timezones}} for more details.
 #' @return A grid filled with NAs in the previously missing date positions
@@ -99,12 +107,13 @@ fillGridSpatial <- function(grid, lonLim = c(-180,180), latLim = c(-90,90)) {
 #' @export
 
 
-fillGridDates <- function(grid, tz = "") {
+fillGridDates <- function(grid, tz = "", firstDate = NULL, lastDate = NULL) {
     station <- ("loc" %in% getDim(grid) | is.data.frame(grid[["xyCoords"]]))
     grid <- setGridDates.asPOSIXlt(grid)
     grid <- redim(grid, runtime = TRUE, var = TRUE, loc = station)
     start <- getRefDates(grid)
     end <- getRefDates(grid, which = "end")
+    
     timeres <- getTimeResolution(grid)
     if (timeres == "unknown") stop("Unknown grid temporal resolution")
     by <- switch(timeres,
@@ -115,8 +124,17 @@ fillGridDates <- function(grid, tz = "") {
                  "DD" = "day",
                  "MM" = "month",
                  "YY" = "year")
-    xs <- seq.POSIXt(from = start[1], to = start[length(start)], by = by) %>% as.POSIXlt()
-    xe <- seq.POSIXt(from = end[1], to = end[length(end)], by = by) %>% as.POSIXlt()
+    if(is.null(firstDate) & is.null(lastDate)) {
+      xs <- seq.POSIXt(firstDate = start[1], lastDate = start[length(start)], by = by) %>% as.POSIXlt()
+      xe <- seq.POSIXt(firstDate = end[1], lastDate = end[length(end)], by = by) %>% as.POSIXlt()
+    } else if (!is.null(firstDate) & !is.null(lastDate)){
+      firstDate <- as.POSIXlt.character(firstDate, tz = tz)
+      lastDate <- as.POSIXlt.character(lastDate, tz = tz)
+      xs <- seq.POSIXt(firstDate = firstDate[1], lastDate = lastDate[1], by = by) %>% as.POSIXlt()
+      xe <- seq.POSIXt(firstDate = firstDate[2], lastDate = lastDate[2], by = by) %>% as.POSIXlt()
+    } else {
+      stop("If time boundaries are set manually, both the 'firstDate' and 'lasDate' parameters must be specified.")
+    }
     end <- NULL
     test <- data.frame("date" = start, "wh" = TRUE)
     # start <- NULL

@@ -150,14 +150,17 @@ bindGrid.member <- function(..., tol, attr., skip.temporal.check) {
   }
   if (length(grid.list) == 1) {
     grid.list <- unlist(grid.list, recursive = FALSE)
-    if (isGrid(grid.list)) {
-      message("NOTE: One single grid passed to the function: nothing to bind, so the original grid was returned")
-      return(grid.list)
-    }
   }
-  if (length(grid.list) < 2) {
-    ref <- grid.list[[1]]
-    warning("Only one grid passed as input. Nothing was done", call. = FALSE)
+  if(isGrid(grid.list)) {
+    message("NOTE: One single grid passed to the function: nothing to bind, so the original grid was returned")
+    ref <- grid.list
+  }  else if (length(grid.list) < 2) {
+    ref <- unlist(grid.list, recursive = FALSE)
+    if(isGrid(ref)) {
+      warning("Only one grid passed as input. Nothing was done", call. = FALSE)  
+    } else {
+      stop("Incorrect input for grid binding")
+    }
   } else {
     loc <- unique(unlist(lapply(grid.list, function(x) "loc" %in% getDim(x))))
     if (length(loc) > 1) stop("grids and stations cannot be combined")
@@ -250,63 +253,72 @@ bindGrid.spatial <- function(..., dimn, tol) {
   if (length(grid.list) == 1) {
     grid.list <- unlist(grid.list, recursive = FALSE)
   }
-  if (length(grid.list) < 2) {
-    stop("The input must be a list of at least two grids")
-  }
-  dimsort <- "y"
-  loc <- FALSE
-  coordfun <- c
-  if (dimn == "lon") {
-    dimsort <- "x"
-  } else if (dimn == "loc") {
-    dimsort <- c("x", "y")
-    loc <- TRUE
-    coordfun <- rbind
-    station_id <- unlist(unname(lapply(grid.list, function(x) x$Metadata$station_id)))
-    station_name <- unlist(unname(lapply(grid.list, function(x) x$Metadata$name)))
-  }
-  grid.list <- lapply(grid.list, "redim", var = TRUE, loc = loc)
-  for (i in 2:length(grid.list)) {
-    # Temporal test
-    if (!isTRUE(all.equal(grid.list[[1]]$Dates, grid.list[[i]]$Dates, check.attributes = FALSE, tolerance = tol))) {
-      stop("Input data is not temporally consistent")
+  if(isGrid(grid.list)) {
+    message("NOTE: One single grid passed to the function: nothing to bind, so the original grid was returned")
+    ref <- grid.list
+  }  else if (length(grid.list) < 2) {
+    ref <- unlist(grid.list, recursive = FALSE)
+    if(isGrid(ref)) {
+      warning("Only one grid passed as input. Nothing was done", call. = FALSE)  
+    } else {
+      stop("Incorrect input for grid binding")
     }
-    # Member
-    if (getShape(grid.list[[1]])[match('member', getDim(grid.list[[1]]))] != getShape(grid.list[[i]])[match('member', getDim(grid.list[[i]]))]) {
-      stop("Member dimension is not consistent")
-    }
-  }
-  
-  
-  lat <- lapply(grid.list, FUN = function(x) {
-    getCoordinates(x)[dimsort]
-  })
-  lat <- unname(lat)
-  lats <- do.call(coordfun, lat)
-  if (is.list(lats)) lats <- unlist(lats) %>% unname()
-  if (dimn != "loc"){
-    indLats <- sapply(1:length(lats), FUN = function(z) which(sort(lats)[z] == lats))
-    lats <- sort(lats)
-    #grid.list <- grid.list[indLats]
-  } 
-  ref <- grid.list[[1]]
-  dimNames <- getDim(ref) 
-  dim.bind <- grep(dimn, dimNames)
-  data.list <- lapply(grid.list, FUN = "[[", "Data")
-  ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
-  attr(ref[["Data"]], "dimensions") <- dimNames
-  grid.list <- data.list <- NULL
-  # n.vars <- getShape(ref, "var")
-  #if (n.vars > 1) lats <- rep(list(lats), n.vars)
-  if (dimn == "loc") {
-    ref[["xyCoords"]] <- lats  
-    ref[["Metadata"]][["station_id"]] <- station_id
-    ref[["Metadata"]][["name"]] <- station_name
   } else {
-    ref[["xyCoords"]][[dimsort]] <- lats
+    dimsort <- "y"
+    loc <- FALSE
+    coordfun <- c
+    if (dimn == "lon") {
+      dimsort <- "x"
+    } else if (dimn == "loc") {
+      dimsort <- c("x", "y")
+      loc <- TRUE
+      coordfun <- rbind
+      station_id <- unlist(unname(lapply(grid.list, function(x) x$Metadata$station_id)))
+      station_name <- unlist(unname(lapply(grid.list, function(x) x$Metadata$name)))
+    }
+    grid.list <- lapply(grid.list, "redim", var = TRUE, loc = loc)
+    for (i in 2:length(grid.list)) {
+      # Temporal test
+      if (!isTRUE(all.equal(grid.list[[1]]$Dates, grid.list[[i]]$Dates, check.attributes = FALSE, tolerance = tol))) {
+        stop("Input data is not temporally consistent")
+      }
+      # Member
+      if (getShape(grid.list[[1]])[match('member', getDim(grid.list[[1]]))] != getShape(grid.list[[i]])[match('member', getDim(grid.list[[i]]))]) {
+        stop("Member dimension is not consistent")
+      }
+    }
+    
+    
+    lat <- lapply(grid.list, FUN = function(x) {
+      getCoordinates(x)[dimsort]
+    })
+    lat <- unname(lat)
+    lats <- do.call(coordfun, lat)
+    if (is.list(lats)) lats <- unlist(lats) %>% unname()
+    if (dimn != "loc"){
+      indLats <- sapply(1:length(lats), FUN = function(z) which(sort(lats)[z] == lats))
+      lats <- sort(lats)
+      #grid.list <- grid.list[indLats]
+    } 
+    ref <- grid.list[[1]]
+    dimNames <- getDim(ref) 
+    dim.bind <- grep(dimn, dimNames)
+    data.list <- lapply(grid.list, FUN = "[[", "Data")
+    ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
+    attr(ref[["Data"]], "dimensions") <- dimNames
+    grid.list <- data.list <- NULL
+    # n.vars <- getShape(ref, "var")
+    #if (n.vars > 1) lats <- rep(list(lats), n.vars)
+    if (dimn == "loc") {
+      ref[["xyCoords"]] <- lats  
+      ref[["Metadata"]][["station_id"]] <- station_id
+      ref[["Metadata"]][["name"]] <- station_name
+    } else {
+      ref[["xyCoords"]][[dimsort]] <- lats
+    }
+    # ref %<>% sortDim.spatial()
+    redim(ref, drop = TRUE)
   }
-  # ref %<>% sortDim.spatial()
-  redim(ref, drop = TRUE)
   return(ref)
 }
 #end
@@ -354,51 +366,60 @@ sortDim.spatial <- function(grid, dimension = c("y", "x")) {
 #' @author M De Felice, J Bedia
 
 bindGrid.time <- function(..., tol) {
-   grid.list <- list(...)
-   if (length(grid.list) == 1) {
-      grid.list <- unlist(grid.list, recursive = FALSE)
-   }
-   if (length(grid.list) < 2) {
-      stop("The input must be a list of at least two grids")
-   }
-   grid.list <- lapply(grid.list, function(i){
+  grid.list <- list(...)
+  if (length(grid.list) == 1) {
+    grid.list <- unlist(grid.list, recursive = FALSE)
+  }
+  if(isGrid(grid.list)) {
+    message("NOTE: One single grid passed to the function: nothing to bind, so the original grid was returned")
+    ref <- grid.list
+  }  else if (length(grid.list) < 2) {
+    ref <- unlist(grid.list, recursive = FALSE)
+    if(isGrid(ref)) {
+      warning("Only one grid passed as input. Nothing was done", call. = FALSE)  
+    } else {
+      stop("Incorrect input for grid binding")
+    }
+  } else {
+    grid.list <- lapply(grid.list, function(i){
       loc <- !isRegular(i)
       redim(i, loc = loc, var = TRUE)
-   })
-   for (i in 2:length(grid.list)) {
+    })
+    for (i in 2:length(grid.list)) {
       # Spatial test
       if (!isTRUE(all.equal(grid.list[[1]]$xyCoords, grid.list[[i]]$xyCoords, check.attributes = FALSE, tolerance = tol))) {
-         stop("Input data is not spatially consistent")
+        stop("Input data is not spatially consistent")
       }
       # Member
       if (getShape(grid.list[[1]])[match('member', getDim(grid.list[[1]]))] != getShape(grid.list[[i]])[match('member', getDim(grid.list[[i]]))]) {
-         stop("Member dimension is not spatially consistent")
+        stop("Member dimension is not spatially consistent")
       }
-   }
-   ref <- grid.list[[1]]
-   dimNames <- getDim(ref) 
-   dim.bind <- grep("^time", dimNames)
-   data.list <- lapply(grid.list, FUN = "[[", "Data")
-   ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
-   data.list <- NULL
-   start.list <- lapply(grid.list, FUN = function(x) {
+    }
+    ref <- grid.list[[1]]
+    dimNames <- getDim(ref) 
+    dim.bind <- grep("^time", dimNames)
+    data.list <- lapply(grid.list, FUN = "[[", "Data")
+    ref[["Data"]] <- unname(do.call("abind", c(data.list, along = dim.bind)))
+    data.list <- NULL
+    start.list <- lapply(grid.list, FUN = function(x) {
       getRefDates(x)
-   })
-   end.list <- lapply(grid.list, FUN = function(x) {
+    })
+    end.list <- lapply(grid.list, FUN = function(x) {
       getRefDates(x, "end")
-   })
-   grid.list <- NULL
-   refdates <- list(start = do.call("c", start.list),
-                    end = do.call("c", end.list))
-   attr(ref[["Data"]], "dimensions") <- dimNames
-   n.vars <- getShape(ref, "var")
-   if (n.vars > 1) refdates <- rep(list(refdates), n.vars)
-   ref[["Dates"]] <- refdates
-   ref <- tryCatch({sortDim.time(ref)}, error = function(err) {
+    })
+    grid.list <- NULL
+    refdates <- list(start = do.call("c", start.list),
+                     end = do.call("c", end.list))
+    attr(ref[["Data"]], "dimensions") <- dimNames
+    n.vars <- getShape(ref, "var")
+    if (n.vars > 1) refdates <- rep(list(refdates), n.vars)
+    ref[["Dates"]] <- refdates
+    ref <- tryCatch({sortDim.time(ref)}, error = function(err) {
       warning("time dimension could not be sorted!")
       ref})
-   ref <- redim(ref, drop = TRUE)
-   return(ref)
+    ref <- redim(ref, drop = TRUE)
+  }
+  return(ref)
 }
 #end
 

@@ -4,7 +4,14 @@
 \alias{fillGrid}
 \title{Fill missing dates and extend the latitude-longitude domain of a given grid.}
 \usage{
-fillGrid(grid, tz = "", lonLim = c(-180, 180), latLim = c(-90, 90))
+fillGrid(
+  grid,
+  tz = "",
+  lonLim = c(-180, 180),
+  latLim = c(-90, 90),
+  firstDate = NULL,
+  lastDate = NULL
+)
 }
 \arguments{
 \item{grid}{grid or station data. The lonLim and latLim arguments are only valid for gridded data.}
@@ -14,6 +21,14 @@ fillGrid(grid, tz = "", lonLim = c(-180, 180), latLim = c(-90, 90))
 \item{lonLim}{Optional. A vector with the minimum and maximum longitude boundaries to be filled with NAs. Default to lonLim = c(-180,180).}
 
 \item{latLim}{Optional. A vector with the minimum and maximum latitude boundaries to be filled with NAs. Default to latLim = c(-90,90).}
+
+\item{firstDate}{Optional. Character of two elements defining the time boundary for the first start and end dates. 
+If NULL only dates within the date range of the input grid will be filled. 
+Use function \code{\link{subsetGrid}} first if the desired first and/or last dates are within the range of the input grid dates.}
+
+\item{lastDate}{Optional. Character of two elements defining the time boundary for the last start and end dates. 
+If NULL only dates within the date range of the input grid will be filled. 
+Use function \code{\link{subsetGrid}} first if the desired first and/or last dates are within the range of the input grid dates.}
 }
 \value{
 A grid filled with NAs in the previously missing date positions and/or in the latitude-longitude domain indicated.
