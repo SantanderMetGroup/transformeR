@@ -125,15 +125,15 @@ fillGridDates <- function(grid, tz = "", firstDate = NULL, lastDate = NULL) {
                  "MM" = "month",
                  "YY" = "year")
     if(is.null(firstDate) & is.null(lastDate)) {
-      xs <- seq.POSIXt(firstDate = start[1], lastDate = start[length(start)], by = by) %>% as.POSIXlt()
-      xe <- seq.POSIXt(firstDate = end[1], lastDate = end[length(end)], by = by) %>% as.POSIXlt()
+      xs <- seq.POSIXt(from = start[1], to = start[length(start)], by = by) %>% as.POSIXlt()
+      xe <- seq.POSIXt(from = end[1], to = end[length(end)], by = by) %>% as.POSIXlt()
     } else if (!is.null(firstDate) & !is.null(lastDate)){
       firstDate <- as.POSIXlt.character(firstDate, tz = tz)
       lastDate <- as.POSIXlt.character(lastDate, tz = tz)
-      xs <- seq.POSIXt(firstDate = firstDate[1], lastDate = lastDate[1], by = by) %>% as.POSIXlt()
-      xe <- seq.POSIXt(firstDate = firstDate[2], lastDate = lastDate[2], by = by) %>% as.POSIXlt()
+      xs <- seq.POSIXt(from = firstDate[1], to = lastDate[1], by = by) %>% as.POSIXlt()
+      xe <- seq.POSIXt(from = firstDate[2], to = lastDate[2], by = by) %>% as.POSIXlt()
     } else {
-      stop("If time boundaries are set manually, both the 'firstDate' and 'lasDate' parameters must be specified.")
+      stop("If time boundaries are set manually, both the 'firstDate' and 'lastDate' parameters must be specified.")
     }
     end <- NULL
     test <- data.frame("date" = start, "wh" = TRUE)
