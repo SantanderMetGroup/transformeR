@@ -167,7 +167,7 @@ This release of transformeR does not ensure backwards compatibility. Some deprec
 ## 2.2.3 (05 Jun 2024)
  * Fix inheritance of grid attributes
 
-## 2.2.4 (??)
+## 2.2.4 (18 Nov 2025)
   * Allow manual selection of start and end dates in FillGrid
   * Minor fix in bindGrid to better deal with different grid inputs
   * Other minor changes

@@ -25,7 +25,6 @@
 
 intersectMembers <- function(...){
   grids <- list(...) %>% lapply(redim)
-  grids <- list(hist.y, fut.ens) %>% lapply(redim)
   grids.members <- lapply(grids, "[[", "Members")
   members <- do.call("intersect", grids.members)
   if (is.character(members) & length(members) > 0) {

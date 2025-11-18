@@ -4,7 +4,7 @@
     pkgname <- "transformeR"
     ver <- packageDescription(pkgname)$Version
     builddate <- packageDescription(pkgname)$Date
-    system.file("c4R_welcome", package = "transformeR") %>% readLines() %>% cat(sep = "\n") 
+    cat(readLines(system.file("c4R_welcome", package = "transformeR")), sep = "\n") 
     mess <- paste(pkgname, " version ", ver, " (", builddate,") is loaded", sep = "")
     packageStartupMessage(mess)
     url <- paste0("https://raw.githubusercontent.com/SantanderMetGroup/", pkgname, "/master/DESCRIPTION")
