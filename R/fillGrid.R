@@ -141,11 +141,12 @@ fillGridDates <- function(grid, tz = "", firstDate = NULL, lastDate = NULL) {
     
     # Find the indices of the elements in dates vector 'xs' that are missing in the input dates vector 'start'
     ind.insert <- which(!as.Date(xs) %in% as.Date(start))
+    ind <- which(as.Date(xs) %in% as.Date(start))
     if (length(ind.insert) == 0L) {# The input vector is already complete, no need to fill missing records
         message("[", Sys.time(), "] Already complete date record. Nothing was done")
     } else {
         result <- merge(data.frame("date" = xs), test, by.y = "date", by.x = "date", all.x = TRUE)
-        ind <- which(result[ , "wh"])
+        # ind <- which(result[ , "wh"])
         sh <- getShape(grid)
         sh[names(sh) == "time"] <- nrow(result)
         result <- NULL
