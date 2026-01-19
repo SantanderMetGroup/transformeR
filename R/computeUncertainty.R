@@ -17,18 +17,20 @@
 
 #' @title Calculate the uncertainty of the climate change signal.
 #' @description Calculate the uncertainty of the climate change signal.
-#' @param historical A grid with annual historical data
-#' @param anomaly A grid (with time dimension = 1).
+#' @param anomaly A grid of the climate change signal/anomaly (time dimension = 1).
+#' @param historical A grid with annual historical data. Applicable when method = "advanced".
+#' Default is NULL.
 #' @param method "simple" or "advanced".
 #' @return A grid with three values (uncertainty categories); 0 = robust signal, 
 #' 1 = no signal or no change, 2 = conflicting signals).
 #' @author M. Iturbide
 #' @export
 
-computeUncertainty <- function(historical, anomaly, method = "simple"){
+computeUncertainty <- function(anomaly, historical = NULL, method = "simple"){
   method <- match.arg(method, c("simple", "advanced"))
   uncer3 <- aggregateGrid(anomaly, aggr.mem = list(FUN = modelAgreement, th = 80))
   if(method == "advanced"){
+    if (is.null(historical)) stop("Provide the annual historical grid for the application of the 'advanced' method.")
     si <- signal(historical, anomaly)
     uncer1 <- aggregateGrid(si, aggr.mem = list(FUN = signalAgreement, th = 66, condition = "GT"))
     uncer2 <- aggregateGrid(si, aggr.mem = list(FUN = signalAgreement, th = 66, condition = "LT"))
