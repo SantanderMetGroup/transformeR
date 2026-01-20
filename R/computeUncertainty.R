@@ -56,6 +56,7 @@ computeUncertainty <- function(anomaly, historical = NULL, method = "simple"){
 #' @export
 
 signalAgreement <- function(x, th = 66, condition = "GT") {
+  x <- x [!is.na(x)]
   condition <- match.arg(condition, choices = c("GT", "GE", "LT", "LE"))
   ineq <- switch(condition,
                   "GT" = ">",
@@ -74,6 +75,7 @@ signalAgreement <- function(x, th = 66, condition = "GT") {
 #' @export
 #' 
 modelAgreement <- function(x, th = 80) {
+  x <- x [!is.na(x)]
   mp <- mean(x, na.rm = TRUE)
   if (is.na(mp)) {
     1
