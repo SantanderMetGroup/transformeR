@@ -30,7 +30,7 @@
 #' 
 #' @author J Bedia
 #' @export
-#' @importFrom sp coordinates spDists
+#' @importFrom sf st_coordinates
 #' @importFrom graphics abline plot text grid
 #' @importFrom stats var
 #' @examples \donttest{
@@ -60,9 +60,9 @@
 climatologyVariogram <- function(clim, n.classes = 20, do.log = FALSE) {
     spatdf <- clim2sgdf(clim, set.max = NULL, set.min = NULL)
     # coordinates matrix
-    coords <- coordinates(spatdf)
+    coords <- sf::st_coordinates(spatdf)
     # distances among all pairs of points
-    dist.matrix <- spDists(coords)
+    dist.matrix <- as.matrix(stats::dist(coords))
     # Eliminate duplicated pairs of points 
     # (matrix is symmetric, the upper tri is retained)
     dist.matrix[lower.tri(dist.matrix, diag = TRUE)] <- NA

@@ -9,7 +9,7 @@ Imports:
     magrittr,
     parallel,
     RcppEigen,
-    sp,
+    sf,
     stats,
     utils,
     kohonen
